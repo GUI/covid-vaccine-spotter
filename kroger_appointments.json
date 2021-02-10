@@ -98,7 +98,11 @@
     },
     {
       "facilityId": "62000029",
-      "appointments": []
+      "appointments": [
+        {
+          "date": "2021-02-11"
+        }
+      ]
     },
     {
       "facilityId": "62000030",
@@ -134,11 +138,7 @@
     },
     {
       "facilityId": "62000041",
-      "appointments": [
-        {
-          "date": "2021-02-12"
-        }
-      ]
+      "appointments": []
     },
     {
       "facilityId": "62000042",
