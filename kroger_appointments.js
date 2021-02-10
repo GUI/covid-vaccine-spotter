@@ -32,7 +32,7 @@ db.defaults({ stores: [] }).write();
       lastProcessed = Date.parse(lastProcessed);
     }
 
-    if (!lastProcessed || Date.now() - lastProcessed.getTime() > 5 * 60 * 1000) {
+    if (!lastProcessed || Date.now() - lastProcessed > 5 * 60 * 1000) {
       console.log(`Processing ${store.facilityId}`);
 
       const response = await requestAsBrowser({
@@ -52,4 +52,3 @@ db.defaults({ stores: [] }).write();
     }
   }
 })();
-
