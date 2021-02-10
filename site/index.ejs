@@ -1,0 +1,60 @@
+---
+title: Colorado COVID-19 Vaccines
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title><%= title %></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <script defer src="https://use.fontawesome.com/releases/v5.15.2/js/all.js" integrity="sha384-vuFJ2JiSdUpXLKGK+tDteQZBqNlMwAjhZ3TvPaDfN9QmbPb7Q8qUpbSNapQev3YF" crossorigin="anonymous"></script>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-49484378-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-49484378-1');
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <h1><%= title %></h1>
+
+      <h2>Visit Colorado.gov</h2>
+      <p class="fs-4">Be sure to visit Colorado's official <a href="https://covid19.colorado.gov/for-coloradans/vaccine/where-can-i-get-vaccinated"><strong>find out where you can get vaccinated</strong></a> page for detailed and up to date information.</p>
+
+      <h2>King Soopers Appointment Status</h2>
+
+      <% krogerAppointments.stores.sort((a, b) => { return b.appointments.length - a.appointments.length }).forEach((appointmentStore) => { %>
+        <% store = krogerReasons.stores.find((s) => s.facilityId === appointmentStore.facilityId) %>
+        <% lastProcessed = new Date(krogerAppointmentsLastProcessed.appointmentsLastProcessed[appointmentStore.facilityId]).toLocaleString('en-US', { timeZone: 'America/Denver' }) + ' MT' %>
+        <div class="card mb-4">
+          <h5 class="card-header"><%= store.vanityName %></h5>
+          <div class="card-body">
+            <p class="card-text"><%= store.address.address1 %><br><%= store.address.city %>, <%= store.address.state %> <%= store.address.zipCode %></p>
+            <p class="card-text"><%= store.phone.areaCode %>-<%= store.phone.phoneNumber %></p>
+            <p class="card-text">
+              <% if(appointmentStore.appointments && appointmentStore.appointments.length > 0) { %>
+                <div class="text-success fs-2">
+                  <i class="fas fa-check-circle"></i>
+                  <span class="fs-5">Appointments available as of <%= lastProcessed %></span>
+                </div>
+                <a href="https://www.kingsoopers.com/rx/guest/get-vaccinated" class="btn btn-primary">Visit King Soopers Website</a>
+              <% } else { %>
+                <i class="fas fa-times-circle"></i>
+                No appointments available as of last check
+              <% } %>
+            </p>
+            <p class="card-text text-secondary"><small>Last Checked <%= lastProcessed %></small></p>
+          </div>
+        </div>
+        <%= store.appointments %>
+      <% }) %>
+    </div>
+  </body>
+</html>

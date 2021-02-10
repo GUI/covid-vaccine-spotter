@@ -5,7 +5,7 @@ const adapter1 = new FileSync('kroger_stores.json');
 const db1 = low(adapter1);
 const stores = db1.get('stores').value();
 
-const adapter = new FileSync('kroger_reasons.json');
+const adapter = new FileSync('site/_data/krogerReasons.json');
 const db = low(adapter);
 db.defaults({ stores: [], reasonsLastProcessed: {} }).write();
 

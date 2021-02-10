@@ -5,7 +5,7 @@ const FileSync = require('lowdb/adapters/FileSync');
 const Apify = require('apify');
 const { utils: { requestAsBrowser } } = Apify;
 
-const adapter1 = new FileSync('kroger_reasons.json');
+const adapter1 = new FileSync('site/_data/krogerReasons.json');
 const db1 = low(adapter1);
 const stores = db1.get('stores').filter((store) => {
   for(const reason of store.reasons) {
@@ -17,11 +17,11 @@ const stores = db1.get('stores').filter((store) => {
   return false;
 }).value();
 
-const adapter2 = new FileSync('kroger_appointments_last_processed.json');
+const adapter2 = new FileSync('site/_data/krogerAppointmentsLastProcessed.json');
 const db2 = low(adapter2);
 db2.defaults({ appointmentsLastProcessed: {} }).write();
 
-const adapter = new FileSync('kroger_appointments.json');
+const adapter = new FileSync('site/_data/krogerAppointments.json');
 const db = low(adapter);
 db.defaults({ stores: [] }).write();
 
