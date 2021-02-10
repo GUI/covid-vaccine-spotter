@@ -20,9 +20,6 @@
       "facilityId": "62000001",
       "appointments": [
         {
-          "date": "2021-02-11"
-        },
-        {
           "date": "2021-02-12"
         },
         {
@@ -200,11 +197,7 @@
     },
     {
       "facilityId": "62000055",
-      "appointments": [
-        {
-          "date": "2021-02-13"
-        }
-      ]
+      "appointments": []
     },
     {
       "facilityId": "62000056",
@@ -256,7 +249,11 @@
     },
     {
       "facilityId": "62000078",
-      "appointments": []
+      "appointments": [
+        {
+          "date": "2021-02-10"
+        }
+      ]
     },
     {
       "facilityId": "62000081",
@@ -296,7 +293,11 @@
     },
     {
       "facilityId": "62000090",
-      "appointments": []
+      "appointments": [
+        {
+          "date": "2021-02-11"
+        }
+      ]
     },
     {
       "facilityId": "62000092",
@@ -444,11 +445,7 @@
     },
     {
       "facilityId": "62500429",
-      "appointments": [
-        {
-          "date": "2021-02-18"
-        }
-      ]
+      "appointments": []
     },
     {
       "facilityId": "62500430",
