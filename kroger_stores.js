@@ -5,7 +5,7 @@ const zipCodesAdapter = new FileSync('zip_codes.json');
 const zipCodesDb = low(zipCodesAdapter);
 const zipCodes = zipCodesDb.get('zipCodes').value();
 
-const adapter = new FileSync('king_soopers_stores.json');
+const adapter = new FileSync('kroger_stores.json');
 const db = low(adapter);
 db.defaults({ stores: [], zipCodesLastProcessed: {} }).write();
 const stores = db.get('stores');
@@ -13,8 +13,18 @@ const zipCodesLastProcessed = db.get('zipCodesLastProcessed');
 
 const puppeteer = require('puppeteer-extra');
 
-const StealthPlugin = require('puppeteer-extra-plugin-stealth');
-puppeteer.use(StealthPlugin());
+//const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+const pluginStealth = require('puppeteer-extra-plugin-stealth')();
+console.log(pluginStealth.availableEvasions);
+console.log(pluginStealth.enabledEvasions);
+pluginStealth.enabledEvasions.delete('user-agent-override')
+puppeteer.use(pluginStealth);
+
+const UserAgentOverride = require('puppeteer-extra-plugin-stealth/evasions/user-agent-override');
+const ua = UserAgentOverride({
+  userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.2 Safari/605.1.15',
+});
+puppeteer.use(ua);
 
 (async () => {
   const browser = await puppeteer.launch({ headless: false, devtools: true });

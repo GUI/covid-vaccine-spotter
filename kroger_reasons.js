@@ -1,21 +1,13 @@
 const low = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
 
-const adapter1 = new FileSync('king_soopers_reasons.json');
+const adapter1 = new FileSync('kroger_stores.json');
 const db1 = low(adapter1);
-const stores = db1.get('stores').filter((store) => {
-  for(const reason of store.reasons) {
-    if (reason.ar_id === 107) {
-      return true
-    }
-  }
+const stores = db1.get('stores').value();
 
-  return false;
-}).value();
-
-const adapter = new FileSync('king_soopers_vaccines.json');
+const adapter = new FileSync('kroger_reasons.json');
 const db = low(adapter);
-db.defaults({ stores: [], vaccinesLastProcessed: {} }).write();
+db.defaults({ stores: [], reasonsLastProcessed: {} }).write();
 
 const puppeteer = require('puppeteer-extra');
 
@@ -28,25 +20,24 @@ puppeteer.use(StealthPlugin());
   await page.goto('https://www.kingsoopers.com/rx/guest/get-vaccinated', { waitUntil: 'networkidle0' });
 
   for (const store of stores) {
-    // const lastProcessed = db.get(`vaccinesLastProcessed.${store.facilityId}`).value();
-    const lastProcessed = null;
+    const lastProcessed = db.get(`reasonsLastProcessed.${store.facilityId}`).value();
     if (lastProcessed) {
       console.log(`Skipping ${store.facilityId}`);
     } else {
       console.log(`Processing ${store.facilityId}`);
 
-      await page.goto(`https://www.kingsoopers.com/rx/api/anonymous/scheduler/dates/pharmacy/${store.facilityId}/107`, { waitUntil: 'networkidle0' });
+      await page.goto(`https://www.kingsoopers.com/rx/api/anonymous/scheduler/reasons/pharmacy/${store.facilityId}`, { waitUntil: 'networkidle0' });
       const data = await page.evaluate(() => {
         return JSON.parse(document.querySelector('body').innerText);
       });
 
-      store.vaccines = data;
+      store.reasons = data;
       db.get('stores').push(store).write();
-      db.set(`vaccinesLastProcessed.${store.facilityId}`, (new Date()).toISOString()).write();
+      db.set(`reasonsLastProcessed.${store.facilityId}`, (new Date()).toISOString()).write();
 
       db.set('stores', db.get('stores').uniqBy('facilityId').sortBy('facilityId').value()).write();
 
-      await new Promise(r => setTimeout(r, 2000));
+      await new Promise(r => setTimeout(r, 5000));
     }
   }
 
