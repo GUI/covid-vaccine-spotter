@@ -10,5 +10,5 @@ if [[ -n $(git status --porcelain) ]]; then
   set +x
   git remote set-url --push origin "https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
   set -x
-  git push origin HEAD:master
+  git push origin HEAD:main
 fi
