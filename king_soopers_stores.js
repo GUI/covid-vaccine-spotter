@@ -48,6 +48,8 @@ puppeteer.use(StealthPlugin());
       console.log(`Skipping ${zipCode}`);
     } else {
       console.log(`Processing ${zipCode}`);
+      await page.$eval('h1', el => el.click());
+      await page.$eval('[name=findAStore]', el => el.click());
       await page.$eval('[name=findAStore]', el => el.value = '');
       await page.type('[name=findAStore]', zipCode);
       /*
