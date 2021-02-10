@@ -134,7 +134,11 @@
     },
     {
       "facilityId": "62000041",
-      "appointments": []
+      "appointments": [
+        {
+          "date": "2021-02-12"
+        }
+      ]
     },
     {
       "facilityId": "62000042",
@@ -174,7 +178,20 @@
     },
     {
       "facilityId": "62000055",
-      "appointments": []
+      "appointments": [
+        {
+          "date": "2021-02-11"
+        },
+        {
+          "date": "2021-02-12"
+        },
+        {
+          "date": "2021-02-13"
+        },
+        {
+          "date": "2021-02-14"
+        }
+      ]
     },
     {
       "facilityId": "62000056",
@@ -190,7 +207,23 @@
     },
     {
       "facilityId": "62000062",
-      "appointments": []
+      "appointments": [
+        {
+          "date": "2021-02-10"
+        },
+        {
+          "date": "2021-02-11"
+        },
+        {
+          "date": "2021-02-12"
+        },
+        {
+          "date": "2021-02-13"
+        },
+        {
+          "date": "2021-02-14"
+        }
+      ]
     },
     {
       "facilityId": "62000063",
@@ -394,7 +427,11 @@
     },
     {
       "facilityId": "62500417",
-      "appointments": []
+      "appointments": [
+        {
+          "date": "2021-02-12"
+        }
+      ]
     },
     {
       "facilityId": "62500420",
@@ -434,11 +471,7 @@
     },
     {
       "facilityId": "62500445",
-      "appointments": [
-        {
-          "date": "2021-02-13"
-        }
-      ]
+      "appointments": []
     },
     {
       "facilityId": "62500446",

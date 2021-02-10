@@ -32,7 +32,9 @@ db.defaults({ stores: [] }).write();
       lastProcessed = Date.parse(lastProcessed);
     }
 
-    if (!lastProcessed || Date.now() - lastProcessed > 5 * 60 * 1000) {
+    if (lastProcessed && Date.now() - lastProcessed <= 5 * 60 * 1000) {
+      console.log(`Skipping ${store.facilityId}`);
+    } else {
       console.log(`Processing ${store.facilityId}`);
 
       const response = await requestAsBrowser({
@@ -40,6 +42,9 @@ db.defaults({ stores: [] }).write();
       });
       const data = JSON.parse(response.body);
 
+      db.get('stores').remove({
+        facilityId: store.facilityId,
+      }).write();
       db.get('stores').push({
         facilityId: store.facilityId,
         appointments: data,
