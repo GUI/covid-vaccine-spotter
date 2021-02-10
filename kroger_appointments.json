@@ -249,11 +249,7 @@
     },
     {
       "facilityId": "62000078",
-      "appointments": [
-        {
-          "date": "2021-02-10"
-        }
-      ]
+      "appointments": []
     },
     {
       "facilityId": "62000081",
@@ -293,11 +289,7 @@
     },
     {
       "facilityId": "62000090",
-      "appointments": [
-        {
-          "date": "2021-02-11"
-        }
-      ]
+      "appointments": []
     },
     {
       "facilityId": "62000092",
@@ -305,7 +297,17 @@
     },
     {
       "facilityId": "62000093",
-      "appointments": []
+      "appointments": [
+        {
+          "date": "2021-02-11"
+        },
+        {
+          "date": "2021-02-12"
+        },
+        {
+          "date": "2021-02-13"
+        }
+      ]
     },
     {
       "facilityId": "62000096",
