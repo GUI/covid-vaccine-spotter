@@ -300,20 +300,174 @@
       ]
     },
     {
-      "facilityId": "61500050",
+      "facilityId": "61500010",
       "legalName": "Dillon Companies, Inc.",
-      "vanityName": "Colby Dillons",
+      "vanityName": "4th Street Dillons on 4th",
       "address": {
-        "address1": "1605 S Range Ave",
+        "address1": "725 E 4Th Ave",
         "address2": "",
-        "city": "Colby",
+        "city": "Hutchinson",
         "state": "KS",
-        "zipCode": "67701"
+        "zipCode": "67501"
+      },
+      "phone": {
+        "countryCode": "",
+        "areaCode": "620",
+        "phoneNumber": "6698238",
+        "extension": ""
+      },
+      "onlinePaymentsEnabled": true,
+      "onlineOrderingEnabled": false,
+      "pharmacyHours": {
+        "sundayClose": "18:00",
+        "sundayOpen": "11:00",
+        "sundayHours": "",
+        "mondayClose": "21:00",
+        "mondayOpen": "09:00",
+        "mondayHours": "",
+        "tuesdayClose": "21:00",
+        "tuesdayOpen": "09:00",
+        "tuesdayHours": "",
+        "wednesdayClose": "21:00",
+        "wednesdayOpen": "09:00",
+        "wednesdayHours": "",
+        "thursdayClose": "21:00",
+        "thursdayOpen": "09:00",
+        "thursdayHours": "",
+        "fridayClose": "21:00",
+        "fridayOpen": "09:00",
+        "fridayHours": "",
+        "saturdayClose": "18:00",
+        "saturdayOpen": "09:00",
+        "saturdayHours": ""
+      },
+      "brand": "DILLONS",
+      "reasons": [
+        {
+          "ar_id": 94,
+          "ar_reason": "COVID Rapid Antibody Test",
+          "ar_order": 1,
+          "grp_ar_reason": "",
+          "grp_ar_order": 0,
+          "appt_days_ahead_max": 14,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 73,
+          "ar_reason": "Flu (Influenza)",
+          "ar_order": 1,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 74,
+          "ar_reason": "Hepatitis A",
+          "ar_order": 2,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 75,
+          "ar_reason": "Hepatitis B",
+          "ar_order": 3,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 76,
+          "ar_reason": "Tdap (Tetanus, Diphtheria, Pertussis)",
+          "ar_order": 4,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 77,
+          "ar_reason": "Pneumonia",
+          "ar_order": 5,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 78,
+          "ar_reason": "Shingles",
+          "ar_order": 6,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 79,
+          "ar_reason": "Meningitis (Meningococcal)",
+          "ar_order": 7,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 80,
+          "ar_reason": "HPV (Human Papilloma Virus)",
+          "ar_order": 8,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 81,
+          "ar_reason": "Chickenpox (Varicella)",
+          "ar_order": 9,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 82,
+          "ar_reason": "Measles/Mumps/Rubella",
+          "ar_order": 10,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 1,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 83,
+          "ar_reason": "Other",
+          "ar_order": 11,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 40,
+          "appt_days_ahead_min": 0
+        }
+      ]
+    },
+    {
+      "facilityId": "61500014",
+      "legalName": "Dillon Companies, Inc.",
+      "vanityName": "Little Dillons Hall Street Dillons",
+      "address": {
+        "address1": "531 West 27Th Street",
+        "address2": "",
+        "city": "Hays",
+        "state": "KS",
+        "zipCode": "67601"
       },
       "phone": {
         "countryCode": "",
         "areaCode": "785",
-        "phoneNumber": "4621310",
+        "phoneNumber": "6252523",
         "extension": ""
       },
       "onlinePaymentsEnabled": true,
@@ -337,7 +491,7 @@
         "fridayClose": "19:00",
         "fridayOpen": "09:00",
         "fridayHours": "",
-        "saturdayClose": "18:00",
+        "saturdayClose": "17:00",
         "saturdayOpen": "09:00",
         "saturdayHours": ""
       },
@@ -445,20 +599,174 @@
       ]
     },
     {
-      "facilityId": "61500060",
+      "facilityId": "61500015",
       "legalName": "Dillon Companies, Inc.",
-      "vanityName": "Jones Ave Dillons West Dillons",
+      "vanityName": "East Dillons",
       "address": {
-        "address1": "1211 Buffalo Jones Ave",
+        "address1": "130 Sarber Ln",
         "address2": "",
-        "city": "Garden City",
+        "city": "Manhattan",
         "state": "KS",
-        "zipCode": "67846"
+        "zipCode": "66502"
+      },
+      "phone": {
+        "countryCode": "",
+        "areaCode": "785",
+        "phoneNumber": "7760060",
+        "extension": ""
+      },
+      "onlinePaymentsEnabled": true,
+      "onlineOrderingEnabled": false,
+      "pharmacyHours": {
+        "sundayClose": "18:00",
+        "sundayOpen": "11:00",
+        "sundayHours": "",
+        "mondayClose": "21:00",
+        "mondayOpen": "09:00",
+        "mondayHours": "",
+        "tuesdayClose": "21:00",
+        "tuesdayOpen": "09:00",
+        "tuesdayHours": "",
+        "wednesdayClose": "21:00",
+        "wednesdayOpen": "09:00",
+        "wednesdayHours": "",
+        "thursdayClose": "21:00",
+        "thursdayOpen": "09:00",
+        "thursdayHours": "",
+        "fridayClose": "21:00",
+        "fridayOpen": "09:00",
+        "fridayHours": "",
+        "saturdayClose": "18:00",
+        "saturdayOpen": "09:00",
+        "saturdayHours": ""
+      },
+      "brand": "DILLONS",
+      "reasons": [
+        {
+          "ar_id": 94,
+          "ar_reason": "COVID Rapid Antibody Test",
+          "ar_order": 1,
+          "grp_ar_reason": "",
+          "grp_ar_order": 0,
+          "appt_days_ahead_max": 14,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 73,
+          "ar_reason": "Flu (Influenza)",
+          "ar_order": 1,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 74,
+          "ar_reason": "Hepatitis A",
+          "ar_order": 2,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 75,
+          "ar_reason": "Hepatitis B",
+          "ar_order": 3,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 76,
+          "ar_reason": "Tdap (Tetanus, Diphtheria, Pertussis)",
+          "ar_order": 4,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 77,
+          "ar_reason": "Pneumonia",
+          "ar_order": 5,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 78,
+          "ar_reason": "Shingles",
+          "ar_order": 6,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 79,
+          "ar_reason": "Meningitis (Meningococcal)",
+          "ar_order": 7,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 80,
+          "ar_reason": "HPV (Human Papilloma Virus)",
+          "ar_order": 8,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 81,
+          "ar_reason": "Chickenpox (Varicella)",
+          "ar_order": 9,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 82,
+          "ar_reason": "Measles/Mumps/Rubella",
+          "ar_order": 10,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 1,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 83,
+          "ar_reason": "Other",
+          "ar_order": 11,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 40,
+          "appt_days_ahead_min": 0
+        }
+      ]
+    },
+    {
+      "facilityId": "61500023",
+      "legalName": "Dillon Companies, Inc.",
+      "vanityName": "Pratt Dillons",
+      "address": {
+        "address1": "1108 E 1St St",
+        "address2": "",
+        "city": "Pratt",
+        "state": "KS",
+        "zipCode": "67124"
       },
       "phone": {
         "countryCode": "",
         "areaCode": "620",
-        "phoneNumber": "2750194",
+        "phoneNumber": "6725584",
         "extension": ""
       },
       "onlinePaymentsEnabled": true,
@@ -466,6 +774,224 @@
       "pharmacyHours": {
         "sundayClose": "15:00",
         "sundayOpen": "11:00",
+        "sundayHours": "",
+        "mondayClose": "19:00",
+        "mondayOpen": "09:00",
+        "mondayHours": "",
+        "tuesdayClose": "19:00",
+        "tuesdayOpen": "09:00",
+        "tuesdayHours": "",
+        "wednesdayClose": "19:00",
+        "wednesdayOpen": "09:00",
+        "wednesdayHours": "",
+        "thursdayClose": "19:00",
+        "thursdayOpen": "09:00",
+        "thursdayHours": "",
+        "fridayClose": "19:00",
+        "fridayOpen": "09:00",
+        "fridayHours": "",
+        "saturdayClose": "18:00",
+        "saturdayOpen": "09:00",
+        "saturdayHours": ""
+      },
+      "brand": "DILLONS",
+      "reasons": [
+        {
+          "ar_id": 94,
+          "ar_reason": "COVID Rapid Antibody Test",
+          "ar_order": 1,
+          "grp_ar_reason": "",
+          "grp_ar_order": 0,
+          "appt_days_ahead_max": 14,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 73,
+          "ar_reason": "Flu (Influenza)",
+          "ar_order": 1,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 74,
+          "ar_reason": "Hepatitis A",
+          "ar_order": 2,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 75,
+          "ar_reason": "Hepatitis B",
+          "ar_order": 3,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 76,
+          "ar_reason": "Tdap (Tetanus, Diphtheria, Pertussis)",
+          "ar_order": 4,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 77,
+          "ar_reason": "Pneumonia",
+          "ar_order": 5,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 78,
+          "ar_reason": "Shingles",
+          "ar_order": 6,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 79,
+          "ar_reason": "Meningitis (Meningococcal)",
+          "ar_order": 7,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 80,
+          "ar_reason": "HPV (Human Papilloma Virus)",
+          "ar_order": 8,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 81,
+          "ar_reason": "Chickenpox (Varicella)",
+          "ar_order": 9,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 82,
+          "ar_reason": "Measles/Mumps/Rubella",
+          "ar_order": 10,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 1,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 83,
+          "ar_reason": "Other",
+          "ar_order": 11,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 40,
+          "appt_days_ahead_min": 0
+        }
+      ]
+    },
+    {
+      "facilityId": "61500025",
+      "legalName": "Dillon Companies, Inc.",
+      "vanityName": "5th Adams Dillons 5th Street Dillons",
+      "address": {
+        "address1": "206 W 5Th Ave",
+        "address2": "",
+        "city": "Hutchinson",
+        "state": "KS",
+        "zipCode": "67501"
+      },
+      "phone": {
+        "countryCode": "",
+        "areaCode": "620",
+        "phoneNumber": "6633375",
+        "extension": ""
+      },
+      "onlinePaymentsEnabled": true,
+      "onlineOrderingEnabled": false,
+      "pharmacyHours": {
+        "sundayClose": "18:00",
+        "sundayOpen": "11:00",
+        "sundayHours": "",
+        "mondayClose": "21:00",
+        "mondayOpen": "09:00",
+        "mondayHours": "",
+        "tuesdayClose": "21:00",
+        "tuesdayOpen": "09:00",
+        "tuesdayHours": "",
+        "wednesdayClose": "21:00",
+        "wednesdayOpen": "09:00",
+        "wednesdayHours": "",
+        "thursdayClose": "21:00",
+        "thursdayOpen": "09:00",
+        "thursdayHours": "",
+        "fridayClose": "21:00",
+        "fridayOpen": "09:00",
+        "fridayHours": "",
+        "saturdayClose": "18:00",
+        "saturdayOpen": "09:00",
+        "saturdayHours": ""
+      },
+      "brand": "DILLONS",
+      "reasons": [
+        {
+          "ar_id": 83,
+          "ar_reason": "Other",
+          "ar_order": 11,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 40,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 107,
+          "ar_reason": "COVID Vaccine",
+          "ar_order": 12,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        }
+      ]
+    },
+    {
+      "facilityId": "61500036",
+      "legalName": "Dillon Companies, Inc.",
+      "vanityName": "McPherson",
+      "address": {
+        "address1": "1320 N Main St",
+        "address2": "",
+        "city": "Mc Pherson",
+        "state": "KS",
+        "zipCode": "67460"
+      },
+      "phone": {
+        "countryCode": "",
+        "areaCode": "620",
+        "phoneNumber": "2416108",
+        "extension": ""
+      },
+      "onlinePaymentsEnabled": true,
+      "onlineOrderingEnabled": false,
+      "pharmacyHours": {
+        "sundayClose": "16:00",
+        "sundayOpen": "12:00",
         "sundayHours": "",
         "mondayClose": "20:00",
         "mondayOpen": "09:00",
@@ -599,41 +1125,41 @@
       ]
     },
     {
-      "facilityId": "61500001",
+      "facilityId": "61500041",
       "legalName": "Dillon Companies, Inc.",
-      "vanityName": "Dodge City Dillons",
+      "vanityName": "Sunset Plaza Dillons Broadway Blvd Crawford Dillons",
       "address": {
-        "address1": "1700 N 14Th Ave",
+        "address1": "1201 W Crawford St",
         "address2": "",
-        "city": "Dodge City",
+        "city": "Salina",
         "state": "KS",
-        "zipCode": "67801"
+        "zipCode": "67401"
       },
       "phone": {
         "countryCode": "",
-        "areaCode": "620",
-        "phoneNumber": "2256140",
+        "areaCode": "785",
+        "phoneNumber": "8270417",
         "extension": ""
       },
       "onlinePaymentsEnabled": true,
       "onlineOrderingEnabled": false,
       "pharmacyHours": {
-        "sundayClose": "15:00",
+        "sundayClose": "18:00",
         "sundayOpen": "11:00",
         "sundayHours": "",
-        "mondayClose": "20:00",
+        "mondayClose": "21:00",
         "mondayOpen": "09:00",
         "mondayHours": "",
-        "tuesdayClose": "20:00",
+        "tuesdayClose": "21:00",
         "tuesdayOpen": "09:00",
         "tuesdayHours": "",
-        "wednesdayClose": "20:00",
+        "wednesdayClose": "21:00",
         "wednesdayOpen": "09:00",
         "wednesdayHours": "",
-        "thursdayClose": "20:00",
+        "thursdayClose": "21:00",
         "thursdayOpen": "09:00",
         "thursdayHours": "",
-        "fridayClose": "20:00",
+        "fridayClose": "21:00",
         "fridayOpen": "09:00",
         "fridayHours": "",
         "saturdayClose": "18:00",
@@ -642,15 +1168,6 @@
       },
       "brand": "DILLONS",
       "reasons": [
-        {
-          "ar_id": 94,
-          "ar_reason": "COVID Rapid Antibody Test",
-          "ar_order": 1,
-          "grp_ar_reason": "",
-          "grp_ar_order": 0,
-          "appt_days_ahead_max": 14,
-          "appt_days_ahead_min": 0
-        },
         {
           "ar_id": 73,
           "ar_reason": "Flu (Influenza)",
@@ -753,174 +1270,20 @@
       ]
     },
     {
-      "facilityId": "61500001",
+      "facilityId": "61500044",
       "legalName": "Dillon Companies, Inc.",
-      "vanityName": "Dodge City Dillons",
+      "vanityName": "JC Dillons Junction City Dillons",
       "address": {
-        "address1": "1700 N 14Th Ave",
+        "address1": "618 W 6Th St",
         "address2": "",
-        "city": "Dodge City",
+        "city": "Junction City",
         "state": "KS",
-        "zipCode": "67801"
+        "zipCode": "66441"
       },
       "phone": {
         "countryCode": "",
-        "areaCode": "620",
-        "phoneNumber": "2256140",
-        "extension": ""
-      },
-      "onlinePaymentsEnabled": true,
-      "onlineOrderingEnabled": false,
-      "pharmacyHours": {
-        "sundayClose": "15:00",
-        "sundayOpen": "11:00",
-        "sundayHours": "",
-        "mondayClose": "20:00",
-        "mondayOpen": "09:00",
-        "mondayHours": "",
-        "tuesdayClose": "20:00",
-        "tuesdayOpen": "09:00",
-        "tuesdayHours": "",
-        "wednesdayClose": "20:00",
-        "wednesdayOpen": "09:00",
-        "wednesdayHours": "",
-        "thursdayClose": "20:00",
-        "thursdayOpen": "09:00",
-        "thursdayHours": "",
-        "fridayClose": "20:00",
-        "fridayOpen": "09:00",
-        "fridayHours": "",
-        "saturdayClose": "18:00",
-        "saturdayOpen": "09:00",
-        "saturdayHours": ""
-      },
-      "brand": "DILLONS",
-      "reasons": [
-        {
-          "ar_id": 94,
-          "ar_reason": "COVID Rapid Antibody Test",
-          "ar_order": 1,
-          "grp_ar_reason": "",
-          "grp_ar_order": 0,
-          "appt_days_ahead_max": 14,
-          "appt_days_ahead_min": 0
-        },
-        {
-          "ar_id": 73,
-          "ar_reason": "Flu (Influenza)",
-          "ar_order": 1,
-          "grp_ar_reason": "Vaccines",
-          "grp_ar_order": 1000,
-          "appt_days_ahead_max": 8,
-          "appt_days_ahead_min": 0
-        },
-        {
-          "ar_id": 74,
-          "ar_reason": "Hepatitis A",
-          "ar_order": 2,
-          "grp_ar_reason": "Vaccines",
-          "grp_ar_order": 1000,
-          "appt_days_ahead_max": 8,
-          "appt_days_ahead_min": 0
-        },
-        {
-          "ar_id": 75,
-          "ar_reason": "Hepatitis B",
-          "ar_order": 3,
-          "grp_ar_reason": "Vaccines",
-          "grp_ar_order": 1000,
-          "appt_days_ahead_max": 8,
-          "appt_days_ahead_min": 0
-        },
-        {
-          "ar_id": 76,
-          "ar_reason": "Tdap (Tetanus, Diphtheria, Pertussis)",
-          "ar_order": 4,
-          "grp_ar_reason": "Vaccines",
-          "grp_ar_order": 1000,
-          "appt_days_ahead_max": 8,
-          "appt_days_ahead_min": 0
-        },
-        {
-          "ar_id": 77,
-          "ar_reason": "Pneumonia",
-          "ar_order": 5,
-          "grp_ar_reason": "Vaccines",
-          "grp_ar_order": 1000,
-          "appt_days_ahead_max": 8,
-          "appt_days_ahead_min": 0
-        },
-        {
-          "ar_id": 78,
-          "ar_reason": "Shingles",
-          "ar_order": 6,
-          "grp_ar_reason": "Vaccines",
-          "grp_ar_order": 1000,
-          "appt_days_ahead_max": 8,
-          "appt_days_ahead_min": 0
-        },
-        {
-          "ar_id": 79,
-          "ar_reason": "Meningitis (Meningococcal)",
-          "ar_order": 7,
-          "grp_ar_reason": "Vaccines",
-          "grp_ar_order": 1000,
-          "appt_days_ahead_max": 8,
-          "appt_days_ahead_min": 0
-        },
-        {
-          "ar_id": 80,
-          "ar_reason": "HPV (Human Papilloma Virus)",
-          "ar_order": 8,
-          "grp_ar_reason": "Vaccines",
-          "grp_ar_order": 1000,
-          "appt_days_ahead_max": 8,
-          "appt_days_ahead_min": 0
-        },
-        {
-          "ar_id": 81,
-          "ar_reason": "Chickenpox (Varicella)",
-          "ar_order": 9,
-          "grp_ar_reason": "Vaccines",
-          "grp_ar_order": 1000,
-          "appt_days_ahead_max": 8,
-          "appt_days_ahead_min": 0
-        },
-        {
-          "ar_id": 82,
-          "ar_reason": "Measles/Mumps/Rubella",
-          "ar_order": 10,
-          "grp_ar_reason": "Vaccines",
-          "grp_ar_order": 1000,
-          "appt_days_ahead_max": 1,
-          "appt_days_ahead_min": 0
-        },
-        {
-          "ar_id": 83,
-          "ar_reason": "Other",
-          "ar_order": 11,
-          "grp_ar_reason": "Vaccines",
-          "grp_ar_order": 1000,
-          "appt_days_ahead_max": 40,
-          "appt_days_ahead_min": 0
-        }
-      ]
-    },
-    {
-      "facilityId": "61500005",
-      "legalName": "Dillon Companies, Inc.",
-      "vanityName": "Dillons East",
-      "address": {
-        "address1": "1305 E Kansas Ave",
-        "address2": "",
-        "city": "Garden City",
-        "state": "KS",
-        "zipCode": "67846"
-      },
-      "phone": {
-        "countryCode": "",
-        "areaCode": "620",
-        "phoneNumber": "2751957",
+        "areaCode": "785",
+        "phoneNumber": "2384141",
         "extension": ""
       },
       "onlinePaymentsEnabled": true,
@@ -930,19 +1293,19 @@
         "sundayOpen": "11:00",
         "sundayHours": "",
         "mondayClose": "20:00",
-        "mondayOpen": "08:00",
+        "mondayOpen": "09:00",
         "mondayHours": "",
         "tuesdayClose": "20:00",
-        "tuesdayOpen": "08:00",
+        "tuesdayOpen": "09:00",
         "tuesdayHours": "",
         "wednesdayClose": "20:00",
-        "wednesdayOpen": "08:00",
+        "wednesdayOpen": "09:00",
         "wednesdayHours": "",
         "thursdayClose": "20:00",
-        "thursdayOpen": "08:00",
+        "thursdayOpen": "09:00",
         "thursdayHours": "",
         "fridayClose": "20:00",
-        "fridayOpen": "08:00",
+        "fridayOpen": "09:00",
         "fridayHours": "",
         "saturdayClose": "18:00",
         "saturdayOpen": "09:00",
@@ -950,6 +1313,15 @@
       },
       "brand": "DILLONS",
       "reasons": [
+        {
+          "ar_id": 94,
+          "ar_reason": "COVID Rapid Antibody Test",
+          "ar_order": 1,
+          "grp_ar_reason": "",
+          "grp_ar_order": 0,
+          "appt_days_ahead_max": 14,
+          "appt_days_ahead_min": 0
+        },
         {
           "ar_id": 73,
           "ar_reason": "Flu (Influenza)",
@@ -1197,6 +1569,160 @@
       ]
     },
     {
+      "facilityId": "61500051",
+      "legalName": "Dillon Companies, Inc.",
+      "vanityName": "Big Dillons 10th Street Dillons",
+      "address": {
+        "address1": "4107 10Th St",
+        "address2": "",
+        "city": "Great Bend",
+        "state": "KS",
+        "zipCode": "67530"
+      },
+      "phone": {
+        "countryCode": "",
+        "areaCode": "620",
+        "phoneNumber": "7925944",
+        "extension": ""
+      },
+      "onlinePaymentsEnabled": true,
+      "onlineOrderingEnabled": false,
+      "pharmacyHours": {
+        "sundayClose": "16:00",
+        "sundayOpen": "12:00",
+        "sundayHours": "",
+        "mondayClose": "20:00",
+        "mondayOpen": "09:00",
+        "mondayHours": "",
+        "tuesdayClose": "20:00",
+        "tuesdayOpen": "09:00",
+        "tuesdayHours": "",
+        "wednesdayClose": "20:00",
+        "wednesdayOpen": "09:00",
+        "wednesdayHours": "",
+        "thursdayClose": "20:00",
+        "thursdayOpen": "09:00",
+        "thursdayHours": "",
+        "fridayClose": "20:00",
+        "fridayOpen": "09:00",
+        "fridayHours": "",
+        "saturdayClose": "18:00",
+        "saturdayOpen": "09:00",
+        "saturdayHours": ""
+      },
+      "brand": "DILLONS",
+      "reasons": [
+        {
+          "ar_id": 94,
+          "ar_reason": "COVID Rapid Antibody Test",
+          "ar_order": 1,
+          "grp_ar_reason": "",
+          "grp_ar_order": 0,
+          "appt_days_ahead_max": 14,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 73,
+          "ar_reason": "Flu (Influenza)",
+          "ar_order": 1,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 74,
+          "ar_reason": "Hepatitis A",
+          "ar_order": 2,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 75,
+          "ar_reason": "Hepatitis B",
+          "ar_order": 3,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 76,
+          "ar_reason": "Tdap (Tetanus, Diphtheria, Pertussis)",
+          "ar_order": 4,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 77,
+          "ar_reason": "Pneumonia",
+          "ar_order": 5,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 78,
+          "ar_reason": "Shingles",
+          "ar_order": 6,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 79,
+          "ar_reason": "Meningitis (Meningococcal)",
+          "ar_order": 7,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 80,
+          "ar_reason": "HPV (Human Papilloma Virus)",
+          "ar_order": 8,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 81,
+          "ar_reason": "Chickenpox (Varicella)",
+          "ar_order": 9,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 82,
+          "ar_reason": "Measles/Mumps/Rubella",
+          "ar_order": 10,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 1,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 83,
+          "ar_reason": "Other",
+          "ar_order": 11,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 40,
+          "appt_days_ahead_min": 0
+        }
+      ]
+    },
+    {
       "facilityId": "61500060",
       "legalName": "Dillon Companies, Inc.",
       "vanityName": "Jones Ave Dillons West Dillons",
@@ -1249,6 +1775,151 @@
           "appt_days_ahead_max": 14,
           "appt_days_ahead_min": 0
         },
+        {
+          "ar_id": 73,
+          "ar_reason": "Flu (Influenza)",
+          "ar_order": 1,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 74,
+          "ar_reason": "Hepatitis A",
+          "ar_order": 2,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 75,
+          "ar_reason": "Hepatitis B",
+          "ar_order": 3,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 76,
+          "ar_reason": "Tdap (Tetanus, Diphtheria, Pertussis)",
+          "ar_order": 4,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 77,
+          "ar_reason": "Pneumonia",
+          "ar_order": 5,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 78,
+          "ar_reason": "Shingles",
+          "ar_order": 6,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 79,
+          "ar_reason": "Meningitis (Meningococcal)",
+          "ar_order": 7,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 80,
+          "ar_reason": "HPV (Human Papilloma Virus)",
+          "ar_order": 8,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 81,
+          "ar_reason": "Chickenpox (Varicella)",
+          "ar_order": 9,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 82,
+          "ar_reason": "Measles/Mumps/Rubella",
+          "ar_order": 10,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 1,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 83,
+          "ar_reason": "Other",
+          "ar_order": 11,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 40,
+          "appt_days_ahead_min": 0
+        }
+      ]
+    },
+    {
+      "facilityId": "61500061",
+      "legalName": "Dillon Companies, Inc.",
+      "vanityName": "Big Dillons Vine Street Dillons",
+      "address": {
+        "address1": "1902 Vine St",
+        "address2": "",
+        "city": "Hays",
+        "state": "KS",
+        "zipCode": "67601"
+      },
+      "phone": {
+        "countryCode": "",
+        "areaCode": "785",
+        "phoneNumber": "6286148",
+        "extension": ""
+      },
+      "onlinePaymentsEnabled": true,
+      "onlineOrderingEnabled": false,
+      "pharmacyHours": {
+        "sundayClose": "16:00",
+        "sundayOpen": "12:00",
+        "sundayHours": "",
+        "mondayClose": "20:00",
+        "mondayOpen": "09:00",
+        "mondayHours": "",
+        "tuesdayClose": "20:00",
+        "tuesdayOpen": "09:00",
+        "tuesdayHours": "",
+        "wednesdayClose": "20:00",
+        "wednesdayOpen": "09:00",
+        "wednesdayHours": "",
+        "thursdayClose": "20:00",
+        "thursdayOpen": "09:00",
+        "thursdayHours": "",
+        "fridayClose": "20:00",
+        "fridayOpen": "09:00",
+        "fridayHours": "",
+        "saturdayClose": "18:00",
+        "saturdayOpen": "09:00",
+        "saturdayHours": ""
+      },
+      "brand": "DILLONS",
+      "reasons": [
         {
           "ar_id": 73,
           "ar_reason": "Flu (Influenza)",
@@ -1500,6 +2171,651 @@
           "grp_ar_reason": "Vaccines",
           "grp_ar_order": 1000,
           "appt_days_ahead_max": 40,
+          "appt_days_ahead_min": 0
+        }
+      ]
+    },
+    {
+      "facilityId": "61500074",
+      "legalName": "Dillon Companies, Inc.",
+      "vanityName": "Planet Avenue Dillons",
+      "address": {
+        "address1": "2350 Planet Ave",
+        "address2": "",
+        "city": "Salina",
+        "state": "KS",
+        "zipCode": "67401"
+      },
+      "phone": {
+        "countryCode": "",
+        "areaCode": "785",
+        "phoneNumber": "8239515",
+        "extension": ""
+      },
+      "onlinePaymentsEnabled": true,
+      "onlineOrderingEnabled": false,
+      "pharmacyHours": {
+        "sundayClose": "18:00",
+        "sundayOpen": "11:00",
+        "sundayHours": "",
+        "mondayClose": "21:00",
+        "mondayOpen": "08:00",
+        "mondayHours": "",
+        "tuesdayClose": "21:00",
+        "tuesdayOpen": "08:00",
+        "tuesdayHours": "",
+        "wednesdayClose": "21:00",
+        "wednesdayOpen": "08:00",
+        "wednesdayHours": "",
+        "thursdayClose": "21:00",
+        "thursdayOpen": "08:00",
+        "thursdayHours": "",
+        "fridayClose": "21:00",
+        "fridayOpen": "08:00",
+        "fridayHours": "",
+        "saturdayClose": "18:00",
+        "saturdayOpen": "09:00",
+        "saturdayHours": ""
+      },
+      "brand": "DILLONS",
+      "reasons": [
+        {
+          "ar_id": 83,
+          "ar_reason": "Other",
+          "ar_order": 11,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 40,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 107,
+          "ar_reason": "COVID Vaccine",
+          "ar_order": 12,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        }
+      ]
+    },
+    {
+      "facilityId": "61500077",
+      "legalName": "Dillon Companies, Inc.",
+      "vanityName": "South Dillons Small Dillons",
+      "address": {
+        "address1": "1410 S Kansas Ave",
+        "address2": "",
+        "city": "Newton",
+        "state": "KS",
+        "zipCode": "67114"
+      },
+      "phone": {
+        "countryCode": "",
+        "areaCode": "316",
+        "phoneNumber": "2843725",
+        "extension": ""
+      },
+      "onlinePaymentsEnabled": true,
+      "onlineOrderingEnabled": false,
+      "pharmacyHours": {
+        "sundayClose": "18:00",
+        "sundayOpen": "11:00",
+        "sundayHours": "",
+        "mondayClose": "20:00",
+        "mondayOpen": "08:00",
+        "mondayHours": "",
+        "tuesdayClose": "20:00",
+        "tuesdayOpen": "08:00",
+        "tuesdayHours": "",
+        "wednesdayClose": "20:00",
+        "wednesdayOpen": "08:00",
+        "wednesdayHours": "",
+        "thursdayClose": "20:00",
+        "thursdayOpen": "08:00",
+        "thursdayHours": "",
+        "fridayClose": "20:00",
+        "fridayOpen": "08:00",
+        "fridayHours": "",
+        "saturdayClose": "18:00",
+        "saturdayOpen": "09:00",
+        "saturdayHours": ""
+      },
+      "brand": "DILLONS",
+      "reasons": [
+        {
+          "ar_id": 94,
+          "ar_reason": "COVID Rapid Antibody Test",
+          "ar_order": 1,
+          "grp_ar_reason": "",
+          "grp_ar_order": 0,
+          "appt_days_ahead_max": 14,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 73,
+          "ar_reason": "Flu (Influenza)",
+          "ar_order": 1,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 74,
+          "ar_reason": "Hepatitis A",
+          "ar_order": 2,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 75,
+          "ar_reason": "Hepatitis B",
+          "ar_order": 3,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 76,
+          "ar_reason": "Tdap (Tetanus, Diphtheria, Pertussis)",
+          "ar_order": 4,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 77,
+          "ar_reason": "Pneumonia",
+          "ar_order": 5,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 78,
+          "ar_reason": "Shingles",
+          "ar_order": 6,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 79,
+          "ar_reason": "Meningitis (Meningococcal)",
+          "ar_order": 7,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 80,
+          "ar_reason": "HPV (Human Papilloma Virus)",
+          "ar_order": 8,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 81,
+          "ar_reason": "Chickenpox (Varicella)",
+          "ar_order": 9,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 82,
+          "ar_reason": "Measles/Mumps/Rubella",
+          "ar_order": 10,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 1,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 83,
+          "ar_reason": "Other",
+          "ar_order": 11,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 40,
+          "appt_days_ahead_min": 0
+        }
+      ]
+    },
+    {
+      "facilityId": "61500084",
+      "legalName": "Dillon Real Estate Co., Inc.",
+      "vanityName": "North Dillons",
+      "address": {
+        "address1": "1216 N Main St",
+        "address2": "",
+        "city": "Newton",
+        "state": "KS",
+        "zipCode": "67114"
+      },
+      "phone": {
+        "countryCode": "",
+        "areaCode": "316",
+        "phoneNumber": "2836770",
+        "extension": ""
+      },
+      "onlinePaymentsEnabled": true,
+      "onlineOrderingEnabled": false,
+      "pharmacyHours": {
+        "sundayClose": "18:00",
+        "sundayOpen": "11:00",
+        "sundayHours": "",
+        "mondayClose": "21:00",
+        "mondayOpen": "08:00",
+        "mondayHours": "",
+        "tuesdayClose": "21:00",
+        "tuesdayOpen": "08:00",
+        "tuesdayHours": "",
+        "wednesdayClose": "21:00",
+        "wednesdayOpen": "08:00",
+        "wednesdayHours": "",
+        "thursdayClose": "21:00",
+        "thursdayOpen": "08:00",
+        "thursdayHours": "",
+        "fridayClose": "21:00",
+        "fridayOpen": "08:00",
+        "fridayHours": "",
+        "saturdayClose": "18:00",
+        "saturdayOpen": "09:00",
+        "saturdayHours": ""
+      },
+      "brand": "DILLONS",
+      "reasons": [
+        {
+          "ar_id": 94,
+          "ar_reason": "COVID Rapid Antibody Test",
+          "ar_order": 1,
+          "grp_ar_reason": "",
+          "grp_ar_order": 0,
+          "appt_days_ahead_max": 14,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 73,
+          "ar_reason": "Flu (Influenza)",
+          "ar_order": 1,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 74,
+          "ar_reason": "Hepatitis A",
+          "ar_order": 2,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 75,
+          "ar_reason": "Hepatitis B",
+          "ar_order": 3,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 76,
+          "ar_reason": "Tdap (Tetanus, Diphtheria, Pertussis)",
+          "ar_order": 4,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 77,
+          "ar_reason": "Pneumonia",
+          "ar_order": 5,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 78,
+          "ar_reason": "Shingles",
+          "ar_order": 6,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 79,
+          "ar_reason": "Meningitis (Meningococcal)",
+          "ar_order": 7,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 80,
+          "ar_reason": "HPV (Human Papilloma Virus)",
+          "ar_order": 8,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 81,
+          "ar_reason": "Chickenpox (Varicella)",
+          "ar_order": 9,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 82,
+          "ar_reason": "Measles/Mumps/Rubella",
+          "ar_order": 10,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 1,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 83,
+          "ar_reason": "Other",
+          "ar_order": 11,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 40,
+          "appt_days_ahead_min": 0
+        }
+      ]
+    },
+    {
+      "facilityId": "61500094",
+      "legalName": "Dillon Companies, Inc.",
+      "vanityName": "Westloop Store",
+      "address": {
+        "address1": "1101 Westloop Pl",
+        "address2": "",
+        "city": "Manhattan",
+        "state": "KS",
+        "zipCode": "66502"
+      },
+      "phone": {
+        "countryCode": "",
+        "areaCode": "785",
+        "phoneNumber": "5399454",
+        "extension": ""
+      },
+      "onlinePaymentsEnabled": true,
+      "onlineOrderingEnabled": false,
+      "pharmacyHours": {
+        "sundayClose": "18:00",
+        "sundayOpen": "11:00",
+        "sundayHours": "",
+        "mondayClose": "21:00",
+        "mondayOpen": "08:00",
+        "mondayHours": "",
+        "tuesdayClose": "21:00",
+        "tuesdayOpen": "08:00",
+        "tuesdayHours": "",
+        "wednesdayClose": "21:00",
+        "wednesdayOpen": "08:00",
+        "wednesdayHours": "",
+        "thursdayClose": "21:00",
+        "thursdayOpen": "08:00",
+        "thursdayHours": "",
+        "fridayClose": "21:00",
+        "fridayOpen": "08:00",
+        "fridayHours": "",
+        "saturdayClose": "18:00",
+        "saturdayOpen": "09:00",
+        "saturdayHours": ""
+      },
+      "brand": "DILLONS",
+      "reasons": [
+        {
+          "ar_id": 83,
+          "ar_reason": "Other",
+          "ar_order": 11,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 40,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 107,
+          "ar_reason": "COVID Vaccine",
+          "ar_order": 12,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        }
+      ]
+    },
+    {
+      "facilityId": "61500095",
+      "legalName": "Dillon Companies, Inc.",
+      "vanityName": "Ohio Cloud Dillons New Dillons",
+      "address": {
+        "address1": "1235 E Cloud St",
+        "address2": "",
+        "city": "Salina",
+        "state": "KS",
+        "zipCode": "67401"
+      },
+      "phone": {
+        "countryCode": "",
+        "areaCode": "785",
+        "phoneNumber": "4523951",
+        "extension": ""
+      },
+      "onlinePaymentsEnabled": true,
+      "onlineOrderingEnabled": false,
+      "pharmacyHours": {
+        "sundayClose": "18:00",
+        "sundayOpen": "11:00",
+        "sundayHours": "",
+        "mondayClose": "21:00",
+        "mondayOpen": "09:00",
+        "mondayHours": "",
+        "tuesdayClose": "21:00",
+        "tuesdayOpen": "09:00",
+        "tuesdayHours": "",
+        "wednesdayClose": "21:00",
+        "wednesdayOpen": "09:00",
+        "wednesdayHours": "",
+        "thursdayClose": "21:00",
+        "thursdayOpen": "09:00",
+        "thursdayHours": "",
+        "fridayClose": "21:00",
+        "fridayOpen": "09:00",
+        "fridayHours": "",
+        "saturdayClose": "18:00",
+        "saturdayOpen": "09:00",
+        "saturdayHours": ""
+      },
+      "brand": "DILLONS",
+      "reasons": [
+        {
+          "ar_id": 73,
+          "ar_reason": "Flu (Influenza)",
+          "ar_order": 1,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 74,
+          "ar_reason": "Hepatitis A",
+          "ar_order": 2,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 75,
+          "ar_reason": "Hepatitis B",
+          "ar_order": 3,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 76,
+          "ar_reason": "Tdap (Tetanus, Diphtheria, Pertussis)",
+          "ar_order": 4,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 77,
+          "ar_reason": "Pneumonia",
+          "ar_order": 5,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 78,
+          "ar_reason": "Shingles",
+          "ar_order": 6,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 79,
+          "ar_reason": "Meningitis (Meningococcal)",
+          "ar_order": 7,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 80,
+          "ar_reason": "HPV (Human Papilloma Virus)",
+          "ar_order": 8,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 81,
+          "ar_reason": "Chickenpox (Varicella)",
+          "ar_order": 9,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 82,
+          "ar_reason": "Measles/Mumps/Rubella",
+          "ar_order": 10,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 1,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 83,
+          "ar_reason": "Other",
+          "ar_order": 11,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 40,
+          "appt_days_ahead_min": 0
+        }
+      ]
+    },
+    {
+      "facilityId": "61500097",
+      "legalName": "Dillon Companies, Inc.",
+      "vanityName": "Hutch Marketplace",
+      "address": {
+        "address1": "3200 Plaza East Dr.",
+        "address2": "",
+        "city": "Hutchinson",
+        "state": "KS",
+        "zipCode": "67502"
+      },
+      "phone": {
+        "countryCode": "",
+        "areaCode": "620",
+        "phoneNumber": "6637628",
+        "extension": ""
+      },
+      "onlinePaymentsEnabled": true,
+      "onlineOrderingEnabled": false,
+      "pharmacyHours": {
+        "sundayClose": "18:00",
+        "sundayOpen": "10:00",
+        "sundayHours": "",
+        "mondayClose": "21:00",
+        "mondayOpen": "08:00",
+        "mondayHours": "",
+        "tuesdayClose": "21:00",
+        "tuesdayOpen": "08:00",
+        "tuesdayHours": "",
+        "wednesdayClose": "21:00",
+        "wednesdayOpen": "08:00",
+        "wednesdayHours": "",
+        "thursdayClose": "21:00",
+        "thursdayOpen": "08:00",
+        "thursdayHours": "",
+        "fridayClose": "21:00",
+        "fridayOpen": "08:00",
+        "fridayHours": "",
+        "saturdayClose": "18:00",
+        "saturdayOpen": "09:00",
+        "saturdayHours": ""
+      },
+      "brand": "DILLONS",
+      "reasons": [
+        {
+          "ar_id": 83,
+          "ar_reason": "Other",
+          "ar_order": 11,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 40,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 107,
+          "ar_reason": "COVID Vaccine",
+          "ar_order": 12,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
           "appt_days_ahead_min": 0
         }
       ]
@@ -8262,6 +9578,160 @@
       ]
     },
     {
+      "facilityId": "62000079",
+      "legalName": "Dillon Companies, Inc.",
+      "vanityName": "Cheyenne",
+      "address": {
+        "address1": "3702 Dell Range Blvd",
+        "address2": "",
+        "city": "Cheyenne",
+        "state": "WY",
+        "zipCode": "82009"
+      },
+      "phone": {
+        "countryCode": "",
+        "areaCode": "307",
+        "phoneNumber": "6380192",
+        "extension": ""
+      },
+      "onlinePaymentsEnabled": true,
+      "onlineOrderingEnabled": false,
+      "pharmacyHours": {
+        "sundayClose": "17:00",
+        "sundayOpen": "10:00",
+        "sundayHours": "",
+        "mondayClose": "21:00",
+        "mondayOpen": "09:00",
+        "mondayHours": "",
+        "tuesdayClose": "21:00",
+        "tuesdayOpen": "09:00",
+        "tuesdayHours": "",
+        "wednesdayClose": "21:00",
+        "wednesdayOpen": "09:00",
+        "wednesdayHours": "",
+        "thursdayClose": "21:00",
+        "thursdayOpen": "09:00",
+        "thursdayHours": "",
+        "fridayClose": "21:00",
+        "fridayOpen": "09:00",
+        "fridayHours": "",
+        "saturdayClose": "18:00",
+        "saturdayOpen": "09:00",
+        "saturdayHours": ""
+      },
+      "brand": "KINGSOOPERS",
+      "reasons": [
+        {
+          "ar_id": 94,
+          "ar_reason": "COVID Rapid Antibody Test",
+          "ar_order": 1,
+          "grp_ar_reason": "",
+          "grp_ar_order": 0,
+          "appt_days_ahead_max": 14,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 73,
+          "ar_reason": "Flu (Influenza)",
+          "ar_order": 1,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 74,
+          "ar_reason": "Hepatitis A",
+          "ar_order": 2,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 75,
+          "ar_reason": "Hepatitis B",
+          "ar_order": 3,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 76,
+          "ar_reason": "Tdap (Tetanus, Diphtheria, Pertussis)",
+          "ar_order": 4,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 77,
+          "ar_reason": "Pneumonia",
+          "ar_order": 5,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 78,
+          "ar_reason": "Shingles",
+          "ar_order": 6,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 79,
+          "ar_reason": "Meningitis (Meningococcal)",
+          "ar_order": 7,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 80,
+          "ar_reason": "HPV (Human Papilloma Virus)",
+          "ar_order": 8,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 81,
+          "ar_reason": "Chickenpox (Varicella)",
+          "ar_order": 9,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 82,
+          "ar_reason": "Measles/Mumps/Rubella",
+          "ar_order": 10,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 1,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 83,
+          "ar_reason": "Other",
+          "ar_order": 11,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 40,
+          "appt_days_ahead_min": 0
+        }
+      ]
+    },
+    {
       "facilityId": "62000080",
       "legalName": "Dillon Companies, Inc.",
       "vanityName": "Longmont",
@@ -10053,6 +11523,160 @@
       "onlineOrderingEnabled": false,
       "pharmacyHours": {
         "sundayClose": "17:00",
+        "sundayOpen": "10:00",
+        "sundayHours": "",
+        "mondayClose": "21:00",
+        "mondayOpen": "09:00",
+        "mondayHours": "",
+        "tuesdayClose": "21:00",
+        "tuesdayOpen": "09:00",
+        "tuesdayHours": "",
+        "wednesdayClose": "21:00",
+        "wednesdayOpen": "09:00",
+        "wednesdayHours": "",
+        "thursdayClose": "21:00",
+        "thursdayOpen": "09:00",
+        "thursdayHours": "",
+        "fridayClose": "21:00",
+        "fridayOpen": "09:00",
+        "fridayHours": "",
+        "saturdayClose": "18:00",
+        "saturdayOpen": "09:00",
+        "saturdayHours": ""
+      },
+      "brand": "KINGSOOPERS",
+      "reasons": [
+        {
+          "ar_id": 94,
+          "ar_reason": "COVID Rapid Antibody Test",
+          "ar_order": 1,
+          "grp_ar_reason": "",
+          "grp_ar_order": 0,
+          "appt_days_ahead_max": 14,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 73,
+          "ar_reason": "Flu (Influenza)",
+          "ar_order": 1,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 74,
+          "ar_reason": "Hepatitis A",
+          "ar_order": 2,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 75,
+          "ar_reason": "Hepatitis B",
+          "ar_order": 3,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 76,
+          "ar_reason": "Tdap (Tetanus, Diphtheria, Pertussis)",
+          "ar_order": 4,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 77,
+          "ar_reason": "Pneumonia",
+          "ar_order": 5,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 78,
+          "ar_reason": "Shingles",
+          "ar_order": 6,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 79,
+          "ar_reason": "Meningitis (Meningococcal)",
+          "ar_order": 7,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 80,
+          "ar_reason": "HPV (Human Papilloma Virus)",
+          "ar_order": 8,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 81,
+          "ar_reason": "Chickenpox (Varicella)",
+          "ar_order": 9,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 82,
+          "ar_reason": "Measles/Mumps/Rubella",
+          "ar_order": 10,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 1,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 83,
+          "ar_reason": "Other",
+          "ar_order": 11,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 40,
+          "appt_days_ahead_min": 0
+        }
+      ]
+    },
+    {
+      "facilityId": "62000099",
+      "legalName": "Dillon Companies, Inc.",
+      "vanityName": "Ft. Collins",
+      "address": {
+        "address1": "1842 N College Ave",
+        "address2": "",
+        "city": "Fort Collins",
+        "state": "CO",
+        "zipCode": "80524"
+      },
+      "phone": {
+        "countryCode": "",
+        "areaCode": "970",
+        "phoneNumber": "4946950",
+        "extension": ""
+      },
+      "onlinePaymentsEnabled": true,
+      "onlineOrderingEnabled": false,
+      "pharmacyHours": {
+        "sundayClose": "18:00",
         "sundayOpen": "10:00",
         "sundayHours": "",
         "mondayClose": "21:00",
@@ -14763,6 +16387,160 @@
       ]
     },
     {
+      "facilityId": "62500412",
+      "legalName": "Dillon Companies, Inc.",
+      "vanityName": "Rawlins",
+      "address": {
+        "address1": "602 N Higley Blvd",
+        "address2": "",
+        "city": "Rawlins",
+        "state": "WY",
+        "zipCode": "82301"
+      },
+      "phone": {
+        "countryCode": "",
+        "areaCode": "307",
+        "phoneNumber": "3243084",
+        "extension": ""
+      },
+      "onlinePaymentsEnabled": false,
+      "onlineOrderingEnabled": false,
+      "pharmacyHours": {
+        "sundayClose": "17:00",
+        "sundayOpen": "10:00",
+        "sundayHours": "",
+        "mondayClose": "20:00",
+        "mondayOpen": "09:00",
+        "mondayHours": "",
+        "tuesdayClose": "20:00",
+        "tuesdayOpen": "09:00",
+        "tuesdayHours": "",
+        "wednesdayClose": "20:00",
+        "wednesdayOpen": "09:00",
+        "wednesdayHours": "",
+        "thursdayClose": "20:00",
+        "thursdayOpen": "09:00",
+        "thursdayHours": "",
+        "fridayClose": "20:00",
+        "fridayOpen": "09:00",
+        "fridayHours": "",
+        "saturdayClose": "18:00",
+        "saturdayOpen": "09:00",
+        "saturdayHours": ""
+      },
+      "brand": "CITYMARKET",
+      "reasons": [
+        {
+          "ar_id": 94,
+          "ar_reason": "COVID Rapid Antibody Test",
+          "ar_order": 1,
+          "grp_ar_reason": "",
+          "grp_ar_order": 0,
+          "appt_days_ahead_max": 14,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 73,
+          "ar_reason": "Flu (Influenza)",
+          "ar_order": 1,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 74,
+          "ar_reason": "Hepatitis A",
+          "ar_order": 2,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 75,
+          "ar_reason": "Hepatitis B",
+          "ar_order": 3,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 76,
+          "ar_reason": "Tdap (Tetanus, Diphtheria, Pertussis)",
+          "ar_order": 4,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 77,
+          "ar_reason": "Pneumonia",
+          "ar_order": 5,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 78,
+          "ar_reason": "Shingles",
+          "ar_order": 6,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 79,
+          "ar_reason": "Meningitis (Meningococcal)",
+          "ar_order": 7,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 80,
+          "ar_reason": "HPV (Human Papilloma Virus)",
+          "ar_order": 8,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 81,
+          "ar_reason": "Chickenpox (Varicella)",
+          "ar_order": 9,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 82,
+          "ar_reason": "Measles/Mumps/Rubella",
+          "ar_order": 10,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 1,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 83,
+          "ar_reason": "Other",
+          "ar_order": 11,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 40,
+          "appt_days_ahead_min": 0
+        }
+      ]
+    },
+    {
       "facilityId": "62500413",
       "legalName": "Dillon Companies, Inc.",
       "vanityName": "Fruita",
@@ -14798,6 +16576,134 @@
         "thursdayOpen": "09:00",
         "thursdayHours": "",
         "fridayClose": "21:00",
+        "fridayOpen": "09:00",
+        "fridayHours": "",
+        "saturdayClose": "18:00",
+        "saturdayOpen": "09:00",
+        "saturdayHours": ""
+      },
+      "brand": "CITYMARKET",
+      "reasons": [
+        {
+          "ar_id": 83,
+          "ar_reason": "Other",
+          "ar_order": 11,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 40,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 107,
+          "ar_reason": "COVID Vaccine",
+          "ar_order": 12,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        }
+      ]
+    },
+    {
+      "facilityId": "62500414",
+      "legalName": "Dillon Companies, Inc.",
+      "vanityName": "Steamboat Springs",
+      "address": {
+        "address1": "1825 Central Park Plaza",
+        "address2": "",
+        "city": "Steamboat Springs",
+        "state": "CO",
+        "zipCode": "80477"
+      },
+      "phone": {
+        "countryCode": "",
+        "areaCode": "970",
+        "phoneNumber": "8797317",
+        "extension": ""
+      },
+      "onlinePaymentsEnabled": false,
+      "onlineOrderingEnabled": false,
+      "pharmacyHours": {
+        "sundayClose": "17:00",
+        "sundayOpen": "10:00",
+        "sundayHours": "",
+        "mondayClose": "20:00",
+        "mondayOpen": "09:00",
+        "mondayHours": "",
+        "tuesdayClose": "20:00",
+        "tuesdayOpen": "09:00",
+        "tuesdayHours": "",
+        "wednesdayClose": "20:00",
+        "wednesdayOpen": "09:00",
+        "wednesdayHours": "",
+        "thursdayClose": "20:00",
+        "thursdayOpen": "09:00",
+        "thursdayHours": "",
+        "fridayClose": "20:00",
+        "fridayOpen": "09:00",
+        "fridayHours": "",
+        "saturdayClose": "18:00",
+        "saturdayOpen": "09:00",
+        "saturdayHours": ""
+      },
+      "brand": "CITYMARKET",
+      "reasons": [
+        {
+          "ar_id": 83,
+          "ar_reason": "Other",
+          "ar_order": 11,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 40,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 107,
+          "ar_reason": "COVID Vaccine",
+          "ar_order": 12,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        }
+      ]
+    },
+    {
+      "facilityId": "62500415",
+      "legalName": "Dillon Companies, Inc.",
+      "vanityName": "Craig",
+      "address": {
+        "address1": "505 W Victory Way",
+        "address2": "",
+        "city": "Craig",
+        "state": "CO",
+        "zipCode": "81625"
+      },
+      "phone": {
+        "countryCode": "",
+        "areaCode": "970",
+        "phoneNumber": "8244449",
+        "extension": ""
+      },
+      "onlinePaymentsEnabled": false,
+      "onlineOrderingEnabled": false,
+      "pharmacyHours": {
+        "sundayClose": "17:00",
+        "sundayOpen": "10:00",
+        "sundayHours": "",
+        "mondayClose": "20:00",
+        "mondayOpen": "09:00",
+        "mondayHours": "",
+        "tuesdayClose": "20:00",
+        "tuesdayOpen": "09:00",
+        "tuesdayHours": "",
+        "wednesdayClose": "20:00",
+        "wednesdayOpen": "09:00",
+        "wednesdayHours": "",
+        "thursdayClose": "20:00",
+        "thursdayOpen": "09:00",
+        "thursdayHours": "",
+        "fridayClose": "20:00",
         "fridayOpen": "09:00",
         "fridayHours": "",
         "saturdayClose": "18:00",
@@ -16235,14 +18141,2216 @@
           "appt_days_ahead_min": 0
         }
       ]
+    },
+    {
+      "facilityId": "62500442",
+      "legalName": "Dillon Companies, Inc.",
+      "vanityName": "Vail",
+      "address": {
+        "address1": "2109 N Frontage Rd W",
+        "address2": "",
+        "city": "Vail",
+        "state": "CO",
+        "zipCode": "81657"
+      },
+      "phone": {
+        "countryCode": "",
+        "areaCode": "970",
+        "phoneNumber": "4761621",
+        "extension": ""
+      },
+      "onlinePaymentsEnabled": false,
+      "onlineOrderingEnabled": false,
+      "pharmacyHours": {
+        "sundayClose": "17:00",
+        "sundayOpen": "10:00",
+        "sundayHours": "",
+        "mondayClose": "20:00",
+        "mondayOpen": "09:00",
+        "mondayHours": "",
+        "tuesdayClose": "20:00",
+        "tuesdayOpen": "09:00",
+        "tuesdayHours": "",
+        "wednesdayClose": "20:00",
+        "wednesdayOpen": "09:00",
+        "wednesdayHours": "",
+        "thursdayClose": "20:00",
+        "thursdayOpen": "09:00",
+        "thursdayHours": "",
+        "fridayClose": "20:00",
+        "fridayOpen": "09:00",
+        "fridayHours": "",
+        "saturdayClose": "18:00",
+        "saturdayOpen": "09:00",
+        "saturdayHours": ""
+      },
+      "brand": "CITYMARKET",
+      "reasons": [
+        {
+          "ar_id": 94,
+          "ar_reason": "COVID Rapid Antibody Test",
+          "ar_order": 1,
+          "grp_ar_reason": "",
+          "grp_ar_order": 0,
+          "appt_days_ahead_max": 14,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 73,
+          "ar_reason": "Flu (Influenza)",
+          "ar_order": 1,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 74,
+          "ar_reason": "Hepatitis A",
+          "ar_order": 2,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 75,
+          "ar_reason": "Hepatitis B",
+          "ar_order": 3,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 76,
+          "ar_reason": "Tdap (Tetanus, Diphtheria, Pertussis)",
+          "ar_order": 4,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 77,
+          "ar_reason": "Pneumonia",
+          "ar_order": 5,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 78,
+          "ar_reason": "Shingles",
+          "ar_order": 6,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 79,
+          "ar_reason": "Meningitis (Meningococcal)",
+          "ar_order": 7,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 80,
+          "ar_reason": "HPV (Human Papilloma Virus)",
+          "ar_order": 8,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 81,
+          "ar_reason": "Chickenpox (Varicella)",
+          "ar_order": 9,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 82,
+          "ar_reason": "Measles/Mumps/Rubella",
+          "ar_order": 10,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 1,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 83,
+          "ar_reason": "Other",
+          "ar_order": 11,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 40,
+          "appt_days_ahead_min": 0
+        }
+      ]
+    },
+    {
+      "facilityId": "62500443",
+      "legalName": "Dillon Companies, Inc.",
+      "vanityName": "Rifle",
+      "address": {
+        "address1": "1320 Railroad Ave",
+        "address2": "",
+        "city": "Rifle",
+        "state": "CO",
+        "zipCode": "81650"
+      },
+      "phone": {
+        "countryCode": "",
+        "areaCode": "970",
+        "phoneNumber": "6259420",
+        "extension": ""
+      },
+      "onlinePaymentsEnabled": false,
+      "onlineOrderingEnabled": false,
+      "pharmacyHours": {
+        "sundayClose": "17:00",
+        "sundayOpen": "10:00",
+        "sundayHours": "",
+        "mondayClose": "20:00",
+        "mondayOpen": "09:00",
+        "mondayHours": "",
+        "tuesdayClose": "20:00",
+        "tuesdayOpen": "09:00",
+        "tuesdayHours": "",
+        "wednesdayClose": "20:00",
+        "wednesdayOpen": "09:00",
+        "wednesdayHours": "",
+        "thursdayClose": "20:00",
+        "thursdayOpen": "09:00",
+        "thursdayHours": "",
+        "fridayClose": "20:00",
+        "fridayOpen": "09:00",
+        "fridayHours": "",
+        "saturdayClose": "18:00",
+        "saturdayOpen": "09:00",
+        "saturdayHours": ""
+      },
+      "brand": "CITYMARKET",
+      "reasons": [
+        {
+          "ar_id": 83,
+          "ar_reason": "Other",
+          "ar_order": 11,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 40,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 107,
+          "ar_reason": "COVID Vaccine",
+          "ar_order": 12,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        }
+      ]
+    },
+    {
+      "facilityId": "62500444",
+      "legalName": "Dillon Companies, Inc.",
+      "vanityName": "Grand Junction",
+      "address": {
+        "address1": "2600 NORTH 12TH STREET",
+        "address2": "",
+        "city": "Grand Junction",
+        "state": "CO",
+        "zipCode": "81501"
+      },
+      "phone": {
+        "countryCode": "",
+        "areaCode": "970",
+        "phoneNumber": "6287563",
+        "extension": ""
+      },
+      "onlinePaymentsEnabled": false,
+      "onlineOrderingEnabled": false,
+      "pharmacyHours": {
+        "sundayClose": "17:00",
+        "sundayOpen": "10:00",
+        "sundayHours": "",
+        "mondayClose": "21:00",
+        "mondayOpen": "08:00",
+        "mondayHours": "",
+        "tuesdayClose": "21:00",
+        "tuesdayOpen": "08:00",
+        "tuesdayHours": "",
+        "wednesdayClose": "21:00",
+        "wednesdayOpen": "08:00",
+        "wednesdayHours": "",
+        "thursdayClose": "21:00",
+        "thursdayOpen": "08:00",
+        "thursdayHours": "",
+        "fridayClose": "21:00",
+        "fridayOpen": "08:00",
+        "fridayHours": "",
+        "saturdayClose": "18:00",
+        "saturdayOpen": "09:00",
+        "saturdayHours": ""
+      },
+      "brand": "CITYMARKET",
+      "reasons": [
+        {
+          "ar_id": 83,
+          "ar_reason": "Other",
+          "ar_order": 11,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 40,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 107,
+          "ar_reason": "COVID Vaccine",
+          "ar_order": 12,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        }
+      ]
+    },
+    {
+      "facilityId": "62500445",
+      "legalName": "Dillon Companies, Inc.",
+      "vanityName": "Pagosa",
+      "address": {
+        "address1": "165 Country Center Dr",
+        "address2": "",
+        "city": "Pagosa Springs",
+        "state": "CO",
+        "zipCode": "81147"
+      },
+      "phone": {
+        "countryCode": "",
+        "areaCode": "970",
+        "phoneNumber": "7316006",
+        "extension": ""
+      },
+      "onlinePaymentsEnabled": false,
+      "onlineOrderingEnabled": false,
+      "pharmacyHours": {
+        "sundayClose": "17:00",
+        "sundayOpen": "10:00",
+        "sundayHours": "",
+        "mondayClose": "20:00",
+        "mondayOpen": "09:00",
+        "mondayHours": "",
+        "tuesdayClose": "20:00",
+        "tuesdayOpen": "09:00",
+        "tuesdayHours": "",
+        "wednesdayClose": "20:00",
+        "wednesdayOpen": "09:00",
+        "wednesdayHours": "",
+        "thursdayClose": "20:00",
+        "thursdayOpen": "09:00",
+        "thursdayHours": "",
+        "fridayClose": "20:00",
+        "fridayOpen": "09:00",
+        "fridayHours": "",
+        "saturdayClose": "18:00",
+        "saturdayOpen": "09:00",
+        "saturdayHours": ""
+      },
+      "brand": "CITYMARKET",
+      "reasons": [
+        {
+          "ar_id": 83,
+          "ar_reason": "Other",
+          "ar_order": 11,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 40,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 107,
+          "ar_reason": "COVID Vaccine",
+          "ar_order": 12,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        }
+      ]
+    },
+    {
+      "facilityId": "62500446",
+      "legalName": "Dillon Companies, Inc.",
+      "vanityName": "Granby",
+      "address": {
+        "address1": "1001 Thompson Rd",
+        "address2": "",
+        "city": "Granby",
+        "state": "CO",
+        "zipCode": "80446"
+      },
+      "phone": {
+        "countryCode": "",
+        "areaCode": "970",
+        "phoneNumber": "8877150",
+        "extension": ""
+      },
+      "onlinePaymentsEnabled": false,
+      "onlineOrderingEnabled": false,
+      "pharmacyHours": {
+        "sundayClose": "17:00",
+        "sundayOpen": "10:00",
+        "sundayHours": "",
+        "mondayClose": "20:00",
+        "mondayOpen": "09:00",
+        "mondayHours": "",
+        "tuesdayClose": "20:00",
+        "tuesdayOpen": "09:00",
+        "tuesdayHours": "",
+        "wednesdayClose": "20:00",
+        "wednesdayOpen": "09:00",
+        "wednesdayHours": "",
+        "thursdayClose": "20:00",
+        "thursdayOpen": "09:00",
+        "thursdayHours": "",
+        "fridayClose": "20:00",
+        "fridayOpen": "09:00",
+        "fridayHours": "",
+        "saturdayClose": "18:00",
+        "saturdayOpen": "09:00",
+        "saturdayHours": ""
+      },
+      "brand": "CITYMARKET",
+      "reasons": [
+        {
+          "ar_id": 83,
+          "ar_reason": "Other",
+          "ar_order": 11,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 40,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 107,
+          "ar_reason": "COVID Vaccine",
+          "ar_order": 12,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        }
+      ]
+    },
+    {
+      "facilityId": "62500447",
+      "legalName": "Dillon Companies, Inc.",
+      "vanityName": "Carbondale",
+      "address": {
+        "address1": "905 Highway 133",
+        "address2": "",
+        "city": "Carbondale",
+        "state": "CO",
+        "zipCode": "81623"
+      },
+      "phone": {
+        "countryCode": "",
+        "areaCode": "970",
+        "phoneNumber": "2335208",
+        "extension": ""
+      },
+      "onlinePaymentsEnabled": false,
+      "onlineOrderingEnabled": false,
+      "pharmacyHours": {
+        "sundayClose": "17:00",
+        "sundayOpen": "10:00",
+        "sundayHours": "",
+        "mondayClose": "20:00",
+        "mondayOpen": "09:00",
+        "mondayHours": "",
+        "tuesdayClose": "20:00",
+        "tuesdayOpen": "09:00",
+        "tuesdayHours": "",
+        "wednesdayClose": "20:00",
+        "wednesdayOpen": "09:00",
+        "wednesdayHours": "",
+        "thursdayClose": "20:00",
+        "thursdayOpen": "09:00",
+        "thursdayHours": "",
+        "fridayClose": "20:00",
+        "fridayOpen": "09:00",
+        "fridayHours": "",
+        "saturdayClose": "18:00",
+        "saturdayOpen": "09:00",
+        "saturdayHours": ""
+      },
+      "brand": "CITYMARKET",
+      "reasons": []
+    },
+    {
+      "facilityId": "62500451",
+      "legalName": "Dillon Companies, Inc.",
+      "vanityName": "630 24 Road",
+      "address": {
+        "address1": "630 24 Rd",
+        "address2": "",
+        "city": "Grand Junction",
+        "state": "CO",
+        "zipCode": "81505"
+      },
+      "phone": {
+        "countryCode": "",
+        "areaCode": "970",
+        "phoneNumber": "2448110",
+        "extension": ""
+      },
+      "onlinePaymentsEnabled": false,
+      "onlineOrderingEnabled": false,
+      "pharmacyHours": {
+        "sundayClose": "17:00",
+        "sundayOpen": "10:00",
+        "sundayHours": "",
+        "mondayClose": "21:00",
+        "mondayOpen": "09:00",
+        "mondayHours": "",
+        "tuesdayClose": "21:00",
+        "tuesdayOpen": "09:00",
+        "tuesdayHours": "",
+        "wednesdayClose": "21:00",
+        "wednesdayOpen": "09:00",
+        "wednesdayHours": "",
+        "thursdayClose": "21:00",
+        "thursdayOpen": "09:00",
+        "thursdayHours": "",
+        "fridayClose": "21:00",
+        "fridayOpen": "09:00",
+        "fridayHours": "",
+        "saturdayClose": "18:00",
+        "saturdayOpen": "09:00",
+        "saturdayHours": ""
+      },
+      "brand": "CITYMARKET",
+      "reasons": [
+        {
+          "ar_id": 83,
+          "ar_reason": "Other",
+          "ar_order": 11,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 40,
+          "appt_days_ahead_min": 0
+        }
+      ]
+    },
+    {
+      "facilityId": "62500499",
+      "legalName": "Dillon Companies, Inc.",
+      "vanityName": "Aspen Pharmacy",
+      "address": {
+        "address1": "685 E Cooper Ave",
+        "address2": "",
+        "city": "Aspen",
+        "state": "CO",
+        "zipCode": "81611"
+      },
+      "phone": {
+        "countryCode": "",
+        "areaCode": "970",
+        "phoneNumber": "9207230",
+        "extension": ""
+      },
+      "onlinePaymentsEnabled": false,
+      "onlineOrderingEnabled": false,
+      "pharmacyHours": {
+        "sundayClose": "17:00",
+        "sundayOpen": "10:00",
+        "sundayHours": "",
+        "mondayClose": "20:00",
+        "mondayOpen": "09:00",
+        "mondayHours": "",
+        "tuesdayClose": "20:00",
+        "tuesdayOpen": "09:00",
+        "tuesdayHours": "",
+        "wednesdayClose": "20:00",
+        "wednesdayOpen": "09:00",
+        "wednesdayHours": "",
+        "thursdayClose": "20:00",
+        "thursdayOpen": "09:00",
+        "thursdayHours": "",
+        "fridayClose": "20:00",
+        "fridayOpen": "09:00",
+        "fridayHours": "",
+        "saturdayClose": "18:00",
+        "saturdayOpen": "09:00",
+        "saturdayHours": ""
+      },
+      "brand": "CITYMARKET",
+      "reasons": [
+        {
+          "ar_id": 83,
+          "ar_reason": "Other",
+          "ar_order": 11,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 40,
+          "appt_days_ahead_min": 0
+        }
+      ]
+    },
+    {
+      "facilityId": "70600409",
+      "legalName": "Smith's Food & Drug Centers, Inc.",
+      "vanityName": "600 E. 20TH ST., FARMINGTON, NM",
+      "address": {
+        "address1": "600 E 20Th St",
+        "address2": "",
+        "city": "Farmington",
+        "state": "NM",
+        "zipCode": "87401"
+      },
+      "phone": {
+        "countryCode": "",
+        "areaCode": "505",
+        "phoneNumber": "3251774",
+        "extension": ""
+      },
+      "onlinePaymentsEnabled": true,
+      "onlineOrderingEnabled": false,
+      "pharmacyHours": {
+        "sundayClose": "18:00",
+        "sundayOpen": "10:00",
+        "sundayHours": "",
+        "mondayClose": "20:00",
+        "mondayOpen": "09:00",
+        "mondayHours": "",
+        "tuesdayClose": "20:00",
+        "tuesdayOpen": "09:00",
+        "tuesdayHours": "",
+        "wednesdayClose": "20:00",
+        "wednesdayOpen": "09:00",
+        "wednesdayHours": "",
+        "thursdayClose": "20:00",
+        "thursdayOpen": "09:00",
+        "thursdayHours": "",
+        "fridayClose": "20:00",
+        "fridayOpen": "09:00",
+        "fridayHours": "",
+        "saturdayClose": "18:00",
+        "saturdayOpen": "10:00",
+        "saturdayHours": ""
+      },
+      "brand": "SMITHS",
+      "reasons": [
+        {
+          "ar_id": 94,
+          "ar_reason": "COVID Rapid Antibody Test",
+          "ar_order": 1,
+          "grp_ar_reason": "",
+          "grp_ar_order": 0,
+          "appt_days_ahead_max": 14,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 73,
+          "ar_reason": "Flu (Influenza)",
+          "ar_order": 1,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 74,
+          "ar_reason": "Hepatitis A",
+          "ar_order": 2,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 75,
+          "ar_reason": "Hepatitis B",
+          "ar_order": 3,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 76,
+          "ar_reason": "Tdap (Tetanus, Diphtheria, Pertussis)",
+          "ar_order": 4,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 77,
+          "ar_reason": "Pneumonia",
+          "ar_order": 5,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 78,
+          "ar_reason": "Shingles",
+          "ar_order": 6,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 79,
+          "ar_reason": "Meningitis (Meningococcal)",
+          "ar_order": 7,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 80,
+          "ar_reason": "HPV (Human Papilloma Virus)",
+          "ar_order": 8,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 81,
+          "ar_reason": "Chickenpox (Varicella)",
+          "ar_order": 9,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 82,
+          "ar_reason": "Measles/Mumps/Rubella",
+          "ar_order": 10,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 1,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 83,
+          "ar_reason": "Other",
+          "ar_order": 11,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 40,
+          "appt_days_ahead_min": 0
+        }
+      ]
+    },
+    {
+      "facilityId": "70600426",
+      "legalName": "Smith's Food & Drug Centers, Inc.",
+      "vanityName": "224 PASEO DEL PUEBLO SUR, TAOS, NM",
+      "address": {
+        "address1": "224 Paseo Del Pueblo Sur",
+        "address2": "",
+        "city": "Taos",
+        "state": "NM",
+        "zipCode": "87571"
+      },
+      "phone": {
+        "countryCode": "",
+        "areaCode": "575",
+        "phoneNumber": "7584823",
+        "extension": ""
+      },
+      "onlinePaymentsEnabled": true,
+      "onlineOrderingEnabled": false,
+      "pharmacyHours": {
+        "sundayClose": "18:00",
+        "sundayOpen": "10:00",
+        "sundayHours": "",
+        "mondayClose": "19:00",
+        "mondayOpen": "08:00",
+        "mondayHours": "",
+        "tuesdayClose": "19:00",
+        "tuesdayOpen": "08:00",
+        "tuesdayHours": "",
+        "wednesdayClose": "19:00",
+        "wednesdayOpen": "08:00",
+        "wednesdayHours": "",
+        "thursdayClose": "19:00",
+        "thursdayOpen": "08:00",
+        "thursdayHours": "",
+        "fridayClose": "19:00",
+        "fridayOpen": "08:00",
+        "fridayHours": "",
+        "saturdayClose": "18:00",
+        "saturdayOpen": "10:00",
+        "saturdayHours": ""
+      },
+      "brand": "SMITHS",
+      "reasons": [
+        {
+          "ar_id": 94,
+          "ar_reason": "COVID Rapid Antibody Test",
+          "ar_order": 1,
+          "grp_ar_reason": "",
+          "grp_ar_order": 0,
+          "appt_days_ahead_max": 14,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 73,
+          "ar_reason": "Flu (Influenza)",
+          "ar_order": 1,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 74,
+          "ar_reason": "Hepatitis A",
+          "ar_order": 2,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 75,
+          "ar_reason": "Hepatitis B",
+          "ar_order": 3,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 76,
+          "ar_reason": "Tdap (Tetanus, Diphtheria, Pertussis)",
+          "ar_order": 4,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 77,
+          "ar_reason": "Pneumonia",
+          "ar_order": 5,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 78,
+          "ar_reason": "Shingles",
+          "ar_order": 6,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 79,
+          "ar_reason": "Meningitis (Meningococcal)",
+          "ar_order": 7,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 80,
+          "ar_reason": "HPV (Human Papilloma Virus)",
+          "ar_order": 8,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 81,
+          "ar_reason": "Chickenpox (Varicella)",
+          "ar_order": 9,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 82,
+          "ar_reason": "Measles/Mumps/Rubella",
+          "ar_order": 10,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 1,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 83,
+          "ar_reason": "Other",
+          "ar_order": 11,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 40,
+          "appt_days_ahead_min": 0
+        }
+      ]
+    },
+    {
+      "facilityId": "70600432",
+      "legalName": "Smith's Food & Drug Centers, Inc.",
+      "vanityName": "31 SHERWOOD BLVD., WHITE ROCK, NM",
+      "address": {
+        "address1": "31 Sherwood Blvd",
+        "address2": "",
+        "city": "White Rock",
+        "state": "NM",
+        "zipCode": "87547"
+      },
+      "phone": {
+        "countryCode": "",
+        "areaCode": "505",
+        "phoneNumber": "6729457",
+        "extension": ""
+      },
+      "onlinePaymentsEnabled": true,
+      "onlineOrderingEnabled": false,
+      "pharmacyHours": {
+        "sundayClose": "18:00",
+        "sundayOpen": "09:00",
+        "sundayHours": "",
+        "mondayClose": "21:00",
+        "mondayOpen": "09:00",
+        "mondayHours": "",
+        "tuesdayClose": "21:00",
+        "tuesdayOpen": "09:00",
+        "tuesdayHours": "",
+        "wednesdayClose": "21:00",
+        "wednesdayOpen": "09:00",
+        "wednesdayHours": "",
+        "thursdayClose": "21:00",
+        "thursdayOpen": "09:00",
+        "thursdayHours": "",
+        "fridayClose": "21:00",
+        "fridayOpen": "09:00",
+        "fridayHours": "",
+        "saturdayClose": "18:00",
+        "saturdayOpen": "09:00",
+        "saturdayHours": ""
+      },
+      "brand": "SMITHS",
+      "reasons": [
+        {
+          "ar_id": 94,
+          "ar_reason": "COVID Rapid Antibody Test",
+          "ar_order": 1,
+          "grp_ar_reason": "",
+          "grp_ar_order": 0,
+          "appt_days_ahead_max": 14,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 73,
+          "ar_reason": "Flu (Influenza)",
+          "ar_order": 1,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 74,
+          "ar_reason": "Hepatitis A",
+          "ar_order": 2,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 75,
+          "ar_reason": "Hepatitis B",
+          "ar_order": 3,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 76,
+          "ar_reason": "Tdap (Tetanus, Diphtheria, Pertussis)",
+          "ar_order": 4,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 77,
+          "ar_reason": "Pneumonia",
+          "ar_order": 5,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 78,
+          "ar_reason": "Shingles",
+          "ar_order": 6,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 79,
+          "ar_reason": "Meningitis (Meningococcal)",
+          "ar_order": 7,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 80,
+          "ar_reason": "HPV (Human Papilloma Virus)",
+          "ar_order": 8,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 81,
+          "ar_reason": "Chickenpox (Varicella)",
+          "ar_order": 9,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 82,
+          "ar_reason": "Measles/Mumps/Rubella",
+          "ar_order": 10,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 1,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 83,
+          "ar_reason": "Other",
+          "ar_order": 11,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 40,
+          "appt_days_ahead_min": 0
+        }
+      ]
+    },
+    {
+      "facilityId": "70600461",
+      "legalName": "Smith's Food & Drug Centers, Inc.",
+      "vanityName": "2308 CERRILLOS RD., SANTA FE, NM",
+      "address": {
+        "address1": "2308 Cerrillos Rd",
+        "address2": "",
+        "city": "Santa Fe",
+        "state": "NM",
+        "zipCode": "87505"
+      },
+      "phone": {
+        "countryCode": "",
+        "areaCode": "505",
+        "phoneNumber": "4717874",
+        "extension": ""
+      },
+      "onlinePaymentsEnabled": true,
+      "onlineOrderingEnabled": false,
+      "pharmacyHours": {
+        "sundayClose": "18:00",
+        "sundayOpen": "10:00",
+        "sundayHours": "",
+        "mondayClose": "20:00",
+        "mondayOpen": "09:00",
+        "mondayHours": "",
+        "tuesdayClose": "20:00",
+        "tuesdayOpen": "09:00",
+        "tuesdayHours": "",
+        "wednesdayClose": "20:00",
+        "wednesdayOpen": "09:00",
+        "wednesdayHours": "",
+        "thursdayClose": "20:00",
+        "thursdayOpen": "09:00",
+        "thursdayHours": "",
+        "fridayClose": "20:00",
+        "fridayOpen": "09:00",
+        "fridayHours": "",
+        "saturdayClose": "18:00",
+        "saturdayOpen": "10:00",
+        "saturdayHours": ""
+      },
+      "brand": "SMITHS",
+      "reasons": [
+        {
+          "ar_id": 94,
+          "ar_reason": "COVID Rapid Antibody Test",
+          "ar_order": 1,
+          "grp_ar_reason": "",
+          "grp_ar_order": 0,
+          "appt_days_ahead_max": 14,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 73,
+          "ar_reason": "Flu (Influenza)",
+          "ar_order": 1,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 74,
+          "ar_reason": "Hepatitis A",
+          "ar_order": 2,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 75,
+          "ar_reason": "Hepatitis B",
+          "ar_order": 3,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 76,
+          "ar_reason": "Tdap (Tetanus, Diphtheria, Pertussis)",
+          "ar_order": 4,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 77,
+          "ar_reason": "Pneumonia",
+          "ar_order": 5,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 78,
+          "ar_reason": "Shingles",
+          "ar_order": 6,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 79,
+          "ar_reason": "Meningitis (Meningococcal)",
+          "ar_order": 7,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 80,
+          "ar_reason": "HPV (Human Papilloma Virus)",
+          "ar_order": 8,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 81,
+          "ar_reason": "Chickenpox (Varicella)",
+          "ar_order": 9,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 82,
+          "ar_reason": "Measles/Mumps/Rubella",
+          "ar_order": 10,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 1,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 83,
+          "ar_reason": "Other",
+          "ar_order": 11,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 40,
+          "appt_days_ahead_min": 0
+        }
+      ]
+    },
+    {
+      "facilityId": "70600467",
+      "legalName": "Smith's Food & Drug Centers, Inc.",
+      "vanityName": "Smiths Marketplace",
+      "address": {
+        "address1": "751 Trinity Drive",
+        "address2": "",
+        "city": "Los Alamos",
+        "state": "NM",
+        "zipCode": "87544"
+      },
+      "phone": {
+        "countryCode": "",
+        "areaCode": "505",
+        "phoneNumber": "6612770",
+        "extension": ""
+      },
+      "onlinePaymentsEnabled": true,
+      "onlineOrderingEnabled": false,
+      "pharmacyHours": {
+        "sundayClose": "18:00",
+        "sundayOpen": "09:00",
+        "sundayHours": "",
+        "mondayClose": "21:00",
+        "mondayOpen": "08:00",
+        "mondayHours": "",
+        "tuesdayClose": "21:00",
+        "tuesdayOpen": "08:00",
+        "tuesdayHours": "",
+        "wednesdayClose": "21:00",
+        "wednesdayOpen": "08:00",
+        "wednesdayHours": "",
+        "thursdayClose": "21:00",
+        "thursdayOpen": "08:00",
+        "thursdayHours": "",
+        "fridayClose": "21:00",
+        "fridayOpen": "08:00",
+        "fridayHours": "",
+        "saturdayClose": "18:00",
+        "saturdayOpen": "09:00",
+        "saturdayHours": ""
+      },
+      "brand": "SMITHS",
+      "reasons": [
+        {
+          "ar_id": 94,
+          "ar_reason": "COVID Rapid Antibody Test",
+          "ar_order": 1,
+          "grp_ar_reason": "",
+          "grp_ar_order": 0,
+          "appt_days_ahead_max": 14,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 73,
+          "ar_reason": "Flu (Influenza)",
+          "ar_order": 1,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 74,
+          "ar_reason": "Hepatitis A",
+          "ar_order": 2,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 75,
+          "ar_reason": "Hepatitis B",
+          "ar_order": 3,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 76,
+          "ar_reason": "Tdap (Tetanus, Diphtheria, Pertussis)",
+          "ar_order": 4,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 77,
+          "ar_reason": "Pneumonia",
+          "ar_order": 5,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 78,
+          "ar_reason": "Shingles",
+          "ar_order": 6,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 79,
+          "ar_reason": "Meningitis (Meningococcal)",
+          "ar_order": 7,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 80,
+          "ar_reason": "HPV (Human Papilloma Virus)",
+          "ar_order": 8,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 81,
+          "ar_reason": "Chickenpox (Varicella)",
+          "ar_order": 9,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 82,
+          "ar_reason": "Measles/Mumps/Rubella",
+          "ar_order": 10,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 1,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 83,
+          "ar_reason": "Other",
+          "ar_order": 11,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 40,
+          "appt_days_ahead_min": 0
+        }
+      ]
+    },
+    {
+      "facilityId": "70600491",
+      "legalName": "Smith's Food and Drug Centers, Inc.",
+      "vanityName": "Plaza Del Sol",
+      "address": {
+        "address1": "2110 S Pacheco St",
+        "address2": "",
+        "city": "Santa Fe",
+        "state": "NM",
+        "zipCode": "87505"
+      },
+      "phone": {
+        "countryCode": "",
+        "areaCode": "505",
+        "phoneNumber": "4735563",
+        "extension": ""
+      },
+      "onlinePaymentsEnabled": true,
+      "onlineOrderingEnabled": false,
+      "pharmacyHours": {
+        "sundayClose": "18:00",
+        "sundayOpen": "10:00",
+        "sundayHours": "",
+        "mondayClose": "20:00",
+        "mondayOpen": "09:00",
+        "mondayHours": "",
+        "tuesdayClose": "20:00",
+        "tuesdayOpen": "09:00",
+        "tuesdayHours": "",
+        "wednesdayClose": "20:00",
+        "wednesdayOpen": "09:00",
+        "wednesdayHours": "",
+        "thursdayClose": "20:00",
+        "thursdayOpen": "09:00",
+        "thursdayHours": "",
+        "fridayClose": "20:00",
+        "fridayOpen": "09:00",
+        "fridayHours": "",
+        "saturdayClose": "18:00",
+        "saturdayOpen": "10:00",
+        "saturdayHours": ""
+      },
+      "brand": "SMITHS",
+      "reasons": [
+        {
+          "ar_id": 94,
+          "ar_reason": "COVID Rapid Antibody Test",
+          "ar_order": 1,
+          "grp_ar_reason": "",
+          "grp_ar_order": 0,
+          "appt_days_ahead_max": 14,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 73,
+          "ar_reason": "Flu (Influenza)",
+          "ar_order": 1,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 74,
+          "ar_reason": "Hepatitis A",
+          "ar_order": 2,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 75,
+          "ar_reason": "Hepatitis B",
+          "ar_order": 3,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 76,
+          "ar_reason": "Tdap (Tetanus, Diphtheria, Pertussis)",
+          "ar_order": 4,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 77,
+          "ar_reason": "Pneumonia",
+          "ar_order": 5,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 78,
+          "ar_reason": "Shingles",
+          "ar_order": 6,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 79,
+          "ar_reason": "Meningitis (Meningococcal)",
+          "ar_order": 7,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 80,
+          "ar_reason": "HPV (Human Papilloma Virus)",
+          "ar_order": 8,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 81,
+          "ar_reason": "Chickenpox (Varicella)",
+          "ar_order": 9,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 82,
+          "ar_reason": "Measles/Mumps/Rubella",
+          "ar_order": 10,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 1,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 83,
+          "ar_reason": "Other",
+          "ar_order": 11,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 40,
+          "appt_days_ahead_min": 0
+        }
+      ]
+    },
+    {
+      "facilityId": "85000819",
+      "legalName": "The Little Clinic, LLC",
+      "vanityName": "Smiths 461 - Associates Only",
+      "address": {
+        "address1": "2308 Cerrillos Rd",
+        "address2": "",
+        "city": "Santa Fe",
+        "state": "NM",
+        "zipCode": "87505"
+      },
+      "phone": {
+        "countryCode": "",
+        "areaCode": "877",
+        "phoneNumber": "4449689",
+        "extension": ""
+      },
+      "onlinePaymentsEnabled": false,
+      "onlineOrderingEnabled": false,
+      "pharmacyHours": {
+        "sundayClose": "",
+        "sundayOpen": "",
+        "sundayHours": "",
+        "mondayClose": "",
+        "mondayOpen": "",
+        "mondayHours": "",
+        "tuesdayClose": "",
+        "tuesdayOpen": "",
+        "tuesdayHours": "",
+        "wednesdayClose": "",
+        "wednesdayOpen": "",
+        "wednesdayHours": "",
+        "thursdayClose": "",
+        "thursdayOpen": "",
+        "thursdayHours": "",
+        "fridayClose": "",
+        "fridayOpen": "",
+        "fridayHours": "",
+        "saturdayClose": "",
+        "saturdayOpen": "",
+        "saturdayHours": ""
+      },
+      "brand": "COVID",
+      "reasons": []
+    },
+    {
+      "facilityId": "85000821",
+      "legalName": "The Little Clinic, LLC",
+      "vanityName": "Smiths 467 - Associates Only Drive Thru",
+      "address": {
+        "address1": "751 Trinity Dr",
+        "address2": "",
+        "city": "Los Alamos",
+        "state": "NM",
+        "zipCode": "87544"
+      },
+      "phone": {
+        "countryCode": "",
+        "areaCode": "877",
+        "phoneNumber": "4449689",
+        "extension": ""
+      },
+      "onlinePaymentsEnabled": false,
+      "onlineOrderingEnabled": false,
+      "pharmacyHours": {
+        "sundayClose": "",
+        "sundayOpen": "",
+        "sundayHours": "",
+        "mondayClose": "",
+        "mondayOpen": "",
+        "mondayHours": "",
+        "tuesdayClose": "",
+        "tuesdayOpen": "",
+        "tuesdayHours": "",
+        "wednesdayClose": "",
+        "wednesdayOpen": "",
+        "wednesdayHours": "",
+        "thursdayClose": "",
+        "thursdayOpen": "",
+        "thursdayHours": "",
+        "fridayClose": "",
+        "fridayOpen": "",
+        "fridayHours": "",
+        "saturdayClose": "",
+        "saturdayOpen": "",
+        "saturdayHours": ""
+      },
+      "brand": "COVID",
+      "reasons": []
+    },
+    {
+      "facilityId": "85000961",
+      "legalName": "The Little Clinic, LLC",
+      "vanityName": "Smiths 491 - Associates Only",
+      "address": {
+        "address1": "2110 S Pacheco St",
+        "address2": "",
+        "city": "Santa Fe",
+        "state": "NM",
+        "zipCode": "87505"
+      },
+      "phone": {
+        "countryCode": "",
+        "areaCode": "877",
+        "phoneNumber": "4449689",
+        "extension": ""
+      },
+      "onlinePaymentsEnabled": false,
+      "onlineOrderingEnabled": false,
+      "pharmacyHours": {
+        "sundayClose": "",
+        "sundayOpen": "",
+        "sundayHours": "",
+        "mondayClose": "",
+        "mondayOpen": "",
+        "mondayHours": "",
+        "tuesdayClose": "",
+        "tuesdayOpen": "",
+        "tuesdayHours": "",
+        "wednesdayClose": "",
+        "wednesdayOpen": "",
+        "wednesdayHours": "",
+        "thursdayClose": "",
+        "thursdayOpen": "",
+        "thursdayHours": "",
+        "fridayClose": "",
+        "fridayOpen": "",
+        "fridayHours": "",
+        "saturdayClose": "",
+        "saturdayOpen": "",
+        "saturdayHours": ""
+      },
+      "brand": "COVID",
+      "reasons": [
+        {
+          "ar_id": 94,
+          "ar_reason": "COVID Rapid Antibody Test",
+          "ar_order": 1,
+          "grp_ar_reason": "",
+          "grp_ar_order": 0,
+          "appt_days_ahead_max": 14,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 73,
+          "ar_reason": "Flu (Influenza)",
+          "ar_order": 1,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 74,
+          "ar_reason": "Hepatitis A",
+          "ar_order": 2,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 75,
+          "ar_reason": "Hepatitis B",
+          "ar_order": 3,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 76,
+          "ar_reason": "Tdap (Tetanus, Diphtheria, Pertussis)",
+          "ar_order": 4,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 77,
+          "ar_reason": "Pneumonia",
+          "ar_order": 5,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 78,
+          "ar_reason": "Shingles",
+          "ar_order": 6,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 79,
+          "ar_reason": "Meningitis (Meningococcal)",
+          "ar_order": 7,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 80,
+          "ar_reason": "HPV (Human Papilloma Virus)",
+          "ar_order": 8,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 81,
+          "ar_reason": "Chickenpox (Varicella)",
+          "ar_order": 9,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 82,
+          "ar_reason": "Measles/Mumps/Rubella",
+          "ar_order": 10,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 1,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 83,
+          "ar_reason": "Other",
+          "ar_order": 11,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 40,
+          "appt_days_ahead_min": 0
+        }
+      ]
+    },
+    {
+      "facilityId": "85000963",
+      "legalName": "The Little Clinic, LLC",
+      "vanityName": "Smiths 409 - Associates Only",
+      "address": {
+        "address1": "600 E 20th St",
+        "address2": "",
+        "city": "Farmington",
+        "state": "NM",
+        "zipCode": "87401"
+      },
+      "phone": {
+        "countryCode": "",
+        "areaCode": "877",
+        "phoneNumber": "4449689",
+        "extension": ""
+      },
+      "onlinePaymentsEnabled": false,
+      "onlineOrderingEnabled": false,
+      "pharmacyHours": {
+        "sundayClose": "",
+        "sundayOpen": "",
+        "sundayHours": "",
+        "mondayClose": "",
+        "mondayOpen": "",
+        "mondayHours": "",
+        "tuesdayClose": "",
+        "tuesdayOpen": "",
+        "tuesdayHours": "",
+        "wednesdayClose": "",
+        "wednesdayOpen": "",
+        "wednesdayHours": "",
+        "thursdayClose": "",
+        "thursdayOpen": "",
+        "thursdayHours": "",
+        "fridayClose": "",
+        "fridayOpen": "",
+        "fridayHours": "",
+        "saturdayClose": "",
+        "saturdayOpen": "",
+        "saturdayHours": ""
+      },
+      "brand": "COVID",
+      "reasons": [
+        {
+          "ar_id": 94,
+          "ar_reason": "COVID Rapid Antibody Test",
+          "ar_order": 1,
+          "grp_ar_reason": "",
+          "grp_ar_order": 0,
+          "appt_days_ahead_max": 14,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 73,
+          "ar_reason": "Flu (Influenza)",
+          "ar_order": 1,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 74,
+          "ar_reason": "Hepatitis A",
+          "ar_order": 2,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 75,
+          "ar_reason": "Hepatitis B",
+          "ar_order": 3,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 76,
+          "ar_reason": "Tdap (Tetanus, Diphtheria, Pertussis)",
+          "ar_order": 4,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 77,
+          "ar_reason": "Pneumonia",
+          "ar_order": 5,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 78,
+          "ar_reason": "Shingles",
+          "ar_order": 6,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 79,
+          "ar_reason": "Meningitis (Meningococcal)",
+          "ar_order": 7,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 80,
+          "ar_reason": "HPV (Human Papilloma Virus)",
+          "ar_order": 8,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 81,
+          "ar_reason": "Chickenpox (Varicella)",
+          "ar_order": 9,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 82,
+          "ar_reason": "Measles/Mumps/Rubella",
+          "ar_order": 10,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 1,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 83,
+          "ar_reason": "Other",
+          "ar_order": 11,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 40,
+          "appt_days_ahead_min": 0
+        }
+      ]
+    },
+    {
+      "facilityId": "85000987",
+      "legalName": "The Little Clinic, LLC",
+      "vanityName": "Smiths 426 - Associates Only",
+      "address": {
+        "address1": "224 Paseo del Pueblo Sur",
+        "address2": "",
+        "city": "Taos",
+        "state": "NM",
+        "zipCode": "87571"
+      },
+      "phone": {
+        "countryCode": "",
+        "areaCode": "877",
+        "phoneNumber": "4449689",
+        "extension": ""
+      },
+      "onlinePaymentsEnabled": false,
+      "onlineOrderingEnabled": false,
+      "pharmacyHours": {
+        "sundayClose": "",
+        "sundayOpen": "",
+        "sundayHours": "",
+        "mondayClose": "",
+        "mondayOpen": "",
+        "mondayHours": "",
+        "tuesdayClose": "",
+        "tuesdayOpen": "",
+        "tuesdayHours": "",
+        "wednesdayClose": "",
+        "wednesdayOpen": "",
+        "wednesdayHours": "",
+        "thursdayClose": "",
+        "thursdayOpen": "",
+        "thursdayHours": "",
+        "fridayClose": "",
+        "fridayOpen": "",
+        "fridayHours": "",
+        "saturdayClose": "",
+        "saturdayOpen": "",
+        "saturdayHours": ""
+      },
+      "brand": "COVID",
+      "reasons": [
+        {
+          "ar_id": 73,
+          "ar_reason": "Flu (Influenza)",
+          "ar_order": 1,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 74,
+          "ar_reason": "Hepatitis A",
+          "ar_order": 2,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 75,
+          "ar_reason": "Hepatitis B",
+          "ar_order": 3,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 76,
+          "ar_reason": "Tdap (Tetanus, Diphtheria, Pertussis)",
+          "ar_order": 4,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 77,
+          "ar_reason": "Pneumonia",
+          "ar_order": 5,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 78,
+          "ar_reason": "Shingles",
+          "ar_order": 6,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 79,
+          "ar_reason": "Meningitis (Meningococcal)",
+          "ar_order": 7,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 80,
+          "ar_reason": "HPV (Human Papilloma Virus)",
+          "ar_order": 8,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 81,
+          "ar_reason": "Chickenpox (Varicella)",
+          "ar_order": 9,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 82,
+          "ar_reason": "Measles/Mumps/Rubella",
+          "ar_order": 10,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 1,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 83,
+          "ar_reason": "Other",
+          "ar_order": 11,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 40,
+          "appt_days_ahead_min": 0
+        }
+      ]
+    },
+    {
+      "facilityId": "85000992",
+      "legalName": "The Little Clinic, LLC",
+      "vanityName": "Smiths 432 - Associates Only",
+      "address": {
+        "address1": "31 Sherwood Blvd",
+        "address2": "",
+        "city": "White Rock",
+        "state": "NM",
+        "zipCode": "87547"
+      },
+      "phone": {
+        "countryCode": "",
+        "areaCode": "877",
+        "phoneNumber": "4449689",
+        "extension": ""
+      },
+      "onlinePaymentsEnabled": false,
+      "onlineOrderingEnabled": false,
+      "pharmacyHours": {
+        "sundayClose": "",
+        "sundayOpen": "",
+        "sundayHours": "",
+        "mondayClose": "",
+        "mondayOpen": "",
+        "mondayHours": "",
+        "tuesdayClose": "",
+        "tuesdayOpen": "",
+        "tuesdayHours": "",
+        "wednesdayClose": "",
+        "wednesdayOpen": "",
+        "wednesdayHours": "",
+        "thursdayClose": "",
+        "thursdayOpen": "",
+        "thursdayHours": "",
+        "fridayClose": "",
+        "fridayOpen": "",
+        "fridayHours": "",
+        "saturdayClose": "",
+        "saturdayOpen": "",
+        "saturdayHours": ""
+      },
+      "brand": "COVID",
+      "reasons": [
+        {
+          "ar_id": 94,
+          "ar_reason": "COVID Rapid Antibody Test",
+          "ar_order": 1,
+          "grp_ar_reason": "",
+          "grp_ar_order": 0,
+          "appt_days_ahead_max": 14,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 73,
+          "ar_reason": "Flu (Influenza)",
+          "ar_order": 1,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 74,
+          "ar_reason": "Hepatitis A",
+          "ar_order": 2,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 75,
+          "ar_reason": "Hepatitis B",
+          "ar_order": 3,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 76,
+          "ar_reason": "Tdap (Tetanus, Diphtheria, Pertussis)",
+          "ar_order": 4,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 77,
+          "ar_reason": "Pneumonia",
+          "ar_order": 5,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 78,
+          "ar_reason": "Shingles",
+          "ar_order": 6,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 79,
+          "ar_reason": "Meningitis (Meningococcal)",
+          "ar_order": 7,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 80,
+          "ar_reason": "HPV (Human Papilloma Virus)",
+          "ar_order": 8,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 81,
+          "ar_reason": "Chickenpox (Varicella)",
+          "ar_order": 9,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 8,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 82,
+          "ar_reason": "Measles/Mumps/Rubella",
+          "ar_order": 10,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 1,
+          "appt_days_ahead_min": 0
+        },
+        {
+          "ar_id": 83,
+          "ar_reason": "Other",
+          "ar_order": 11,
+          "grp_ar_reason": "Vaccines",
+          "grp_ar_order": 1000,
+          "appt_days_ahead_max": 40,
+          "appt_days_ahead_min": 0
+        }
+      ]
     }
   ],
   "reasonsLastProcessed": {
     "61500001": "2021-02-10T05:28:29.291Z",
     "61500005": "2021-02-10T05:28:36.172Z",
+    "61500010": "2021-02-10T05:57:11.604Z",
+    "61500014": "2021-02-10T05:57:17.614Z",
+    "61500015": "2021-02-10T05:57:24.018Z",
+    "61500023": "2021-02-10T05:57:30.142Z",
+    "61500025": "2021-02-10T05:57:37.026Z",
+    "61500036": "2021-02-10T05:57:46.251Z",
+    "61500041": "2021-02-10T05:57:53.357Z",
+    "61500044": "2021-02-10T05:58:02.654Z",
     "61500050": "2021-02-10T05:28:42.384Z",
+    "61500051": "2021-02-10T05:58:11.491Z",
     "61500060": "2021-02-10T05:28:48.600Z",
+    "61500061": "2021-02-10T05:58:19.578Z",
     "61500073": "2021-02-10T05:28:57.656Z",
+    "61500074": "2021-02-10T05:58:28.874Z",
+    "61500077": "2021-02-10T05:58:37.037Z",
+    "61500084": "2021-02-10T05:58:46.099Z",
+    "61500094": "2021-02-10T05:58:54.238Z",
+    "61500095": "2021-02-10T05:59:02.688Z",
+    "61500097": "2021-02-10T05:59:11.760Z",
     "62000001": "2021-02-10T05:29:08.110Z",
     "62000003": "2021-02-10T05:29:17.022Z",
     "62000005": "2021-02-10T05:29:23.832Z",
@@ -16304,6 +20412,7 @@
     "62000076": "2021-02-10T05:37:08.149Z",
     "62000077": "2021-02-10T05:37:16.569Z",
     "62000078": "2021-02-10T05:37:23.837Z",
+    "62000079": "2021-02-10T13:50:58.111Z",
     "62000080": "2021-02-10T05:37:32.125Z",
     "62000081": "2021-02-10T05:37:40.103Z",
     "62000082": "2021-02-10T05:37:47.346Z",
@@ -16321,6 +20430,7 @@
     "62000096": "2021-02-10T05:39:29.378Z",
     "62000097": "2021-02-10T05:39:37.612Z",
     "62000098": "2021-02-10T05:39:46.073Z",
+    "62000099": "2021-02-10T13:51:04.043Z",
     "62000100": "2021-02-10T05:39:52.916Z",
     "62000101": "2021-02-10T05:40:01.205Z",
     "62000102": "2021-02-10T05:40:10.260Z",
@@ -16361,7 +20471,10 @@
     "62500406": "2021-02-10T05:45:01.608Z",
     "62500408": "2021-02-10T05:45:10.666Z",
     "62500410": "2021-02-10T05:45:18.611Z",
+    "62500412": "2021-02-10T13:51:10.018Z",
     "62500413": "2021-02-10T05:45:26.853Z",
+    "62500414": "2021-02-10T05:59:20.609Z",
+    "62500415": "2021-02-10T05:59:28.746Z",
     "62500417": "2021-02-10T05:45:35.157Z",
     "62500419": "2021-02-10T05:45:42.424Z",
     "62500420": "2021-02-10T05:45:51.470Z",
@@ -16376,6 +20489,26 @@
     "62500434": "2021-02-10T05:47:08.006Z",
     "62500437": "2021-02-10T05:47:15.880Z",
     "62500440": "2021-02-10T05:47:25.142Z",
-    "62500441": "2021-02-10T05:47:33.431Z"
+    "62500441": "2021-02-10T05:47:33.431Z",
+    "62500442": "2021-02-10T05:47:40.656Z",
+    "62500443": "2021-02-10T05:47:47.492Z",
+    "62500444": "2021-02-10T05:47:54.425Z",
+    "62500445": "2021-02-10T05:48:03.679Z",
+    "62500446": "2021-02-10T05:48:12.132Z",
+    "62500447": "2021-02-10T05:48:21.702Z",
+    "62500451": "2021-02-10T05:48:30.743Z",
+    "62500499": "2021-02-10T05:48:38.651Z",
+    "70600409": "2021-02-10T05:48:47.904Z",
+    "70600426": "2021-02-10T05:48:55.009Z",
+    "70600432": "2021-02-10T05:49:02.537Z",
+    "70600461": "2021-02-10T05:49:09.639Z",
+    "70600467": "2021-02-10T05:49:18.655Z",
+    "70600491": "2021-02-10T05:49:27.677Z",
+    "85000819": "2021-02-10T05:49:34.960Z",
+    "85000821": "2021-02-10T05:49:42.344Z",
+    "85000961": "2021-02-10T05:49:49.448Z",
+    "85000963": "2021-02-10T05:49:56.704Z",
+    "85000987": "2021-02-10T05:50:03.806Z",
+    "85000992": "2021-02-10T05:50:13.008Z"
   }
 }

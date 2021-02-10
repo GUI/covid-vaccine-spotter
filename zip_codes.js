@@ -16,6 +16,6 @@ fs.createReadStream(path.resolve(__dirname, 'US', 'US.txt'))
   .on('error', error => console.error(error))
   .on('data', row => {
     if(row[4] === 'CO') {
-      zipCodes.push(row[1]).write();
+      zipCodes.push({ zipCode: row[1], city: row[2], state: row[4], county: row[5], latitude: row[9], longitude: row[10] }).write();
     }
   })

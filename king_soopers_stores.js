@@ -24,57 +24,63 @@ puppeteer.use(StealthPlugin());
   page.on('response', async (response) => {
     console.log('XHR response received: ', response.url());
     if (response.url().includes('/rx/api/anonymous/stores')) {
-      const data = await response.json();
-      const zipCode = response.url().match(/address=([^&]+)/)[1];
+      try {
+        const data = await response.json();
+        const zipCode = response.url().match(/address=([^&]+)/)[1];
 
-      if (data) {
-        for(const store of data) {
-          console.log(`Processing ${zipCode}, store ${store.facilityId}`);
-          delete store.distance;
-          stores.push(store).write();
+        if (data) {
+          for(const store of data) {
+            console.log(`Processing ${zipCode}, store ${store.facilityId}`);
+            delete store.distance;
+            stores.push(store).write();
+          }
+
+          db.set('stores', db.get('stores').uniqBy('facilityId').sortBy('facilityId').value()).write();
+          db.set(`zipCodesLastProcessed.${zipCode}`, (new Date()).toISOString()).write();
+        } else {
+          process.exit(1);
         }
-
-        db.set('stores', db.get('stores').uniqBy('facilityId').sortBy('facilityId').value()).write();
-        db.set(`zipCodesLastProcessed.${zipCode}`, (new Date()).toISOString()).write();
-      } else {
-        // process.exit();
+      } catch(e) {
+        console.error(e);
+        //await new Promise(r => setTimeout(r, 10000));
+        //process.exit(1);
       }
     }
   });
 
   for (const zipCode of zipCodes) {
-    const lastProcessed = db.get(`zipCodesLastProcessed.${zipCode}`).value();
+    const lastProcessed = db.get(`zipCodesLastProcessed.${zipCode.zipCode}`).value();
     if (lastProcessed) {
-      console.log(`Skipping ${zipCode}`);
+      console.log(`Skipping ${zipCode.zipCode}`);
     } else {
-      console.log(`Processing ${zipCode}`);
+      console.log(`Processing ${zipCode.zipCode}`);
       await page.$eval('h1', el => el.click());
       await page.$eval('[name=findAStore]', el => el.click());
       await page.$eval('[name=findAStore]', el => el.value = '');
-      await page.type('[name=findAStore]', zipCode);
+      await page.type('[name=findAStore]', zipCode.zipCode);
       /*
       await page.focus('[name=findAStore]');
       await page.keyboard.down('Control');
       await page.keyboard.press('A');
       await page.keyboard.up('Control');
       await page.keyboard.press('Backspace');
-      await page.keyboard.type(zipCode);
+      await page.keyboard.type(zipCode.zipCode);
       */
       await page.keyboard.press('Enter');
       /*
-      await page.goto(`https://www.kingsoopers.com/rx/api/anonymous/stores?address=${zipCode}`, { waitUntil: 'networkidle0' });
+      await page.goto(`https://www.kingsoopers.com/rx/api/anonymous/stores?address=${zipCode.zipCode}`, { waitUntil: 'networkidle0' });
       const data = await page.evaluate(() => {
         return JSON.parse(document.querySelector('body').innerText);
       });
 
       for(const store of data) {
-        console.log(`Processing ${zipCode}, store ${store.facilityId}`);
+        console.log(`Processing ${zipCode.zipCode}, store ${store.facilityId}`);
         delete store.distance;
         stores.push(store).write();
       }
 
       db.set('stores', db.get('stores').uniq().sortBy('facilityId').value()).write();
-      db.set(`zipCodesLastProcessed.${zipCode}`, (new Date()).toISOString()).write();
+      db.set(`zipCodesLastProcessed.${zipCode.zipCode}`, (new Date()).toISOString()).write();
       */
 
       //await page.waitForNavigation({ waitUntil: 'networkidle0' });

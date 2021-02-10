@@ -35,6 +35,8 @@ puppeteer.use(StealthPlugin());
       db.get('stores').push(store).write();
       db.set(`reasonsLastProcessed.${store.facilityId}`, (new Date()).toISOString()).write();
 
+      db.set('stores', db.get('stores').uniqBy('facilityId').sortBy('facilityId').value()).write();
+
       await new Promise(r => setTimeout(r, 5000));
     }
   }

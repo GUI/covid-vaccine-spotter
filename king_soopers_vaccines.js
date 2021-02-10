@@ -28,7 +28,8 @@ puppeteer.use(StealthPlugin());
   await page.goto('https://www.kingsoopers.com/rx/guest/get-vaccinated', { waitUntil: 'networkidle0' });
 
   for (const store of stores) {
-    const lastProcessed = db.get(`vaccinesLastProcessed.${store.facilityId}`).value();
+    // const lastProcessed = db.get(`vaccinesLastProcessed.${store.facilityId}`).value();
+    const lastProcessed = null;
     if (lastProcessed) {
       console.log(`Skipping ${store.facilityId}`);
     } else {
@@ -43,7 +44,9 @@ puppeteer.use(StealthPlugin());
       db.get('stores').push(store).write();
       db.set(`vaccinesLastProcessed.${store.facilityId}`, (new Date()).toISOString()).write();
 
-      await new Promise(r => setTimeout(r, 5000));
+      db.set('stores', db.get('stores').uniqBy('facilityId').sortBy('facilityId').value()).write();
+
+      await new Promise(r => setTimeout(r, 2000));
     }
   }
 
