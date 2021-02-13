@@ -28,6 +28,32 @@ title: Colorado COVID-19 Vaccines
       <h2>Visit Colorado.gov</h2>
       <p class="fs-4">Be sure to visit Colorado's official <a href="https://covid19.colorado.gov/for-coloradans/vaccine/where-can-i-get-vaccinated"><strong>find out where you can get vaccinated</strong></a> page for detailed and up to date information.</p>
 
+      <h2>Safeway Appointment Status</h2>
+      <% this.lodash.orderBy(albertsons, [(o) => o.events.length, 'name'], ['desc', 'asc']).forEach((store) => { %>
+        <% lastFetched = (new Date(store.lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long' }) %>
+        <div class="card mb-4">
+          <h5 class="card-header"><%= store.name %></h5>
+          <div class="card-body">
+            <p class="card-text">
+              <% if(store.events.length > 0) { %>
+                <div class="text-success fs-2">
+                  <i class="fas fa-check-circle"></i>
+                  <span class="fs-5">Appointments available as of <%= lastFetched %></span>
+                </div>
+                <% store.events.forEach((event) => { %>
+                  <div><%= event.date %> <%= event.startTime %></div>
+                <% }) %>
+                <a href="https://www.safeway.com/pharmacy/covid-19.html" class="btn btn-primary">Visit Safeway Website</a>
+              <% } else { %>
+                <i class="fas fa-times-circle"></i>
+                No appointments available as of last check
+              <% } %>
+            </p>
+            <p class="card-text text-secondary"><small>Last Checked <%= lastFetched %></small></p>
+          </div>
+        </div>
+      <% }) %>
+
       <h2>King Soopers Appointment Status</h2>
 
       <% krogerAppointments.stores.sort((a, b) => { return b.appointments.length - a.appointments.length }).forEach((appointmentStore) => { %>
