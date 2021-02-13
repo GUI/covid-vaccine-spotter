@@ -29,7 +29,20 @@ puppeteer.use(ua);
 (async () => {
   const browser = await puppeteer.launch({ headless: false, devtools: true });
   const page = await browser.newPage();
-  await page.goto('https://www.kingsoopers.com/rx/guest/get-vaccinated', { waitUntil: 'networkidle0' });
+
+  /*
+  await page.setRequestInterception(true)
+  page.on('request', async (request) => {
+    console.info('url: ', request.url());
+    if (/(\.com\/rx-security-bff\/|\.com\/bundles\/|\.com\/clickstream\/|\/akam\/|everesttech\.net|sstats.kroger.com|googletagmanager|bat.bing.com|adobedtm.com|demdex.net)/.test(request.url())) {
+      await request.abort()
+    } else {
+      await request.continue()
+    }
+  })
+  */
+
+  await page.goto('https://www.kingsoopers.com/rx/guest/get-vaccinated');
 
   page.on('response', async (response) => {
     console.log('XHR response received: ', response.url());
@@ -57,6 +70,7 @@ puppeteer.use(ua);
       }
     }
   });
+  await new Promise(r => setTimeout(r, 5000));
 
   for (const zipCode of zipCodes) {
     const lastProcessed = db.get(`zipCodesLastProcessed.${zipCode.zipCode}`).value();
@@ -64,10 +78,17 @@ puppeteer.use(ua);
       console.log(`Skipping ${zipCode.zipCode}`);
     } else {
       console.log(`Processing ${zipCode.zipCode}`);
+      await page.mouse.move(0, 0);
+      await page.mouse.down();
+      await page.mouse.move(0, 100);
+      await page.mouse.move(100, 100);
+      await page.mouse.move(100, 0);
+      await page.mouse.move(0, 0);
+      await page.mouse.up();
       await page.$eval('h1', el => el.click());
       await page.$eval('[name=findAStore]', el => el.click());
       await page.$eval('[name=findAStore]', el => el.value = '');
-      await page.type('[name=findAStore]', zipCode.zipCode);
+      await page.type('[name=findAStore]', zipCode.zipCode, { delay: 500 });
       /*
       await page.focus('[name=findAStore]');
       await page.keyboard.down('Control');
@@ -76,6 +97,7 @@ puppeteer.use(ua);
       await page.keyboard.press('Backspace');
       await page.keyboard.type(zipCode.zipCode);
       */
+      await new Promise(r => setTimeout(r, 1000));
       await page.keyboard.press('Enter');
       /*
       await page.goto(`https://www.kingsoopers.com/rx/api/anonymous/stores?address=${zipCode.zipCode}`, { waitUntil: 'networkidle0' });
