@@ -25,16 +25,10 @@ module.exports.refreshAlbertsons = async () => {
     })
     .fetchAll();
   resources = _.shuffle(resources);
-  i = 0;
-  for (const r of resources) {
+  let i = 0;
+  for (const resource of resources) {
     i++;
-    console.info(`Processing ${r.name} (${i} of ${resources.length})...`);
-
-    const { resource } = await container.item(r.id).read();
-    if (resource.lastFetched > dateAdd(new Date(), { minutes: -2 }).toISOString()) {
-      console.info(`  Skipping since last fetched more recently than originally queried (${resource.lastFetched})`);
-      continue;
-    }
+    console.info(`Processing ${resource.name} (${i} of ${resources.length})...`);
 
     const lastFetched = (new Date()).toISOString();
 
