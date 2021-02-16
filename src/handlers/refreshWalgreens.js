@@ -1,5 +1,7 @@
 const _ = require('lodash');
+const retry = require('async-retry');
 const sleep = require('sleep-promise');
+const RandomHttpUserAgent = require('random-http-useragent')
 const { DateTime, Settings } = require('luxon');
 const dateAdd = require('date-fns/add')
 const getDatabase = require('../getDatabase');
@@ -9,13 +11,13 @@ Settings.defaultZoneName = 'America/Denver';
 
 module.exports.refreshWalgreens = async () => {
   const db = await getDatabase();
-  const { container } = await db.containers.createIfNotExists({ id: "walgreens_zip_codes" });
+  const { container } = await db.containers.createIfNotExists({ id: "walgreens_stores" });
 
   const tomorrow = DateTime.local().plus({ days: 1 });
 
   let { resources } = await container.items
     .query({
-      query: "SELECT * from c WHERE c.lastFetched = null OR c.lastFetched <= @minsAgo",
+      query: "SELECT * from c WHERE NOT is_defined(c.lastFetched) OR c.lastFetched <= @minsAgo",
       parameters: [
         { name: '@minsAgo', value: DateTime.utc().minus({ minutes: 2 }).toISO() },
       ],
@@ -23,37 +25,46 @@ module.exports.refreshWalgreens = async () => {
     .fetchAll();
   resources = _.shuffle(resources);
   let i = 0;
-  for (const zipCode of resources) {
+  for (const resource of resources) {
     i++;
-    console.info(`Processing ${zipCode.zipCode} (${i} of ${resources.length})...`);
+    console.info(`Processing store #${resource.id} (${i} of ${resources.length})...`);
 
     const lastFetched = DateTime.utc().toISO()
 
-    const resp = await got.post('https://www.walgreens.com/hcschedulersvc/svc/v1/immunizationLocations/availability', {
-      headers: {
-        // 'User-Agent': 'covid-vaccine-finder (https://github.com/GUI/covid-vaccine-finder)',
-        'Referer': 'https://www.walgreens.com/findcare/vaccination/covid-19/location-screening',
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36',
-        'Accept-Language': 'en-US,en;q=0.9',
-      },
-      json: {
-        serviceId: '99',
-        position: {
-          latitude: parseFloat(zipCode.latitude),
-          longitude: parseFloat(zipCode.longitude),
+    const resp = await retry(async () => {
+      const agent = await RandomHttpUserAgent.get()
+      return await got.post('https://www.walgreens.com/hcschedulersvc/svc/v1/immunizationLocations/availability', {
+        headers: {
+          // 'User-Agent': 'covid-vaccine-finder/1.0 (https://github.com/GUI/covid-vaccine-finder)',
+          'User-Agent': `${agent} covid-vaccine-finder (https://github.com/GUI/covid-vaccine-finder)`,
+          'Referer': 'https://www.walgreens.com/findcare/vaccination/covid-19/location-screening',
+          'Accept-Language': 'en-US,en;q=0.9',
         },
-        appointmentAvailability: {
-          startDateTime: tomorrow.toISODate(),
+        json: {
+          serviceId: '99',
+          position: {
+            latitude: parseFloat(resource.latitude),
+            longitude: parseFloat(resource.longitude),
+          },
+          appointmentAvailability: {
+            startDateTime: tomorrow.toISODate(),
+          },
+          radius: 1,
         },
-        radius:25,
+        responseType: 'json',
+        timeout: 5000,
+        retry: 0,
+      });
+    }, {
+      retries: 2,
+      onRetry: (err) => {
+        console.info(`Retrying due to error: ${err}`);
       },
-      responseType: 'json',
-      retry: 0,
     });
 
     await container.items.upsert({
-      ...zipCode,
-      ...resp.body,
+      ...resource,
+      availability: resp.body,
       lastFetched,
     });
 
@@ -61,4 +72,4 @@ module.exports.refreshWalgreens = async () => {
   }
 }
 
-module.exports.refreshWalgreens();
+// module.exports.refreshWalgreens();

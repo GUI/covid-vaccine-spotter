@@ -1,4 +1,5 @@
 const getDatabase = require('../getDatabase');
+const _ = require('lodash');
 const got = require('got');
 
 module.exports.refreshCvs = async () => {
@@ -19,10 +20,24 @@ module.exports.refreshCvs = async () => {
   });
   console.info(resp.body);
 
-  for (const city of resp.body.responsePayloadData.data.CO) {
+  if (resp.body.responsePayloadData && !_.isEmpty(resp.body.responsePayloadData.data)) {
+    for (const city of resp.body.responsePayloadData.data.CO) {
+      await container.items.upsert({
+        id: `${city.state}-${city.city}`,
+        ...city,
+        lastFetched,
+      });
+    }
+  }
+
+  let { resources } = await container.items
+    .query({
+      query: "SELECT * from c",
+    })
+    .fetchAll();
+  for (const resource of resources) {
     await container.items.upsert({
-      id: `${city.state}-${city.city}`,
-      ...city,
+      ...resource,
       lastFetched,
     });
   }

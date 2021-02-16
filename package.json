@@ -14,6 +14,7 @@
     "json-stable-stringify": "^1.0.1",
     "lodash": "^4.17.20",
     "luxon": "^1.26.0",
+    "random-http-useragent": "^1.1.32",
     "sleep-promise": "^9.1.0",
     "tough-cookie": "^4.0.0"
   },
