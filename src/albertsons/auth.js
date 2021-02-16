@@ -3,12 +3,12 @@ const _ = require('lodash');
 const sleep = require('sleep-promise');
 const { CookieJar } = require('tough-cookie');
 
-const albertsonsAuth = module.exports = {
+const Auth = module.exports = {
   get: async () => {
-    if (albertsonsAuth.auth) {
-      return albertsonsAuth.auth;
+    if (Auth.auth) {
+      return Auth.auth;
     } else {
-      return await albertsonsAuth.refresh();
+      return await Auth.refresh();
     }
   },
 
@@ -34,12 +34,12 @@ const albertsonsAuth = module.exports = {
       cookieJar,
       body: resp.body,
     };
-    albertsonsAuth.set(auth);
+    Auth.set(auth);
 
     return auth;
   },
 
   set: (auth) => {
-    albertsonsAuth.auth = auth;
+    Auth.auth = auth;
   },
 };

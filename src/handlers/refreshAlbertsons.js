@@ -1,13 +1,11 @@
-const got = require('got');
-const sleep = require('sleep-promise');
-const retry = require('async-retry');
-const dateAdd = require('date-fns/add')
-const getDatabase = require('./getDatabase');
-const albertsonsAuth = require('./albertsonsAuth');
-const albertsonsFetch = require('./albertsonsFetch');
 const _ = require('lodash');
+const albertsonsAuth = require('../albertsons/auth');
+const albertsonsFetch = require('../albertsons/fetch');
+const dateAdd = require('date-fns/add')
+const getDatabase = require('../getDatabase');
+const got = require('got');
 
-(async () => {
+module.exports.refreshAlbertsons = async () => {
   const db = await getDatabase();
   const { container } = await db.containers.createIfNotExists({ id: "albertsons_stores" });
 
@@ -28,9 +26,15 @@ const _ = require('lodash');
     .fetchAll();
   resources = _.shuffle(resources);
   i = 0;
-  for (const resource of resources) {
+  for (const r of resources) {
     i++;
-    console.info(`Processing ${resource.name} (${i} of ${resources.length})...`);
+    console.info(`Processing ${r.name} (${i} of ${resources.length})...`);
+
+    const { resource } = await container.item(r.id).read();
+    if (resource.lastFetched > dateAdd(new Date(), { minutes: -2 }).toISOString()) {
+      console.info(`  Skipping since last fetched more recently than originally queried (${resource.lastFetched})`);
+      continue;
+    }
 
     const lastFetched = (new Date()).toISOString();
 
@@ -94,6 +98,7 @@ const _ = require('lodash');
             eventType: 'COVID Vaccine Dose 1 Appt',
             eventTitle: '',
           },
+          retry: 0,
         });
       });
       events = events.concat(eventsResp.body);
@@ -106,4 +111,4 @@ const _ = require('lodash');
       events,
     });
   }
-})();
+}

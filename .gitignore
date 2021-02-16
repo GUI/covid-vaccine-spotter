@@ -1,3 +1,7 @@
 /node_modules
 /_site
 /.env*
+/site/_data
+/.serverless
+/host.json
+/local.settings.json

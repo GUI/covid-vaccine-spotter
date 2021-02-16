@@ -1,5 +1,5 @@
 ---
-title: Colorado COVID-19 Vaccines
+title: Colorado COVID-19 Vaccine Finder
 ---
 
 <!doctype html>
@@ -28,58 +28,65 @@ title: Colorado COVID-19 Vaccines
       <h2>Visit Colorado.gov</h2>
       <p class="fs-4">Be sure to visit Colorado's official <a href="https://covid19.colorado.gov/for-coloradans/vaccine/where-can-i-get-vaccinated"><strong>find out where you can get vaccinated</strong></a> page for detailed and up to date information.</p>
 
-      <h2>Safeway Appointment Status</h2>
-      <% this.lodash.orderBy(albertsons, [(o) => o.events.length, 'name'], ['desc', 'asc']).forEach((store) => { %>
-        <% lastFetched = (new Date(store.lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long' }) %>
+      <h2>Tool Status</h2>
+      <ul>
+        <li><strong>CVS:</strong> Last checked <%= (new Date(this.lodash.orderBy(cvs, ['lastFetched'], ['desc'])[0].lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>. Checking <%= cvs.length %> <%= (cvs.length === 1) ? 'city' : 'cities' %>.</li>
+        <li><strong>Safeway, Albertsons:</strong> Last checked <%= (new Date(this.lodash.orderBy(albertsons, ['lastFetched'], ['desc'])[0].lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>. Checking <%= albertsons.length %> <%= (albertsons.length === 1) ? 'store' : 'stores' %>.</li>
+        <li><strong>King Soopers, City Market, Dillons, Smith's:</strong> Broken (tool is being blocked from accessing Kroger's website).</li>
+        <li><strong>Walmart, Sam's Club:</strong> Not yet checking.</li>
+        <li><strong>Walgreens:</strong> Not yet checking.</li>
+      </ul>
+
+      <h2>CVS Appointment Status</h2>
+      <% this.lodash.orderBy(cvs, [(o) => parseInt(o.totalAvailable, 10), 'city'], ['desc', 'asc']).forEach((store) => { %>
+        <% lastFetched = (new Date(store.lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>
         <div class="card mb-4">
-          <h5 class="card-header"><%= store.name %></h5>
+          <h5 class="card-header"><%= store.city %></h5>
           <div class="card-body">
-            <p class="card-text">
-              <% if(store.events.length > 0) { %>
-                <div class="text-success fs-2">
-                  <i class="fas fa-check-circle"></i>
-                  <span class="fs-5">Appointments available as of <%= lastFetched %></span>
-                </div>
-                <% store.events.forEach((event) => { %>
-                  <div><%= event.date %> <%= event.startTime %></div>
-                <% }) %>
-                <a href="https://www.safeway.com/pharmacy/covid-19.html" class="btn btn-primary">Visit Safeway Website</a>
-              <% } else { %>
+            <% if(parseInt(store.totalAvailable, 10) > 0) { %>
+              <div class="text-success fs-2">
+                <i class="fas fa-check-circle"></i>
+                <span class="fs-5">Appointments available as of <%= lastFetched %></span>
+              </div>
+              <% store.events.forEach((event) => { %>
+                <div><%= event.date %> <%= event.startTime %></div>
+              <% }) %>
+              <a href="https://www.cvs.com/immunizations/covid-19-vaccine" class="btn btn-primary">Visit CVS Website</a>
+            <% } else { %>
+              <div>
                 <i class="fas fa-times-circle"></i>
                 No appointments available as of last check
-              <% } %>
-            </p>
-            <p class="card-text text-secondary"><small>Last Checked <%= lastFetched %></small></p>
+              </div>
+            <% } %>
+            <p class="card-text text-secondary mt-2"><small>Last checked <%= lastFetched %></small></p>
           </div>
         </div>
       <% }) %>
 
-      <h2>King Soopers Appointment Status</h2>
-
-      <% krogerAppointments.stores.sort((a, b) => { return b.appointments.length - a.appointments.length }).forEach((appointmentStore) => { %>
-        <% store = krogerReasons.stores.find((s) => s.facilityId === appointmentStore.facilityId) %>
-        <% lastProcessed = new Date(krogerAppointmentsLastProcessed.appointmentsLastProcessed[appointmentStore.facilityId]).toLocaleString('en-US', { timeZone: 'America/Denver' }) + ' MT' %>
+      <h2>Safeway, Albertsons Appointment Status</h2>
+      <% this.lodash.orderBy(albertsons, [(o) => o.events.length, 'name'], ['desc', 'asc']).forEach((store) => { %>
+        <% lastFetched = (new Date(store.lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>
         <div class="card mb-4">
-          <h5 class="card-header"><%= store.vanityName %></h5>
+          <h5 class="card-header"><%= store.name %></h5>
           <div class="card-body">
-            <p class="card-text"><%= store.address.address1 %><br><%= store.address.city %>, <%= store.address.state %> <%= store.address.zipCode %></p>
-            <p class="card-text"><%= store.phone.areaCode %>-<%= store.phone.phoneNumber %></p>
-            <p class="card-text">
-              <% if(appointmentStore.appointments && appointmentStore.appointments.length > 0) { %>
-                <div class="text-success fs-2">
-                  <i class="fas fa-check-circle"></i>
-                  <span class="fs-5">Appointments available as of <%= lastProcessed %></span>
-                </div>
-                <a href="https://www.kingsoopers.com/rx/guest/get-vaccinated" class="btn btn-primary">Visit King Soopers Website</a>
-              <% } else { %>
+            <% if(store.events.length > 0) { %>
+              <div class="text-success fs-2">
+                <i class="fas fa-check-circle"></i>
+                <span class="fs-5">Appointments available as of <%= lastFetched %></span>
+              </div>
+              <% store.events.forEach((event) => { %>
+                <div><%= event.date %> <%= event.startTime %></div>
+              <% }) %>
+              <a href="https://www.safeway.com/pharmacy/covid-19.html" class="btn btn-primary">Visit Safeway Website</a>
+            <% } else { %>
+              <div>
                 <i class="fas fa-times-circle"></i>
                 No appointments available as of last check
-              <% } %>
-            </p>
-            <p class="card-text text-secondary"><small>Last Checked <%= lastProcessed %></small></p>
+              </div>
+            <% } %>
+            <p class="card-text text-secondary mt-2"><small>Last checked <%= lastFetched %></small></p>
           </div>
         </div>
-        <%= store.appointments %>
       <% }) %>
     </div>
   </body>
