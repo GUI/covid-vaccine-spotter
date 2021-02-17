@@ -12,6 +12,9 @@ module.exports.refreshWebsite = async () => {
   const { container: walgreensStores } = await db.containers.createIfNotExists({ id: "walgreens_stores" });
   const { container: walmartStores } = await db.containers.createIfNotExists({ id: "walmart_stores" });
 
+  const { stdout } = await execa('ls', ['-lh', os.tmpdir()])
+  console.info(stdout);
+  await execa('rm', ['-rf', `${os.tmpdir()}/covid-vaccine-finder*`])
   const tmp = await fs.mkdtemp(`${os.tmpdir()}/covid-vaccine-finder`);
   console.info(tmp);
   await execa('cp', ['-r', './site', `${tmp}/`])

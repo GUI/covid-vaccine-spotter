@@ -292,6 +292,11 @@ description: A tool to help you track down COVID-19 vaccine appointment openings
           </div>
         </div>
 
+        <div class="alert alert-info" role="alert">
+          <h5>Notices</h5>
+          <p class="mb-0"><strong>02/17/2021 7:26AM:</strong> The tool was not automatically updating today from 5:53AM - 7:26AM. It should now be working again and refreshing every minute again. Sorry about the interruption! You may also see some Walmart locations pop up at the bottom, but this data is not yet updating automatically (but I'm working on it!).</p>
+        </div>
+
         <h2>CVS Appointments</h2>
         <% appointments = this.lodash.orderBy(cvs, ['lastFetched'], ['desc']) %>
         <% availableAppointments = this.lodash.filter(appointments, (o) => parseInt(o.totalAvailable, 10) > 0) %>
