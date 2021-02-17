@@ -52,6 +52,11 @@ functions:
     reservedConcurrency: 1
     events:
       - schedule: "rate(2 minutes)"
+  refreshWalmart:
+    handler: index.refreshWalmart
+    reservedConcurrency: 1
+    events:
+      - schedule: "rate(2 minutes)"
   refreshWebsite:
     handler: index.refreshWebsite
     reservedConcurrency: 1

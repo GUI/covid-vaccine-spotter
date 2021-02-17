@@ -10,6 +10,7 @@ module.exports.refreshWebsite = async () => {
   const { container: albertsonsStores } = await db.containers.createIfNotExists({ id: "albertsons_stores" });
   const { container: cvsCities } = await db.containers.createIfNotExists({ id: "cvs_cities" });
   const { container: walgreensStores } = await db.containers.createIfNotExists({ id: "walgreens_stores" });
+  const { container: walmartStores } = await db.containers.createIfNotExists({ id: "walmart_stores" });
 
   const tmp = await fs.mkdtemp(`${os.tmpdir()}/covid-vaccine-finder`);
   console.info(tmp);
@@ -30,6 +31,11 @@ module.exports.refreshWebsite = async () => {
     .query("SELECT * from c ORDER BY c.id")
     .fetchAll();
   await fs.writeFile(`${tmp}/site/_data/walgreens.json`, stringify(walgreensData, { space: '  ' }));
+
+  const { resources: walmartData } = await walmartStores.items
+    .query("SELECT * from c ORDER BY c.id")
+    .fetchAll();
+  await fs.writeFile(`${tmp}/site/_data/walmart.json`, stringify(walmartData, { space: '  ' }));
 
   await execa('./node_modules/@11ty/eleventy/cmd.js', ['--input', `${tmp}/site`, '--output', `${tmp}/_site`]);
   await execa('cp', ['-r', `${tmp}/site/_data`, `${tmp}/_site/`]);

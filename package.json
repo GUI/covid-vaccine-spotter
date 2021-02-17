@@ -20,6 +20,7 @@
   },
   "devDependencies": {
     "@google-cloud/functions-framework": "^1.7.1",
+    "ejs-lint": "^1.1.0",
     "serverless-azure-functions": "^2.1.0",
     "serverless-google-cloudfunctions": "^3.1.1",
     "serverless-offline": "^6.8.0"

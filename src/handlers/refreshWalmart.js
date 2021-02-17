@@ -1,10 +1,14 @@
 const getDatabase = require('../getDatabase');
+const retry = require('async-retry');
 const _ = require('lodash');
-const dateAdd = require('date-fns/add')
+const walmartAuth = require('../walmart/auth');
+const { DateTime, Settings } = require('luxon');
 const got = require('got');
 const sleep = require('sleep-promise');
 
-module.exports.findWalmartStores = async () => {
+Settings.defaultZoneName = 'America/Denver';
+
+module.exports.refreshWalmart = async () => {
   const db = await getDatabase();
   const { container } = await db.containers.createIfNotExists({ id: "walmart_stores" });
 
@@ -12,7 +16,7 @@ module.exports.findWalmartStores = async () => {
     .query({
       query: "SELECT * from c WHERE NOT is_defined(c.lastFetched) OR c.lastFetched <= @minsAgo",
       parameters: [
-        { name: '@minsAgo', value: dateAdd(new Date(), { minutes: -2 }).toISOString() },
+        { name: '@minsAgo', value: DateTime.utc().minus({ minutes: 2 }).toISO() },
       ],
     })
     .fetchAll();
@@ -22,10 +26,40 @@ module.exports.findWalmartStores = async () => {
     i++;
     console.info(`Processing ${resource.displayName} (${i} of ${resources.length})...`);
 
-    if (resource.address.state !== 'CO') {
-      await container.item(resource.id).delete();
-    }
+    const lastFetched = DateTime.utc().toISO()
+
+    const resp = await retry(async () => {
+      const auth = await walmartAuth.get();
+      return await got.post(`https://www.walmart.com/pharmacy/v2/clinical-services/time-slots/${auth.body.payload.cid}`, {
+        headers: {
+          'User-Agent': 'covid-vaccine-finder (https://github.com/GUI/covid-vaccine-finder)',
+        },
+        cookieJar: auth.cookieJar,
+        responseType: 'json',
+        json: {
+          startDate: DateTime.local().toFormat('LLddyyyy'),
+          endDate: DateTime.local().plus({ days: 6 }).toFormat('LLddyyyy'),
+          imzStoreNumber: {
+            USStoreId: parseInt(resource.id, 10),
+          },
+        },
+        retry: 0,
+      });
+    }, {
+      retries: 2,
+      onRetry: (err) => {
+        console.info(`Retrying due to error: ${err}`);
+      },
+    });
+
+    await container.items.upsert({
+      ...resource,
+      timeSlots: resp.body,
+      lastFetched,
+    });
+
+    await sleep(1000);
   }
 };
 
-module.exports.findWalmartStores();
+// module.exports.refreshWalmart();

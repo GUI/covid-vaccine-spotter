@@ -35,18 +35,23 @@ title: Colorado COVID-19 Vaccine Finder
         <h1>All Locations</h1>
 
         <h2>CVS Appointments</h2>
-        <% this.lodash.orderBy(cvs, [(o) => parseInt(o.totalAvailable, 10), 'city'], ['desc', 'asc']).forEach((store) => { %>
+        <% this.lodash.orderBy(cvs, ['id'], ['asc']).forEach((store) => { %>
           <%- include('../_includes/cvsAppointment', { store }) %>
         <% }) %>
 
         <h2>Safeway, Albertsons Appointments</h2>
-        <% this.lodash.orderBy(albertsons, [(o) => o.events.length, 'name'], ['desc', 'asc']).forEach((store) => { %>
+        <% this.lodash.orderBy(albertsons, ['id'], ['asc']).forEach((store) => { %>
           <%- include('../_includes/albertsonsAppointment', { store }) %>
         <% }) %>
 
         <h2>Walgreens Appointments</h2>
-        <% this.lodash.orderBy(walgreens, [(o) => o.availability.appointmentsAvailable ? 1 : 0, (o) => o.store.address.city], ['desc', 'asc']).forEach((store) => { %>
+        <% this.lodash.orderBy(walgreens, ['id'], ['asc']).forEach((store) => { %>
           <%- include('../_includes/walgreensAppointment', { store }) %>
+        <% }) %>
+
+        <h2>Walmart Appointments</h2>
+        <% this.lodash.orderBy(walmart, ['id'], ['asc']).forEach((store) => { %>
+          <%- include('../_includes/walmartAppointment', { store }) %>
         <% }) %>
       </div>
     </main>

@@ -7,11 +7,8 @@
         <i class="fas fa-check-circle"></i>
         <span class="fs-5">Appointments available as of <%= lastFetched %></span>
       </div>
-      <ul>
-        <% store.events.forEach((event) => { %>
-          <li><%= event.date %> <%= event.startTime %></li>
-        <% }) %>
-      </ul>
+      <% times = store.events.map((event) => this.luxon.DateTime.fromFormat(`${event.date} ${event.startTime}`, 'LL/dd/yyyy hh:mm a')) %>
+      <%- include('./appointmentTimes', { times }) %>
       <a href="https://www.safeway.com/pharmacy/covid-19.html" class="btn btn-primary">Visit Safeway Website</a>
     <% } else { %>
       <div>

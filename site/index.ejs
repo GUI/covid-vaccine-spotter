@@ -336,6 +336,21 @@ description: A tool to help you track down COVID-19 vaccine appointment openings
             <p class="card-text text-secondary"><small>Last checked <%= lastFetched %></small></p>
           <% } %>
         <% } %>
+
+        <h2>Walmart Appointments</h2>
+        <% appointments = this.lodash.orderBy(walmart, ['lastFetched'], ['desc']) %>
+        <% availableAppointments = this.lodash.filter(appointments, (o) => o.servicesMap && o.servicesMap.COVID_IMMUNIZATIONS && o.servicesMap.COVID_IMMUNIZATIONS.active && o.timeSlots && o.timeSlots.data && o.timeSlots.data.slotDays && this.lodash.some(o.timeSlots.data.slotDays, (d) => d.slots && d.slots.length > 0)) %>
+        <% if(availableAppointments.length > 0) { %>
+          <% availableAppointments.forEach((store) => { %>
+            <%- include('./_includes/walmartAppointment', { store }) %>
+          <% }) %>
+        <% } else { %>
+          <p class="mb-0">No appointments available at any locations as of last check.</p>
+          <% if(appointments && appointments[0] && appointments[0].lastFetched) { %>
+            <% lastFetched = (new Date(appointments[0].lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>
+            <p class="card-text text-secondary"><small>Last checked <%= lastFetched %></small></p>
+          <% } %>
+        <% } %>
       </div>
     </main>
     <footer class="mt-3">
@@ -345,8 +360,9 @@ description: A tool to help you track down COVID-19 vaccine appointment openings
           <li><strong>CVS:</strong> Last checked <%= (new Date(this.lodash.orderBy(cvs, ['lastFetched'], ['desc'])[0].lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>. Checking <%= cvs.length %> <%= (cvs.length === 1) ? 'city' : 'cities' %> (new cities will be added as CVS adds them).</li>
           <li><strong>Safeway, Albertsons:</strong> Last checked <%= (new Date(this.lodash.orderBy(albertsons, ['lastFetched'], ['desc'])[0].lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>. Checking all <%= albertsons.length %> <%= (albertsons.length === 1) ? 'store' : 'stores' %> in CO.</li>
           <li><strong>Walgreens:</strong> Last checked <%= (new Date(this.lodash.orderBy(walgreens, ['lastFetched'], ['desc'])[0].lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>. Checking all <%= walgreens.length %> <%= (walgreens.length === 1) ? 'store' : 'stores' %> in CO.</li>
+          <li><strong>Walmart:</strong> Last checked <%= (new Date(this.lodash.orderBy(walmart, ['lastFetched'], ['desc'])[0].lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>. Checking all <%= walgreens.length %> <%= (walgreens.length === 1) ? 'store' : 'stores' %> in CO.</li>
           <li><strong>King Soopers, City Market, Dillons, Smith's:</strong> Broken (tool was checking, but is now being blocked from accessing Kroger's website).</li>
-          <li><strong>Walmart, Sam's Club:</strong> Not yet checking.</li>
+          <li><strong>Sam's Club:</strong> Not yet checking.</li>
         </ul>
 
         <p>View the status of <a href="/all/">all locations being scanned</a> (including those locations without open appointments).</p>
