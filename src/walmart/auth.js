@@ -2,6 +2,7 @@ const got = require('got');
 const _ = require('lodash');
 const sleep = require('sleep-promise');
 const { CookieJar } = require('tough-cookie');
+const { HttpsProxyAgent } = require('hpagent')
 
 const Auth = module.exports = {
   get: async () => {
@@ -30,6 +31,7 @@ const Auth = module.exports = {
         'referer': 'https://www.walmart.com/account/login?returnUrl=/pharmacy/clinical-services/immunization/scheduled?imzType=covid',
         'accept-language': 'en-US,en;q=0.9',
       },
+      decompress: true,
       cookieJar,
       // responseType: 'json',
       json: {
@@ -42,6 +44,16 @@ const Auth = module.exports = {
         },
       },
       retry: 0,
+      agent: {
+        https: new HttpsProxyAgent({
+          keepAlive: true,
+          keepAliveMsecs: 1000,
+          maxSockets: 256,
+          maxFreeSockets: 256,
+          scheduling: 'lifo',
+          proxy: process.env.PROXY_URL,
+        })
+      }
     });
 
     await sleep(1000);
