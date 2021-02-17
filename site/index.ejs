@@ -259,13 +259,36 @@ description: A tool to help you track down COVID-19 vaccine appointment openings
       background-color: #FB6200;
       border-color: #FB6200;
     }
+
+    body {
+      padding-top: 100px;
+    }
+
+    h1.navbar-brand {
+      font-size: 1rem;
+    }
+
+    @media (min-width: 768px) {
+      body {
+        padding-top: 50px;
+      }
+    }
+
+    @media (min-width: 360px) {
+      h1.navbar-brand {
+        font-size: 1.25rem;
+      }
+    }
     </style>
   </head>
   <body>
     <header>
-      <div class="navbar navbar-dark bg-primary shadow-sm">
+      <div class="navbar fixed-top navbar-dark bg-primary shadow">
         <div class="container">
           <h1 class="navbar-brand mb-0 fw-bold"><a href="/" class="text-white" style="text-decoration: none;"><%= title %></a></h1>
+          <div class="d-flex">
+            <button class="btn btn-light" onclick="window.location.reload();"><i class="fas fa-redo-alt"></i> Check for New Appointments</button>
+          </div>
         </div>
       </div>
     </header>
@@ -294,7 +317,7 @@ description: A tool to help you track down COVID-19 vaccine appointment openings
 
         <div class="alert alert-info" role="alert">
           <h5>Notices</h5>
-          <p class="mb-0"><strong>02/17/2021 7:26AM:</strong> The tool was not automatically updating today from 5:53AM - 7:26AM. It should now be working again and refreshing every minute again. Sorry about the interruption! You may also see some Walmart locations pop up at the bottom, but this data is not yet updating automatically (but I'm working on it!).</p>
+          <p class="mb-0"><strong>02/17/2021 9:54AM:</strong> The tool was not automatically updating today from 5:53AM - 7:26AM and 8:46AM - 9:54AM. It should now be working again and refreshing every minute again. Very sorry about the interruptions! You may also see some Walmart locations pop up at the bottom, but this data is not yet updating automatically (but I'm working on it!).</p>
         </div>
 
         <h2>CVS Appointments</h2>
