@@ -16,6 +16,9 @@ provider:
     DB_KEY: "${env:DB_KEY}"
     GH_TOKEN: "${env:GH_TOKEN}"
     CACHE_DIR: /tmp/cache
+    WALMART_USERNAME: "${env:WALMART_USERNAME}"
+    WALMART_PASSWORD: "${env:WALMART_PASSWORD}"
+    PROXY_URL: "${env:PROXY_URL}"
   # os: windows  # windows is default, linux is available
   # prefix: "sample"  # prefix of generated resource name
   # subscriptionId: A356AC8C-E310-44F4-BF85-C7F29044AF99
