@@ -24,7 +24,12 @@ module.exports.refreshWalmart = async () => {
   let i = 0;
   for (const resource of resources) {
     i++;
-    console.info(`Processing ${resource.displayName} (${i} of ${resources.length})...`);
+    console.info(`Processing ${resource.displayName} #${resource.id} (${i} of ${resources.length})...`);
+
+    if(!resource.servicesMap || !resource.servicesMap.COVID_IMMUNIZATIONS || !resource.servicesMap.COVID_IMMUNIZATIONS.active) {
+      console.info(`  Skipping ${resource.displayName} #${resource.id} since it doesn't currently support COVID vaccines.`);
+      continue;
+    }
 
     const lastFetched = DateTime.utc().toISO()
 
