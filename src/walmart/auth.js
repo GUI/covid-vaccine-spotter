@@ -14,6 +14,8 @@ const Auth = module.exports = {
   },
 
   refresh: async () => {
+    console.info('Refreshing Walmart auth');
+
     const cookieJar = new CookieJar();
     const resp = await got.post('https://www.walmart.com/account/electrode/api/signin?returnUrl=/pharmacy/clinical-services/immunization/scheduled?imzType=covid', {
       headers: {

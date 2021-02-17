@@ -52,8 +52,9 @@ module.exports.refreshWalmart = async () => {
       });
     }, {
       retries: 2,
-      onRetry: (err) => {
-        console.info(`Retrying due to error: ${err}`);
+      onRetry: async (err) => {
+        console.info(`Error fetching data (${err.response.statusCode}), attempting to refresh auth and then retry.`);
+        await walmartAuth.refresh();
       },
     });
 
