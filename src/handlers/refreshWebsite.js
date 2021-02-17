@@ -2,8 +2,12 @@ const execa = require('execa');
 const fs = require('fs').promises;
 const os = require('os');
 const getDatabase = require('../getDatabase');
-const ghpages = require('gh-pages');
 const stringify = require('json-stable-stringify');
+const del = require('del');
+const ghpages = require('gh-pages');
+const util = require('util');
+
+const publish = util.promisify(ghpages.publish);
 
 module.exports.refreshWebsite = async () => {
   const db = await getDatabase();
@@ -14,7 +18,7 @@ module.exports.refreshWebsite = async () => {
 
   const { stdout } = await execa('ls', ['-lh', os.tmpdir()])
   console.info(stdout);
-  await execa('rm', ['-rf', `${os.tmpdir()}/covid-vaccine-finder*`])
+  await del([`${os.tmpdir()}/covid-vaccine-finder*`], { force: true });
   const tmp = await fs.mkdtemp(`${os.tmpdir()}/covid-vaccine-finder`);
   console.info(tmp);
   await execa('cp', ['-r', './site', `${tmp}/`])
@@ -44,7 +48,7 @@ module.exports.refreshWebsite = async () => {
   await execa('cp', ['-r', `${tmp}/site/_data`, `${tmp}/_site/`]);
   await execa('./node_modules/gh-pages/bin/gh-pages-clean.js');
 
-  ghpages.publish(`${tmp}/_site`, {
+  await publish(`${tmp}/_site`, {
     repo: `https://${process.env.GH_TOKEN}@github.com/GUI/vaccine.git`,
     dotfiles: true,
     silent: false,
@@ -52,8 +56,6 @@ module.exports.refreshWebsite = async () => {
       name: 'Auto Builder',
       email: '12112+GUI@users.noreply.github.com',
     },
-  }, (err) => {
-    console.info(err);
   });
 }
 
