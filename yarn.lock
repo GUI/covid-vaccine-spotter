@@ -2453,6 +2453,11 @@ duplexer3@^0.1.4:
   resolved "https://registry.yarnpkg.com/duplexer3/-/duplexer3-0.1.4.tgz#ee01dd1cac0ed3cbc7fdbea37dc0a8f1ce002ce2"
   integrity sha1-7gHdHKwO08vH/b6jfcCo8c4ALOI=
 
+dynamodb-toolbox@^0.3.3:
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/dynamodb-toolbox/-/dynamodb-toolbox-0.3.3.tgz#77343085813c053fa5e123c4a1332ff0e133d953"
+  integrity sha512-6kA+H5rve1OI38XTHbBa06kf+EIzEItxJW/3MoCqhi3YAXdk4uxPIbEu0f+xyd/s8fQRBF7i7ibJnICpDY6g2Q==
+
 easy-extender@^2.3.4:
   version "2.3.4"
   resolved "https://registry.yarnpkg.com/easy-extender/-/easy-extender-2.3.4.tgz#298789b64f9aaba62169c77a2b3b64b4c9589b8f"
