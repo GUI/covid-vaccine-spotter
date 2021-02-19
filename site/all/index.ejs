@@ -53,6 +53,11 @@ title: Colorado COVID-19 Vaccine Finder
         <% this.lodash.orderBy(walmart, ['id'], ['asc']).forEach((store) => { %>
           <%- include('../_includes/walmartAppointment', { store }) %>
         <% }) %>
+
+        <h2>King Soopers, City Market Appointments</h2>
+        <% this.lodash.orderBy(kroger, ['id'], ['asc']).forEach((store) => { %>
+          <%- include('../_includes/krogerAppointment', { store }) %>
+        <% }) %>
       </div>
     </main>
   </body>

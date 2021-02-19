@@ -379,6 +379,21 @@ description: A tool to help you track down COVID-19 vaccine appointment openings
             <p class="card-text text-secondary"><small>Last checked <%= lastFetched %></small></p>
           <% } %>
         <% } %>
+
+        <h2>King Soopers, City Market Appointments</h2>
+        <% appointments = this.lodash.orderBy(kroger, ['lastFetched'], ['desc']) %>
+        <% availableAppointments = this.lodash.filter(appointments, (o) => o.appointments && o.appointments.dates && this.lodash.some(o.appointments.dates, (d) => d.slots && d.slots.length > 0)) %>
+        <% if(availableAppointments.length > 0) { %>
+          <% availableAppointments.forEach((store) => { %>
+            <%- include('./_includes/krogerAppointment', { store }) %>
+          <% }) %>
+        <% } else { %>
+          <p class="mb-0">No appointments available at any locations as of last check.</p>
+          <% if(appointments && appointments[0] && appointments[0].lastFetched) { %>
+            <% lastFetched = (new Date(appointments[0].lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>
+            <p class="card-text text-secondary"><small>Last checked <%= lastFetched %></small></p>
+          <% } %>
+        <% } %>
       </div>
     </main>
     <footer class="mt-3">

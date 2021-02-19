@@ -4,10 +4,23 @@ const got = require('got');
 const sleep = require('sleep-promise');
 const { HttpsProxyAgent } = require('hpagent')
 
-module.exports.findWalmartStores = async () => {
+module.exports.findKrogerStores = async () => {
   const db = await getDatabase();
   const { container: zipCodesContainer } = await db.containers.createIfNotExists({ id: "zip_codes" });
   const { container } = await db.containers.createIfNotExists({ id: "kroger_stores" });
+
+  const tokenResponse = await got.post('https://api.kroger.com/v1/connect/oauth2/token', {
+    headers: {
+      'User-Agent': 'covid-vaccine-finder (https://github.com/GUI/covid-vaccine-finder)',
+    },
+    username: process.env.KROGER_CLIENT_ID,
+    password: process.env.KROGER_CLIENT_SECRET,
+    responseType: 'json',
+    form: {
+      grant_type: 'client_credentials',
+    },
+    retry: 0,
+  });
 
   const importedStores = {};
   let { resources: zipCodeResources } = await zipCodesContainer.items
@@ -17,130 +30,29 @@ module.exports.findWalmartStores = async () => {
     .fetchAll();
   for (const zipCode of zipCodeResources) {
     console.info(`Importing stores for ${zipCode.zipCode}...`);
-    if (zipCode.zipCode < '80826') {
-      continue;
-    }
 
-    if (zipCode.zipCode === '80826') {
-      continue;
-    }
-
-
-    const agent = await RandomHttpUserAgent.get()
-    const resp = await got.post('https://www.kingsoopers.com/stores/api/graphql', {
+    const resp = await got.get('https://api.kroger.com/v1/locations', {
+      searchParams: {
+        'filter.zipCode.near': zipCode.zipCode,
+        'filter.radiusInMiles': 100,
+        'filter.limit': 200,
+        'filter.department': '09',
+      },
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36', // agent,
+        'User-Agent': 'covid-vaccine-finder (https://github.com/GUI/covid-vaccine-finder)',
+        'Authorization': `Bearer ${tokenResponse.body.access_token}`,
       },
-      /*
-      agent: {
-        https: new HttpsProxyAgent({
-          keepAlive: true,
-          keepAliveMsecs: 1000,
-          maxSockets: 256,
-          maxFreeSockets: 256,
-          scheduling: 'lifo',
-          proxy: 'http://localhost:8080/',
-        })
-      },
-      */
-      http2: true,
-      /*
-      https: {
-        rejectUnauthorized: false
-      },
-      */
-      timeout: 5000,
-      //throwHttpErrors: false,
       responseType: 'json',
-      decompress: true,
-      /*
-      hooks: {
-        beforeRequest: [
-          options => {
-            console.info('options: ', options);
-          }
-        ]
-      },
-      */
-      json: {
-        query: '\n' +
-          '      query storeSearch($searchText: String!, $filters: [String]!) {\n' +
-          '        storeSearch(searchText: $searchText, filters: $filters) {\n' +
-          '          stores {\n' +
-          '            ...storeSearchResult\n' +
-          '          }\n' +
-          '          fuel {\n' +
-          '            ...storeSearchResult\n' +
-          '          }\n' +
-          '          shouldShowFuelMessage\n' +
-          '        }\n' +
-          '      }\n' +
-          '      \n' +
-          '  fragment storeSearchResult on Store {\n' +
-          '    banner\n' +
-          '    vanityName\n' +
-          '    divisionNumber\n' +
-          '    storeNumber\n' +
-          '    phoneNumber\n' +
-          '    showWeeklyAd\n' +
-          '    showShopThisStoreAndPreferredStoreButtons\n' +
-          '    storeType\n' +
-          '    distance\n' +
-          '    latitude\n' +
-          '    longitude\n' +
-          '    tz\n' +
-          '    ungroupedFormattedHours {\n' +
-          '      displayName\n' +
-          '      displayHours\n' +
-          '      isToday\n' +
-          '    }\n' +
-          '    address {\n' +
-          '      addressLine1\n' +
-          '      addressLine2\n' +
-          '      city\n' +
-          '      countryCode\n' +
-          '      stateCode\n' +
-          '      zip\n' +
-          '    }\n' +
-          '    pharmacy {\n' +
-          '      phoneNumber\n' +
-          '    }\n' +
-          '    departments {\n' +
-          '      code\n' +
-          '    }\n' +
-          '    fulfillmentMethods{\n' +
-          '      hasPickup\n' +
-          '      hasDelivery\n' +
-          '    }\n' +
-          '  }\n',
-        variables: {
-          searchText: zipCode.zipCode,
-          filters: [],
-        },
-        operationName: 'storeSearch',
-      },
       retry: 0,
     });
-    // console.info(resp);
-    console.info(resp.body);
-    /*
-    } catch(err) {
-      console.info(err);
-      console.info(err.response);
-      console.info(err.response.body);
-      console.info(err.request);
-      console.info(err.response.request);
-      throw err;
-    }
-    */
 
-    for (const store of resp.body.data.storeSearch.stores) {
-      store.id = `${store.divisionNumber}${store.storeNumber}`;
+    for (const store of resp.body.data) {
+      store.id = `${store.locationId}`;
 
       if (importedStores[store.id]) {
         console.info(`  Skipping already imported store ${store.id}`);
-      } else if (store.address.stateCode !== 'CO') {
-        console.info(`  Skipping store in other state: ${store.address.stateCode}`);
+      } else if (store.address.state !== 'CO') {
+        console.info(`  Skipping store in other state: ${store.address.state}`);
       } else {
         console.info(`  Importing store ${store.id}`);
         await container.items.upsert(store);
@@ -151,8 +63,8 @@ module.exports.findWalmartStores = async () => {
       }
     }
 
-    await sleep(1000);
+    await sleep(50);
   }
 }
 
-module.exports.findWalmartStores();
+module.exports.findKrogerStores();

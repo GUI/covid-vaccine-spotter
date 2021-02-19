@@ -1,4 +1,5 @@
 const { firefox } = require('playwright-extra')
+const retry = require('async-retry');
 const _ = require('lodash');
 const sleep = require('sleep-promise');
 const { DateTime, Settings } = require('luxon');
@@ -37,7 +38,9 @@ module.exports.refreshKroger = async () => {
   await page.goto('https://www.kingsoopers.com/rx/covid-vaccine', { waitUntil: 'networkidle' });
   await page.reload({ waitUntil: 'networkidle' });
 
-  await page.click('[aria-label="I Agree"]');
+  await page.click('[aria-label="I Agree"]', {
+    delay: _.random(1, 15),
+  });
   await sleep(1000);
 
   const processedFacilityIds = {};
@@ -45,7 +48,7 @@ module.exports.refreshKroger = async () => {
 
   let { resources } = await container.items
     .query({
-      query: "SELECT * from c WHERE c.vanityName != 'Loaf \\'N Jug' AND NOT is_defined(c.lastFetched) OR c.lastFetched <= @minsAgo",
+      query: "SELECT * from c WHERE NOT is_defined(c.lastFetched) OR c.lastFetched <= @minsAgo ORDER BY c.id",
       parameters: [
         { name: '@minsAgo', value: DateTime.utc().minus({ minutes: 2 }).toISO() },
       ],
@@ -55,16 +58,19 @@ module.exports.refreshKroger = async () => {
   let i = 0;
   for (const resource of resources) {
     i++;
-    const facilityId = `${resource.divisionNumber}${resource.storeNumber}`;
-    console.info(`Processing store #${facilityId} (${i} of ${resources.length})...`);
+    console.info(`Processing store #${resource.id} (${i} of ${resources.length})...`);
     console.info(resource);
     console.info(resource.address);
 
-    if (processedFacilityIds[facilityId]) {
-      console.info(`  Already processed store #${facilityId} as part of earlier request, so skipping.`);
-    } else if (processedZipCodes[resource.address.zip]) {
-      console.info(`  Already processed zip code ${resource.address.zip} as part of earlier request, so skipping.`);
+    if (processedFacilityIds[resource.id]) {
+      console.info(`  Skipping already processed store #${resource.id} as part of earlier request.`);
+      continue;
+    } else if (processedZipCodes[resource.address.zipCode]) {
+      console.info(`  Skipping already processed zip code ${resource.address.zipCode} as part of earlier request.`);
+      continue;
     }
+
+    const lastFetched = DateTime.utc().toISO();
 
     const data = await page.evaluate(async (options) => {
       console.info('options: ', options);
@@ -76,38 +82,72 @@ module.exports.refreshKroger = async () => {
           "rx-channel": "WEB",
           "x-sec-clge-req-type": "ajax"
         },
-        //"mode": "cors",
-        //"credentials": "include"
       });
-      console.log('status: ', response.status);
-      console.log('status: ', response.body);
-      //console.log('response.text: ', response.text());
-      //console.log('response.json: ', response.json());
-      console.log('status: ', response);
 
       return await response.json();
     }, {
-      zipCode: resource.address.zip,
+      zipCode: resource.address.zipCode,
       startDate: startDate.toISODate(),
       endDate: endDate.toISODate(),
     });
     console.info('data: ', data);
 
-    for (const location of data) {
-      console.info('location: ', location);
+    for (const appointments of data) {
+      const appointmentsStoreId = appointments.loc_no.replace(/^625/, '620');
+      console.info('appointments: ', appointments);
+      if (appointments.facilityDetails.address.state !== 'CO') {
+        console.info(`  Skipping appointment result #${appointmentsStoreId} for being out of state: ${appointments.facilityDetails.address.state}.`);
+        continue;
+      }
+
+      const { resource: appointmentsStoreResource } = await container.item(appointmentsStoreId).read();
+      console.info('appointmentsStoreResource: ', appointmentsStoreResource);
+      if (!appointmentsStoreResource) {
+        throw `Store not found for ${appointments.loc_no}`;
+      }
 
       await container.items.upsert({
-        ...resource,
-        appointments: location,
+        ...appointmentsStoreResource,
+        appointments: appointments,
         lastFetched,
       });
 
-      processedFacilityIds[location.facilityDetails.facilityId] = true;
-      processedZipCodes[resource.address.zip] = true;
+      processedFacilityIds[appointmentsStoreId] = true;
+      processedZipCodes[resource.address.zipCode] = true;
+      await sleep(50);
     }
 
-    await page.click('[data-testid="SiteMenu-HamburgerMenu--Button"]');
-    await page.click('[data-testid="SiteMenuContent--CloseButton"]');
+    await retry(async () => {
+      await page.waitForSelector('[data-testid="SiteMenuContent--CloseButton"]', {
+        state: 'hidden',
+        timeout: 5000,
+      });
+      await page.click('[data-testid="SiteMenu-HamburgerMenu--Button"]', {
+        delay: _.random(1, 15),
+        timeout: 5000,
+      });
+      await page.waitForSelector('[data-testid="SiteMenuContent--CloseButton"]', {
+        timeout: 5000,
+      });
+    }, {
+      retries: 2,
+    });
+    await sleep(_.random(100, 200));
+    await retry(async () => {
+      await page.click('[data-testid="SiteMenuContent--CloseButton"]', {
+        delay: _.random(1, 15),
+        timeout: 5000,
+      });
+      await page.waitForSelector('[data-testid="SiteMenuContent--CloseButton"]', {
+        state: 'hidden',
+        timeout: 5000,
+      });
+      await page.waitForSelector('[data-testid="SiteMenu-HamburgerMenu--Button"]', {
+        timeout: 5000,
+      });
+    }, {
+      retries: 2,
+    });
 
     await sleep(1000);
   }

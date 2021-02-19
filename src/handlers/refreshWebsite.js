@@ -13,6 +13,7 @@ module.exports.refreshWebsite = async () => {
   const db = await getDatabase();
   const { container: albertsonsStores } = await db.containers.createIfNotExists({ id: "albertsons_stores" });
   const { container: cvsCities } = await db.containers.createIfNotExists({ id: "cvs_cities" });
+  const { container: krogerStores } = await db.containers.createIfNotExists({ id: "kroger_stores" });
   const { container: walgreensStores } = await db.containers.createIfNotExists({ id: "walgreens_stores" });
   const { container: walmartStores } = await db.containers.createIfNotExists({ id: "walmart_stores" });
 
@@ -33,6 +34,11 @@ module.exports.refreshWebsite = async () => {
     .query("SELECT * from c ORDER BY c.id")
     .fetchAll();
   await fs.writeFile(`${tmp}/site/_data/cvs.json`, stringify(cvsData, { space: '  ' }));
+
+  const { resources: krogerData } = await krogerStores.items
+    .query("SELECT * from c ORDER BY c.id")
+    .fetchAll();
+  await fs.writeFile(`${tmp}/site/_data/kroger.json`, stringify(krogerData, { space: '  ' }));
 
   const { resources: walgreensData } = await walgreensStores.items
     .query("SELECT * from c ORDER BY c.id")
