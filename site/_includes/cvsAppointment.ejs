@@ -1,11 +1,16 @@
 <% lastFetched = (new Date(store.lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>
 <div class="card mb-4">
-  <h5 class="card-header"><%= store.city %></h5>
+  <h5 class="card-header"><%= store.city %>, <%= store.state %></h5>
   <div class="card-body">
-    <% if(parseInt(store.totalAvailable, 10) > 0) { %>
+    <% if(parseInt(store.totalAvailable, 10) > 0 || store.status === 'Available') { %>
       <div class="text-success fs-2">
         <i class="fas fa-check-circle"></i>
         <span class="fs-5">Appointments available as of <%= lastFetched %></span>
+      </div>
+      <div class="mb-3">
+        <ul class="mb-0">
+          <li>View available appointment times on the CVS website.</li>
+        </ul>
       </div>
       <a href="https://www.cvs.com/immunizations/covid-19-vaccine" class="btn btn-primary">Visit CVS Website</a>
     <% } else { %>

@@ -322,7 +322,7 @@ description: A tool to help you track down COVID-19 vaccine appointment openings
 
         <h2>CVS Appointments</h2>
         <% appointments = this.lodash.orderBy(cvs, ['lastFetched'], ['desc']) %>
-        <% availableAppointments = this.lodash.filter(appointments, (o) => parseInt(o.totalAvailable, 10) > 0) %>
+        <% availableAppointments = this.lodash.filter(appointments, (o) => parseInt(o.totalAvailable, 10) > 0 || o.status === 'Available') %>
         <% if(availableAppointments.length > 0) { %>
           <% availableAppointments.forEach((store) => { %>
             <%- include('./_includes/cvsAppointment', { store }) %>
