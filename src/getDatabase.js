@@ -1,3 +1,4 @@
+require('dotenv').config()
 const { CosmosClient } = require("@azure/cosmos");
 
 const endpoint = process.env.DB_ENDPOINT;
