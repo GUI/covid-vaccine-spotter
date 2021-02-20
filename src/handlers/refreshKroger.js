@@ -17,16 +17,6 @@ firefox.use(
   })
 )
 
-const RecaptchaPlugin = require('@extra/recaptcha');
-const RecaptchaOptions = {
-  visualFeedback: true, // colorize reCAPTCHAs (violet = detected, green = solved)
-  provider: {
-    id: '2captcha',
-    token: process.env.CAPTCHA_API_KEY,
-  },
-}
-firefox.use(RecaptchaPlugin(RecaptchaOptions))
-
 async function initBrowserPage(browser) {
   let context;
   let page;
@@ -67,78 +57,10 @@ async function initBrowserPage(browser) {
       minTimeout: 5,
       maxTimeout: 20,
     });
-    await retry(async () => {
-      await page.click('button[aria-label="No"]:not(.pointer-event-none)', {
-        delay: _.random(1, 15),
-      });
-      await page.waitForSelector('select.kds-Select', {
-        timeout: 5000,
-      });
-    }, {
-      retries: 3,
-      minTimeout: 5,
-      maxTimeout: 20,
-    });
-    await retry(async () => {
-      await page.selectOption('select.kds-Select', 'CO');
-      await page.waitForSelector('button[aria-label="No"]:not(.pointer-event-none)', {
-        timeout: 5000,
-      });
-    }, {
-      retries: 3,
-      minTimeout: 5,
-      maxTimeout: 20,
-    });
-    await retry(async () => {
-      await page.click('button[aria-label="No"]:not(.pointer-event-none)', {
-        delay: _.random(1, 15),
-      });
-      await page.waitForSelector('button[aria-label="No"]:not(.pointer-event-none)', {
-        timeout: 5000,
-      });
-    }, {
-      retries: 3,
-      minTimeout: 5,
-      maxTimeout: 20,
-    });
-    await retry(async () => {
-      await page.click('button[aria-label="No"]:not(.pointer-event-none)', {
-        delay: _.random(1, 15),
-      });
-      await page.waitForSelector('input[placeholder="MM/DD/YYYY"]', {
-        timeout: 5000,
-      });
-      await page.waitForSelector('button[data-qa="BotDatePicker"]', {
-        timeout: 5000,
-      });
-    }, {
-      retries: 3,
-      minTimeout: 5,
-      maxTimeout: 20,
-    });
-    await retry(async () => {
-      await page.fill('input[placeholder="MM/DD/YYYY"]', '01/01/1940');
-      await page.click('button[data-qa="BotDatePicker"]');
-      await page.waitForSelector('button[aria-label="Schedule Your COVID-19 Vaccine"]', {
-        timeout: 5000,
-      });
-    }, {
-      retries: 3,
-      minTimeout: 5,
-      maxTimeout: 20,
-    });
-    await retry(async () => {
-      await page.click('button[aria-label="Schedule Your COVID-19 Vaccine"]');
-      await page.waitForSelector('input[name="location"]');
-    }, {
-      retries: 3,
-      minTimeout: 5,
-      maxTimeout: 20,
-    });
   }, {
-    retries: 5,
+    retries: 10,
     minTimeout: 1000,
-    maxTimeout: 5000,
+    maxTimeout: 10000,
     onRetry: (err) => {
       console.info('initBrowserPage Error: ', err);
     },
@@ -195,76 +117,38 @@ module.exports.refreshKroger = async () => {
       let reopen = false;
       await retry(async () => {
         console.info('attempt');
-        /*
         if (reopen) {
           await page.close();
           await context.close();
           ({ context, page } = await initBrowserPage(browser));
           reopen = false;
         }
-        */
 
-        if (await page.isVisible('#sec-overlay')) {
-          console.info('before recaptcha');
-          await sleep(_.random(100, 500));
-          await page.click('#sec-overlay');
-          await sleep(_.random(100, 500));
-          await page.click('#sec-container');
-          await sleep(_.random(100, 500));
-          await page.click('#sec-overlay');
-          await page.solveRecaptchas();
-          for (const frame of page.mainFrame().childFrames()) {
-            await frame.solveRecaptchas()
-          }
-          console.info('after recaptcha');
-        }
-
-        await page.click('input[name="location"]');
-        await page.fill('input[name="location"]', resource.address.zipCode);
-
-        await retry(async () => {
-          await page.click('button.LocationDatePicker-button');
-          await page.click('input[name="location"]');
-          await page.fill('input[name="location"]', resource.address.zipCode);
-          await page.keyboard.press('Enter');
-          await page.waitForLoadState('networkidle');
-          /*
-          await page.waitForSelector('text="Fetching Appointments"');
-          await page.waitForSelector('text="Fetching Appointments"', {
-            state: 'hidden',
+        data = await page.evaluate(async (options) => {
+          const response = await fetch(`https://www.kingsoopers.com/rx/api/anonymous/scheduler/slots/locationsearch/pharmacy/${options.zipCode}/${options.startDate}/${options.endDate}/50?appointmentReason=122&appointmentReason=125`, {
+            "headers": {
+              "accept": "application/json, text/plain, */*",
+              "cache-control": "no-cache",
+              "pragma": "no-cache",
+              "rx-channel": "WEB",
+              "x-sec-clge-req-type": "ajax"
+            },
           });
-          */
+
+          return await response.json();
         }, {
-          retries: 3,
-          minTimeout: 5,
-          maxTimeout: 20,
+          zipCode: resource.address.zipCode,
+          startDate: startDate.toISODate(),
+          endDate: endDate.toISODate(),
         });
 
-        // data = await page.evaluate(async (options) => {
-        //   const response = await fetch(`https://www.kingsoopers.com/rx/api/anonymous/scheduler/slots/locationsearch/pharmacy/${options.zipCode}/${options.startDate}/${options.endDate}/50?appointmentReason=122&appointmentReason=125`, {
-        //     "headers": {
-        //       "accept": "application/json, text/plain, */*",
-        //       "cache-control": "no-cache",
-        //       "pragma": "no-cache",
-        //       "rx-channel": "WEB",
-        //       "x-sec-clge-req-type": "ajax"
-        //     },
-        //   });
-
-        //   return await response.json();
-        // }, {
-        //   zipCode: resource.address.zipCode,
-        //   startDate: startDate.toISODate(),
-        //   endDate: endDate.toISODate(),
-        // });
-
-        // if (!Array.isArray(data)) {
-        //   throw `Data not an array: ${JSON.stringify(data)}`;
-        // }
+        if (!Array.isArray(data)) {
+          throw `Data not an array: ${JSON.stringify(data)}`;
+        }
       }, {
-        retries: 5,
-        minTimeout: 1000,
-        maxTimeout: 5000,
+        retries: 10,
+        minTimeout: 60 * 1000,
+        maxTimeout: 5 * 60 * 1000,
         onRetry: (err) => {
           console.info('Data fetch error: ', err);
           reopen = true;
@@ -297,7 +181,6 @@ module.exports.refreshKroger = async () => {
 
       processedZipCodes[resource.address.zipCode] = true;
 
-      /*
       await retry(async () => {
         await page.waitForSelector('[data-testid="SiteMenuContent--CloseButton"]', {
           state: 'hidden',
@@ -311,7 +194,7 @@ module.exports.refreshKroger = async () => {
           timeout: 5000,
         });
       }, {
-        retries: 3,
+        retries: 5,
         minTimeout: 50,
         maxTimeout: 500,
       });
@@ -329,11 +212,10 @@ module.exports.refreshKroger = async () => {
           timeout: 5000,
         });
       }, {
-        retries: 3,
+        retries: 5,
         minTimeout: 50,
         maxTimeout: 500,
       });
-      */
     }
 
     console.info(`Finished processing: ${new Date()}`);
