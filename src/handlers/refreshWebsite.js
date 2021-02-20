@@ -42,7 +42,7 @@ module.exports.refreshWebsite = async () => {
   await fs.writeFile(`${tmp}/site/_data/kroger.json`, stringify(krogerData, { space: '  ' }));
 
   const { resources: pharmacaData } = await pharmacaStores.items
-    .query("SELECT * from c ORDER BY c.id")
+    .query("SELECT * from c WHERE c.state = 'Colorado' OR c.state = 'CO' ORDER BY c.id")
     .fetchAll();
   await fs.writeFile(`${tmp}/site/_data/pharmaca.json`, stringify(pharmacaData, { space: '  ' }));
 

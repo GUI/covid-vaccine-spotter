@@ -317,7 +317,7 @@ description: A tool to help you track down COVID-19 vaccine appointment openings
 
         <div class="alert alert-info" role="alert">
           <h5>Updates</h5>
-          <p class="mb-0"><strong>02/17/2021 7:00PM:</strong> Walmart locations are now being scanned for open appointments and updated regularly. 🎉 I'm hoping to add Sam's Club soon and we've reached out to King Soopers to try to find a solution there. Hope this helps!</p>
+          <p class="mb-0"><strong>02/20/2021 12:15PM:</strong> Pharmaca locations are now being scanned for open appointments and updated regularly. 🚀 Thanks to <a href="https://twitter.com/dc9799">@dc9799</a> for the tip on this new pharmacy to add. If you have any suggestions of other locations that offer online availability of appointment schedules that could be added to this tool, please let me know (<a href="https://twitter.com/nickblah">@nickblah</a>, <a href="m&#97;ilto&#58;v%&#54;1&#99;&#99;&#105;ne&#64;nic&#107;%6D&#46;org">vacc&#105;ne&#64;ni&#99;k&#109;&#46;o&#114;&#103;</a>, or <a href="https://github.com/GUI/covid-vaccine-finder/issues">GitHub</a>). Thanks for all the feedback!</p>
         </div>
 
         <h2>CVS Appointments</h2>
@@ -416,6 +416,7 @@ description: A tool to help you track down COVID-19 vaccine appointment openings
         <h3>Tool Status</h3>
         <ul>
           <li><strong>CVS:</strong> Last checked <%= (new Date(this.lodash.orderBy(cvs, ['lastFetched'], ['desc'])[0].lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>. Checking <%= cvs.length %> <%= (cvs.length === 1) ? 'city' : 'cities' %> (new cities will be added as CVS adds them).</li>
+          <li><strong>Pharmaca:</strong> Last checked <%= (new Date(this.lodash.orderBy(pharmaca, ['lastFetched'], ['desc'])[0].lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>. Checking all <%= pharmaca.length %> <%= (pharmaca.length === 1) ? 'store' : 'stores' %> in CO.</li>
           <li><strong>Safeway, Albertsons:</strong> Last checked <%= (new Date(this.lodash.orderBy(albertsons, ['lastFetched'], ['desc'])[0].lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>. Checking all <%= albertsons.length %> <%= (albertsons.length === 1) ? 'store' : 'stores' %> in CO.</li>
           <li><strong>Walgreens:</strong> Last checked <%= (new Date(this.lodash.orderBy(walgreens, ['lastFetched'], ['desc'])[0].lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>. Checking all <%= walgreens.length %> <%= (walgreens.length === 1) ? 'store' : 'stores' %> in CO.</li>
           <li><strong>Walmart:</strong> Last checked <%= (new Date(this.lodash.orderBy(walmart, ['lastFetched'], ['desc'])[0].lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>. Checking all <%= walmart.length %> <%= (walgreens.length === 1) ? 'store' : 'stores' %> in CO.</li>
