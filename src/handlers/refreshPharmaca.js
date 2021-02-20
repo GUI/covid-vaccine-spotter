@@ -95,4 +95,4 @@ module.exports.refreshPharmaca = async () => {
   }
 }
 
-module.exports.refreshPharmaca();
+// module.exports.refreshPharmaca();
