@@ -49,4 +49,4 @@ module.exports.findWalmartStores = async () => {
   }
 }
 
-module.exports.findWalmartStores();
+//module.exports.findWalmartStores();

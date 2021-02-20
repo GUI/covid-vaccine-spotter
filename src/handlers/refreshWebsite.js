@@ -61,7 +61,7 @@ module.exports.refreshWebsite = async () => {
   await execa('./node_modules/gh-pages/bin/gh-pages-clean.js');
 
   await publish(`${tmp}/_site`, {
-    repo: `https://${process.env.GH_TOKEN}@github.com/GUI/vaccine.git`,
+    repo: `https://${process.env.GH_TOKEN}@github.com/${process.env.GH_REPO}.git`,
     dotfiles: true,
     silent: false,
     user: {

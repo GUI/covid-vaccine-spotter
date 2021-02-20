@@ -15,6 +15,7 @@ provider:
     DB_ENDPOINT: "${env:DB_ENDPOINT}"
     DB_KEY: "${env:DB_KEY}"
     GH_TOKEN: "${env:GH_TOKEN}"
+    GH_REPO: "${env:GH_REPO}"
     CACHE_DIR: /tmp/cache
     WALMART_USERNAME: "${env:WALMART_USERNAME}"
     WALMART_PASSWORD: "${env:WALMART_PASSWORD}"
@@ -73,3 +74,12 @@ functions:
       - schedule: "rate(1 minute)"
     layers:
       - arn:aws:lambda:us-east-2:553035198032:layer:git-lambda2:8
+  findWalmartStores:
+    handler: index.findWalmartStores
+    reservedConcurrency: 1
+  findWalgreensStores:
+    handler: index.findWalgreensStores
+    reservedConcurrency: 1
+  findKrogerStores:
+    handler: index.findKrogerStores
+    reservedConcurrency: 1

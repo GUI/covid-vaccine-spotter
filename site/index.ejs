@@ -14,6 +14,7 @@ description: A tool to help you track down COVID-19 vaccine appointment openings
     <title><%= title %></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
     <script defer src="https://use.fontawesome.com/releases/v5.15.2/js/all.js" integrity="sha384-vuFJ2JiSdUpXLKGK+tDteQZBqNlMwAjhZ3TvPaDfN9QmbPb7Q8qUpbSNapQev3YF" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
 
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-49484378-1"></script>
     <script>
@@ -287,12 +288,125 @@ description: A tool to help you track down COVID-19 vaccine appointment openings
         <div class="container">
           <h1 class="navbar-brand mb-0 fw-bold"><a href="/" class="text-white" style="text-decoration: none;"><%= title %></a></h1>
           <div class="d-flex">
-            <button class="btn btn-light" onclick="window.location.reload();"><i class="fas fa-redo-alt"></i> Check for New Appointments</button>
+            <button class="btn btn-light" onclick="window.location.reload();"><i class="fas fa-redo-alt"></i> Check for New Appointments</button>&nbsp;
+            <button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#notificationModal");"><i class="fas fa-envelope"></i> Set up Notifications</button>                                                                                  </div>
+        </div>                                                                                                                                                                                                                                     </div>
+    </header>
+    <main>
+      <!-- Modal -->
+      <div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel" aria-hidden="true">                                                                                                                      <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="notificationModalLabel">Notifications</h5>                                                                                                                                                                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form>
+                <div class="mb-3">
+                  <label for="Email1" class="form-label">Email address</label> 
+                  <input type="email" class="form-control" id="inputEmail1">                                                                                                                                                                                 </div>
+                
+                  <h5>Select stores to notify for:</h5>
+                  <div class="accordion" id="cvsAccordian">
+                    <div class="accordion-item">
+                      <h2 class="accordion-header" id="headingCVS">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCVS" aria-expanded="true" aria-controls="collapseOne">
+                          CVS
+                        </button>
+                      </h2>
+                      <div id="collapseCVS" class="accordion-collapse collapse show" aria-labelledby="headingCVS" data-bs-parent="#cvsAccordian">
+                        <div class="accordion-body">
+                          <% stores = this.lodash.orderBy(cvs, ['name'], ['asc']) %>
+                          <% stores.forEach((store) => { %>
+                            <input type="checkbox" class="form-check-input" id="cvs_cities/<%= store.id %>">
+                            <label class="form-check-label" for="cvs_cities/<%= store.id %>"><%= store.city %>, <%= store.state %></label><br>
+                          <% }) %>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="accordion" id="albertsonsAccordian">
+                    <div class="accordion-item">
+                      <h2 class="accordion-header" id="headingAlbertsons">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAlbertsons" aria-expanded="true" aria-controls="collapseOne">
+                          Albertsons
+                        </button>
+                      </h2>
+                      <div id="collapseAlbertsons" class="accordion-collapse collapse show" aria-labelledby="headingAlbertsons" data-bs-parent="#albertsonsAccordian">
+                        <div class="accordion-body">
+                          <% stores = this.lodash.orderBy(albertsons, ['name'], ['asc']) %>
+                          <% stores.forEach((store) => { %>
+                            <input type="checkbox" class="form-check-input" id="albertsons_stores/<%= store.id %>">
+                            <label class="form-check-label" for="albertsons_stores/<%= store.id %>"><%= store.name %> - <%= store.address.addressLine1 %>, <%= store.address.city %>, <%= store.address.state %> <%= store.address.zipCode %></label><br>
+                          <% }) %>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="accordion" id="walgreensAccordian">
+                    <div class="accordion-item">
+                      <h2 class="accordion-header" id="headingWalgreens">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseWalgreens" aria-expanded="true" aria-controls="collapseOne">
+                          Walgreens
+                        </button>
+                      </h2>
+                      <div id="collapseWalgreens" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#walgreensAccordian">
+                        <div class="accordion-body">
+                          <% stores = this.lodash.orderBy(walgreens, ['name'], ['asc']) %>
+                          <% stores.forEach((store) => { %>
+                            <input type="checkbox" class="form-check-input" id="walgreens_stores/<%= store.id %>">
+                            <label class="form-check-label" for="walgreens_stores/<%= store.id %>"><%= store.store.address.street %>, <%= store.store.address.city %>, <%= store.store.address.state %> <%= store.store.address.zip %></label><br>
+                          <% }) %>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="accordion" id="walmartAccordian">
+                    <div class="accordion-item">
+                      <h2 class="accordion-header" id="headingWalmart">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseWalmart" aria-expanded="true" aria-controls="collapseOne">
+                          Walmart
+                        </button>
+                      </h2>
+                      <div id="collapseWalmart" class="accordion-collapse collapse show" aria-labelledby="headingWalmart" data-bs-parent="#walmartAccordian">
+                        <div class="accordion-body">
+                          <% stores = this.lodash.orderBy(walmart, ['name'], ['asc']) %>
+                          <% stores.forEach((store) => { %>
+                            <input type="checkbox" class="form-check-input" id="walmart_stores/<%= store.id %>">
+                            <label class="form-check-label" for="walmart_stores/<%= store.id %>"><%= store.displayName %> #<%= store.address.address %>, <%= store.address.city %>, <%= store.address.state %> <%= store.address.postalCode %></label><br>
+                          <% }) %>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                <div class="accordion" id="KrogerAccordian">
+                  <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingKroger">
+                      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseKroger" aria-expanded="true" aria-controls="collapseOne">
+                        Kroger
+                      </button>
+                    </h2>
+                    <div id="collapseKroger" class="accordion-collapse collapse show" aria-labelledby="headingKroger" data-bs-parent="#KrogerAccordian">
+                      <div class="accordion-body">
+                        <% stores = this.lodash.orderBy(kroger, ['name'], ['asc']) %>
+                        <% stores.forEach((store) => { %>
+                          <input type="checkbox" class="form-check-input" id="kroger_stores/<%= store.id %>">
+                          <label class="form-check-label" for="kroger_stores/<%= store.id %>"><%= store.name %> - <%= store.address.addressLine1 %>, <%= store.address.city %>, <%= store.address.state %> <%= store.address.zipCode %></label><br>
+                        <% }) %>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </form>
+            </div>
           </div>
         </div>
       </div>
-    </header>
-    <main>
+
       <div class="container">
         <p class="lead text-center text-muted py-lg-4"><%= description %></p>
 

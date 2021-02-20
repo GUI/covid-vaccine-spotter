@@ -4,3 +4,6 @@ exports.refreshPharmaca = require('./src/handlers/refreshPharmaca').refreshPharm
 exports.refreshWalgreens = require('./src/handlers/refreshWalgreens').refreshWalgreens;
 exports.refreshWalmart = require('./src/handlers/refreshWalmart').refreshWalmart;
 exports.refreshWebsite = require('./src/handlers/refreshWebsite').refreshWebsite;
+exports.findWalmartStores = require('./src/handlers/findWalmartStores').findWalmartStores;
+exports.findWalgreensStores = require('./src/handlers/findWalgreensStores').findWalgreensStores;
+exports.findKrogerStores = require('./src/handlers/findKrogerStores').findKrogerStores;
