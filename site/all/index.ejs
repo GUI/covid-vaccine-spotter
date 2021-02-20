@@ -39,6 +39,13 @@ title: Colorado COVID-19 Vaccine Finder
           <%- include('../_includes/cvsAppointment', { store }) %>
         <% }) %>
 
+        <h2>Pharmaca Appointments</h2>
+        <% this.lodash.orderBy(pharmaca, ['id'], ['asc']).forEach((store) => { %>
+          <% if(store.state === 'CO' || store.state === 'Colorado') { %>
+            <%- include('../_includes/pharmacaAppointment', { store }) %>
+          <% } %>
+        <% }) %>
+
         <h2>Safeway, Albertsons Appointments</h2>
         <% this.lodash.orderBy(albertsons, ['id'], ['asc']).forEach((store) => { %>
           <%- include('../_includes/albertsonsAppointment', { store }) %>

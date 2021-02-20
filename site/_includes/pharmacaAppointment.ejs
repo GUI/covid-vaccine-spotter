@@ -1,0 +1,28 @@
+<% lastFetched = (new Date(store.lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>
+<div class="card mb-4">
+  <h5 class="card-header"><%= store.name %> - <%= store.address %>, <%= store.city %>, <%= store.state %> <%= store.zip %></h5>
+  <div class="card-body">
+    <% const availableDays = this.lodash.pickBy(store.appointments, (value, key) => value.length > 0) %>
+    <% if(!this.lodash.isEmpty(availableDays)) { %>
+      <div class="text-success fs-2">
+        <i class="fas fa-check-circle"></i>
+        <span class="fs-5">Appointments available as of <%= lastFetched %></span>
+      </div>
+      <% for (const key of Object.keys(availableDays).sort()) { %>
+        <% times = [] %>
+        <% availableDays[key].forEach((time) => { %>
+          <% times.push(this.luxon.DateTime.fromFormat(time, 'yyyy-LL-dd HH:mm')) %>
+        <% }) %>
+        <h6><%= key %></h6>
+        <%- include('./appointmentTimes', { times }) %>
+      <% } %>
+      <a href="https://pharmaca.as.me/<%= store.scheduleId %>" class="btn btn-primary">Visit Pharmaca Website</a>
+    <% } else { %>
+      <div>
+        <i class="fas fa-times-circle"></i>
+        No appointments available as of last check
+      </div>
+    <% } %>
+    <p class="card-text text-secondary mt-2"><small>Last checked <%= lastFetched %></small></p>
+  </div>
+</div>
