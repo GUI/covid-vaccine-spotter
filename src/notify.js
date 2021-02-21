@@ -19,17 +19,16 @@ module.exports = async function notify(type,id, store_description, email_details
 
     for (const resource of resources) {
         if ( resource.stores.includes(id) && !notified.includes(resource.email)){
-            console.log(`Notifying ${resource.email}`)
             let sendPromise = sendEmail(resource.email, `Covid Vaccine Appointment Available at ${store_description}!`,email_details)
 
             // Handle promise's fulfilled/rejected states
             sendPromise.then(
               function(data) {
                 notified.push(resource.email);
-                console.log(data.MessageId);
+                console.log(`Notified ${resource.email}: ${data.MessageId}`);
               }).catch(
                 function(err) {
-                console.error(err, err.stack);
+                console.error(`Failed to notify ${resource.email}`, err, err.stack);
               });
         }
     }
