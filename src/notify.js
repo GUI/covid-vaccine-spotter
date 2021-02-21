@@ -19,6 +19,7 @@ module.exports = async function notify(type,id, store_description, email_details
 
     for (const resource of resources) {
         if ( resource.stores.includes(id) && !notified.includes(resource.email)){
+            email_details += `<br><br>To unsubscribe from these notifications, <a href="${process.env.APIGW_URL}/unregister?email=${resource.email}">click here</a>.`
             let sendPromise = sendEmail(resource.email, `Covid Vaccine Appointment Available at ${store_description}!`,email_details)
 
             // Handle promise's fulfilled/rejected states

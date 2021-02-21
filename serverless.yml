@@ -97,3 +97,6 @@ functions:
   findKrogerStores:
     handler: index.findKrogerStores
     reservedConcurrency: 1
+  findPharmacaStores:
+    handler: index.findPharmacaStores
+    reservedConcurrency: 1

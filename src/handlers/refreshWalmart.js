@@ -32,7 +32,11 @@ module.exports.refreshWalmart = async () => {
       continue;
     }
 
-    const prevAvailability = resource.timeSlots.length
+    const prevAvailability = 0
+    if (resource.timeSlots) {
+      prevAvailability = resource.timeSlots.length
+    }
+
     const lastFetched = DateTime.utc().toISO()
 
     const resp = await retry(async () => {
@@ -67,10 +71,16 @@ module.exports.refreshWalmart = async () => {
     });
 
     // If appointments were not available but now are, send notifications
-    //TODO add real email body
-    if ( prevAvailability == 0 && resp.body.length == 0 ){
+    if ( prevAvailability == 0 && resp.body.length == 0){
       console.log(`Notifying for store ${resource.id}`)
-      notify("walmartStores",resource.id,resource.displayName,"EMAIL BODY GOES HERE")
+      notify("walmartStores",resource.id,resource.displayName,
+`
+There is an appointment available at the <a href=${resource.detailsPageURL}>${resource.displayName}</a>.
+
+This pharmacy can be reached at ${resource.phone}.
+
+Please ensure that you are eligible for this appointment by consulting the <a href='https://covid19.colorado.gov/for-coloradans/vaccine/where-can-i-get-vaccinated'>Colorado guidelines</a>.
+`)
     }
 
     await sleep(1000);

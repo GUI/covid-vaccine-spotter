@@ -7,4 +7,5 @@ exports.refreshWebsite = require('./src/handlers/refreshWebsite').refreshWebsite
 exports.findWalmartStores = require('./src/handlers/findWalmartStores').findWalmartStores;
 exports.findWalgreensStores = require('./src/handlers/findWalgreensStores').findWalgreensStores;
 exports.findKrogerStores = require('./src/handlers/findKrogerStores').findKrogerStores;
+exports.findPharmacaStores = require('./src/handlers/findPharmacaStores').findPharmacaStores;
 exports.appHandler = require('./src/handlers/registerNotification').appHandler;

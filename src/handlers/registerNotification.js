@@ -16,6 +16,7 @@ app.post('/register', function (req, res) {
       let emailAddress = req.body.email.toLowerCase()
       if(emailValidator.validate(emailAddress)){
         let notification = {}
+        notification.email = emailAddress
         notification.walmartStores = req.body.walmartStores
         notification.walgreensStores = req.body.walgreensStores
         notification.krogerStores = req.body.krogerStores
@@ -26,10 +27,16 @@ app.post('/register', function (req, res) {
         containerResponse.container.items.upsert(notification).then(itemResponse => {
           let sendPromise = null
           if (itemResponse.statusCode == 201){
-            sendPromise = sendEmail(emailAddress,"You have signed up for covid vaccine appointment notifications.", `You will be notified when any appointments become available at the pharmacies you selected.`
+            sendPromise = sendEmail(emailAddress,"You have signed up for covid vaccine appointment notifications.", 
+            `You will be notified when any appointments become available at the pharmacies you selected.<br><br>
+            To unsubscribe from these notifications, <a href="${process.env.APIGW_URL}/unregister?email=${emailAddress}">click here</a>.
+            `
             )
           } else {
-            sendPromise = sendEmail(emailAddress,"Your covid vaccine notification preferences have been updated.","Your pharmacy selections have been updated for covid vaccine appointment notifications.")
+            sendPromise = sendEmail(emailAddress,"Your covid vaccine notification preferences have been updated.",
+            `Your pharmacy selections have been updated for covid vaccine appointment notifications.<br><br>
+            To unsubscribe from these notifications, <a href="${process.env.APIGW_URL}/unregister?email=${emailAddress}">click here</a>.
+            `)
           }
           // Handle promise's fulfilled/rejected states
           sendPromise.then(

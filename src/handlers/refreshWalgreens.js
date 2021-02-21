@@ -73,8 +73,11 @@ module.exports.refreshWalgreens = async () => {
     // TODO Prety up the email
     const address = `${resource.store.address.street} ${resource.store.address.city},${resource.store.address.state}`
     if ( prevAvailbility == false && resp.body.appointmentsAvailable == true){
-      console.log(`Notifying for ${resource.id}`)
-      notify("walgreensStores",resource.id,address,"EMAIL BODY GOES HERE")
+      notify("walgreensStores",resource.id,address,`
+There is an appointment available at the Walgreens Pharmacy at the <a href=https://walgreens.com${resource.storeSeoUrl}>${resource.store.address.intersection}</a>.<br><br>
+This pharmacy can be reached at (${resource.store.phone.areaCode})${resource.store.phone.number}.<br><br>
+Please ensure that you are eligible for this appointment by consulting the <a href='https://covid19.colorado.gov/for-coloradans/vaccine/where-can-i-get-vaccinated'>Colorado guidelines</a>.
+`)
     }
     await sleep(1000);
   }

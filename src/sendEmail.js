@@ -9,7 +9,7 @@ module.exports = function sendEmail(to, subject, body) {
     },
     Message: { /* required */
       Body: { /* required */
-        Text: {
+        Html: {
           Charset: "UTF-8",
           Data: body
         }
