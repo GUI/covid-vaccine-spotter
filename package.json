@@ -22,6 +22,7 @@
     "lodash": "^4.17.20",
     "luxon": "^1.26.0",
     "objection": "^2.2.14",
+    "p-retry": "^4.4.0",
     "pg": "^8.5.1",
     "playwright-aws-lambda": "^0.6.0",
     "playwright-core": "^1.8.1",

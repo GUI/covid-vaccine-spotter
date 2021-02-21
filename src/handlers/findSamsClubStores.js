@@ -1,13 +1,8 @@
 const got = require("got");
 const sleep = require("sleep-promise");
-const getDatabase = require("../getDatabase");
+const { Store } = require("../models/Store");
 
 module.exports.findSamsClubStores = async () => {
-  const db = await getDatabase();
-  const { container } = await db.containers.createIfNotExists({
-    id: "sams_club_stores",
-  });
-
   const resp = await got(
     "https://www.samsclub.com/api/node/vivaldi/v2/clubfinder/list",
     {
@@ -26,19 +21,24 @@ module.exports.findSamsClubStores = async () => {
   );
 
   for (const store of resp.body) {
-    store.id = store.id.toString();
-
-    if (store.address.state !== "CO") {
-      console.info(
-        `  Skipping store in other state ${store.id}: ${store.address.state}`
-      );
-    } else {
-      console.info(`  Importing store ${store.id}`);
-      await container.items.upsert(store);
-
-      await sleep(50);
-    }
+    console.info(`  Importing store ${store.id}`);
+    await Store.query()
+      .insert({
+        brand: "sams_club",
+        brand_id: store.id,
+        name: store.name,
+        address: store.address.address1,
+        city: store.address.city,
+        state: store.address.state,
+        postal_code: store.address.postalCode,
+        location: `point(${store.geoPoint.longitude} ${store.geoPoint.latitude})`,
+        metadata_raw: store,
+      })
+      .onConflict(["brand", "brand_id"])
+      .merge();
   }
+
+  await Store.knex().destroy();
 };
 
 module.exports.findSamsClubStores();
