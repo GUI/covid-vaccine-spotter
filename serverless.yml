@@ -73,3 +73,17 @@ functions:
       - schedule: "rate(1 minute)"
     layers:
       - arn:aws:lambda:us-east-2:553035198032:layer:git-lambda2:8
+
+resources:
+  Resources:
+    vaccineDB:
+      Type: AWS::RDS::DBInstance
+      Properties:
+        AllocatedStorage: "5"
+        DBInstanceIdentifier: "vaccine-db"
+        DBInstanceClass: "db.t3.micro"
+        Engine: "postgres"
+        EngineVersion: "12.5"
+        MasterUsername: "${env:DB_USERNAME}"
+        MasterUserPassword: "${env:DB_PASSWORD}"
+      DeletionPolicy: "Retain"
