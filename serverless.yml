@@ -54,6 +54,7 @@ functions:
     handler: index.appHandler
     events:
       - http: POST /register
+      - http: GET /unregister
   refreshAlbertsons:
     handler: index.refreshAlbertsons
     reservedConcurrency: 1
