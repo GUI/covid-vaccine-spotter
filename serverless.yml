@@ -6,6 +6,8 @@ useDotenv: true
 
 provider:
   name: aws
+  apiGateway:
+    shouldStartNameWithService: true
   runtime: nodejs12.x
   lambdaHashingVersion: 20201221
   region: us-east-2
@@ -41,6 +43,10 @@ package:
     - _site/**
 
 functions:
+  app:
+    handler: index.appHandler
+    events:
+      - http: POST /register
   refreshAlbertsons:
     handler: index.refreshAlbertsons
     reservedConcurrency: 1

@@ -300,24 +300,25 @@ description: A tool to help you track down COVID-19 vaccine appointment openings
               <h5 class="modal-title" id="notificationModalLabel">Notifications</h5>                                                                                                                                                                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <form>
+		          <!-- TODO MAKE THIS DYNAMIC -->
+              <form action="https://09n9hhxeie.execute-api.us-east-2.amazonaws.com/dev/register" method="POST">
                 <div class="mb-3">
                   <label for="Email1" class="form-label">Email address</label> 
-                  <input type="email" class="form-control" id="inputEmail1">                                                                                                                                                                                 </div>
+                  <input name="email" type="email" class="form-control" id="inputEmail1">                                                                                                                                                                                 </div>
                 
                   <h5>Select stores to notify for:</h5>
                   <div class="accordion" id="cvsAccordian">
                     <div class="accordion-item">
                       <h2 class="accordion-header" id="headingCVS">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCVS" aria-expanded="true" aria-controls="collapseOne">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCVS" aria-expanded="false" aria-controls="collapseCVS">
                           CVS
                         </button>
                       </h2>
-                      <div id="collapseCVS" class="accordion-collapse collapse show" aria-labelledby="headingCVS" data-bs-parent="#cvsAccordian">
+                      <div id="collapseCVS" class="accordion-collapse collapse" aria-labelledby="headingCVS" data-bs-parent="#cvsAccordian">
                         <div class="accordion-body">
                           <% stores = this.lodash.orderBy(cvs, ['name'], ['asc']) %>
                           <% stores.forEach((store) => { %>
-                            <input type="checkbox" class="form-check-input" id="cvs_cities/<%= store.id %>">
+                            <input type="checkbox" class="form-check-input" name="cvsStores[]" value="<%= store.id %>" id="cvs_cities/<%= store.id %>">
                             <label class="form-check-label" for="cvs_cities/<%= store.id %>"><%= store.city %>, <%= store.state %></label><br>
                           <% }) %>
                         </div>
@@ -328,15 +329,15 @@ description: A tool to help you track down COVID-19 vaccine appointment openings
                   <div class="accordion" id="albertsonsAccordian">
                     <div class="accordion-item">
                       <h2 class="accordion-header" id="headingAlbertsons">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAlbertsons" aria-expanded="true" aria-controls="collapseOne">
-                          Albertsons
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAlbertsons" aria-expanded="true" aria-controls="collapseAlbertsons" disabled>
+                          Albertsons (Not yet supported)
                         </button>
                       </h2>
-                      <div id="collapseAlbertsons" class="accordion-collapse collapse show" aria-labelledby="headingAlbertsons" data-bs-parent="#albertsonsAccordian">
+                      <div id="collapseAlbertsons" class="accordion-collapse collapse" aria-labelledby="headingAlbertsons" data-bs-parent="#albertsonsAccordian">
                         <div class="accordion-body">
                           <% stores = this.lodash.orderBy(albertsons, ['name'], ['asc']) %>
                           <% stores.forEach((store) => { %>
-                            <input type="checkbox" class="form-check-input" id="albertsons_stores/<%= store.id %>">
+                            <input type="checkbox" class="form-check-input" name="albertsonsStores[]" value="<%= store.id %>" valueid="albertsons_stores/<%= store.id %>">
                             <label class="form-check-label" for="albertsons_stores/<%= store.id %>"><%= store.name %> - <%= store.address.addressLine1 %>, <%= store.address.city %>, <%= store.address.state %> <%= store.address.zipCode %></label><br>
                           <% }) %>
                         </div>
@@ -347,15 +348,15 @@ description: A tool to help you track down COVID-19 vaccine appointment openings
                   <div class="accordion" id="walgreensAccordian">
                     <div class="accordion-item">
                       <h2 class="accordion-header" id="headingWalgreens">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseWalgreens" aria-expanded="true" aria-controls="collapseOne">
-                          Walgreens
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseWalgreens" aria-expanded="false" aria-controls="collapseWalgreens" disabled>
+                          Walgreens (Not yet supported)
                         </button>
                       </h2>
-                      <div id="collapseWalgreens" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#walgreensAccordian">
+                      <div id="collapseWalgreens" class="accordion-collapse collapse" aria-labelledby="headingWalgreens" data-bs-parent="#walgreensAccordian">
                         <div class="accordion-body">
                           <% stores = this.lodash.orderBy(walgreens, ['name'], ['asc']) %>
                           <% stores.forEach((store) => { %>
-                            <input type="checkbox" class="form-check-input" id="walgreens_stores/<%= store.id %>">
+                            <input type="checkbox" class="form-check-input" name="walgreensStores[]" value="<%= store.id %>" id="walgreens_stores/<%= store.id %>">
                             <label class="form-check-label" for="walgreens_stores/<%= store.id %>"><%= store.store.address.street %>, <%= store.store.address.city %>, <%= store.store.address.state %> <%= store.store.address.zip %></label><br>
                           <% }) %>
                         </div>
@@ -366,15 +367,15 @@ description: A tool to help you track down COVID-19 vaccine appointment openings
                   <div class="accordion" id="walmartAccordian">
                     <div class="accordion-item">
                       <h2 class="accordion-header" id="headingWalmart">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseWalmart" aria-expanded="true" aria-controls="collapseOne">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseWalmart" aria-expanded="false" aria-controls="collapseWalmart">
                           Walmart
                         </button>
                       </h2>
-                      <div id="collapseWalmart" class="accordion-collapse collapse show" aria-labelledby="headingWalmart" data-bs-parent="#walmartAccordian">
+                      <div id="collapseWalmart" class="accordion-collapse collapse" aria-labelledby="headingWalmart" data-bs-parent="#walmartAccordian">
                         <div class="accordion-body">
                           <% stores = this.lodash.orderBy(walmart, ['name'], ['asc']) %>
                           <% stores.forEach((store) => { %>
-                            <input type="checkbox" class="form-check-input" id="walmart_stores/<%= store.id %>">
+                            <input type="checkbox" class="form-check-input" name="walmartStores[]" value="<%= store.id %>" id="walmart_stores/<%= store.id %>">
                             <label class="form-check-label" for="walmart_stores/<%= store.id %>"><%= store.displayName %> #<%= store.address.address %>, <%= store.address.city %>, <%= store.address.state %> <%= store.address.postalCode %></label><br>
                           <% }) %>
                         </div>
@@ -385,15 +386,15 @@ description: A tool to help you track down COVID-19 vaccine appointment openings
                 <div class="accordion" id="KrogerAccordian">
                   <div class="accordion-item">
                     <h2 class="accordion-header" id="headingKroger">
-                      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseKroger" aria-expanded="true" aria-controls="collapseOne">
-                        Kroger
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapsed" data-bs-target="#collapseKroger" aria-expanded="false" aria-controls="collapseKroger" disabled>
+                        Kroger (Not yet supported)
                       </button>
                     </h2>
-                    <div id="collapseKroger" class="accordion-collapse collapse show" aria-labelledby="headingKroger" data-bs-parent="#KrogerAccordian">
+                    <div id="collapseKroger" class="accordion-collapse collapse" aria-labelledby="headingKroger" data-bs-parent="#KrogerAccordian">
                       <div class="accordion-body">
                         <% stores = this.lodash.orderBy(kroger, ['name'], ['asc']) %>
                         <% stores.forEach((store) => { %>
-                          <input type="checkbox" class="form-check-input" id="kroger_stores/<%= store.id %>">
+                          <input type="checkbox" class="form-check-input" name="krogerStores[]" value="<%= store.id %>" id="kroger_stores/<%= store.id %>">
                           <label class="form-check-label" for="kroger_stores/<%= store.id %>"><%= store.name %> - <%= store.address.addressLine1 %>, <%= store.address.city %>, <%= store.address.state %> <%= store.address.zipCode %></label><br>
                         <% }) %>
                         </div>

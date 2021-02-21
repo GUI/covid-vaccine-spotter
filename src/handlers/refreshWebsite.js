@@ -70,5 +70,3 @@ module.exports.refreshWebsite = async () => {
     },
   });
 }
-
-// module.exports.refreshWebsite();

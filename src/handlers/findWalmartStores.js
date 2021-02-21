@@ -48,5 +48,3 @@ module.exports.findWalmartStores = async () => {
     await sleep(1000);
   }
 }
-
-//module.exports.findWalmartStores();

@@ -67,5 +67,3 @@ module.exports.findWalgreensStores = async () => {
     await sleep(1000);
   }
 }
-
-//module.exports.findWalgreensStores();

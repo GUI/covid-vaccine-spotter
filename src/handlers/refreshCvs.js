@@ -30,6 +30,7 @@ module.exports.refreshCvs = async () => {
     }
   }
 
+  // Is this updating the lastFetched time for all cities regardles of if we got data back?
   let { resources } = await container.items
     .query({
       query: "SELECT * from c",
@@ -42,5 +43,3 @@ module.exports.refreshCvs = async () => {
     });
   }
 }
-
-// module.exports.refreshCvs();

@@ -5,6 +5,7 @@ const walmartAuth = require('../walmart/auth');
 const { DateTime, Settings } = require('luxon');
 const got = require('got');
 const sleep = require('sleep-promise');
+const notify = require('../notify');
 
 Settings.defaultZoneName = 'America/Denver';
 
@@ -31,6 +32,7 @@ module.exports.refreshWalmart = async () => {
       continue;
     }
 
+    const prevAvailability = resource.timeSlots.length
     const lastFetched = DateTime.utc().toISO()
 
     const resp = await retry(async () => {
@@ -64,8 +66,13 @@ module.exports.refreshWalmart = async () => {
       lastFetched,
     });
 
+    // If appointments were not available but now are, send notifications
+    //TODO add real email body
+    if ( prevAvailability == 0 && resp.body.length == 0 ){
+      console.log(`Notifying for store ${resource.id}`)
+      notify("walmartStores",resource.id,resource.displayName,"EMAIL BODY GOES HERE")
+    }
+
     await sleep(1000);
   }
 };
-
-// module.exports.refreshWalmart();

@@ -5,6 +5,7 @@ const RandomHttpUserAgent = require('random-http-useragent')
 const { DateTime, Settings } = require('luxon');
 const getDatabase = require('../getDatabase');
 const got = require('got');
+const notify = require('../notify');
 
 Settings.defaultZoneName = 'America/Denver';
 
@@ -16,7 +17,8 @@ module.exports.refreshWalgreens = async () => {
 
   let { resources } = await container.items
     .query({
-      query: "SELECT * from c WHERE NOT is_defined(c.lastFetched) OR c.lastFetched <= @minsAgo",
+     // query: "SELECT * from c WHERE NOT is_defined(c.lastFetched) OR c.lastFetched <= @minsAgo",
+      query: "SELECT * from c",
       parameters: [
         { name: '@minsAgo', value: DateTime.utc().minus({ minutes: 2 }).toISO() },
       ],
@@ -29,6 +31,7 @@ module.exports.refreshWalgreens = async () => {
     console.info(`Processing store #${resource.id} (${i} of ${resources.length})...`);
 
     const lastFetched = DateTime.utc().toISO()
+    const prevAvailbility = resource.availability.appointmentsAvailable
 
     const resp = await retry(async () => {
       const agent = await RandomHttpUserAgent.get()
@@ -67,8 +70,12 @@ module.exports.refreshWalgreens = async () => {
       lastFetched,
     });
 
+    // TODO Prety up the email
+    const address = `${resource.store.address.street} ${resource.store.address.city},${resource.store.address.state}`
+    if ( prevAvailbility == false && resp.body.appointmentsAvailable == true){
+      console.log(`Notifying for ${resource.id}`)
+      notify("walgreensStores",resource.id,address,"EMAIL BODY GOES HERE")
+    }
     await sleep(1000);
   }
 }
-
-// module.exports.refreshWalgreens();
