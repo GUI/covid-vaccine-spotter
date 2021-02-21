@@ -530,11 +530,20 @@ description: A tool to help you track down COVID-19 vaccine appointment openings
       <div class="container">
         <h3>Tool Status</h3>
         <ul>
-          <li><strong>CVS:</strong> Last checked <%= (new Date(this.lodash.orderBy(cvs, ['lastFetched'], ['desc'])[0].lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>. Checking <%= cvs.length %> <%= (cvs.length === 1) ? 'city' : 'cities' %> (new cities will be added as CVS adds them).</li>
-          <li><strong>Pharmaca:</strong> Last checked <%= (new Date(this.lodash.orderBy(pharmaca, ['lastFetched'], ['desc'])[0].lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>. Checking all <%= pharmaca.length %> <%= (pharmaca.length === 1) ? 'store' : 'stores' %> in CO.</li>
-          <li><strong>Safeway, Albertsons:</strong> Last checked <%= (new Date(this.lodash.orderBy(albertsons, ['lastFetched'], ['desc'])[0].lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>. Checking all <%= albertsons.length %> <%= (albertsons.length === 1) ? 'store' : 'stores' %> in CO.</li>
-          <li><strong>Walgreens:</strong> Last checked <%= (new Date(this.lodash.orderBy(walgreens, ['lastFetched'], ['desc'])[0].lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>. Checking all <%= walgreens.length %> <%= (walgreens.length === 1) ? 'store' : 'stores' %> in CO.</li>
-          <li><strong>Walmart:</strong> Last checked <%= (new Date(this.lodash.orderBy(walmart, ['lastFetched'], ['desc'])[0].lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>. Checking all <%= walmart.length %> <%= (walgreens.length === 1) ? 'store' : 'stores' %> in CO.</li>
+          <%
+            getlastFetchedDate = function(lastFetchedStore) {
+              lastFetchedDate = "Never";
+              if (lastFetchedStore) {
+                lastFetchedDate = new Date(lastFetchedStore.lastFetched).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver'});
+              } 
+              return lastFetchedDate;
+            }
+          %>
+          <li><strong>CVS:</strong> Last checked <%= getlastFetchedDate(this.lodash.orderBy(cvs, ['lastFetched'], ['desc'])[0]) %>. Checking <%= cvs.length %> <%= (cvs.length === 1) ? 'city' : 'cities' %> (new cities will be added as CVS adds them).</li>
+          <li><strong>Pharmaca:</strong> Last checked <%= getlastFetchedDate(this.lodash.orderBy(pharmaca, ['lastFetched'], ['desc'])[0]) %>. Checking all <%= pharmaca.length %> <%= (pharmaca.length === 1) ? 'store' : 'stores' %> in CO.</li>
+          <li><strong>Safeway, Albertsons:</strong> Last checked <%= getlastFetchedDate(this.lodash.orderBy(albertsons, ['lastFetched'], ['desc'])[0]s) %>. Checking all <%= albertsons.length %> <%= (albertsons.length === 1) ? 'store' : 'stores' %> in CO.</li>
+          <li><strong>Walgreens:</strong> Last checked <%= getlastFetchedDate(this.lodash.orderBy(walgreens, ['lastFetched'], ['desc'])[0]) %>. Checking all <%= walgreens.length %> <%= (walgreens.length === 1) ? 'store' : 'stores' %> in CO.</li>
+          <li><strong>Walmart:</strong> Last checked <%= getlastFetchedDate(this.lodash.orderBy(walmart, ['lastFetched'], ['desc'])[0]) %>. Checking all <%= walmart.length %> <%= (walgreens.length === 1) ? 'store' : 'stores' %> in CO.</li>
           <li><strong>King Soopers, City Market, Dillons, Smith's:</strong> Broken (tool was checking, but is now being blocked from accessing Kroger's website).</li>
           <li><strong>Sam's Club:</strong> Not yet checking.</li>
         </ul>
