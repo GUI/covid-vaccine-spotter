@@ -1,8 +1,8 @@
-const { Base } = require('./base');
+const { Base } = require("./base");
 
 class State extends Base {
   static get tableName() {
-    return 'states'
+    return "states";
   }
 }
 

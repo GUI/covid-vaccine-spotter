@@ -1,13 +1,15 @@
-var _ = require('lodash');
-const got = require('got');
-const getDatabase = require('./getDatabase');
-const albertsonsAuth = require('./albertsonsAuth');
+var _ = require("lodash");
+const got = require("got");
+const getDatabase = require("./getDatabase");
+const albertsonsAuth = require("./albertsonsAuth");
 
 (async () => {
   const db = await getDatabase();
-  const { container } = await db.containers.createIfNotExists({ id: "albertsons_stores" });
-  console.info('db: ', db);
-  console.info('container: ', container);
+  const { container } = await db.containers.createIfNotExists({
+    id: "albertsons_stores",
+  });
+  console.info("db: ", db);
+  console.info("container: ", container);
 
   const auth = await albertsonsAuth();
 
@@ -32,20 +34,23 @@ const albertsonsAuth = require('./albertsonsAuth');
     .fetchAll();
   console.info(resources.length);
   for (const storeChunk of _.chunk(resources, 100)) {
-    await new Promise(r => setTimeout(r, 2000));
+    await new Promise((r) => setTimeout(r, 2000));
 
-    const resp = await got('https://kordinator.mhealthcoach.net/loadLocationsForClientAndApptType.do', {
-      searchParams: {
-        _r: '2598477964194206',
-        apptKey: 'COVID_VACCINE_DOSE1_APPT',
-        clientIds: _.map(storeChunk, 'id').join(','),
-        csrfKey: auth.body.csrfKey,
-        externalClientId: auth.body.data.id,
-        instore: 'yes',
-      },
-      cookieJar: auth.cookieJar,
-      responseType: 'json',
-    });
+    const resp = await got(
+      "https://kordinator.mhealthcoach.net/loadLocationsForClientAndApptType.do",
+      {
+        searchParams: {
+          _r: "2598477964194206",
+          apptKey: "COVID_VACCINE_DOSE1_APPT",
+          clientIds: _.map(storeChunk, "id").join(","),
+          csrfKey: auth.body.csrfKey,
+          externalClientId: auth.body.data.id,
+          instore: "yes",
+        },
+        cookieJar: auth.cookieJar,
+        responseType: "json",
+      }
+    );
     console.info(resp);
     console.info(resp.headers);
     console.info(resp.body);
@@ -54,7 +59,7 @@ const albertsonsAuth = require('./albertsonsAuth');
       store.id = store.clientId.toString();
       delete store.clientId;
 
-      const item = container.item(store.id)
+      const item = container.item(store.id);
       const { resource } = await item.read();
 
       const newResource = {

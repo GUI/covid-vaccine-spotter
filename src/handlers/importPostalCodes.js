@@ -1,24 +1,27 @@
-const csvParse = require('csv-parse');
-const fs = require('fs');
-const path = require('path');
-const getDatabase = require('../getDatabase');
-const sleep = require('sleep-promise');
-const { PostalCode } = require('../models/PostalCode');
+const csvParse = require("csv-parse");
+const fs = require("fs");
+const path = require("path");
+const getDatabase = require("../getDatabase");
+const sleep = require("sleep-promise");
+const { PostalCode } = require("../models/PostalCode");
 
 module.exports.importPostalCodes = async () => {
   const trx = await PostalCode.startTransaction();
 
-  const parser = fs.createReadStream(path.resolve(__dirname, '../../US/US.txt'))
-    .pipe(csvParse({
-      delimiter: '\t',
-      cast: (value, context) => {
-        if (value === '') {
-          return null;
-        } else {
-          return value;
-        }
-      },
-    }));
+  const parser = fs
+    .createReadStream(path.resolve(__dirname, "../../US/US.txt"))
+    .pipe(
+      csvParse({
+        delimiter: "\t",
+        cast: (value, context) => {
+          if (value === "") {
+            return null;
+          } else {
+            return value;
+          }
+        },
+      })
+    );
   let batch = [];
   for await (const row of parser) {
     const stateCode = row[4];
@@ -37,49 +40,52 @@ module.exports.importPostalCodes = async () => {
       location: `point(${row[10]} ${row[9]})`,
     });
 
-    if(batch.length >= 1000) {
-      await PostalCode.query(trx).insert(batch)
-        .onConflict('postal_code')
+    if (batch.length >= 1000) {
+      await PostalCode.query(trx)
+        .insert(batch)
+        .onConflict("postal_code")
         .merge();
       batch = [];
     }
   }
 
-  const parserPr = fs.createReadStream(path.resolve(__dirname, '../../PR/PR.txt'))
-    .pipe(csvParse({
-      delimiter: '\t',
-      cast: (value, context) => {
-        if (value === '') {
-          return null;
-        } else {
-          return value;
-        }
-      },
-    }));
+  const parserPr = fs
+    .createReadStream(path.resolve(__dirname, "../../PR/PR.txt"))
+    .pipe(
+      csvParse({
+        delimiter: "\t",
+        cast: (value, context) => {
+          if (value === "") {
+            return null;
+          } else {
+            return value;
+          }
+        },
+      })
+    );
   for await (const row of parserPr) {
     const postalCode = row[1];
     console.info(`Importing ${postalCode}`);
     batch.push({
-      state_code: 'PR',
+      state_code: "PR",
       postal_code: row[1],
       city: row[2],
       county_name: row[3],
       county_code: row[4],
       location: `point(${row[10]} ${row[9]})`,
-    })
+    });
 
-    if(batch.length >= 1000) {
-      await PostalCode.query(trx).insert(batch)
-        .onConflict('postal_code')
+    if (batch.length >= 1000) {
+      await PostalCode.query(trx)
+        .insert(batch)
+        .onConflict("postal_code")
         .merge();
       batch = [];
     }
   }
 
   if (batch.length > 0) {
-    await PostalCode.query(trx).insert(batch)
-      .onConflict('postal_code')
-      .merge();
+    await PostalCode.query(trx).insert(batch).onConflict("postal_code").merge();
   }
 
   try {
@@ -90,6 +96,6 @@ module.exports.importPostalCodes = async () => {
   }
 
   await PostalCode.knex().destroy();
-}
+};
 
 module.exports.importPostalCodes();

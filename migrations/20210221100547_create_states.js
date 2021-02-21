@@ -1,14 +1,13 @@
-
-exports.up = function(knex) {
-  return knex
-    .schema
-    .createTable('states', (table) => {
-      table.increments('id').primary();
-      table.string('country_code', 2).notNullable();
-      table.string('code', 2).notNullable().unique();
-      table.string('name').notNullable();
+exports.up = function (knex) {
+  return knex.schema
+    .createTable("states", (table) => {
+      table.increments("id").primary();
+      table.string("country_code", 2).notNullable();
+      table.string("code", 2).notNullable().unique();
+      table.string("name").notNullable();
       table.timestamps(false, true);
-    }).then(async () => {
+    })
+    .then(async () => {
       await knex.raw(`CREATE OR REPLACE FUNCTION update_timestamp() RETURNS trigger
           LANGUAGE plpgsql
           AS $$
@@ -24,13 +23,14 @@ exports.up = function(knex) {
               RETURN NEW;
             END;
             $$`);
-      await knex.raw('CREATE TRIGGER states_updated_at BEFORE UPDATE ON states FOR EACH ROW EXECUTE PROCEDURE update_timestamp()')
+      await knex.raw(
+        "CREATE TRIGGER states_updated_at BEFORE UPDATE ON states FOR EACH ROW EXECUTE PROCEDURE update_timestamp()"
+      );
     });
 };
 
-exports.down = function(knex) {
-  return knex
-    .schema
-    .dropTableIfExists('states')
-    .then(() => knex.raw('DROP FUNCTION IF EXISTS update_timestamp'));
+exports.down = function (knex) {
+  return knex.schema
+    .dropTableIfExists("states")
+    .then(() => knex.raw("DROP FUNCTION IF EXISTS update_timestamp"));
 };

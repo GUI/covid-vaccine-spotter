@@ -1,9 +1,8 @@
-require('dotenv').config()
+require("dotenv").config();
 
 module.exports = {
-
   development: {
-    client: 'postgresql',
+    client: "postgresql",
     connection: {
       host: process.env.DB_HOST,
       database: process.env.DB_NAME,
@@ -12,15 +11,15 @@ module.exports = {
     },
     pool: {
       min: 2,
-      max: 10
+      max: 10,
     },
     migrations: {
-      tableName: 'knex_migrations'
-    }
+      tableName: "knex_migrations",
+    },
   },
 
   staging: {
-    client: 'postgresql',
+    client: "postgresql",
     connection: {
       host: process.env.DB_HOST,
       database: process.env.DB_NAME,
@@ -29,27 +28,26 @@ module.exports = {
     },
     pool: {
       min: 2,
-      max: 10
+      max: 10,
     },
     migrations: {
-      tableName: 'knex_migrations'
-    }
+      tableName: "knex_migrations",
+    },
   },
 
   production: {
-    client: 'postgresql',
+    client: "postgresql",
     connection: {
-      database: 'my_db',
-      user:     'username',
-      password: 'password'
+      database: "my_db",
+      user: "username",
+      password: "password",
     },
     pool: {
       min: 2,
-      max: 10
+      max: 10,
     },
     migrations: {
-      tableName: 'knex_migrations'
-    }
-  }
-
+      tableName: "knex_migrations",
+    },
+  },
 };

@@ -1,17 +1,17 @@
-const { Table } = require('dynamodb-toolbox')
-const DynamoDB = require('aws-sdk/clients/dynamodb')
+const { Table } = require("dynamodb-toolbox");
+const DynamoDB = require("aws-sdk/clients/dynamodb");
 const DocumentClient = new DynamoDB.DocumentClient({
-  region: 'us-east-2',
-})
+  region: "us-east-2",
+});
 
 // Instantiate a table
 const VaccineTable = new Table({
-  name: 'vaccine',
+  name: "vaccine",
 
-  partitionKey: 'pk',
-  sortKey: 'sk',
+  partitionKey: "pk",
+  sortKey: "sk",
 
-  DocumentClient
-})
+  DocumentClient,
+});
 
-module.exports = VaccineTable
+module.exports = VaccineTable;

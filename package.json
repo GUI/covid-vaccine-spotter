@@ -35,6 +35,7 @@
     "ejs-lint": "^1.1.0",
     "playwright": "^1.8.1",
     "playwright-extra": "^4.2.1-next.616",
+    "prettier": "2.2.1",
     "serverless-azure-functions": "^2.1.0",
     "serverless-google-cloudfunctions": "^3.1.1",
     "serverless-offline": "^6.8.0"

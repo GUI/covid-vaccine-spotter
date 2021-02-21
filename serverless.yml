@@ -25,9 +25,9 @@ provider:
   # stage: dev
   # type: premium  # premium azure functions
 
-      # plugins:
+  # plugins:
   # - serverless-google-cloudfunctions
-    # - serverless-offline
+  # - serverless-offline
 
 # needs more granular excluding in production as only the serverless provider npm
 # package should be excluded (and not the whole node_modules directory)

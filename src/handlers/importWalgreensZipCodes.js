@@ -1,13 +1,17 @@
-const csv = require('fast-csv');
-const fs = require('fs');
-const path = require('path');
-const getDatabase = require('../getDatabase');
-const sleep = require('sleep-promise');
+const csv = require("fast-csv");
+const fs = require("fs");
+const path = require("path");
+const getDatabase = require("../getDatabase");
+const sleep = require("sleep-promise");
 
 module.exports.importWalgreensZipCodes = async () => {
   const db = await getDatabase();
-  const { container: zipCodesContainer } = await db.containers.createIfNotExists({ id: "zip_codes" });
-  const { container } = await db.containers.createIfNotExists({ id: "walgreens_zip_codes" });
+  const {
+    container: zipCodesContainer,
+  } = await db.containers.createIfNotExists({ id: "zip_codes" });
+  const { container } = await db.containers.createIfNotExists({
+    id: "walgreens_zip_codes",
+  });
 
   let { resources: zipCodeResources } = await zipCodesContainer.items
     .query({
@@ -23,6 +27,6 @@ module.exports.importWalgreensZipCodes = async () => {
 
     await sleep(50);
   }
-}
+};
 
 module.exports.importWalgreensZipCodes();
