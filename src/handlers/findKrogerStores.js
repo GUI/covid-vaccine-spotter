@@ -66,5 +66,3 @@ module.exports.findKrogerStores = async () => {
     await sleep(50);
   }
 }
-
-module.exports.findKrogerStores();

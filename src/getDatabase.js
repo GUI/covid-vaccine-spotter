@@ -5,7 +5,7 @@ const endpoint = process.env.DB_ENDPOINT;
 const key = process.env.DB_KEY;
 const client = new CosmosClient({ endpoint, key });
 
-module.exports = async function albertsonsAuth() {
+module.exports = async function getDatabase() {
   const { database } = await client.databases.createIfNotExists({ id: "vaccine" });
 
   return database;

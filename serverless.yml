@@ -6,19 +6,29 @@ useDotenv: true
 
 provider:
   name: aws
+  apiGateway:
+    shouldStartNameWithService: true
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - SES:SendEmail
+      Resource: "*"
   runtime: nodejs12.x
   lambdaHashingVersion: 20201221
   region: us-east-2
   memorySize: 128
   timeout: 300
+
   environment:
     DB_ENDPOINT: "${env:DB_ENDPOINT}"
     DB_KEY: "${env:DB_KEY}"
     GH_TOKEN: "${env:GH_TOKEN}"
+    GH_REPO: "${env:GH_REPO}"
     CACHE_DIR: /tmp/cache
     WALMART_USERNAME: "${env:WALMART_USERNAME}"
     WALMART_PASSWORD: "${env:WALMART_PASSWORD}"
     PROXY_URL: "${env:PROXY_URL}"
+    APIGW_URL: { "Fn::Join" : ["", [" https://", { "Ref" : "ApiGatewayRestApi" }, ".execute-api.${self:provider.region}.amazonaws.com/${self:provider.stage}" ] ]  }
   # os: windows  # windows is default, linux is available
   # prefix: "sample"  # prefix of generated resource name
   # subscriptionId: A356AC8C-E310-44F4-BF85-C7F29044AF99
@@ -40,6 +50,11 @@ package:
     - _site/**
 
 functions:
+  app:
+    handler: index.appHandler
+    events:
+      - http: POST /register
+      - http: GET /unregister
   refreshAlbertsons:
     handler: index.refreshAlbertsons
     reservedConcurrency: 1
@@ -73,3 +88,15 @@ functions:
       - schedule: "rate(1 minute)"
     layers:
       - arn:aws:lambda:us-east-2:553035198032:layer:git-lambda2:8
+  findWalmartStores:
+    handler: index.findWalmartStores
+    reservedConcurrency: 1
+  findWalgreensStores:
+    handler: index.findWalgreensStores
+    reservedConcurrency: 1
+  findKrogerStores:
+    handler: index.findKrogerStores
+    reservedConcurrency: 1
+  findPharmacaStores:
+    handler: index.findPharmacaStores
+    reservedConcurrency: 1

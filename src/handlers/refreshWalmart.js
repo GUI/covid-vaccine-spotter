@@ -5,6 +5,7 @@ const walmartAuth = require('../walmart/auth');
 const { DateTime, Settings } = require('luxon');
 const got = require('got');
 const sleep = require('sleep-promise');
+const notify = require('../notify');
 
 Settings.defaultZoneName = 'America/Denver';
 
@@ -29,6 +30,11 @@ module.exports.refreshWalmart = async () => {
     if(!resource.servicesMap || !resource.servicesMap.COVID_IMMUNIZATIONS || !resource.servicesMap.COVID_IMMUNIZATIONS.active) {
       console.info(`  Skipping ${resource.displayName} #${resource.id} since it doesn't currently support COVID vaccines.`);
       continue;
+    }
+
+    const prevAvailability = 0
+    if (resource.timeSlots) {
+      prevAvailability = resource.timeSlots.length
     }
 
     const lastFetched = DateTime.utc().toISO()
@@ -64,8 +70,19 @@ module.exports.refreshWalmart = async () => {
       lastFetched,
     });
 
+    // If appointments were not available but now are, send notifications
+    if ( prevAvailability == 0 && resp.body.length == 0){
+      console.log(`Notifying for store ${resource.id}`)
+      notify("walmartStores",resource.id,resource.displayName,
+`
+There is an appointment available at the <a href=${resource.detailsPageURL}>${resource.displayName}</a>.
+
+This pharmacy can be reached at ${resource.phone}.
+
+Please ensure that you are eligible for this appointment by consulting the <a href='https://covid19.colorado.gov/for-coloradans/vaccine/where-can-i-get-vaccinated'>Colorado guidelines</a>.
+`)
+    }
+
     await sleep(1000);
   }
 };
-
-// module.exports.refreshWalmart();

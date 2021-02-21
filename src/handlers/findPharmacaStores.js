@@ -72,5 +72,3 @@ module.exports.findPharmacaStores = async () => {
     await sleep(1000);
   }
 }
-
-module.exports.findPharmacaStores();
