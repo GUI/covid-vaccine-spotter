@@ -1,6 +1,6 @@
-const getDatabase = require("../getDatabase");
 const got = require("got");
 const sleep = require("sleep-promise");
+const getDatabase = require("../getDatabase");
 
 module.exports.findWalgreensStores = async () => {
   const db = await getDatabase();
@@ -12,7 +12,7 @@ module.exports.findWalgreensStores = async () => {
   });
 
   const importedStores = {};
-  let { resources: zipCodeResources } = await zipCodesContainer.items
+  const { resources: zipCodeResources } = await zipCodesContainer.items
     .query({
       query: "SELECT * from c ORDER by c.id",
     })

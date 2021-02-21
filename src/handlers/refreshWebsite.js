@@ -1,11 +1,11 @@
 const execa = require("execa");
 const fs = require("fs").promises;
 const os = require("os");
-const getDatabase = require("../getDatabase");
 const stringify = require("json-stable-stringify");
 const del = require("del");
 const ghpages = require("gh-pages");
 const util = require("util");
+const getDatabase = require("../getDatabase");
 
 const publish = util.promisify(ghpages.publish);
 

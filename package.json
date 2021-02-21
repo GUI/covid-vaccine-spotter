@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "start": "func host start --verbose"
+    "start": "func host start --verbose",
+    "lint": "eslint src/**/*.js migrations/**/*.js *.js"
   },
   "dependencies": {
     "@11ty/eleventy": "^0.11.1",
@@ -33,6 +34,10 @@
     "@extra/recaptcha": "^4.2.1-next.616",
     "@google-cloud/functions-framework": "^1.7.1",
     "ejs-lint": "^1.1.0",
+    "eslint": "^7.20.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-prettier": "^8.0.0",
+    "eslint-plugin-import": "^2.22.1",
     "playwright": "^1.8.1",
     "playwright-extra": "^4.2.1-next.616",
     "prettier": "2.2.1",

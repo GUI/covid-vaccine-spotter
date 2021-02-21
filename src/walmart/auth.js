@@ -1,16 +1,14 @@
 const got = require("got");
-const _ = require("lodash");
 const sleep = require("sleep-promise");
 const { CookieJar } = require("tough-cookie");
 const { HttpsProxyAgent } = require("hpagent");
 
-const Auth = (module.exports = {
+const Auth = {
   get: async () => {
     if (Auth.auth) {
       return Auth.auth;
-    } else {
-      return await Auth.refresh();
     }
+    return Auth.refresh();
   },
 
   refresh: async () => {
@@ -77,4 +75,6 @@ const Auth = (module.exports = {
   set: (auth) => {
     Auth.auth = auth;
   },
-});
+};
+
+module.exports = Auth;

@@ -1,10 +1,9 @@
-const getDatabase = require("../getDatabase");
-const retry = require("async-retry");
 const _ = require("lodash");
-const samsClubAuth = require("../samsClub/auth");
 const { DateTime, Settings } = require("luxon");
 const got = require("got");
 const sleep = require("sleep-promise");
+const samsClubAuth = require("../samsClub/auth");
+const getDatabase = require("../getDatabase");
 
 Settings.defaultZoneName = "America/Denver";
 
@@ -29,7 +28,7 @@ module.exports.refreshSamsClub = async () => {
   resources = _.shuffle(resources);
   let i = 0;
   for (const resource of resources) {
-    i++;
+    i += 1;
     console.info(
       `Processing ${resource.displayName} #${resource.id} (${i} of ${resources.length})...`
     );

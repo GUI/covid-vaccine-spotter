@@ -3,5 +3,3 @@
 /.env*
 /site/_data*
 /.serverless
-/host.json
-/local.settings.json

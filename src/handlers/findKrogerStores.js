@@ -1,8 +1,6 @@
-const getDatabase = require("../getDatabase");
-const RandomHttpUserAgent = require("random-http-useragent");
 const got = require("got");
 const sleep = require("sleep-promise");
-const { HttpsProxyAgent } = require("hpagent");
+const getDatabase = require("../getDatabase");
 
 module.exports.findKrogerStores = async () => {
   const db = await getDatabase();
@@ -31,7 +29,7 @@ module.exports.findKrogerStores = async () => {
   );
 
   const importedStores = {};
-  let { resources: zipCodeResources } = await zipCodesContainer.items
+  const { resources: zipCodeResources } = await zipCodesContainer.items
     .query({
       query: "SELECT * from c ORDER by c.id",
     })

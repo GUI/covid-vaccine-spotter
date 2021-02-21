@@ -3,8 +3,8 @@ const retry = require("async-retry");
 const sleep = require("sleep-promise");
 const RandomHttpUserAgent = require("random-http-useragent");
 const { DateTime, Settings } = require("luxon");
-const getDatabase = require("../getDatabase");
 const got = require("got");
+const getDatabase = require("../getDatabase");
 
 Settings.defaultZoneName = "America/Denver";
 
@@ -31,7 +31,7 @@ module.exports.refreshWalgreens = async () => {
   resources = _.shuffle(resources);
   let i = 0;
   for (const resource of resources) {
-    i++;
+    i += 1;
     console.info(
       `Processing store #${resource.id} (${i} of ${resources.length})...`
     );
@@ -41,7 +41,7 @@ module.exports.refreshWalgreens = async () => {
     const resp = await retry(
       async () => {
         const agent = await RandomHttpUserAgent.get();
-        return await got.post(
+        return got.post(
           "https://www.walgreens.com/hcschedulersvc/svc/v1/immunizationLocations/availability",
           {
             headers: {

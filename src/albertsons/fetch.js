@@ -1,9 +1,9 @@
-const albertsonsAuth = require("./auth");
 const retry = require("async-retry");
 const sleep = require("sleep-promise");
+const albertsonsAuth = require("./auth");
 
 module.exports = async function albertsonsFetch(callback) {
-  return await retry(
+  return retry(
     async () => {
       let response;
       try {

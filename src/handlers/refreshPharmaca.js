@@ -1,11 +1,9 @@
 const _ = require("lodash");
-const retry = require("async-retry");
 const sleep = require("sleep-promise");
-const RandomHttpUserAgent = require("random-http-useragent");
 const { DateTime, Settings } = require("luxon");
-const getDatabase = require("../getDatabase");
 const got = require("got");
 const cheerio = require("cheerio");
+const getDatabase = require("../getDatabase");
 
 Settings.defaultZoneName = "America/Denver";
 
@@ -14,8 +12,6 @@ module.exports.refreshPharmaca = async () => {
   const { container } = await db.containers.createIfNotExists({
     id: "pharmaca_stores",
   });
-
-  const tomorrow = DateTime.local().plus({ days: 1 });
 
   let { resources } = await container.items
     .query({
@@ -32,7 +28,7 @@ module.exports.refreshPharmaca = async () => {
   resources = _.shuffle(resources);
   let i = 0;
   for (const resource of resources) {
-    i++;
+    i += 1;
     console.info(
       `Processing store #${resource.id} (${i} of ${resources.length})...`
     );

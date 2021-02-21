@@ -1,12 +1,9 @@
-const getDatabase = require("../getDatabase");
 const got = require("got");
 const sleep = require("sleep-promise");
+const getDatabase = require("../getDatabase");
 
 module.exports.findPharmacaStores = async () => {
   const db = await getDatabase();
-  const {
-    container: zipCodesContainer,
-  } = await db.containers.createIfNotExists({ id: "zip_codes" });
   const { container } = await db.containers.createIfNotExists({
     id: "pharmaca_stores",
   });

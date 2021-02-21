@@ -9,6 +9,7 @@ const got = require("got");
 Settings.defaultZoneName = "America/Denver";
 
 const HumanizePlugin = require("@extra/humanize");
+
 firefox.use(
   HumanizePlugin({
     mouse: {
@@ -115,7 +116,7 @@ module.exports.refreshKroger = async () => {
     resources = _.shuffle(resources);
     let i = 0;
     for (const resource of resources) {
-      i++;
+      i += 1;
       console.info(
         `Processing store #${resource.id} (${i} of ${resources.length})...`
       );
@@ -161,7 +162,7 @@ module.exports.refreshKroger = async () => {
                 }
               );
 
-              return await response.json();
+              return response.json();
             },
             {
               zipCode: resource.address.zipCode,
@@ -207,7 +208,7 @@ module.exports.refreshKroger = async () => {
 
         await container.items.upsert({
           ...appointmentsStoreResource,
-          appointments: appointments,
+          appointments,
           lastFetched,
         });
 

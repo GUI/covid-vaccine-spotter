@@ -1,4 +1,4 @@
-const { Base } = require("./base");
+const { Base } = require("./Base");
 
 class State extends Base {
   static get tableName() {

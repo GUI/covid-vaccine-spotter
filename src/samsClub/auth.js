@@ -28,7 +28,7 @@ async function recursiveFindInFrames(inputFrame, selector) {
       // console.info('frame.el: ', await frame.isVisible('body'), el);
       if (el) return el;
       if (frame.childFrames().length > 0) {
-        return await recursiveFindInFrames(frame, selector);
+        return recursiveFindInFrames(frame, selector);
       }
       return null;
     })
@@ -50,9 +50,8 @@ const Auth = (module.exports = {
   get: async () => {
     if (Auth.auth) {
       return Auth.auth;
-    } else {
-      return await Auth.refresh();
     }
+    return Auth.refresh();
   },
 
   refresh: async () => {
@@ -103,9 +102,9 @@ const Auth = (module.exports = {
       await page.waitForLoadState("load");
 
       console.log("Page title: ", await page.title());
-      //console.info('cookies: ', await context.cookies());
+      // console.info('cookies: ', await context.cookies());
       // await page.goto('https://www.samsclub.com/pharmacy/immunization/form?imzType=covid');
-      //await page.waitForLoadState('networkidle');
+      // await page.waitForLoadState('networkidle');
       await page.fill(
         'input[aria-label="ZIP Code or city and state"]',
         "80620"
@@ -221,7 +220,7 @@ const Auth = (module.exports = {
     }
 
     // const cookieJar = new CookieJar();
-    //const findCookie = util.promisify(cookieJar.store.findCookie);
+    // const findCookie = util.promisify(cookieJar.store.findCookie);
 
     //     const loginResp = await got('https://www.samsclub.com/login', {
     //       headers: {
@@ -497,7 +496,7 @@ const Auth = (module.exports = {
 
     const auth = {
       cookieJar,
-      //body: JSON.parse(resp.body),
+      // body: JSON.parse(resp.body),
     };
     Auth.set(auth);
 

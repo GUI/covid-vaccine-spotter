@@ -1,8 +1,6 @@
 const csvParse = require("csv-parse");
 const fs = require("fs");
 const path = require("path");
-const getDatabase = require("../getDatabase");
-const sleep = require("sleep-promise");
 const { PostalCode } = require("../models/PostalCode");
 
 module.exports.importPostalCodes = async () => {
@@ -13,12 +11,11 @@ module.exports.importPostalCodes = async () => {
     .pipe(
       csvParse({
         delimiter: "\t",
-        cast: (value, context) => {
+        cast: (value) => {
           if (value === "") {
             return null;
-          } else {
-            return value;
           }
+          return value;
         },
       })
     );
@@ -54,12 +51,11 @@ module.exports.importPostalCodes = async () => {
     .pipe(
       csvParse({
         delimiter: "\t",
-        cast: (value, context) => {
+        cast: (value) => {
           if (value === "") {
             return null;
-          } else {
-            return value;
           }
+          return value;
         },
       })
     );

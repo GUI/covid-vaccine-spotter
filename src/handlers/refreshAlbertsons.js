@@ -1,9 +1,9 @@
 const _ = require("lodash");
+const dateAdd = require("date-fns/add");
+const got = require("got");
 const albertsonsAuth = require("../albertsons/auth");
 const albertsonsFetch = require("../albertsons/fetch");
-const dateAdd = require("date-fns/add");
 const getDatabase = require("../getDatabase");
-const got = require("got");
 
 module.exports.refreshAlbertsons = async () => {
   const db = await getDatabase();
@@ -36,7 +36,7 @@ module.exports.refreshAlbertsons = async () => {
     console.info(`Checking if stores support vaccines: ${chunk.join(",")}`);
     const locationsResp = await albertsonsFetch(async () => {
       const auth = await albertsonsAuth.get();
-      return await got(
+      return got(
         "https://kordinator.mhealthcoach.net/loadLocationsForClientAndApptType.do",
         {
           searchParams: {
@@ -64,7 +64,7 @@ module.exports.refreshAlbertsons = async () => {
 
   let i = 0;
   for (const resource of resources) {
-    i++;
+    i += 1;
     console.info(
       `Processing ${resource.name} (${i} of ${resources.length})...`
     );

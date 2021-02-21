@@ -1,6 +1,6 @@
-const getDatabase = require("../getDatabase");
 const _ = require("lodash");
 const got = require("got");
+const getDatabase = require("../getDatabase");
 
 module.exports.refreshCvs = async () => {
   const db = await getDatabase();
@@ -39,7 +39,7 @@ module.exports.refreshCvs = async () => {
     }
   }
 
-  let { resources } = await container.items
+  const { resources } = await container.items
     .query({
       query: "SELECT * from c",
     })

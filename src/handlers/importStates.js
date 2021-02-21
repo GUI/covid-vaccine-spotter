@@ -1,8 +1,6 @@
 const csvParse = require("csv-parse");
 const fs = require("fs");
 const path = require("path");
-const getDatabase = require("../getDatabase");
-const sleep = require("sleep-promise");
 const { State } = require("../models/State");
 
 module.exports.importStates = async () => {
@@ -15,12 +13,11 @@ module.exports.importStates = async () => {
     .pipe(
       csvParse({
         delimiter: "\t",
-        cast: (value, context) => {
+        cast: (value) => {
           if (value === "") {
             return null;
-          } else {
-            return value;
           }
+          return value;
         },
       })
     );

@@ -1,10 +1,10 @@
-const getDatabase = require("../getDatabase");
 const retry = require("async-retry");
 const _ = require("lodash");
-const walmartAuth = require("../walmart/auth");
 const { DateTime, Settings } = require("luxon");
 const got = require("got");
 const sleep = require("sleep-promise");
+const walmartAuth = require("../walmart/auth");
+const getDatabase = require("../getDatabase");
 
 Settings.defaultZoneName = "America/Denver";
 
@@ -29,7 +29,7 @@ module.exports.refreshWalmart = async () => {
   resources = _.shuffle(resources);
   let i = 0;
   for (const resource of resources) {
-    i++;
+    i += 1;
     console.info(
       `Processing ${resource.displayName} #${resource.id} (${i} of ${resources.length})...`
     );
@@ -50,7 +50,7 @@ module.exports.refreshWalmart = async () => {
     const resp = await retry(
       async () => {
         const auth = await walmartAuth.get();
-        return await got.post(
+        return got.post(
           `https://www.walmart.com/pharmacy/v2/clinical-services/time-slots/${auth.body.payload.cid}`,
           {
             headers: {
