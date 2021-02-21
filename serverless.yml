@@ -4,6 +4,10 @@ frameworkVersion: "2"
 
 useDotenv: true
 
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  region: ${opt:region, self:provider.region}
+
 provider:
   name: aws
   apiGateway:
@@ -13,6 +17,7 @@ provider:
   region: us-east-2
   memorySize: 128
   timeout: 300
+
   environment:
     DB_ENDPOINT: "${env:DB_ENDPOINT}"
     DB_KEY: "${env:DB_KEY}"
@@ -22,6 +27,7 @@ provider:
     WALMART_USERNAME: "${env:WALMART_USERNAME}"
     WALMART_PASSWORD: "${env:WALMART_PASSWORD}"
     PROXY_URL: "${env:PROXY_URL}"
+    APIGW_URL: { "Fn::Join" : ["", [" https://", { "Ref" : "ApiGatewayRestApi" }, ".execute-api.${self:custom.region}.amazonaws.com/${self:custom.stage}" ] ]  }
   # os: windows  # windows is default, linux is available
   # prefix: "sample"  # prefix of generated resource name
   # subscriptionId: A356AC8C-E310-44F4-BF85-C7F29044AF99
