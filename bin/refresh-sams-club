@@ -1,0 +1,6 @@
+#!/usr/bin/env node
+
+const { refreshSamsClub } = require("../src/handlers/refreshSamsClub");
+const runTask = require("../src/runTask");
+
+runTask(refreshSamsClub, 5000);

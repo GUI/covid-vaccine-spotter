@@ -10,6 +10,14 @@ const logger = require("../logger");
 
 const refreshAuthMutex = new Mutex();
 
+const headers = {
+  'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:85.0) Gecko/20100101 Firefox/85.0',
+  accept: 'application/json, text/plain, */*',
+  'accept-language': 'en-US,en;q=0.5',
+  'referer': 'https://www.samsclub.com/pharmacy/immunization/form?imzType=covid&xid=login-success',
+  origin: 'https://www.samsclub.com',
+}
+
 const SamsClub = {
   refreshStores: async () => {
     const queue = new PQueue({ concurrency: 5 });
@@ -98,23 +106,7 @@ const SamsClub = {
       return await got.post(
         "https://www.samsclub.com/api/node/vivaldi/v1/pharmacy/rules/ageEligibility",
         {
-          headers: {
-            // 'User-Agent': 'covid-vaccine-finder (https://github.com/GUI/covid-vaccine-finder)',
-            authority: "www.samsclub.com",
-            "sec-ch-ua": '" Not A;Brand";v="99", "Chromium";v="90"',
-            accept: "application/json, text/plain, */*",
-            "sec-ch-ua-mobile": "?0",
-            "user-agent":
-              "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4392.0 Safari/537.36",
-            "content-type": "application/json",
-            origin: "https://www.samsclub.com",
-            "sec-fetch-site": "same-origin",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-dest": "empty",
-            referer:
-              "https://www.samsclub.com/pharmacy/immunization/form?imzType=covid&xid=login-success",
-            "accept-language": "en-US,en;q=0.9",
-          },
+          headers,
           decompress: true,
           cookieJar: auth.cookieJar,
           responseType: "json",
@@ -123,6 +115,7 @@ const SamsClub = {
             clubNumber: store.brand_id,
             imzType: "COVID",
           },
+          http2: true,
           retry: 0,
         }
       );
@@ -144,26 +137,11 @@ const SamsClub = {
           numOfDays: "6",
           serviceType: "IMMUNIZATION",
         },
-        headers: {
-          // 'User-Agent': 'covid-vaccine-finder (https://github.com/GUI/covid-vaccine-finder)',
-          authority: "www.samsclub.com",
-          "sec-ch-ua": '" Not A;Brand";v="99", "Chromium";v="90"',
-          accept: "application/json, text/plain, */*",
-          "sec-ch-ua-mobile": "?0",
-          "user-agent":
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4392.0 Safari/537.36",
-          "content-type": "application/json",
-          origin: "https://www.samsclub.com",
-          "sec-fetch-site": "same-origin",
-          "sec-fetch-mode": "cors",
-          "sec-fetch-dest": "empty",
-          referer:
-            "https://www.samsclub.com/pharmacy/immunization/form?imzType=covid&xid=login-success",
-          "accept-language": "en-US,en;q=0.9",
-        },
+        headers,
         decompress: true,
         cookieJar: auth.cookieJar,
         responseType: "json",
+        http2: true,
         retry: 0,
       }
     );
@@ -175,15 +153,20 @@ const SamsClub = {
     logger.warn(
       `Error fetching data (${err?.response?.statusCode}), attempting to refresh auth and then retry.`
     );
-    await refreshAuthMutex.runExclusive(samsClubAuth.refresh);
+    if (refreshAuthMutex.isLocked()) {
+      await refreshAuthMutex.runExclusive(samsClubAuth.get);
+    } else {
+      await refreshAuthMutex.runExclusive(samsClubAuth.refresh);
+    }
   },
 };
 
 module.exports.refreshSamsClub = async () => {
+  console.info('hello');
   try {
     await SamsClub.refreshStores();
   } finally {
-    await Store.knex().destroy();
+    // await Store.knex().destroy();
   }
 };
 

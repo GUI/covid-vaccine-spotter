@@ -73,16 +73,18 @@ module.exports.refreshWebsite = async () => {
     stringify(pharmacaData, { space: "  " })
   );
 
-  /*
-  const samsClubData = await Store.query()
-    .where("brand", "sams_club")
-    .where("state", "CO")
-    .orderBy("id");
-  await fs.writeFile(
-    `${tmp}/site/_data/samsClub.json`,
-    stringify(samsClubData, { space: "  " })
-  );
-  */
+  try {
+    const samsClubData = await Store.query()
+      .where("brand", "sams_club")
+      .where("state", "CO")
+      .orderBy("id");
+    await fs.writeFile(
+      `${tmp}/site/_data/samsClub.json`,
+      stringify(samsClubData, { space: "  " })
+    );
+  } catch(err) {
+    console.info('SAMS CLUB ERROR: ', err);
+  }
 
   const { resources: walgreensData } = await walgreensStores.items
     .query("SELECT * from c ORDER BY c.id")
@@ -119,7 +121,7 @@ module.exports.refreshWebsite = async () => {
     },
   });
 
-  await Store.knex().destroy();
+  // await Store.knex().destroy();
 };
 
 // module.exports.refreshWebsite();

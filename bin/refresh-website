@@ -1,0 +1,6 @@
+#!/usr/bin/env node
+
+const { refreshWebsite } = require("../src/handlers/refreshWebsite");
+const runTask = require("../src/runTask");
+
+runTask(refreshWebsite, 30000);

@@ -1,0 +1,7 @@
+.git
+node_modules
+_site
+site/_data*
+.serverless
+host.json
+local.settings.json

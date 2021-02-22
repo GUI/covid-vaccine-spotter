@@ -62,13 +62,13 @@ functions:
     reservedConcurrency: 1
     events:
       - schedule: "rate(2 minutes)"
-  # refreshSamsClub:
-  #   handler: index.refreshSamsClub
-  #   reservedConcurrency: 1
-  #   runtime: nodejs12.x
-  #   memorySize: 512
-  #   events:
-  #     - schedule: "rate(2 minutes)"
+  refreshSamsClub:
+    handler: index.refreshSamsClub
+    reservedConcurrency: 1
+    # runtime: nodejs12.x
+    memorySize: 512
+    events:
+      - schedule: "rate(2 minutes)"
   refreshWalgreens:
     handler: index.refreshWalgreens
     reservedConcurrency: 1
