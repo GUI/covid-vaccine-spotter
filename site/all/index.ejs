@@ -49,11 +49,6 @@ title: Colorado COVID-19 Vaccine Finder
           <%- include('../_includes/albertsonsAppointment', { store }) %>
         <% }) %>
 
-        <h2>Sam's Club Appointments</h2>
-        <% this.lodash.orderBy(samsClub, ['city', 'address']).forEach((store) => { %>
-          <%- include('../_includes/samsClubAppointment', { store }) %>
-        <% }) %>
-
         <h2>Walgreens Appointments</h2>
         <% this.lodash.orderBy(walgreens, ['id'], ['asc']).forEach((store) => { %>
           <%- include('../_includes/walgreensAppointment', { store }) %>

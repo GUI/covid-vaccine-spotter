@@ -73,6 +73,7 @@ module.exports.refreshWebsite = async () => {
     stringify(pharmacaData, { space: "  " })
   );
 
+  /*
   const samsClubData = await Store.query()
     .where("brand", "sams_club")
     .where("state", "CO")
@@ -81,6 +82,7 @@ module.exports.refreshWebsite = async () => {
     `${tmp}/site/_data/samsClub.json`,
     stringify(samsClubData, { space: "  " })
   );
+  */
 
   const { resources: walgreensData } = await walgreensStores.items
     .query("SELECT * from c ORDER BY c.id")
