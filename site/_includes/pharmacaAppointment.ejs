@@ -16,7 +16,7 @@
         <h6><%= key %></h6>
         <%- include('./appointmentTimes', { times }) %>
       <% } %>
-      <a href="https://pharmaca.as.me/<%= store.scheduleId %>" class="btn btn-primary">Visit Pharmaca Website</a>
+      <a href="https://pharmaca.as.me/<%= store.scheduleId %>" class="btn btn-primary" target="_blank">Visit Pharmaca Website <i class="fas fa-arrow-alt-circle-right"></i></a>
     <% } else { %>
       <div>
         <i class="fas fa-times-circle"></i>

@@ -9,7 +9,7 @@
       </div>
       <% times = store.events.map((event) => this.luxon.DateTime.fromFormat(`${event.date} ${event.startTime}`, 'LL/dd/yyyy hh:mm a')) %>
       <%- include('./appointmentTimes', { times }) %>
-      <a href="https://www.safeway.com/pharmacy/covid-19.html" class="btn btn-primary">Visit Safeway Website</a>
+      <a href="https://www.safeway.com/pharmacy/covid-19.html" class="btn btn-primary" target="_blank">Visit Safeway Pharmacy Website <i class="fas fa-arrow-alt-circle-right"></i></a>
     <% } else { %>
       <div>
         <i class="fas fa-times-circle"></i>
