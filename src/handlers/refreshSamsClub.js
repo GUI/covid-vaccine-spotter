@@ -49,7 +49,13 @@ const SamsClub = {
 
     patch.appointments_raw.ageEligibility = ageEligibilityResp.body;
 
-    if (ageEligibilityResp.body?.errors?.[0]?.code === "4002") {
+    if (
+      ageEligibilityResp &&
+      ageEligibilityResp.body &&
+      ageEligibilityResp.body.errors &&
+      ageEligibilityResp.body.errors[0] &&
+      ageEligibilityResp.body.errors[0].code === "4002"
+    ) {
       logger.info(
         `Skipping store #${store.brand_id} since store does not carry the vaccine.`
       );
@@ -127,7 +133,13 @@ const SamsClub = {
         }
       );
     } catch (err) {
-      if (err.response?.body?.errors?.[0]?.code === "4002") {
+      if (
+        err.response &&
+        err.response.body &&
+        err.response.body.errors &&
+        err.response.body.errors[0] &&
+        err.response.body.errors[0].code === "4002"
+      ) {
         return err.response;
       }
       throw err;
@@ -171,9 +183,11 @@ const SamsClub = {
 
   onFailedAttempt: async (err) => {
     logger.warn(err);
-    logger.warn(err?.response?.body);
+    logger.warn(err.response && err.response.body);
     logger.warn(
-      `Error fetching data (${err?.response?.statusCode}), attempting to refresh auth and then retry.`
+      `Error fetching data (${
+        err.response && err.response.statusCode
+      }), attempting to refresh auth and then retry.`
     );
     await refreshAuthMutex.runExclusive(samsClubAuth.refresh);
   },
@@ -187,4 +201,4 @@ module.exports.refreshSamsClub = async () => {
   }
 };
 
-// module.exports.refreshSamsClub();
+module.exports.refreshSamsClub();
