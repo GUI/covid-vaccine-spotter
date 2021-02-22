@@ -1,19 +1,15 @@
-const got = require("got");
 const retry = require("async-retry");
-const _ = require("lodash");
 const sleep = require("sleep-promise");
 const { Cookie, CookieJar } = require("tough-cookie");
-const { HttpsProxyAgent } = require("hpagent");
 const playwright = require("playwright-aws-lambda");
 const util = require("util");
+const logger = require("../logger");
 
 async function recursiveFindInFrames(inputFrame, selector) {
   const frames = inputFrame.childFrames();
   const results = await Promise.all(
     frames.map(async (frame) => {
-      // console.info('frame.isVisible(): ', await frame.isVisible('body'));
       const el = await frame.$(selector);
-      // console.info('frame.el: ', await frame.isVisible('body'), el);
       if (el) return el;
       if (frame.childFrames().length > 0) {
         return recursiveFindInFrames(frame, selector);
@@ -34,7 +30,7 @@ async function findInFrames(page, selector) {
   return result;
 }
 
-const Auth = (module.exports = {
+const Auth = {
   get: async () => {
     if (Auth.auth) {
       return Auth.auth;
@@ -43,7 +39,7 @@ const Auth = (module.exports = {
   },
 
   refresh: async () => {
-    console.info("Refreshing Sam's Club auth");
+    logger.info("Refreshing Sam's Club auth");
 
     const cookieJar = new CookieJar();
 
@@ -82,7 +78,7 @@ const Auth = (module.exports = {
       );
       await page.waitForLoadState("load");
 
-      console.log("Page title: ", await page.title());
+      logger.info("Page title: ", await page.title());
       await page.fill(
         'input[aria-label="ZIP Code or city and state"]',
         "80620"
@@ -114,7 +110,7 @@ const Auth = (module.exports = {
       const ageResp = await page.waitForResponse(
         "https://www.samsclub.com/api/node/vivaldi/v1/pharmacy/rules/ageEligibility"
       );
-      console.info("ageResp: ", ageResp.status());
+      logger.info("ageResp: ", ageResp.status());
       if (ageResp.status() === 412) {
         await page.waitForSelector(".sc-block-modal iframe");
         const foo = await findInFrames(
@@ -136,7 +132,7 @@ const Auth = (module.exports = {
         const ageResp2 = await page.waitForResponse(
           "https://www.samsclub.com/api/node/vivaldi/v1/pharmacy/rules/ageEligibility"
         );
-        console.info("ageResp2: ", ageResp2.status());
+        logger.info("ageResp2: ", ageResp2.status());
       }
 
       for (const cookie of await context.cookies()) {
@@ -150,7 +146,7 @@ const Auth = (module.exports = {
             domain: cookie.domain.replace(/^\./, ""),
             path: cookie.path,
             expires:
-              cookie.expires && cookie.expires != -1
+              cookie.expires && cookie.expires !== -1
                 ? new Date(cookie.expires * 1000)
                 : "Infinity",
             httpOnly: cookie.httpOnly,
@@ -160,8 +156,8 @@ const Auth = (module.exports = {
         );
       }
     } catch (err) {
-      console.info(err);
-      throw error;
+      logger.error(err);
+      throw err;
     } finally {
       if (browser) {
         await browser.close();
@@ -181,4 +177,6 @@ const Auth = (module.exports = {
   set: (auth) => {
     Auth.auth = auth;
   },
-});
+};
+
+module.exports = Auth;

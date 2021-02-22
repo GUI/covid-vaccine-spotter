@@ -6,7 +6,7 @@ useDotenv: true
 
 provider:
   name: aws
-  runtime: nodejs12.x
+  runtime: nodejs14.x
   lambdaHashingVersion: 20201221
   region: us-east-2
   memorySize: 128
@@ -18,6 +18,12 @@ provider:
     CACHE_DIR: /tmp/cache
     WALMART_USERNAME: "${env:WALMART_USERNAME}"
     WALMART_PASSWORD: "${env:WALMART_PASSWORD}"
+    SAMS_CLUB_EMAIL: "${env:SAMS_CLUB_EMAIL}"
+    SAMS_CLUB_PASSWORD: "${env:SAMS_CLUB_PASSWORD}"
+    DB_USERNAME: "${env:DB_USERNAME}"
+    DB_PASSWORD: "${env:DB_PASSWORD}"
+    DB_NAME: "${env:DB_NAME}"
+    DB_HOST: "${env:DB_HOST}"
     PROXY_URL: "${env:PROXY_URL}"
   # os: windows  # windows is default, linux is available
   # prefix: "sample"  # prefix of generated resource name
@@ -38,6 +44,7 @@ package:
     - .git/**
     - .env
     - _site/**
+    - site/_data/**
 
 functions:
   refreshAlbertsons:
@@ -53,6 +60,13 @@ functions:
   refreshPharmaca:
     handler: index.refreshPharmaca
     reservedConcurrency: 1
+    events:
+      - schedule: "rate(2 minutes)"
+  refreshSamsClub:
+    handler: index.refreshSamsClub
+    reservedConcurrency: 1
+    runtime: nodejs12.x
+    memorySize: 512
     events:
       - schedule: "rate(2 minutes)"
   refreshWalgreens:

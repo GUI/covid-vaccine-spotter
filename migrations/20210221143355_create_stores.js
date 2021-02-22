@@ -14,6 +14,7 @@ exports.up = function (knex) {
         .inTable("postal_codes");
       table.specificType("location", "geography(point, 4326)").notNullable();
       table.jsonb("metadata_raw");
+      table.boolean("carries_vaccine").index();
       table.jsonb("appointments");
       table.boolean("appointments_available").index();
       table.datetime("appointments_last_fetched").index();

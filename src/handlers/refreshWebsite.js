@@ -6,6 +6,7 @@ const del = require("del");
 const ghpages = require("gh-pages");
 const util = require("util");
 const getDatabase = require("../getDatabase");
+const { Store } = require("../models/Store");
 
 const publish = util.promisify(ghpages.publish);
 
@@ -72,6 +73,15 @@ module.exports.refreshWebsite = async () => {
     stringify(pharmacaData, { space: "  " })
   );
 
+  const samsClubData = await Store.query()
+    .where("brand", "sams_club")
+    .where("state", "CO")
+    .orderBy("id");
+  await fs.writeFile(
+    `${tmp}/site/_data/samsClub.json`,
+    stringify(samsClubData, { space: "  " })
+  );
+
   const { resources: walgreensData } = await walgreensStores.items
     .query("SELECT * from c ORDER BY c.id")
     .fetchAll();
@@ -106,6 +116,8 @@ module.exports.refreshWebsite = async () => {
       email: "12112+GUI@users.noreply.github.com",
     },
   });
+
+  await Store.knex().destroy();
 };
 
 // module.exports.refreshWebsite();

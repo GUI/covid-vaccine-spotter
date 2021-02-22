@@ -1,5 +1,5 @@
 const got = require("got");
-const sleep = require("sleep-promise");
+const logger = require("../logger");
 const { Store } = require("../models/Store");
 
 module.exports.findSamsClubStores = async () => {
@@ -21,7 +21,7 @@ module.exports.findSamsClubStores = async () => {
   );
 
   for (const store of resp.body) {
-    console.info(`  Importing store ${store.id}`);
+    logger.info(`Importing store ${store.id}`);
     await Store.query()
       .insert({
         brand: "sams_club",
