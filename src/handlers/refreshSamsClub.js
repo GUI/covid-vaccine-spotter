@@ -11,12 +11,14 @@ const logger = require("../logger");
 const refreshAuthMutex = new Mutex();
 
 const headers = {
-  'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:85.0) Gecko/20100101 Firefox/85.0',
-  accept: 'application/json, text/plain, */*',
-  'accept-language': 'en-US,en;q=0.5',
-  'referer': 'https://www.samsclub.com/pharmacy/immunization/form?imzType=covid&xid=login-success',
-  origin: 'https://www.samsclub.com',
-}
+  "user-agent":
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:85.0) Gecko/20100101 Firefox/85.0",
+  accept: "application/json, text/plain, */*",
+  "accept-language": "en-US,en;q=0.5",
+  referer:
+    "https://www.samsclub.com/pharmacy/immunization/form?imzType=covid&xid=login-success",
+  origin: "https://www.samsclub.com",
+};
 
 const SamsClub = {
   refreshStores: async () => {
@@ -162,12 +164,5 @@ const SamsClub = {
 };
 
 module.exports.refreshSamsClub = async () => {
-  console.info('hello');
-  try {
-    await SamsClub.refreshStores();
-  } finally {
-    // await Store.knex().destroy();
-  }
+  await SamsClub.refreshStores();
 };
-
-// module.exports.refreshSamsClub();

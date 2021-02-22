@@ -21,7 +21,6 @@ cpu: 256
 memory: 512
 # Number of tasks that should be running in your service.
 count: 1
-
 # Optional fields for more advanced use-cases.
 #
 #variables:                    # Pass environment variables as key value pairs.

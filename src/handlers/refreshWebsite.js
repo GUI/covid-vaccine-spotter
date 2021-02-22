@@ -82,8 +82,8 @@ module.exports.refreshWebsite = async () => {
       `${tmp}/site/_data/samsClub.json`,
       stringify(samsClubData, { space: "  " })
     );
-  } catch(err) {
-    console.info('SAMS CLUB ERROR: ', err);
+  } catch (err) {
+    console.info("SAMS CLUB ERROR: ", err);
   }
 
   const { resources: walgreensData } = await walgreensStores.items
