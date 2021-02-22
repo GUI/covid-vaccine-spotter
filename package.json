@@ -28,13 +28,8 @@
     "p-queue": "^6.6.2",
     "p-retry": "^4.4.0",
     "pg": "^8.5.1",
-    "playwright-addons": "Niek/playwright-addons#master",
     "playwright-aws-lambda": "^0.6.0",
     "playwright-core": "^1.8.1",
-    "puppeteer-core": "^7.1.0",
-    "puppeteer-extra": "^3.1.17",
-    "puppeteer-extra-plugin-adblocker": "^2.11.10",
-    "puppeteer-extra-plugin-stealth": "^2.7.5",
     "random-http-useragent": "^1.1.32",
     "sleep-promise": "^9.1.0",
     "tough-cookie": "^4.0.0"
@@ -42,6 +37,7 @@
   "devDependencies": {
     "@extra/humanize": "^4.2.2-next.616",
     "@extra/recaptcha": "^4.2.1-next.616",
+    "@google-cloud/functions-framework": "^1.7.1",
     "ejs-lint": "^1.1.0",
     "eslint": "^7.20.0",
     "eslint-config-airbnb-base": "^14.2.1",
@@ -50,7 +46,8 @@
     "playwright": "^1.8.1",
     "playwright-extra": "^4.2.1-next.616",
     "prettier": "2.2.1",
-    "puppeteer": "^7.1.0",
+    "serverless-azure-functions": "^2.1.0",
+    "serverless-google-cloudfunctions": "^3.1.1",
     "serverless-offline": "^6.8.0"
   }
 }
