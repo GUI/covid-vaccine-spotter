@@ -37,7 +37,6 @@
   "devDependencies": {
     "@extra/humanize": "^4.2.2-next.616",
     "@extra/recaptcha": "^4.2.1-next.616",
-    "@google-cloud/functions-framework": "^1.7.1",
     "ejs-lint": "^1.1.0",
     "eslint": "^7.20.0",
     "eslint-config-airbnb-base": "^14.2.1",
@@ -46,8 +45,6 @@
     "playwright": "^1.8.1",
     "playwright-extra": "^4.2.1-next.616",
     "prettier": "2.2.1",
-    "serverless-azure-functions": "^2.1.0",
-    "serverless-google-cloudfunctions": "^3.1.1",
     "serverless-offline": "^6.8.0"
   }
 }
