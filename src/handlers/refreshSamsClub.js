@@ -50,12 +50,13 @@ const SamsClub = {
     };
 
     const ageEligibilityResp = await retry(
-      () => SamsClub.fetchAgeEligibility(store),
+      async () => await SamsClub.fetchAgeEligibility(store),
       {
         retries: 2,
         onFailedAttempt: SamsClub.onFailedAttempt,
       }
     );
+    logger.info(`  ageEligibilityResp: ${ageEligibilityResp.statusCode} (${ageEligibilityResp.url})`);
 
     patch.appointments_raw.ageEligibility = ageEligibilityResp.body;
 
@@ -66,10 +67,11 @@ const SamsClub = {
     } else {
       patch.carries_vaccine = true;
 
-      const slotsResp = await retry(() => SamsClub.fetchSlots(store), {
+      const slotsResp = await retry(async () => await SamsClub.fetchSlots(store), {
         retries: 2,
         onFailedAttempt: SamsClub.onFailedAttempt,
       });
+      logger.info(`  slotsResp: ${slotsResp.statusCode} (${slotsResp.url})`);
 
       patch.appointments_raw.slots = slotsResp.body;
       patch.appointments = patch.appointments_raw.slots.payload.slotDetails.reduce(
