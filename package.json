@@ -9,6 +9,7 @@
     "@extra/recaptcha": "^4.2.1-next.616",
     "async-mutex": "^0.3.0",
     "async-retry": "^1.3.1",
+    "capital-case": "^1.0.4",
     "cheerio": "^1.0.0-rc.5",
     "csv-parse": "^4.15.1",
     "date-fns": "^2.17.0",

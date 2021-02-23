@@ -1,10 +1,12 @@
 const execa = require("execa");
+const _ = require("lodash");
 const fs = require("fs").promises;
 const os = require("os");
 const stringify = require("json-stable-stringify");
 const del = require("del");
 const ghpages = require("gh-pages");
 const util = require("util");
+const logger = require("../logger");
 const getDatabase = require("../getDatabase");
 const { Store } = require("../models/Store");
 
@@ -15,9 +17,6 @@ module.exports.refreshWebsite = async () => {
   const {
     container: albertsonsStores,
   } = await db.containers.createIfNotExists({ id: "albertsons_stores" });
-  const { container: cvsCities } = await db.containers.createIfNotExists({
-    id: "cvs_cities",
-  });
   const { container: krogerStores } = await db.containers.createIfNotExists({
     id: "kroger_stores",
   });
@@ -32,12 +31,27 @@ module.exports.refreshWebsite = async () => {
   });
 
   const { stdout } = await execa("ls", ["-lh", os.tmpdir()]);
-  console.info(stdout);
+  logger.info(stdout);
   await del([`${os.tmpdir()}/covid-vaccine-finder*`], { force: true });
   const tmp = await fs.mkdtemp(`${os.tmpdir()}/covid-vaccine-finder`);
-  console.info(tmp);
+  logger.info(tmp);
   await execa("cp", ["-r", "./site", `${tmp}/`]);
   await execa("mkdir", ["-p", `${tmp}/site/_data`]);
+
+  const storeSelect = [
+    "id",
+    "brand",
+    "brand_id",
+    "name",
+    "address",
+    "city",
+    "state",
+    "postal_code",
+    "appointments",
+    "appointments_available",
+    "appointments_last_fetched",
+    "appointments_raw",
+  ];
 
   const { resources: albertsonsData } = await albertsonsStores.items
     .query("SELECT * from c WHERE c.clientName != null ORDER BY c.id")
@@ -47,13 +61,18 @@ module.exports.refreshWebsite = async () => {
     stringify(albertsonsData, { space: "  " })
   );
 
-  const { resources: cvsData } = await cvsCities.items
-    .query("SELECT * from c ORDER BY c.id")
-    .fetchAll();
-  await fs.writeFile(
-    `${tmp}/site/_data/cvs.json`,
-    stringify(cvsData, { space: "  " })
-  );
+  try {
+    const cvsData = await Store.query()
+      .select(storeSelect)
+      .where("brand", "cvs")
+      .orderBy("id");
+    await fs.writeFile(
+      `${tmp}/site/_data/cvs.json`,
+      stringify(_.groupBy(cvsData, "state"), { space: "  " })
+    );
+  } catch (err) {
+    logger.info("CVS Data Error: ", err);
+  }
 
   const { resources: krogerData } = await krogerStores.items
     .query("SELECT * from c ORDER BY c.id")
@@ -75,15 +94,15 @@ module.exports.refreshWebsite = async () => {
 
   try {
     const samsClubData = await Store.query()
+      .select(storeSelect)
       .where("brand", "sams_club")
-      .where("state", "CO")
       .orderBy("id");
     await fs.writeFile(
       `${tmp}/site/_data/samsClub.json`,
-      stringify(samsClubData, { space: "  " })
+      stringify(_.groupBy(samsClubData, "state"), { space: "  " })
     );
   } catch (err) {
-    console.info("SAMS CLUB ERROR: ", err);
+    logger.error("Sam's Club Data Error: ", err);
   }
 
   const { resources: walgreensData } = await walgreensStores.items

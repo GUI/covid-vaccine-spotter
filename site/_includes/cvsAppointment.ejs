@@ -1,8 +1,8 @@
-<% lastFetched = (new Date(store.lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>
+<% lastFetched = (new Date(store.appointments_last_fetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>
 <div class="card mb-4">
-  <h5 class="card-header"><%= store.city %>, <%= store.state %></h5>
+  <h5 class="card-header"><%= store.name %></h5>
   <div class="card-body">
-    <% if(parseInt(store.totalAvailable, 10) > 0 || store.status === 'Available') { %>
+    <% if(store.appointments_available) { %>
       <div class="text-success fs-2">
         <i class="fas fa-check-circle"></i>
         <span class="fs-5">Appointments available as of <%= lastFetched %></span>

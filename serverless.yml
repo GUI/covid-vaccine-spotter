@@ -52,11 +52,6 @@ functions:
     reservedConcurrency: 1
     events:
       - schedule: "rate(2 minutes)"
-  refreshCvs:
-    handler: index.refreshCvs
-    reservedConcurrency: 1
-    events:
-      - schedule: "rate(2 minutes)"
   refreshPharmaca:
     handler: index.refreshPharmaca
     reservedConcurrency: 1
