@@ -4,22 +4,23 @@ const sleep = require("sleep-promise");
 const { CookieJar } = require("tough-cookie");
 
 const Auth = {
-  get: async () => {
-    if (Auth.auth) {
-      return Auth.auth;
+  auth: {},
+
+  get: async (authParam) => {
+    if (Auth.auth[authParam]) {
+      return Auth.auth[authParam];
     }
-    return Auth.refresh();
+    return Auth.refresh(authParam);
   },
 
-  refresh: async () => {
+  refresh: async (authParam) => {
     const cookieJar = new CookieJar();
     const resp = await got(
       "https://kordinator.mhealthcoach.net/loginPharmacistFromEmail.do",
       {
         searchParams: {
           _r: _.random(0, 999999999999),
-          p:
-            "II0ynmRV1omFIP5gOUX-j4DtpYTOLn1oi4DJk2CiwauEuGNMFIHHGG64vTISvcZCDFC4btPH2cJRcuMwWdiLPavNg6ba7W57BTVRCQfgBPh2xbZ6cCUGSCdP83IaCE6ACXzT_sdBhi7RgZ7i9sHcj2VV1r9ycAM8oMRqLBHEjOOSgjzMi4SYiCiNLaWVuqgYPOr0NnQAkjTjxlEnnq8yheEeN-3e4ZRTcL8Puven8BAP-h1Wha5VEII1fYG6P-qp",
+          p: authParam,
           timeZone: "America/Denver",
           type: "registration",
         },
@@ -38,13 +39,13 @@ const Auth = {
       cookieJar,
       body: resp.body,
     };
-    Auth.set(auth);
+    Auth.set(authParam, auth);
 
     return auth;
   },
 
-  set: (auth) => {
-    Auth.auth = auth;
+  set: (authParam, auth) => {
+    Auth.auth[authParam] = auth;
   },
 };
 

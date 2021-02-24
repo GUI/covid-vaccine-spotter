@@ -49,7 +49,6 @@ const Walmart = {
     });
 
     patch.appointments_raw = slotsResp.body;
-    patch.appointments_raw = slotsResp.body;
     if (patch.appointments_raw?.data?.slotDays) {
       patch.appointments = patch.appointments_raw.data.slotDays.reduce(
         (appointments, day) =>
