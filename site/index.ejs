@@ -1,6 +1,6 @@
 ---
-title: Colorado COVID-19 Vaccine Finder
-description: A tool to help you track down COVID-19 vaccine appointment openings at Colorado pharmacies. Updated every minute.
+title: COVID-19 Vaccine Finder
+description: A tool to help you track down COVID-19 vaccine appointment openings at your state's pharmacies. Updated every minute.
 ---
 
 <!doctype html>
@@ -261,14 +261,14 @@ description: A tool to help you track down COVID-19 vaccine appointment openings
     }
 
     body {
-      padding-top: 100px;
+      padding-top: 70px;
     }
 
     h1.navbar-brand {
       font-size: 1rem;
     }
 
-    @media (min-width: 768px) {
+    @media (min-width: 992px) {
       body {
         padding-top: 50px;
       }
@@ -298,178 +298,60 @@ description: A tool to help you track down COVID-19 vaccine appointment openings
       <div class="navbar fixed-top navbar-dark bg-primary shadow">
         <div class="container">
           <h1 class="navbar-brand mb-0 fw-bold"><a href="/" class="text-white" style="text-decoration: none;"><%= title %></a></h1>
-          <div class="d-flex">
-            <button class="btn btn-light" onclick="window.location.reload();"><i class="fas fa-redo-alt"></i> Check for New Appointments</button>
-          </div>
         </div>
       </div>
     </header>
     <main>
       <div class="container">
-        <p class="lead text-center text-muted py-lg-4"><%= description %></p>
+        <p class="lead text-center text-muted py-lg-4" style="padding-bottom: 0px !important;"><%= description %></p>
 
-        <div class="row mb-2">
-          <div class="col-md-6 pb-3">
-            <div class="card card-body h-100 bg-primary text-white shadow-sm">
-              <h2 class="display-6 text-center mb-4">Step 1: Review your county's availability and CO's eligibility</h2>
-              <p class="lead">Visit <a href="https://covid19.colorado.gov/for-coloradans/vaccine/where-can-i-get-vaccinated" class="text-white"><strong class="fw-bold">Colorado.gov</strong></a> for detailed information about your county's vaccine options and review whether or not you are eligible yet.</p>
-              <p class="lead">You may be able to signup for vaccines with a health provider in your area (Kaiser, SCL Health, your county, etc.), in which case you will be contacted when it's your turn and you may not need this tool.</p>
-              <a href="https://covid19.colorado.gov/for-coloradans/vaccine/where-can-i-get-vaccinated" class="btn btn-light fw-bold fs-5 text-primary">Visit Colorado.gov <i class="fas fa-arrow-alt-circle-right"></i></a>
-            </div>
-          </div>
-          <div class="col-md-6 pb-3">
-            <div class="card card-body h-100 bg-primary text-white shadow-sm">
-              <h2 class="display-6 text-center mb-4">Step 2: Use this tool to try and find a pharmacy appointment</h2>
-              <p class="lead">If you decide you want to find an appointment at a local pharmacy (and are currently eligible for the vaccine), this tool might be able to help.</p>
-              <p class="lead">Rather than searching around on each pharmacy's website, we'll automatically scan the pharmacy websites and show you any available appointments we can find on one page.</p>
-              <p class="lead">All CVS, Safeway, Sam's Club, Pharmaca, Walgreens, and Walmart locations in Colorado are scanned on a regular basis and this page is updated with any available appointments in the state. If you don't see locations near you right now, appointments can come and go quickly so try visiting the page at different times throughout the day.</p>
-            </div>
-          </div>
+        <p class="lead text-center text-muted py-lg-4" style="padding-bottom: 0px !important; max-width: 600px; margin-left: auto; margin-right: auto; font-size: 1.1rem;">Rather than searching around on each pharmacy's website, we'll automatically scan the pharmacy websites and show you any available appointments we can find on one page.</p>
+
+        <div class="alert alert-info my-4" role="alert">
+          <p>👋 <strong>Big news!</strong> The Vaccine Finder tool is now available in more states! 🎉 Things may be rough around the edges, and other states don't scan as many pharmacies as Colorado (yet), but I wanted to start sharing any information I had available in the hopes of helping more people. CVS, Walmart, and Albertsons (Safeway, etc) locations are currently updating across the country. Any feedback is welcome: <a href="m&#97;ilto&#58;v%&#54;1&#99;&#99;&#105;ne&#64;nic&#107;%6D&#46;org">vacc&#105;ne&#64;ni&#99;k&#109;&#46;o&#114;&#103;</a> or <a href="https://twitter.com/nickblah">@nickblah</a>. And if you're a coder and have interest in helping out on <a href="https://github.com/GUI/covid-vaccine-finder/issues">GitHub</a>, that would be dandy (although the code's still messy)!</p>
+          <p class="mb-0"><strong>Colorado Users:</strong> Thanks for all your feedback and support! Just go to the <a href="/CO/"><strong>Colorado</strong></a> page to access the same tool you've been using all along.</p>
         </div>
 
-        <div class="alert alert-info" role="alert">
-          <h5>Updates</h5>
-          <p class="mb-0"><strong>02/22/2021 2:00PM:</strong> Sam's Club locations are now being scanned for open appointments and updated regularly. 🎈 And thank you everyone for tips on other pharmacies. I'll look to add tracking of Good Day and ClearSpring pharmacies next. If you have any suggestions of other locations that offer online availability of appointment schedules that could be added to this tool, please let me know (<a href="m&#97;ilto&#58;v%&#54;1&#99;&#99;&#105;ne&#64;nic&#107;%6D&#46;org">vacc&#105;ne&#64;ni&#99;k&#109;&#46;o&#114;&#103;</a>, <a href="https://twitter.com/nickblah">@nickblah</a>, or <a href="https://github.com/GUI/covid-vaccine-finder/issues">GitHub</a>). Thanks for all the feedback!</p>
+        <div class="row row-cols-1 row-cols-md-3 g-3">
+          <% for (const state of states) {%>
+            <% const storesScanning = [] %>
+            <% if (stores?.[state.code]?.cvs) { %>
+              <% storesScanning.push("CVS") %>
+            <% } %>
+            <% if (stores?.[state.code]?.pharmaca) { %>
+              <% storesScanning.push("Pharmaca") %>
+            <% } %>
+            <% if (stores?.[state.code]?.albertsons) { %>
+              <% storesScanning.push("Safeway/Albertsons") %>
+            <% } %>
+            <% if (stores?.[state.code]?.sams_club) { %>
+              <% storesScanning.push("Sam's Club") %>
+            <% } %>
+            <% if (stores?.[state.code]?.walgreens) { %>
+              <% storesScanning.push("Walgreens") %>
+            <% } %>
+            <% if (stores?.[state.code]?.walmart) { %>
+              <% storesScanning.push("Walmart") %>
+            <% } %>
+            <% if (stores?.[state.code]?.kroger) { %>
+              <% storesScanning.push("King Soopers/Kroger") %>
+            <% } %>
+
+            <% if(storesScanning.length > 0) { %>
+              <div class="col">
+                <a href="/<%= state.code %>" class="btn btn-light fw-bold fs-5 text-primary d-block" style="border: 1px solid #ddd;"><%= state.name %> <i class="fas fa-arrow-alt-circle-right"></i></a>
+                <p class="text-center text-secondary mb-0"><small>Scanning <%= storesScanning.length %> pharmacy chains (<%= Object.values(stores[state.code]).reduce((count, stores) => count + stores.length, 0) %> stores) in <%= state.code %></small></p>
+              </div>
+            <% } %>
+          <% } %>
         </div>
-
-        <% appointments = this.lodash.orderBy(cvs.CO.filter((s) => s.appointments_last_fetched), ['appointments_last_fetched'], ['desc']) %>
-        <% lastFetched = appointments?.[0]?.appointments_last_fetched %>
-        <h2 class="brand" data-last-fetched="<%= lastFetched %>">CVS Appointments</h2>
-        <div class="brand-link"><a href="https://www.cvs.com/immunizations/covid-19-vaccine" target="_blank">CVS Website<i class="fas fa-external-link-alt"></i></a></div>
-        <% availableAppointments = this.lodash.orderBy(this.lodash.filter(appointments, 'appointments_available'), ['city', 'address']) %>
-        <% if(availableAppointments.length > 0) { %>
-          <% availableAppointments.forEach((store) => { %>
-            <%- include('./_includes/cvsAppointment', { store }) %>
-          <% }) %>
-        <% } else { %>
-          <p class="mb-0">No appointments available at any locations as of last check.</p>
-          <% if(lastFetched) { %>
-            <% lastFetched = (new Date(lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>
-            <p class="card-text text-secondary"><small>Last checked <%= lastFetched %></small></p>
-          <% } %>
-        <% } %>
-
-        <% appointments = this.lodash.orderBy(pharmaca, ['lastFetched'], ['desc']) %>
-        <% lastFetched = appointments?.[0]?.lastFetched %>
-        <h2 class="brand" data-last-fetched="<%= lastFetched %>">Pharmaca Appointments</h2>
-        <div class="brand-link"><a href="https://www.pharmacarx.com/covid-vaccine-faqs/" target="_blank">Pharmaca Website<i class="fas fa-external-link-alt"></i></a></div>
-        <% availableAppointments = this.lodash.filter(appointments, (o) => o.anyAppointments) %>
-        <% if(availableAppointments.length > 0) { %>
-          <% availableAppointments.forEach((store) => { %>
-            <%- include('./_includes/pharmacaAppointment', { store }) %>
-          <% }) %>
-        <% } else { %>
-          <p class="mb-0">No appointments available at any locations as of last check.</p>
-          <% if(lastFetched) { %>
-            <% lastFetched = (new Date(lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>
-            <p class="card-text text-secondary"><small>Last checked <%= lastFetched %></small></p>
-          <% } %>
-        <% } %>
-
-        <% appointments = this.lodash.orderBy(albertsons.CO.filter((s) => s.appointments_last_fetched), ['lastFetched'], ['desc']) %>
-        <% lastFetched = appointments?.[0]?.appointments_last_fetched %>
-        <h2 class="brand" data-last-fetched="<%= lastFetched %>">Safeway, Albertsons Pharmacy Appointments</h2>
-        <div class="brand-link"><a href="https://www.safeway.com/pharmacy/covid-19.html" target="_blank">Safeway Pharmacy Website<i class="fas fa-external-link-alt"></i></a></div>
-        <% availableAppointments = this.lodash.orderBy(this.lodash.filter(appointments, 'appointments_available'), ['city', 'address']) %>
-        <% if(availableAppointments.length > 0) { %>
-          <% availableAppointments.forEach((store) => { %>
-            <%- include('./_includes/albertsonsAppointment', { store }) %>
-          <% }) %>
-        <% } else { %>
-          <p class="mb-0">No appointments available at any locations as of last check.</p>
-          <% if(lastFetched) { %>
-            <% lastFetched = (new Date(lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>
-            <p class="card-text text-secondary"><small>Last checked <%= lastFetched %></small></p>
-          <% } %>
-        <% } %>
-
-        <% appointments = this.lodash.orderBy(samsClub.CO.filter((s) => s.appointments_last_fetched), ['appointments_last_fetched'], ['desc']) %>
-        <% lastFetched = appointments?.[0]?.appointments_last_fetched %>
-        <h2 class="brand" data-last-fetched="<%= lastFetched %>">Sam's Club Pharmacy Appointments</h2>
-        <div class="brand-link"><a href="https://www.samsclub.com/pharmacy/immunization/form?imzType=covid" target="_blank">Sam's Club Pharmacy Website<i class="fas fa-external-link-alt"></i></a></div>
-        <% availableAppointments = this.lodash.orderBy(this.lodash.filter(appointments, 'appointments_available'), ['city', 'address']) %>
-        <% if(availableAppointments.length > 0) { %>
-          <% availableAppointments.forEach((store) => { %>
-            <%- include('./_includes/samsClubAppointment', { store }) %>
-          <% }) %>
-        <% } else { %>
-          <p class="mb-0">No appointments available at any locations as of last check.</p>
-          <% if(lastFetched) { %>
-            <% lastFetched = (new Date(lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>
-            <p class="card-text text-secondary"><small>Last checked <%= lastFetched %></small></p>
-          <% } %>
-        <% } %>
-
-        <% appointments = this.lodash.orderBy(walgreens, ['lastFetched'], ['desc']) %>
-        <% lastFetched = appointments?.[0]?.lastFetched %>
-        <h2 class="brand" data-last-fetched="<%= lastFetched %>">Walgreens Appointments</h2>
-        <div class="brand-link"><a href="https://www.walgreens.com/findcare/vaccination/covid-19/location-screening" target="_blank">Walgreens Website<i class="fas fa-external-link-alt"></i></a></div>
-        <% availableAppointments = this.lodash.filter(appointments, (o) => o.availability.appointmentsAvailable) %>
-        <% if(availableAppointments.length > 0) { %>
-          <% availableAppointments.forEach((store) => { %>
-            <%- include('./_includes/walgreensAppointment', { store }) %>
-          <% }) %>
-        <% } else { %>
-          <p class="mb-0">No appointments available at any locations as of last check.</p>
-          <% if(lastFetched) { %>
-            <% lastFetched = (new Date(lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>
-            <p class="card-text text-secondary"><small>Last checked <%= lastFetched %></small></p>
-          <% } %>
-        <% } %>
-
-        <% appointments = this.lodash.orderBy(walmart.CO.filter((s) => s.appointments_last_fetched), ['appointments_last_fetched'], ['desc']) %>
-        <% lastFetched = appointments?.[0]?.appointments_last_fetched %>
-        <h2 class="brand" data-last-fetched="<%= lastFetched %>">Walmart Pharmacy Appointments</h2>
-        <div class="brand-link"><a href="https://www.walmart.com/pharmacy/clinical-services/immunization/scheduled?imzType=covid" target="_blank">Walmart Pharmacy Website<i class="fas fa-external-link-alt"></i></a></div>
-        <% availableAppointments = this.lodash.orderBy(this.lodash.filter(appointments, 'appointments_available'), ['city', 'address']) %>
-        <% if(availableAppointments.length > 0) { %>
-          <% availableAppointments.forEach((store) => { %>
-            <%- include('./_includes/walmartAppointment', { store }) %>
-          <% }) %>
-        <% } else { %>
-          <p class="mb-0">No appointments available at any locations as of last check.</p>
-          <% if(lastFetched) { %>
-            <% lastFetched = (new Date(lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>
-            <p class="card-text text-secondary"><small>Last checked <%= lastFetched %></small></p>
-          <% } %>
-        <% } %>
-
-        <% appointments = this.lodash.orderBy(kroger, ['lastFetched'], ['desc']) %>
-        <% lastFetched = appointments?.[0]?.lastFetched %>
-        <h2 class="brand" data-last-fetched="<%= lastFetched %>">King Soopers, City Market Pharmacy Appointments</h2>
-        <div class="brand-link"><a href="https://www.kingsoopers.com/rx/covid-eligibility" target="_blank">King Soopers Pharmacy Website<i class="fas fa-external-link-alt"></i></a></div>
-        <% availableAppointments = this.lodash.filter(appointments, (o) => o.appointments && o.appointments.dates && this.lodash.some(o.appointments.dates, (d) => d.slots && d.slots.length > 0)) %>
-        <% if(availableAppointments.length > 0) { %>
-          <% availableAppointments.forEach((store) => { %>
-            <%- include('./_includes/krogerAppointment', { store }) %>
-          <% }) %>
-        <% } else { %>
-          <p class="mb-0">No appointments available at any locations as of last check.</p>
-          <% if(lastFetched) { %>
-            <% lastFetched = (new Date(lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>
-            <p class="card-text text-secondary"><small>Last checked <%= lastFetched %></small></p>
-          <% } %>
-        <% } %>
       </div>
     </main>
     <footer class="mt-3">
       <div class="container">
-        <h3>Tool Status</h3>
-        <ul>
-          <li><strong>CVS:</strong> Last checked <%= (new Date(this.lodash.orderBy(cvs.CO.filter((s) => s.appointments_last_fetched), ['appointments_last_fetched'], ['desc'])[0].appointments_last_fetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>. Checking <%= cvs.CO.length %> <%= (cvs.CO.length === 1) ? 'city' : 'cities' %> (new cities will be added as CVS adds them).</li>
-          <li><strong>Pharmaca:</strong> Last checked <%= (new Date(this.lodash.orderBy(pharmaca, ['lastFetched'], ['desc'])[0].lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>. Checking all <%= pharmaca.length %> <%= (pharmaca.length === 1) ? 'store' : 'stores' %> in CO.</li>
-          <li><strong>Safeway, Albertsons:</strong> Last checked <%= (new Date(this.lodash.orderBy(albertsons.CO.filter((s) => s.appointments_last_fetched), ['appointments_last_fetched'], ['desc'])[0].appointments_last_fetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>. Checking all <%= albertsons.CO.length %> <%= (albertsons.CO.length === 1) ? 'store' : 'stores' %> in CO.</li>
-          <li><strong>Sam's Club:</strong> Last checked <%= (new Date(this.lodash.orderBy(samsClub.CO.filter((s) => s.appointments_last_fetched), ['appointments_last_fetched'], ['desc'])[0].appointments_last_fetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>. Checking all <%= samsClub.CO.length %> <%= (samsClub.CO.length === 1) ? 'store' : 'stores' %> in CO.</li>
-          <li><strong>Walgreens:</strong> Last checked <%= (new Date(this.lodash.orderBy(walgreens, ['lastFetched'], ['desc'])[0].lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>. Checking all <%= walgreens.length %> <%= (walgreens.length === 1) ? 'store' : 'stores' %> in CO.</li>
-          <li><strong>Walmart:</strong> Last checked <%= (new Date(this.lodash.orderBy(walmart.CO.filter((s) => s.appointments_last_fetched), ['appointments_last_fetched'], ['desc'])[0].appointments_last_fetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>. Checking all <%= walmart.CO.length %> <%= (walmart.CO.length === 1) ? 'store' : 'stores' %> in CO.</li>
-          <li><strong>King Soopers, City Market, Dillons, Smith's:</strong> Semi-Broken. The tool was checking, but is now being blocked from accessing Kroger's website. I'm still able to get it to update sometimes, but not always.</li>
-        </ul>
-
-        <p>View the status of <a href="/all/">all locations being scanned</a> (including those locations without open appointments).</p>
-
         <h3>About</h3>
         <p>Finding vaccines seems tough! Hopefully things will become easier soon, but in the meantime, maybe this can help. If you find this useful, feel free to share it around. Get in touch with any questions: <a href="m&#97;ilto&#58;v%&#54;1&#99;&#99;&#105;ne&#64;nic&#107;%6D&#46;org">vacc&#105;ne&#64;ni&#99;k&#109;&#46;o&#114;&#103;</a>, <a href="https://twitter.com/nickblah">@nickblah</a>, or <a href="https://github.com/GUI/covid-vaccine-finder/issues">GitHub</a>.</p>
-        <p>I'd like to add additional functionality (scanning additional pharmacies and sending e-mail or text notifications when appointments open up) if this proves useful and as time permits. If you're a computer programmer and would like to contribute (or try to set something similar up for your own state), the project is <a href="https://github.com/GUI/covid-vaccine-finder">open source on GitHub</a> (it's currently very messy and undocumented, though).</p>
+        <p>I'd like to add additional functionality (scanning additional pharmacies and sending e-mail or text notifications when appointments open up) if this proves useful and as time permits. If you're a computer programmer and would like to contribute, the project is <a href="https://github.com/GUI/covid-vaccine-finder">open source on GitHub</a> (it's currently very messy and undocumented, though).</p>
 
         <div class="text-center mb-3">
           <span style="display: inline-block; max-width: 620px;">
