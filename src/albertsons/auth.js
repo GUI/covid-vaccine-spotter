@@ -7,6 +7,7 @@ const Auth = {
   auth: {},
 
   get: async (authParam) => {
+    requestsSinceRefresh++;
     if (Auth.auth[authParam]) {
       return Auth.auth[authParam];
     }
@@ -14,6 +15,8 @@ const Auth = {
   },
 
   refresh: async (authParam) => {
+    console.info("requestsSinceRefresh: ", requestsSinceRefresh);
+    requestsSinceRefresh = 0;
     const cookieJar = new CookieJar();
     const resp = await got(
       "https://kordinator.mhealthcoach.net/loginPharmacistFromEmail.do",

@@ -35,7 +35,7 @@ title: Colorado COVID-19 Vaccine Finder
         <h1>All Locations</h1>
 
         <h2>CVS Appointments</h2>
-        <% this.lodash.orderBy(cvs, ['id'], ['asc']).forEach((store) => { %>
+        <% this.lodash.orderBy(cvs.CO, ['id'], ['asc']).forEach((store) => { %>
           <%- include('../_includes/cvsAppointment', { store }) %>
         <% }) %>
 
@@ -45,12 +45,12 @@ title: Colorado COVID-19 Vaccine Finder
         <% }) %>
 
         <h2>Safeway, Albertsons Appointments</h2>
-        <% this.lodash.orderBy(albertsons, ['id'], ['asc']).forEach((store) => { %>
+        <% this.lodash.orderBy(albertsons.CO, ['id'], ['asc']).forEach((store) => { %>
           <%- include('../_includes/albertsonsAppointment', { store }) %>
         <% }) %>
 
         <h2>Sam's Club Appointments</h2>
-        <% this.lodash.orderBy(samsClub, ['city', 'address']).forEach((store) => { %>
+        <% this.lodash.orderBy(samsClub.CO, ['city', 'address']).forEach((store) => { %>
           <%- include('../_includes/samsClubAppointment', { store }) %>
         <% }) %>
 
@@ -60,7 +60,7 @@ title: Colorado COVID-19 Vaccine Finder
         <% }) %>
 
         <h2>Walmart Appointments</h2>
-        <% this.lodash.orderBy(walmart, ['id'], ['asc']).forEach((store) => { %>
+        <% this.lodash.orderBy(walmart.CO, ['id'], ['asc']).forEach((store) => { %>
           <%- include('../_includes/walmartAppointment', { store }) %>
         <% }) %>
 

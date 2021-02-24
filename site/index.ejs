@@ -366,11 +366,11 @@ description: A tool to help you track down COVID-19 vaccine appointment openings
           <% } %>
         <% } %>
 
-        <% appointments = this.lodash.orderBy(albertsons, ['lastFetched'], ['desc']) %>
-        <% lastFetched = appointments?.[0]?.lastFetched %>
+        <% appointments = this.lodash.orderBy(albertsons.CO.filter((s) => s.appointments_last_fetched), ['lastFetched'], ['desc']) %>
+        <% lastFetched = appointments?.[0]?.appointments_last_fetched %>
         <h2 class="brand" data-last-fetched="<%= lastFetched %>">Safeway, Albertsons Pharmacy Appointments</h2>
         <div class="brand-link"><a href="https://www.safeway.com/pharmacy/covid-19.html" target="_blank">Safeway Pharmacy Website<i class="fas fa-external-link-alt"></i></a></div>
-        <% availableAppointments = this.lodash.filter(appointments, (o) => o.events.length > 0) %>
+        <% availableAppointments = this.lodash.orderBy(this.lodash.filter(appointments, 'appointments_available'), ['city', 'address']) %>
         <% if(availableAppointments.length > 0) { %>
           <% availableAppointments.forEach((store) => { %>
             <%- include('./_includes/albertsonsAppointment', { store }) %>
@@ -458,7 +458,7 @@ description: A tool to help you track down COVID-19 vaccine appointment openings
         <ul>
           <li><strong>CVS:</strong> Last checked <%= (new Date(this.lodash.orderBy(cvs.CO.filter((s) => s.appointments_last_fetched), ['appointments_last_fetched'], ['desc'])[0].appointments_last_fetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>. Checking <%= cvs.CO.length %> <%= (cvs.CO.length === 1) ? 'city' : 'cities' %> (new cities will be added as CVS adds them).</li>
           <li><strong>Pharmaca:</strong> Last checked <%= (new Date(this.lodash.orderBy(pharmaca, ['lastFetched'], ['desc'])[0].lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>. Checking all <%= pharmaca.length %> <%= (pharmaca.length === 1) ? 'store' : 'stores' %> in CO.</li>
-          <li><strong>Safeway, Albertsons:</strong> Last checked <%= (new Date(this.lodash.orderBy(albertsons, ['lastFetched'], ['desc'])[0].lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>. Checking all <%= albertsons.length %> <%= (albertsons.length === 1) ? 'store' : 'stores' %> in CO.</li>
+          <li><strong>Safeway, Albertsons:</strong> Last checked <%= (new Date(this.lodash.orderBy(albertsons.CO.filter((s) => s.appointments_last_fetched), ['appointments_last_fetched'], ['desc'])[0].appointments_last_fetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>. Checking all <%= albertsons.CO.length %> <%= (albertsons.CO.length === 1) ? 'store' : 'stores' %> in CO.</li>
           <li><strong>Sam's Club:</strong> Last checked <%= (new Date(this.lodash.orderBy(samsClub.CO.filter((s) => s.appointments_last_fetched), ['appointments_last_fetched'], ['desc'])[0].appointments_last_fetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>. Checking all <%= samsClub.CO.length %> <%= (samsClub.CO.length === 1) ? 'store' : 'stores' %> in CO.</li>
           <li><strong>Walgreens:</strong> Last checked <%= (new Date(this.lodash.orderBy(walgreens, ['lastFetched'], ['desc'])[0].lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>. Checking all <%= walgreens.length %> <%= (walgreens.length === 1) ? 'store' : 'stores' %> in CO.</li>
           <li><strong>Walmart:</strong> Last checked <%= (new Date(this.lodash.orderBy(walmart.CO.filter((s) => s.appointments_last_fetched), ['appointments_last_fetched'], ['desc'])[0].appointments_last_fetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>. Checking all <%= walmart.CO.length %> <%= (walmart.CO.length === 1) ? 'store' : 'stores' %> in CO.</li>

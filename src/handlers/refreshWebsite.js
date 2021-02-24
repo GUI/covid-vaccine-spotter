@@ -52,9 +52,6 @@ async function writeStoreData(tmp, brand, dataDir) {
 
 module.exports.refreshWebsite = async () => {
   const db = await getDatabase();
-  const {
-    container: albertsonsStores,
-  } = await db.containers.createIfNotExists({ id: "albertsons_stores" });
   const { container: krogerStores } = await db.containers.createIfNotExists({
     id: "kroger_stores",
   });
@@ -74,13 +71,11 @@ module.exports.refreshWebsite = async () => {
   await execa("rm", ["-rf", `${tmp}/site/_data`]);
   await execa("mkdir", ["-p", `${tmp}/site/_data`]);
 
-  const { resources: albertsonsData } = await albertsonsStores.items
-    .query("SELECT * from c WHERE c.clientName != null ORDER BY c.id")
-    .fetchAll();
-  await fs.writeFile(
-    `${tmp}/site/_data/albertsons.json`,
-    stringify(albertsonsData, { space: "  " })
-  );
+  try {
+    writeStoreData(tmp, "albertsons", "albertsons");
+  } catch (err) {
+    logger.info("CVS Data Error: ", err);
+  }
 
   try {
     writeStoreData(tmp, "cvs", "cvs");

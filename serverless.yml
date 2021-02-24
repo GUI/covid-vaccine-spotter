@@ -47,11 +47,6 @@ package:
     - site/_data/**
 
 functions:
-  refreshAlbertsons:
-    handler: index.refreshAlbertsons
-    reservedConcurrency: 1
-    events:
-      - schedule: "rate(2 minutes)"
   refreshPharmaca:
     handler: index.refreshPharmaca
     reservedConcurrency: 1
