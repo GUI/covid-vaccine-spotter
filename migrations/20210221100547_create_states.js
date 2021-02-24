@@ -32,5 +32,5 @@ exports.up = function (knex) {
 exports.down = function (knex) {
   return knex.schema
     .dropTableIfExists("states")
-    .then(() => knex.raw("DROP FUNCTION IF EXISTS update_timestamp"));
+    .then(async () => knex.raw("DROP FUNCTION IF EXISTS update_timestamp"));
 };

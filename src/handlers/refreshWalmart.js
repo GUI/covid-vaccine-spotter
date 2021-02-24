@@ -1,94 +1,117 @@
-const retry = require("async-retry");
+const retry = require("p-retry");
+const { Mutex } = require("async-mutex");
+const { default: PQueue } = require("p-queue");
 const _ = require("lodash");
-const { DateTime, Settings } = require("luxon");
+const { DateTime } = require("luxon");
 const got = require("got");
 const sleep = require("sleep-promise");
+const logger = require("../logger");
 const walmartAuth = require("../walmart/auth");
-const getDatabase = require("../getDatabase");
+const { Store } = require("../models/Store");
 
-Settings.defaultZoneName = "America/Denver";
+const authMutex = new Mutex();
 
-module.exports.refreshWalmart = async () => {
-  const db = await getDatabase();
-  const { container } = await db.containers.createIfNotExists({
-    id: "walmart_stores",
-  });
+const Walmart = {
+  refreshStores: async () => {
+    const queue = new PQueue({ concurrency: 10 });
 
-  let { resources } = await container.items
-    .query({
-      query:
-        "SELECT * from c WHERE NOT is_defined(c.lastFetched) OR c.lastFetched <= @minsAgo",
-      parameters: [
-        {
-          name: "@minsAgo",
-          value: DateTime.utc().minus({ minutes: 2 }).toISO(),
-        },
-      ],
-    })
-    .fetchAll();
-  resources = _.shuffle(resources);
-  let i = 0;
-  for (const resource of resources) {
-    i += 1;
-    console.info(
-      `Processing ${resource.displayName} #${resource.id} (${i} of ${resources.length})...`
-    );
-
-    if (
-      !resource.servicesMap ||
-      !resource.servicesMap.COVID_IMMUNIZATIONS ||
-      !resource.servicesMap.COVID_IMMUNIZATIONS.active
-    ) {
-      console.info(
-        `  Skipping ${resource.displayName} #${resource.id} since it doesn't currently support COVID vaccines.`
-      );
-      continue;
+    const stores = await Store.query()
+      .where("brand", "walmart")
+      .whereRaw(
+        "(carries_vaccine = true AND (appointments_last_fetched IS NULL OR appointments_last_fetched <= (now() - interval '2 minutes')))"
+      )
+      .orderByRaw("appointments_last_fetched NULLS FIRST");
+    for (const [index, store] of stores.entries()) {
+      queue.add(() => Walmart.refreshStore(store, index, stores.length));
     }
+    await queue.onIdle();
+  },
 
-    const lastFetched = DateTime.utc().toISO();
-
-    const resp = await retry(
-      async () => {
-        const auth = await walmartAuth.get();
-        return got.post(
-          `https://www.walmart.com/pharmacy/v2/clinical-services/time-slots/${auth.body.payload.cid}`,
-          {
-            headers: {
-              "User-Agent":
-                "covid-vaccine-finder (https://github.com/GUI/covid-vaccine-finder)",
-            },
-            cookieJar: auth.cookieJar,
-            responseType: "json",
-            json: {
-              startDate: DateTime.local().toFormat("LLddyyyy"),
-              endDate: DateTime.local().plus({ days: 6 }).toFormat("LLddyyyy"),
-              imzStoreNumber: {
-                USStoreId: parseInt(resource.id, 10),
-              },
-            },
-            retry: 0,
-          }
-        );
-      },
-      {
-        retries: 2,
-        onRetry: async (err) => {
-          console.info(
-            `Error fetching data (${err.response.statusCode}), attempting to refresh auth and then retry.`
-          );
-          await walmartAuth.refresh();
-        },
-      }
+  refreshStore: async (store, index, count) => {
+    logger.info(
+      `Processing ${store.name} #${store.brand_id} (${
+        index + 1
+      } of ${count})...`
     );
 
-    await container.items.upsert({
-      ...resource,
-      timeSlots: resp.body,
-      lastFetched,
+    await sleep(_.random(250, 750));
+
+    const patch = {
+      appointments: [],
+      appointments_last_fetched: DateTime.utc().toISO(),
+      appointments_available: false,
+      appointments_raw: {},
+    };
+
+    const slotsResp = await retry(async () => Walmart.fetchSlots(store), {
+      retries: 2,
+      onFailedAttempt: Walmart.onFailedAttempt,
     });
 
-    await sleep(1000);
-  }
+    patch.appointments_raw = slotsResp.body;
+    patch.appointments_raw = slotsResp.body;
+    patch.appointments = patch.appointments_raw.data.slotDays.reduce(
+      (appointments, day) =>
+        appointments.concat(
+          day.slots.map((slot) =>
+            DateTime.fromFormat(
+              `${day.slotDate} ${slot.startTime}`,
+              "LLddyyyy H:mm",
+              { zone: store.time_zone }
+            ).toISO()
+          )
+        ),
+      []
+    );
+    patch.appointments.sort();
+
+    if (patch.appointments.length > 0) {
+      patch.appointments_available = true;
+    }
+
+    await Store.query().findById(store.id).patch(patch);
+
+    await sleep(_.random(250, 750));
+  },
+
+  fetchSlots: async (store) => {
+    const auth = await authMutex.runExclusive(walmartAuth.get);
+    const now = DateTime.now().setZone(store.time_zone);
+    return got.post(
+      `https://www.walmart.com/pharmacy/v2/clinical-services/time-slots/${auth.body.payload.cid}`,
+      {
+        headers: {
+          "User-Agent":
+            "covid-vaccine-finder (https://github.com/GUI/covid-vaccine-finder)",
+        },
+        cookieJar: auth.cookieJar,
+        responseType: "json",
+        json: {
+          startDate: now.toFormat("LLddyyyy"),
+          endDate: now.plus({ days: 6 }).toFormat("LLddyyyy"),
+          imzStoreNumber: {
+            USStoreId: parseInt(store.brand_id, 10),
+          },
+        },
+        retry: 0,
+      }
+    );
+  },
+
+  onFailedAttempt: async (err) => {
+    logger.warn(err);
+    logger.warn(err?.response?.body);
+    logger.warn(
+      `Error fetching data (${err?.response?.statusCode}), attempting to refresh auth and then retry.`
+    );
+    if (authMutex.isLocked()) {
+      await authMutex.runExclusive(walmartAuth.get);
+    } else {
+      await authMutex.runExclusive(walmartAuth.refresh);
+    }
+  },
 };
 
-// module.exports.refreshWalmart();
+module.exports.refreshWalmart = async () => {
+  await Walmart.refreshStores();
+};

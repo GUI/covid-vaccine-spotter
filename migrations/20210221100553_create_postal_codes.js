@@ -15,7 +15,7 @@ exports.up = function (knex) {
       table.specificType("location", "geography(point, 4326)").notNullable();
       table.timestamps(false, true);
     })
-    .then(() =>
+    .then(async () =>
       knex.raw(
         "CREATE TRIGGER postal_codes_updated_at BEFORE UPDATE ON postal_codes FOR EACH ROW EXECUTE PROCEDURE update_timestamp()"
       )

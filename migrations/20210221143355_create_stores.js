@@ -22,7 +22,7 @@ exports.up = function (knex) {
       table.timestamps(false, true);
       table.unique(["brand", "brand_id"]);
     })
-    .then(() =>
+    .then(async () =>
       knex.raw(
         "CREATE TRIGGER stores_updated_at BEFORE UPDATE ON stores FOR EACH ROW EXECUTE PROCEDURE update_timestamp()"
       )

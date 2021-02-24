@@ -1,22 +1,13 @@
-<% lastFetched = (new Date(store.lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>
+<% lastFetched = (new Date(store.appointments_last_fetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>
 <div class="card mb-4">
-  <h5 class="card-header"><%= store.displayName %> #<%= store.id %> - <%= store.address.address %>, <%= store.address.city %>, <%= store.address.state %> <%= store.address.postalCode %></h5>
+  <h5 class="card-header"><%= store.name %> #<%= store.brand_id %> - <%= store.address %>, <%= store.city %>, <%= store.state %> <%= store.postal_code %></h5>
   <div class="card-body">
-    <% let availableDays = [] %>
-    <% if(store.servicesMap && store.servicesMap.COVID_IMMUNIZATIONS && store.servicesMap.COVID_IMMUNIZATIONS.active && store.timeSlots && store.timeSlots.data && store.timeSlots.data.slotDays) { %>
-      <% availableDays = this.lodash.filter(store.timeSlots.data.slotDays, (o) => o.slots && o.slots.length > 0) %>
-    <% } %>
-    <% if(availableDays.length > 0) { %>
+    <% if(store.appointments_available) { %>
       <div class="text-success fs-2">
         <i class="fas fa-check-circle"></i>
         <span class="fs-5">Appointments available as of <%= lastFetched %></span>
       </div>
-      <% times = [] %>
-      <% availableDays.forEach((day) => { %>
-        <% day.slots.forEach((slot) => { %>
-          <% times.push(this.luxon.DateTime.fromFormat(`${day.slotDate} ${slot.startTime}`, 'LLddyyyy H:mm')) %>
-        <% }) %>
-      <% }) %>
+      <% times = store.appointments.map((time) => this.luxon.DateTime.fromISO(time, { setZone: true })) %>
       <%- include('./appointmentTimes', { times }) %>
       <a href="https://www.walmart.com/pharmacy/clinical-services/immunization/scheduled?imzType=covid" class="btn btn-primary" target="_blank">Visit Walmart Pharmacy Website <i class="fas fa-arrow-alt-circle-right"></i></a>
     <% } else { %>

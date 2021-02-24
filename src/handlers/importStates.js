@@ -1,7 +1,22 @@
 const csvParse = require("csv-parse");
 const fs = require("fs");
 const path = require("path");
+const statesTopojson = require("us-atlas/states-10m");
+const topojson = require("topojson-client");
 const { State } = require("../models/State");
+
+const statesGeojson = topojson.feature(
+  statesTopojson,
+  statesTopojson.objects.states
+);
+
+function geojsonForState(name) {
+  const geojson = statesGeojson.features.find((f) => f.properties.name === name)
+    ?.geometry;
+  return geojson
+    ? State.raw("ST_Multi(ST_GeomFromGeoJSON(?))", JSON.stringify(geojson))
+    : null;
+}
 
 module.exports.importStates = async () => {
   const trx = await State.startTransaction();
@@ -32,12 +47,12 @@ module.exports.importStates = async () => {
       }
 
       console.info(`Importing ${name}`);
-
       await State.query(trx)
         .insert({
           country_code: row[0],
           code,
           name,
+          boundaries: geojsonForState(name),
         })
         .onConflict("code")
         .merge();
@@ -51,6 +66,17 @@ module.exports.importStates = async () => {
       country_code: "US",
       code: "PR",
       name: "Puerto Rico",
+      boundaries: geojsonForState("Puerto Rico"),
+    })
+    .onConflict("code")
+    .merge();
+
+  await State.query(trx)
+    .insert({
+      country_code: "US",
+      code: "VI",
+      name: "United States Virgin Islands",
+      boundaries: geojsonForState("United States Virgin Islands"),
     })
     .onConflict("code")
     .merge();

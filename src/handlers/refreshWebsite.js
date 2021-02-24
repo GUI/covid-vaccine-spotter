@@ -12,6 +12,45 @@ const { Store } = require("../models/Store");
 
 const publish = util.promisify(ghpages.publish);
 
+async function writeStoreData(tmp, brand, dataDir) {
+  await execa("mkdir", ["-p", `${tmp}/site/_data/${dataDir}`]);
+
+  const storeSelect = Store.knex().raw(`
+    state,
+    json_agg(
+      json_build_object(
+        'id', id,
+        'brand', brand,
+        'brand_id', brand_id,
+        'name', name,
+        'address', address,
+        'city', city,
+        'state', state,
+        'postal_code', postal_code,
+        'carries_vaccine', carries_vaccine,
+        'appointments', appointments,
+        'appointments_available', appointments_available,
+        'appointments_last_fetched', appointments_last_fetched,
+        'appointments_raw', appointments_raw
+      )
+      ORDER BY id
+    ) AS state_data
+  `);
+
+  const states = await Store.knex()
+    .select(storeSelect)
+    .from("stores")
+    .where("brand", brand)
+    .groupBy("state")
+    .orderBy("state");
+  for (const state of states) {
+    await fs.writeFile(
+      `${tmp}/site/_data/${dataDir}/${state.state}.json`,
+      stringify(state.state_data, { space: "  " })
+    );
+  }
+}
+
 module.exports.refreshWebsite = async () => {
   const db = await getDatabase();
   const {
@@ -36,22 +75,8 @@ module.exports.refreshWebsite = async () => {
   const tmp = await fs.mkdtemp(`${os.tmpdir()}/covid-vaccine-finder`);
   logger.info(tmp);
   await execa("cp", ["-r", "./site", `${tmp}/`]);
+  await execa("rm", ["-rf", `${tmp}/site/_data`]);
   await execa("mkdir", ["-p", `${tmp}/site/_data`]);
-
-  const storeSelect = [
-    "id",
-    "brand",
-    "brand_id",
-    "name",
-    "address",
-    "city",
-    "state",
-    "postal_code",
-    "appointments",
-    "appointments_available",
-    "appointments_last_fetched",
-    "appointments_raw",
-  ];
 
   const { resources: albertsonsData } = await albertsonsStores.items
     .query("SELECT * from c WHERE c.clientName != null ORDER BY c.id")
@@ -62,14 +87,7 @@ module.exports.refreshWebsite = async () => {
   );
 
   try {
-    const cvsData = await Store.query()
-      .select(storeSelect)
-      .where("brand", "cvs")
-      .orderBy("id");
-    await fs.writeFile(
-      `${tmp}/site/_data/cvs.json`,
-      stringify(_.groupBy(cvsData, "state"), { space: "  " })
-    );
+    writeStoreData(tmp, "cvs", "cvs");
   } catch (err) {
     logger.info("CVS Data Error: ", err);
   }
@@ -93,16 +111,9 @@ module.exports.refreshWebsite = async () => {
   );
 
   try {
-    const samsClubData = await Store.query()
-      .select(storeSelect)
-      .where("brand", "sams_club")
-      .orderBy("id");
-    await fs.writeFile(
-      `${tmp}/site/_data/samsClub.json`,
-      stringify(_.groupBy(samsClubData, "state"), { space: "  " })
-    );
+    writeStoreData(tmp, "sams_club", "samsClub");
   } catch (err) {
-    logger.error("Sam's Club Data Error: ", err);
+    logger.info("Sam's Club Data Error: ", err);
   }
 
   const { resources: walgreensData } = await walgreensStores.items
@@ -113,13 +124,11 @@ module.exports.refreshWebsite = async () => {
     stringify(walgreensData, { space: "  " })
   );
 
-  const { resources: walmartData } = await walmartStores.items
-    .query("SELECT * from c ORDER BY c.id")
-    .fetchAll();
-  await fs.writeFile(
-    `${tmp}/site/_data/walmart.json`,
-    stringify(walmartData, { space: "  " })
-  );
+  try {
+    writeStoreData(tmp, "walmart", "walmart");
+  } catch (err) {
+    logger.info("Walmart Data Error: ", err);
+  }
 
   await execa("./node_modules/@11ty/eleventy/cmd.js", [
     "--input",

@@ -8,7 +8,7 @@ const samsClubAuth = require("../samsClub/auth");
 const { Store } = require("../models/Store");
 const logger = require("../logger");
 
-const refreshAuthMutex = new Mutex();
+const authMutex = new Mutex();
 
 const headers = {
   "user-agent":
@@ -27,7 +27,7 @@ const SamsClub = {
     const stores = await Store.query()
       .where("brand", "sams_club")
       .whereRaw(
-        "(carries_vaccine = false AND appointments_last_fetched <= (now() - interval '1 hour')) OR ((carries_vaccine IS NULL OR carries_vaccine = true) AND (appointments_last_fetched IS NULL OR appointments_last_fetched <= (now() - interval '2 minutes')))"
+        "((carries_vaccine = false AND appointments_last_fetched <= (now() - interval '1 hour')) OR ((carries_vaccine IS NULL OR carries_vaccine = true) AND (appointments_last_fetched IS NULL OR appointments_last_fetched <= (now() - interval '2 minutes'))))"
       )
       .orderByRaw("appointments_last_fetched NULLS FIRST");
     for (const [index, store] of stores.entries()) {
@@ -50,13 +50,15 @@ const SamsClub = {
     };
 
     const ageEligibilityResp = await retry(
-      async () => await SamsClub.fetchAgeEligibility(store),
+      async () => SamsClub.fetchAgeEligibility(store),
       {
         retries: 2,
         onFailedAttempt: SamsClub.onFailedAttempt,
       }
     );
-    logger.info(`  ageEligibilityResp: ${ageEligibilityResp.statusCode} (${ageEligibilityResp.url})`);
+    logger.info(
+      `  ageEligibilityResp: ${ageEligibilityResp.statusCode} (${ageEligibilityResp.url})`
+    );
 
     patch.appointments_raw.ageEligibility = ageEligibilityResp.body;
 
@@ -67,7 +69,7 @@ const SamsClub = {
     } else {
       patch.carries_vaccine = true;
 
-      const slotsResp = await retry(async () => await SamsClub.fetchSlots(store), {
+      const slotsResp = await retry(async () => SamsClub.fetchSlots(store), {
         retries: 2,
         onFailedAttempt: SamsClub.onFailedAttempt,
       });
@@ -104,7 +106,7 @@ const SamsClub = {
   },
 
   fetchAgeEligibility: async (store) => {
-    const auth = await refreshAuthMutex.runExclusive(samsClubAuth.get);
+    const auth = await authMutex.runExclusive(samsClubAuth.get);
 
     try {
       return await got.post(
@@ -132,7 +134,7 @@ const SamsClub = {
   },
 
   fetchSlots: async (store) => {
-    const auth = await refreshAuthMutex.runExclusive(samsClubAuth.get);
+    const auth = await authMutex.runExclusive(samsClubAuth.get);
     return got(
       `https://www.samsclub.com/api/node/vivaldi/v1/slots/club/${store.brand_id}`,
       {
@@ -157,10 +159,10 @@ const SamsClub = {
     logger.warn(
       `Error fetching data (${err?.response?.statusCode}), attempting to refresh auth and then retry.`
     );
-    if (refreshAuthMutex.isLocked()) {
-      await refreshAuthMutex.runExclusive(samsClubAuth.get);
+    if (authMutex.isLocked()) {
+      await authMutex.runExclusive(samsClubAuth.get);
     } else {
-      await refreshAuthMutex.runExclusive(samsClubAuth.refresh);
+      await authMutex.runExclusive(samsClubAuth.refresh);
     }
   },
 };
