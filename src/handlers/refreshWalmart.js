@@ -50,20 +50,22 @@ const Walmart = {
 
     patch.appointments_raw = slotsResp.body;
     patch.appointments_raw = slotsResp.body;
-    patch.appointments = patch.appointments_raw.data.slotDays.reduce(
-      (appointments, day) =>
-        appointments.concat(
-          day.slots.map((slot) =>
-            DateTime.fromFormat(
-              `${day.slotDate} ${slot.startTime}`,
-              "LLddyyyy H:mm",
-              { zone: store.time_zone }
-            ).toISO()
-          )
-        ),
-      []
-    );
-    patch.appointments.sort();
+    if (patch.appointments_raw?.data?.slotDays) {
+      patch.appointments = patch.appointments_raw.data.slotDays.reduce(
+        (appointments, day) =>
+          appointments.concat(
+            day.slots.map((slot) =>
+              DateTime.fromFormat(
+                `${day.slotDate} ${slot.startTime}`,
+                "LLddyyyy H:mm",
+                { zone: store.time_zone }
+              ).toISO()
+            )
+          ),
+        []
+      );
+      patch.appointments.sort();
+    }
 
     if (patch.appointments.length > 0) {
       patch.appointments_available = true;
@@ -77,25 +79,34 @@ const Walmart = {
   fetchSlots: async (store) => {
     const auth = await authMutex.runExclusive(walmartAuth.get);
     const now = DateTime.now().setZone(store.time_zone);
-    return got.post(
-      `https://www.walmart.com/pharmacy/v2/clinical-services/time-slots/${auth.body.payload.cid}`,
-      {
-        headers: {
-          "User-Agent":
-            "covid-vaccine-finder (https://github.com/GUI/covid-vaccine-finder)",
-        },
-        cookieJar: auth.cookieJar,
-        responseType: "json",
-        json: {
-          startDate: now.toFormat("LLddyyyy"),
-          endDate: now.plus({ days: 6 }).toFormat("LLddyyyy"),
-          imzStoreNumber: {
-            USStoreId: parseInt(store.brand_id, 10),
+    try {
+      return await got.post(
+        `https://www.walmart.com/pharmacy/v2/clinical-services/time-slots/${auth.body.payload.cid}`,
+        {
+          headers: {
+            "User-Agent":
+              "covid-vaccine-finder (https://github.com/GUI/covid-vaccine-finder)",
           },
-        },
-        retry: 0,
+          cookieJar: auth.cookieJar,
+          responseType: "json",
+          json: {
+            startDate: now.toFormat("LLddyyyy"),
+            endDate: now.plus({ days: 6 }).toFormat("LLddyyyy"),
+            imzStoreNumber: {
+              USStoreId: parseInt(store.brand_id, 10),
+            },
+          },
+          retry: 0,
+        }
+      );
+    } catch (err) {
+      if (err.response?.body?.status === "2100") {
+        logger.warn("Time zone incorrect for store?", err);
+        logger.warn(err?.response?.body);
+        return err.response;
       }
-    );
+      throw err;
+    }
   },
 
   onFailedAttempt: async (err) => {
@@ -104,9 +115,7 @@ const Walmart = {
     logger.warn(
       `Error fetching data (${err?.response?.statusCode}), attempting to refresh auth and then retry.`
     );
-    if (authMutex.isLocked()) {
-      await authMutex.runExclusive(walmartAuth.get);
-    } else {
+    if (!authMutex.isLocked()) {
       await authMutex.runExclusive(walmartAuth.refresh);
     }
   },

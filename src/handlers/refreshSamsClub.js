@@ -159,9 +159,7 @@ const SamsClub = {
     logger.warn(
       `Error fetching data (${err?.response?.statusCode}), attempting to refresh auth and then retry.`
     );
-    if (authMutex.isLocked()) {
-      await authMutex.runExclusive(samsClubAuth.get);
-    } else {
+    if (!authMutex.isLocked()) {
       await authMutex.runExclusive(samsClubAuth.refresh);
     }
   },
