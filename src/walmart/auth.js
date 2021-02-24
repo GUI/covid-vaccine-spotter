@@ -1,11 +1,9 @@
-const got = require("got");
 const util = require("util");
 const _ = require("lodash");
 const { Cookie, CookieJar } = require("tough-cookie");
 const RecaptchaPlugin = require("@extra/recaptcha");
 const sleep = require("sleep-promise");
 const { firefox } = require("playwright-extra");
-const { HttpsProxyAgent } = require("hpagent");
 const logger = require("../logger");
 
 const RecaptchaOptions = {
@@ -63,13 +61,19 @@ const Auth = {
       await page.fill("input[name=password]", process.env.WALMART_PASSWORD);
       await sleep(_.random(50, 150));
 
-      const responsePromise = page.waitForResponse((response) => response.url().startsWith("https://www.walmart.com/account/electrode/api/signin"));
+      const responsePromise = page.waitForResponse((response) =>
+        response
+          .url()
+          .startsWith("https://www.walmart.com/account/electrode/api/signin")
+      );
 
       await page.click("[type=submit]");
       await page.solveRecaptchas();
 
       const response = await responsePromise;
-      logger.info(`Signin ajax response: ${response.url()}: ${response.status()}`);
+      logger.info(
+        `Signin ajax response: ${response.url()}: ${response.status()}`
+      );
       body = await response.json();
 
       logger.info("Getting cookies");
@@ -101,62 +105,6 @@ const Auth = {
         await browser.close();
       }
     }
-
-    /*
-      const agent = {
-        https: new HttpsProxyAgent({
-          keepAlive: true,
-          keepAliveMsecs: 1000,
-          maxSockets: 256,
-          maxFreeSockets: 256,
-          scheduling: "lifo",
-          proxy: process.env.PROXY_URL,
-        }),
-      };
-      const headers = {
-        // 'User-Agent': 'covid-vaccine-finder (https://github.com/GUI/covid-vaccine-finder)',
-        authority: "www.walmart.com",
-        pragma: "no-cache",
-        "cache-control": "no-cache",
-        */
-    // accept: "*/*",
-    // "user-agent":
-    //  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:85.0) Gecko/20100101 Firefox/85.0",
-    /*
-        origin: "https://www.walmart.com",
-        "sec-fetch-site": "same-origin",
-        "sec-fetch-mode": "cors",
-        "sec-fetch-dest": "empty",
-        "accept-language": "en-US,en;q=0.9",
-      };
-      const cookieJar = new CookieJar();
-      const resp = await got.post(
-        "https://www.walmart.com/account/electrode/api/signin?returnUrl=/pharmacy/clinical-services/immunization/scheduled?imzType=covid",
-        {
-          headers: {
-            ...headers,
-            "content-type": "application/json",
-            referer:
-              "https://www.walmart.com/account/login?returnUrl=/pharmacy/clinical-services/immunization/scheduled?imzType=covid",
-          },
-          decompress: true,
-          cookieJar,
-          // responseType: 'json',
-          http2: true,
-          json: {
-            username: process.env.WALMART_USERNAME,
-            password: process.env.WALMART_PASSWORD,
-            rememberme: true,
-            showRememberme: "true",
-            captcha: {
-              sensorData: "",
-            },
-          },
-          retry: 0,
-          agent,
-        }
-      );
-      */
 
     const auth = {
       cookieJar,
