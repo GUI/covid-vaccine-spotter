@@ -1,5 +1,4 @@
 const execa = require("execa");
-const _ = require("lodash");
 const fs = require("fs").promises;
 const os = require("os");
 const stringify = require("json-stable-stringify");
@@ -64,9 +63,6 @@ module.exports.refreshWebsite = async () => {
   });
   const { container: walgreensStores } = await db.containers.createIfNotExists({
     id: "walgreens_stores",
-  });
-  const { container: walmartStores } = await db.containers.createIfNotExists({
-    id: "walmart_stores",
   });
 
   const { stdout } = await execa("ls", ["-lh", os.tmpdir()]);
