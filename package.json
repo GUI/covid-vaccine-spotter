@@ -23,6 +23,7 @@
     "json-stable-stringify": "^1.0.1",
     "knex": "^0.21.17",
     "knex-tiny-logger": "^2.0.0",
+    "listify": "^1.0.3",
     "lodash": "^4.17.20",
     "log4js": "^6.3.0",
     "luxon": "^1.26.0",

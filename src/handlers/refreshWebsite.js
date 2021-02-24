@@ -8,12 +8,11 @@ const util = require("util");
 const logger = require("../logger");
 const getDatabase = require("../getDatabase");
 const { Store } = require("../models/Store");
+const { State } = require("../models/State");
 
 const publish = util.promisify(ghpages.publish);
 
-async function writeStoreData(tmp, brand, dataDir) {
-  await execa("mkdir", ["-p", `${tmp}/site/_data/${dataDir}`]);
-
+async function writeStoreData(tmp, brand) {
   const storeSelect = Store.knex().raw(`
     state,
     json_agg(
@@ -40,11 +39,12 @@ async function writeStoreData(tmp, brand, dataDir) {
     .select(storeSelect)
     .from("stores")
     .where("brand", brand)
+    .whereNotNull("state")
     .groupBy("state")
     .orderBy("state");
   for (const state of states) {
     await fs.writeFile(
-      `${tmp}/site/_data/${dataDir}/${state.state}.json`,
+      `${tmp}/site/_data/stores/${state.state}/${brand}.json`,
       stringify(state.state_data, { space: "  " })
     );
   }
@@ -71,14 +71,23 @@ module.exports.refreshWebsite = async () => {
   await execa("rm", ["-rf", `${tmp}/site/_data`]);
   await execa("mkdir", ["-p", `${tmp}/site/_data`]);
 
+  const states = await State.query().select("code", "name").orderBy("name");
+  await fs.writeFile(
+    `${tmp}/site/_data/states.json`,
+    stringify(states, { space: "  " })
+  );
+  for (const state of states) {
+    await execa("mkdir", ["-p", `${tmp}/site/_data/stores/${state.code}`]);
+  }
+
   try {
-    writeStoreData(tmp, "albertsons", "albertsons");
+    writeStoreData(tmp, "albertsons");
   } catch (err) {
     logger.info("CVS Data Error: ", err);
   }
 
   try {
-    writeStoreData(tmp, "cvs", "cvs");
+    writeStoreData(tmp, "cvs");
   } catch (err) {
     logger.info("CVS Data Error: ", err);
   }
@@ -87,7 +96,7 @@ module.exports.refreshWebsite = async () => {
     .query("SELECT * from c ORDER BY c.id")
     .fetchAll();
   await fs.writeFile(
-    `${tmp}/site/_data/kroger.json`,
+    `${tmp}/site/_data/stores/CO/kroger.json`,
     stringify(krogerData, { space: "  " })
   );
 
@@ -97,12 +106,12 @@ module.exports.refreshWebsite = async () => {
     )
     .fetchAll();
   await fs.writeFile(
-    `${tmp}/site/_data/pharmaca.json`,
+    `${tmp}/site/_data/stores/CO/pharmaca.json`,
     stringify(pharmacaData, { space: "  " })
   );
 
   try {
-    writeStoreData(tmp, "sams_club", "samsClub");
+    writeStoreData(tmp, "sams_club");
   } catch (err) {
     logger.info("Sam's Club Data Error: ", err);
   }
@@ -111,16 +120,17 @@ module.exports.refreshWebsite = async () => {
     .query("SELECT * from c ORDER BY c.id")
     .fetchAll();
   await fs.writeFile(
-    `${tmp}/site/_data/walgreens.json`,
+    `${tmp}/site/_data/stores/CO/walgreens.json`,
     stringify(walgreensData, { space: "  " })
   );
 
   try {
-    writeStoreData(tmp, "walmart", "walmart");
+    writeStoreData(tmp, "walmart");
   } catch (err) {
     logger.info("Walmart Data Error: ", err);
   }
 
+  /*
   await execa("./node_modules/@11ty/eleventy/cmd.js", [
     "--input",
     `${tmp}/site`,
@@ -139,8 +149,9 @@ module.exports.refreshWebsite = async () => {
       email: "12112+GUI@users.noreply.github.com",
     },
   });
+  */
 
   // await Store.knex().destroy();
 };
 
-// module.exports.refreshWebsite();
+module.exports.refreshWebsite();

@@ -35,37 +35,37 @@ title: Colorado COVID-19 Vaccine Finder
         <h1>All Locations</h1>
 
         <h2>CVS Appointments</h2>
-        <% this.lodash.orderBy(cvs.CO, ['id'], ['asc']).forEach((store) => { %>
+        <% this.lodash.orderBy(stores.CO.cvs, ['id'], ['asc']).forEach((store) => { %>
           <%- include('../_includes/cvsAppointment', { store }) %>
         <% }) %>
 
         <h2>Pharmaca Appointments</h2>
-        <% this.lodash.orderBy(pharmaca, ['id'], ['asc']).forEach((store) => { %>
+        <% this.lodash.orderBy(stores.CO.pharmaca, ['id'], ['asc']).forEach((store) => { %>
           <%- include('../_includes/pharmacaAppointment', { store }) %>
         <% }) %>
 
         <h2>Safeway, Albertsons Appointments</h2>
-        <% this.lodash.orderBy(albertsons.CO, ['id'], ['asc']).forEach((store) => { %>
+        <% this.lodash.orderBy(stores.CO.albertsons, ['id'], ['asc']).forEach((store) => { %>
           <%- include('../_includes/albertsonsAppointment', { store }) %>
         <% }) %>
 
         <h2>Sam's Club Appointments</h2>
-        <% this.lodash.orderBy(samsClub.CO, ['city', 'address']).forEach((store) => { %>
+        <% this.lodash.orderBy(stores.CO.sams_club, ['city', 'address']).forEach((store) => { %>
           <%- include('../_includes/samsClubAppointment', { store }) %>
         <% }) %>
 
         <h2>Walgreens Appointments</h2>
-        <% this.lodash.orderBy(walgreens, ['id'], ['asc']).forEach((store) => { %>
+        <% this.lodash.orderBy(stores.CO.walgreens, ['id'], ['asc']).forEach((store) => { %>
           <%- include('../_includes/walgreensAppointment', { store }) %>
         <% }) %>
 
         <h2>Walmart Appointments</h2>
-        <% this.lodash.orderBy(walmart.CO, ['id'], ['asc']).forEach((store) => { %>
+        <% this.lodash.orderBy(stores.CO.walmart, ['id'], ['asc']).forEach((store) => { %>
           <%- include('../_includes/walmartAppointment', { store }) %>
         <% }) %>
 
         <h2>King Soopers, City Market Appointments</h2>
-        <% this.lodash.orderBy(kroger, ['id'], ['asc']).forEach((store) => { %>
+        <% this.lodash.orderBy(stores.CO.kroger, ['id'], ['asc']).forEach((store) => { %>
           <%- include('../_includes/krogerAppointment', { store }) %>
         <% }) %>
       </div>

@@ -6,6 +6,7 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.setEjsOptions({
     context: {
       lodash: require("lodash"),
+      listify: require("listify"),
       luxon: require("luxon"),
     },
   });
