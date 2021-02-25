@@ -1,0 +1,6 @@
+#!/usr/bin/env node
+
+const { refreshWalgreens } = require("../src/handlers/refreshWalgreens");
+const runTask = require("../src/runTask");
+
+runTask(refreshWalgreens, 5000);

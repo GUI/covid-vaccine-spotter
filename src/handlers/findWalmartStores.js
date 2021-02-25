@@ -9,13 +9,10 @@ module.exports.findWalmartStores = async () => {
   const knex = Store.knex();
   const grid = await knex
     .select(knex.raw("centroid_postal_code"))
-    .from("country_grid_75km")
+    .from("country_grid_110km")
     .orderBy("centroid_postal_code");
   const count = grid.length;
   for (const [index, gridCell] of grid.entries()) {
-    if (gridCell.centroid_postal_code < "45309") {
-      continue;
-    }
     logger.info(
       `Importing stores for ${gridCell.centroid_postal_code} (${
         index + 1
