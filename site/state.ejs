@@ -379,7 +379,7 @@ permalink: "<%= state.code %>/"
           <% lastFetched = appointments?.[0]?.appointments_last_fetched %>
           <h2 class="brand" data-last-fetched="<%= lastFetched %>">CVS Appointments</h2>
           <div class="brand-link"><a href="https://www.cvs.com/immunizations/covid-19-vaccine" target="_blank">CVS Website<i class="fas fa-external-link-alt"></i></a></div>
-          <% availableAppointments = this.lodash.orderBy(this.lodash.filter(appointments, 'appointments_available'), ['city', 'address']) %>
+          <% availableAppointments = this.lodash.orderBy(this.lodash.filter(appointments, 'appointments_available').filter((s) => this.luxon.DateTime.fromISO(s.appointments_last_fetched) >= this.luxon.DateTime.utc().minus({ minutes: 30 })), ['city', 'address']) %>
           <% if(availableAppointments.length > 0) { %>
             <% availableAppointments.forEach((store) => { %>
               <%- include('./_includes/cvsAppointment', { store }) %>
@@ -398,7 +398,7 @@ permalink: "<%= state.code %>/"
           <% lastFetched = appointments?.[0]?.lastFetched %>
           <h2 class="brand" data-last-fetched="<%= lastFetched %>">Pharmaca Appointments</h2>
           <div class="brand-link"><a href="https://www.pharmacarx.com/covid-vaccine-faqs/" target="_blank">Pharmaca Website<i class="fas fa-external-link-alt"></i></a></div>
-          <% availableAppointments = this.lodash.filter(appointments, (o) => o.anyAppointments) %>
+          <% availableAppointments = this.lodash.filter(appointments.filter((s) => this.luxon.DateTime.fromISO(s.lastFetched) >= this.luxon.DateTime.utc().minus({ minutes: 30 })), (o) => o.anyAppointments) %>
           <% if(availableAppointments.length > 0) { %>
             <% availableAppointments.forEach((store) => { %>
               <%- include('./_includes/pharmacaAppointment', { store }) %>
@@ -417,7 +417,7 @@ permalink: "<%= state.code %>/"
           <% lastFetched = appointments?.[0]?.appointments_last_fetched %>
           <h2 class="brand" data-last-fetched="<%= lastFetched %>">Safeway, Albertsons Pharmacy Appointments</h2>
           <div class="brand-link"><a href="https://www.safeway.com/pharmacy/covid-19.html" target="_blank">Safeway Pharmacy Website<i class="fas fa-external-link-alt"></i></a></div>
-          <% availableAppointments = this.lodash.orderBy(this.lodash.filter(appointments, 'appointments_available'), ['city', 'address']) %>
+          <% availableAppointments = this.lodash.orderBy(this.lodash.filter(appointments, 'appointments_available').filter((s) => this.luxon.DateTime.fromISO(s.appointments_last_fetched) >= this.luxon.DateTime.utc().minus({ minutes: 30 })), ['city', 'address']) %>
           <% if(availableAppointments.length > 0) { %>
             <% availableAppointments.forEach((store) => { %>
               <%- include('./_includes/albertsonsAppointment', { store }) %>
@@ -436,7 +436,7 @@ permalink: "<%= state.code %>/"
           <% lastFetched = appointments?.[0]?.appointments_last_fetched %>
           <h2 class="brand" data-last-fetched="<%= lastFetched %>">Sam's Club Pharmacy Appointments</h2>
           <div class="brand-link"><a href="https://www.samsclub.com/pharmacy/immunization/form?imzType=covid" target="_blank">Sam's Club Pharmacy Website<i class="fas fa-external-link-alt"></i></a></div>
-          <% availableAppointments = this.lodash.orderBy(this.lodash.filter(appointments, 'appointments_available'), ['city', 'address']) %>
+          <% availableAppointments = this.lodash.orderBy(this.lodash.filter(appointments, 'appointments_available').filter((s) => this.luxon.DateTime.fromISO(s.appointments_last_fetched) >= this.luxon.DateTime.utc().minus({ minutes: 30 })), ['city', 'address']) %>
           <% if(availableAppointments.length > 0) { %>
             <% availableAppointments.forEach((store) => { %>
               <%- include('./_includes/samsClubAppointment', { store }) %>
@@ -455,7 +455,7 @@ permalink: "<%= state.code %>/"
           <% lastFetched = appointments?.[0]?.lastFetched %>
           <h2 class="brand" data-last-fetched="<%= lastFetched %>">Walgreens Appointments</h2>
           <div class="brand-link"><a href="https://www.walgreens.com/findcare/vaccination/covid-19/location-screening" target="_blank">Walgreens Website<i class="fas fa-external-link-alt"></i></a></div>
-          <% availableAppointments = this.lodash.filter(appointments, (o) => o.availability.appointmentsAvailable) %>
+          <% availableAppointments = this.lodash.filter(appointments.filter((s) => this.luxon.DateTime.fromISO(s.lastFetched) >= this.luxon.DateTime.utc().minus({ minutes: 30 })), (o) => o.availability.appointmentsAvailable) %>
           <% if(availableAppointments.length > 0) { %>
             <% availableAppointments.forEach((store) => { %>
               <%- include('./_includes/walgreensAppointment', { store }) %>
@@ -474,7 +474,7 @@ permalink: "<%= state.code %>/"
           <% lastFetched = appointments?.[0]?.appointments_last_fetched %>
           <h2 class="brand" data-last-fetched="<%= lastFetched %>">Walmart Pharmacy Appointments</h2>
           <div class="brand-link"><a href="https://www.walmart.com/pharmacy/clinical-services/immunization/scheduled?imzType=covid" target="_blank">Walmart Pharmacy Website<i class="fas fa-external-link-alt"></i></a></div>
-          <% availableAppointments = this.lodash.orderBy(this.lodash.filter(appointments, 'appointments_available'), ['city', 'address']) %>
+          <% availableAppointments = this.lodash.orderBy(this.lodash.filter(appointments, 'appointments_available').filter((s) => this.luxon.DateTime.fromISO(s.appointments_last_fetched) >= this.luxon.DateTime.utc().minus({ minutes: 30 })), ['city', 'address']) %>
           <% if(availableAppointments.length > 0) { %>
             <% availableAppointments.forEach((store) => { %>
               <%- include('./_includes/walmartAppointment', { store }) %>
@@ -493,7 +493,7 @@ permalink: "<%= state.code %>/"
           <% lastFetched = appointments?.[0]?.lastFetched %>
           <h2 class="brand" data-last-fetched="<%= lastFetched %>">King Soopers, City Market Pharmacy Appointments</h2>
           <div class="brand-link"><a href="https://www.kingsoopers.com/rx/covid-eligibility" target="_blank">King Soopers Pharmacy Website<i class="fas fa-external-link-alt"></i></a></div>
-          <% availableAppointments = this.lodash.filter(appointments, (o) => o.appointments && o.appointments.dates && this.lodash.some(o.appointments.dates, (d) => d.slots && d.slots.length > 0)) %>
+          <% availableAppointments = this.lodash.filter(appointments.filter((s) => this.luxon.DateTime.fromISO(s.lastFetched) >= this.luxon.DateTime.utc().minus({ minutes: 30 })), (o) => o.appointments && o.appointments.dates && this.lodash.some(o.appointments.dates, (d) => d.slots && d.slots.length > 0)) %>
           <% if(availableAppointments.length > 0) { %>
             <% availableAppointments.forEach((store) => { %>
               <%- include('./_includes/krogerAppointment', { store }) %>
