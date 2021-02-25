@@ -43,49 +43,49 @@ permalink: "<%= state.code %>/all/"
         <% if (stores?.[state.code]?.cvs) { %>
           <h2>CVS Appointments</h2>
           <% this.lodash.orderBy(stores[state.code].cvs, ['id'], ['asc']).forEach((store) => { %>
-            <%- include('/cvsAppointment', { store }) %>
+            <%- include('./_includes/cvsAppointment', { store }) %>
           <% }) %>
         <% } %>
 
         <% if (stores?.[state.code]?.pharmaca) { %>
           <h2>Pharmaca Appointments</h2>
           <% this.lodash.orderBy(stores[state.code].pharmaca, ['id'], ['asc']).forEach((store) => { %>
-            <%- include('/pharmacaAppointment', { store }) %>
+            <%- include('./_includes/pharmacaAppointment', { store }) %>
           <% }) %>
         <% } %>
 
         <% if (stores?.[state.code]?.albertsons) { %>
           <h2>Safeway, Albertsons Appointments</h2>
           <% this.lodash.orderBy(stores[state.code].albertsons, ['id'], ['asc']).forEach((store) => { %>
-            <%- include('/albertsonsAppointment', { store }) %>
+            <%- include('./_includes/albertsonsAppointment', { store }) %>
           <% }) %>
         <% } %>
 
         <% if (stores?.[state.code]?.sams_club) { %>
           <h2>Sam's Club Appointments</h2>
           <% this.lodash.orderBy(stores[state.code].sams_club, ['city', 'address']).forEach((store) => { %>
-            <%- include('/samsClubAppointment', { store }) %>
+            <%- include('./_includes/samsClubAppointment', { store }) %>
           <% }) %>
         <% } %>
 
         <% if (stores?.[state.code]?.walgreens) { %>
           <h2>Walgreens Appointments</h2>
           <% this.lodash.orderBy(stores[state.code].walgreens, ['id'], ['asc']).forEach((store) => { %>
-            <%- include('/walgreensAppointment', { store }) %>
+            <%- include('./_includes/walgreensAppointment', { store }) %>
           <% }) %>
         <% } %>
 
         <% if (stores?.[state.code]?.walmart) { %>
           <h2>Walmart Appointments</h2>
           <% this.lodash.orderBy(stores[state.code].walmart, ['id'], ['asc']).forEach((store) => { %>
-            <%- include('/walmartAppointment', { store }) %>
+            <%- include('./_includes/walmartAppointment', { store }) %>
           <% }) %>
         <% } %>
 
         <% if (stores?.[state.code]?.kroger) { %>
           <h2>King Soopers, City Market Appointments</h2>
           <% this.lodash.orderBy(stores[state.code].kroger, ['id'], ['asc']).forEach((store) => { %>
-            <%- include('/krogerAppointment', { store }) %>
+            <%- include('./_includes/krogerAppointment', { store }) %>
           <% }) %>
         <% } %>
       </div>
