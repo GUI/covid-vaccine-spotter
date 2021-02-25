@@ -1,3 +1,5 @@
+/* Imports and parses a list of states from a CSV, using geojson to populate state boundaries */
+
 const csvParse = require("csv-parse");
 const fs = require("fs");
 const path = require("path");

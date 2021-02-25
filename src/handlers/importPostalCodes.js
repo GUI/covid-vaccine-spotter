@@ -1,3 +1,5 @@
+/* Imports and parses a list of Postal Codes (zip codes) from a CSV */
+
 const csvParse = require("csv-parse");
 const fs = require("fs");
 const path = require("path");
