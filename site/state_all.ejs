@@ -1,0 +1,94 @@
+---
+pagination:
+  data: states
+  size: 1
+  alias: state
+permalink: "<%= state.code %>/all/"
+---
+
+<% title = `${state.name} COVID-19 Vaccine Finder` %>
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="<%= title %>" />
+
+    <title>All Locations | <%= title %></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <script defer src="https://use.fontawesome.com/releases/v5.15.2/js/all.js" integrity="sha384-vuFJ2JiSdUpXLKGK+tDteQZBqNlMwAjhZ3TvPaDfN9QmbPb7Q8qUpbSNapQev3YF" crossorigin="anonymous"></script>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-49484378-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-49484378-1');
+    </script>
+  </head>
+  <body>
+    <header>
+      <div class="navbar navbar-dark bg-primary shadow-sm">
+        <div class="container">
+          <h1 class="navbar-brand mb-0 fw-bold"><a href="/" class="text-white" style="text-decoration: none;"><%= title %></a></h1>
+        </div>
+      </div>
+    </header>
+    <main>
+      <div class="container">
+        <h1>All Locations</h1>
+
+        <% if (stores?.[state.code]?.cvs) { %>
+          <h2>CVS Appointments</h2>
+          <% this.lodash.orderBy(stores[state.code].cvs, ['id'], ['asc']).forEach((store) => { %>
+            <%- include('/cvsAppointment', { store }) %>
+          <% }) %>
+        <% } %>
+
+        <% if (stores?.[state.code]?.pharmaca) { %>
+          <h2>Pharmaca Appointments</h2>
+          <% this.lodash.orderBy(stores[state.code].pharmaca, ['id'], ['asc']).forEach((store) => { %>
+            <%- include('/pharmacaAppointment', { store }) %>
+          <% }) %>
+        <% } %>
+
+        <% if (stores?.[state.code]?.albertsons) { %>
+          <h2>Safeway, Albertsons Appointments</h2>
+          <% this.lodash.orderBy(stores[state.code].albertsons, ['id'], ['asc']).forEach((store) => { %>
+            <%- include('/albertsonsAppointment', { store }) %>
+          <% }) %>
+        <% } %>
+
+        <% if (stores?.[state.code]?.sams_club) { %>
+          <h2>Sam's Club Appointments</h2>
+          <% this.lodash.orderBy(stores[state.code].sams_club, ['city', 'address']).forEach((store) => { %>
+            <%- include('/samsClubAppointment', { store }) %>
+          <% }) %>
+        <% } %>
+
+        <% if (stores?.[state.code]?.walgreens) { %>
+          <h2>Walgreens Appointments</h2>
+          <% this.lodash.orderBy(stores[state.code].walgreens, ['id'], ['asc']).forEach((store) => { %>
+            <%- include('/walgreensAppointment', { store }) %>
+          <% }) %>
+        <% } %>
+
+        <% if (stores?.[state.code]?.walmart) { %>
+          <h2>Walmart Appointments</h2>
+          <% this.lodash.orderBy(stores[state.code].walmart, ['id'], ['asc']).forEach((store) => { %>
+            <%- include('/walmartAppointment', { store }) %>
+          <% }) %>
+        <% } %>
+
+        <% if (stores?.[state.code]?.kroger) { %>
+          <h2>King Soopers, City Market Appointments</h2>
+          <% this.lodash.orderBy(stores[state.code].kroger, ['id'], ['asc']).forEach((store) => { %>
+            <%- include('/krogerAppointment', { store }) %>
+          <% }) %>
+        <% } %>
+      </div>
+    </main>
+  </body>
+</html>
