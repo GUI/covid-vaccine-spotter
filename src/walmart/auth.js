@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const util = require("util");
 const _ = require("lodash");
 const { Cookie, CookieJar } = require("tough-cookie");

@@ -96,7 +96,9 @@ module.exports.refreshPharmaca = async () => {
 
       times.sort();
       const covidLabelText = _.trim($covidLabel.text());
-      appointments[covidLabelText] = (appointments[covidLabelText] || []).concat(times);
+      appointments[covidLabelText] = (
+        appointments[covidLabelText] || []
+      ).concat(times);
       await sleep(1000);
     }
 

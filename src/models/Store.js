@@ -11,7 +11,20 @@ class Store extends Base {
       properties: {
         appointments: {
           type: "array",
-          items: { type: "string" },
+          items: {
+            /*
+            type: "string"
+            type: "object",
+            properties: {
+              type: {
+                type: "string",
+              },
+              time: {
+                type: "string",
+              },
+            },
+            */
+          },
         },
       },
     };

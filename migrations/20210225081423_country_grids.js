@@ -1,5 +1,7 @@
 exports.up = async function (knex) {
-  await knex.raw("UPDATE states SET boundaries = st_collectionextract(st_makevalid(boundaries::geometry), 3)::geography WHERE st_isvalid(boundaries::geometry) = false");
+  await knex.raw(
+    "UPDATE states SET boundaries = st_collectionextract(st_makevalid(boundaries::geometry), 3)::geography WHERE st_isvalid(boundaries::geometry) = false"
+  );
 
   await knex.raw("DROP MATERIALIZED VIEW country_grid_75km");
 
