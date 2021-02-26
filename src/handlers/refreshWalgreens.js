@@ -16,12 +16,12 @@ const Walgreens = {
     const gridCells = await knex
       .select(
         knex.raw(
-          "DISTINCT ON (country_grid_55km.centroid_postal_code, country_grid_55km.id) country_grid_55km.id, country_grid_55km.centroid_postal_code, st_y(country_grid_55km.centroid_land_location::geometry) AS latitude, st_x(country_grid_55km.centroid_land_location::geometry) AS longitude, stores.time_zone"
+          "DISTINCT ON (state_grid_55km.centroid_postal_code, state_grid_55km.id) state_grid_55km.id, state_grid_55km.centroid_postal_code, st_y(state_grid_55km.centroid_land_location::geometry) AS latitude, st_x(state_grid_55km.centroid_land_location::geometry) AS longitude, stores.time_zone"
         )
       )
-      .from(knex.raw("country_grid_55km, stores"))
+      .from(knex.raw("state_grid_55km, stores"))
       .where("stores.brand", "walgreens")
-      .whereRaw("st_intersects(stores.location, country_grid_55km.geom)")
+      .whereRaw("st_intersects(stores.location, state_grid_55km.geom)")
       .orderBy("centroid_postal_code");
     for (const [index, gridCell] of _.shuffle(gridCells).entries()) {
       queue.add(() =>
@@ -63,7 +63,7 @@ const Walgreens = {
     await Store.query()
       .where("brand", "walgreens")
       .whereRaw(
-        "st_within(location::geometry, (SELECT geom FROM country_grid_55km WHERE id = ?))",
+        "st_within(location::geometry, (SELECT geom FROM state_grid_55km WHERE id = ?))",
         gridCell.id
       )
       .patch(patch);
