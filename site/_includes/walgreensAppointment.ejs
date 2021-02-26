@@ -1,20 +1,35 @@
-<% lastFetched = (new Date(store.lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>
+<% lastFetched = (new Date(store.appointments_last_fetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>
 <div class="card mb-4">
-  <h5 class="card-header"><%= store.store.address.street %>, <%= store.store.address.city %>, <%= store.store.address.state %> <%= store.store.address.zip %></h5>
+  <h5 class="card-header"><%= store.name %> - <%= store.address %>, <%= store.city %>, <%= store.state %> <%= store.postal_code %></h5>
   <div class="card-body">
-    <% if(store.availability.appointmentsAvailable) { %>
+    <% if(store.appointments_available) { %>
       <div class="text-success fs-2">
         <i class="fas fa-check-circle"></i>
         <span class="fs-5">Appointments available as of <%= lastFetched %></span>
       </div>
-      <div class="mb-3">
-        <ul class="mb-0">
-          <li>
-            <p class="mb-2">View available appointment times on the Walgreens website.</p>
-            <p><em>Note:</em> While Walgreens reports having openings at this location, Walgreens may only have appointments for a single dose, not the required two doses. So you may or may not be able to actually book an appointment at this location. I'm trying to see if this can be improved, but in the meantime, you will still need to check Walgreens directly to see what specific appointments are available at this store.</p>
-          </li>
-        </ul>
-      </div>
+      <%
+        times = store.appointments.map((t) => {
+          const time = {
+            time: this.luxon.DateTime.fromISO(t.time, { setZone: true }),
+          };
+          switch(t.type) {
+            case 'both_doses':
+              time.type = 'First Dose';
+              break;
+            case 'second_dose_moderna':
+              time.type = 'Second Dose Only - Moderna';
+              break;
+            case 'second_dose_pfizer':
+              time.type = 'Second Dose Only - Pfizer';
+              break;
+            default:
+              time.type = t.type;
+              break;
+          }
+          return time;
+        });
+      %>
+      <%- include('./appointmentTimes', { times }) %>
       <a href="https://www.walgreens.com/findcare/vaccination/covid-19/location-screening" class="btn btn-primary" target="_blank">Visit Walgreens Website <i class="fas fa-arrow-alt-circle-right"></i></a>
     <% } else { %>
       <div>

@@ -52,19 +52,6 @@ functions:
     reservedConcurrency: 1
     events:
       - schedule: "rate(2 minutes)"
-  refreshWalgreens:
-    handler: index.refreshWalgreens
-    reservedConcurrency: 1
-    events:
-      - schedule: "rate(2 minutes)"
-  refreshWebsite:
-    handler: index.refreshWebsite
-    reservedConcurrency: 1
-    memorySize: 256
-    events:
-      - schedule: "rate(1 minute)"
-    layers:
-      - arn:aws:lambda:us-east-2:553035198032:layer:git-lambda2:8
 
 resources:
   Resources:

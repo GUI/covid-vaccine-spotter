@@ -1,7 +1,7 @@
 module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy(".nojekyll");
   eleventyConfig.addPassthroughCopy("CNAME");
-  eleventyConfig.addPassthroughCopy("site/_data");
+  eleventyConfig.addPassthroughCopy("site/api/v0");
 
   eleventyConfig.setEjsOptions({
     context: {
@@ -14,6 +14,7 @@ module.exports = function (eleventyConfig) {
   return {
     dir: {
       input: "site",
+      data: "api/v0",
     },
   };
 };

@@ -14,7 +14,7 @@ requestsSinceRefresh = 0;
 
 const Albertsons = {
   refreshStores: async () => {
-    const queue = new PQueue({ concurrency: 10 });
+    const queue = new PQueue({ concurrency: 5 });
 
     const stores = await Store.query()
       .where("brand", "albertsons")

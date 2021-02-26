@@ -13,7 +13,7 @@ const authMutex = new Mutex();
 
 const Walmart = {
   refreshStores: async () => {
-    const queue = new PQueue({ concurrency: 10 });
+    const queue = new PQueue({ concurrency: 5 });
 
     const stores = await Store.query()
       .where("brand", "walmart")

@@ -1,7 +1,13 @@
 <div class="mb-3">
   <ul class="mb-0">
     <% times.slice(0, 5).forEach((time) => { %>
-      <li><%= time.toLocaleString(this.luxon.DateTime.DATETIME_SHORT) %></li>
+      <li>
+        <% if(time.type && time.time) { %>
+          <%= time.time.toLocaleString(this.luxon.DateTime.DATETIME_SHORT) %> (<%= time.type %>)
+        <% } else { %>
+          <%= time.toLocaleString(this.luxon.DateTime.DATETIME_SHORT) %>
+        <% } %>
+      </li>
     <% }) %>
   </ul>
 
@@ -11,7 +17,13 @@
 
     <ul class="mb-0" id="<%= uniq %>" style="display: none;">
       <% times.slice(5).forEach((time) => { %>
-        <li><%= time.toLocaleString(this.luxon.DateTime.DATETIME_SHORT) %></li>
+        <li>
+          <% if(time.type && time.time) { %>
+            <%= time.time.toLocaleString(this.luxon.DateTime.DATETIME_SHORT) %> (<%= time.type %>)
+          <% } else { %>
+            <%= time.toLocaleString(this.luxon.DateTime.DATETIME_SHORT) %>
+          <% } %>
+        </li>
       <% }) %>
     </ul>
   <% } %>

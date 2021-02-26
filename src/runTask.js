@@ -14,7 +14,7 @@ module.exports = async (task, sleepTime) => {
       logger.error("Task error: ", err);
     }
 
-    logger.info("End task run, sleeping...");
+    logger.info(`End task run, sleeping for ${sleepTime}ms...`);
     await sleep(sleepTime);
   }
 };

@@ -2,17 +2,18 @@ const execa = require("execa");
 const fs = require("fs").promises;
 const os = require("os");
 const stringify = require("json-stable-stringify");
-const del = require("del");
 const ghpages = require("gh-pages");
 const util = require("util");
 const logger = require("../logger");
 const getDatabase = require("../getDatabase");
 const { Store } = require("../models/Store");
 const { State } = require("../models/State");
+const path = require("path");
 
 const publish = util.promisify(ghpages.publish);
 
-async function writeStoreData(tmp, brand) {
+async function writeStoreData(dataPath, brand) {
+  logger.info(`Writing data for ${brand}`);
   const storeSelect = Store.knex().raw(`
     state,
     json_agg(
@@ -44,10 +45,20 @@ async function writeStoreData(tmp, brand) {
     .orderBy("state");
   for (const state of states) {
     await fs.writeFile(
-      `${tmp}/site/_data/stores/${state.state}/${brand}.json`,
+      `${dataPath}/stores/${state.state}/${brand}.json`,
       stringify(state.state_data, { space: "  " })
     );
   }
+
+  logger.info(`Finished writing data for ${brand}`);
+}
+
+async function runShell(...args) {
+  const cmd = execa(...args);
+  logger.info(cmd.spawnargs.join(" "));
+  await cmd;
+  logger.info(`Shell command complete (${cmd.spawnargs.join(" ")})`);
+  return cmd;
 }
 
 module.exports.refreshWebsite = async () => {
@@ -58,36 +69,28 @@ module.exports.refreshWebsite = async () => {
   const { container: pharmacaStores } = await db.containers.createIfNotExists({
     id: "pharmaca_stores",
   });
-  const { container: walgreensStores } = await db.containers.createIfNotExists({
-    id: "walgreens_stores",
-  });
 
-  const { stdout } = await execa("ls", ["-lh", os.tmpdir()]);
-  logger.info(stdout);
-  await del([`${os.tmpdir()}/covid-vaccine-finder*`], { force: true });
-  const tmp = await fs.mkdtemp(`${os.tmpdir()}/covid-vaccine-finder`);
-  logger.info(tmp);
-  await execa("cp", ["-r", "./site", `${tmp}/`]);
-  await execa("rm", ["-rf", `${tmp}/site/_data`]);
-  await execa("mkdir", ["-p", `${tmp}/site/_data`]);
+  const dataPath = path.resolve("site/api/v0");
+  await runShell("rm", ["-rf", "_site_build", dataPath]);
+  await runShell("mkdir", ["-p", dataPath]);
 
   const states = await State.query().select("code", "name").orderBy("name");
   await fs.writeFile(
-    `${tmp}/site/_data/states.json`,
+    `${dataPath}/states.json`,
     stringify(states, { space: "  " })
   );
   for (const state of states) {
-    await execa("mkdir", ["-p", `${tmp}/site/_data/stores/${state.code}`]);
+    await runShell("mkdir", ["-p", `${dataPath}/stores/${state.code}`]);
   }
 
   try {
-    writeStoreData(tmp, "albertsons");
+    await writeStoreData(dataPath, "albertsons");
   } catch (err) {
     logger.info("CVS Data Error: ", err);
   }
 
   try {
-    writeStoreData(tmp, "cvs");
+    await writeStoreData(dataPath, "cvs");
   } catch (err) {
     logger.info("CVS Data Error: ", err);
   }
@@ -96,7 +99,7 @@ module.exports.refreshWebsite = async () => {
     .query("SELECT * from c ORDER BY c.id")
     .fetchAll();
   await fs.writeFile(
-    `${tmp}/site/_data/stores/CO/kroger.json`,
+    `${dataPath}/stores/CO/kroger.json`,
     stringify(krogerData, { space: "  " })
   );
 
@@ -106,40 +109,52 @@ module.exports.refreshWebsite = async () => {
     )
     .fetchAll();
   await fs.writeFile(
-    `${tmp}/site/_data/stores/CO/pharmaca.json`,
+    `${dataPath}/stores/CO/pharmaca.json`,
     stringify(pharmacaData, { space: "  " })
   );
 
   try {
-    writeStoreData(tmp, "sams_club");
+    await writeStoreData(dataPath, "sams_club");
   } catch (err) {
     logger.info("Sam's Club Data Error: ", err);
   }
 
-  const { resources: walgreensData } = await walgreensStores.items
-    .query("SELECT * from c ORDER BY c.id")
-    .fetchAll();
-  await fs.writeFile(
-    `${tmp}/site/_data/stores/CO/walgreens.json`,
-    stringify(walgreensData, { space: "  " })
-  );
+  try {
+    await writeStoreData(dataPath, "walgreens");
+  } catch (err) {
+    logger.info("Walgreens Data Error: ", err);
+  }
 
   try {
-    writeStoreData(tmp, "walmart");
+    await writeStoreData(dataPath, "walmart");
   } catch (err) {
     logger.info("Walmart Data Error: ", err);
   }
 
-  await execa("./node_modules/@11ty/eleventy/cmd.js", [
+  await runShell("./node_modules/@11ty/eleventy/cmd.js", [
     "--input",
-    `${tmp}/site`,
+    "site",
     "--output",
-    `${tmp}/_site`,
+    "_site_build",
   ]);
-  await execa("cp", ["-r", `${tmp}/site/_data`, `${tmp}/_site/`]);
-  await execa("./node_modules/gh-pages/bin/gh-pages-clean.js");
 
-  await publish(`${tmp}/_site`, {
+  console.info(
+    "VACCINEFINDERNICKMORG_NAME: ",
+    process.env.VACCINEFINDERNICKMORG_NAME
+  );
+
+  await runShell("aws", [
+    "s3",
+    "sync",
+    "./_site_build/",
+    `s3://${process.env.VACCINEFINDERNICKMORG_NAME}/`,
+    "--cache-control",
+    "public, max-age=0, s-maxage=10",
+    "--delete",
+  ]);
+
+  await runShell("./node_modules/gh-pages/bin/gh-pages-clean.js");
+  await publish("_site_build", {
     repo: `https://${process.env.GH_TOKEN}@github.com/GUI/vaccine.git`,
     dotfiles: true,
     silent: false,
@@ -148,8 +163,4 @@ module.exports.refreshWebsite = async () => {
       email: "12112+GUI@users.noreply.github.com",
     },
   });
-
-  // await Store.knex().destroy();
 };
-
-// module.exports.refreshWebsite();

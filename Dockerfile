@@ -1,5 +1,9 @@
 FROM node:14-buster
 
+RUN apt-get update && \
+  apt-get -y install awscli && \
+  rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
 COPY package.json yarn.lock /app/

@@ -14,7 +14,7 @@ const authMutex = new Mutex();
 
 const Walgreens = {
   refreshGridCells: async () => {
-    const queue = new PQueue({ concurrency: 10 });
+    const queue = new PQueue({ concurrency: 5 });
 
     const knex = Store.knex();
     const gridCells = await knex
@@ -217,14 +217,15 @@ const Walgreens = {
 
   onFailedAttempt: async (err) => {
     logger.warn(err);
+    logger.warn(err?.response?.statusCode);
     logger.warn(err?.response?.body);
     logger.warn(`Retrying due to error: ${err}`);
     await sleep(5000);
-    /*
-    if (!authMutex.isLocked()) {
-      await authMutex.runExclusive(walgreensAuth.refresh);
+    if (err?.response?.statusCode === 401) {
+      if (!authMutex.isLocked()) {
+        await authMutex.runExclusive(walgreensAuth.refresh);
+      }
     }
-    */
   },
 };
 

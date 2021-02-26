@@ -1,5 +1,6 @@
 /node_modules
-/_site
+/_site*
 /.env*
 /site/_data*
+/site/api/v0*
 /.serverless

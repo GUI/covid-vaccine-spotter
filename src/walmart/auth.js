@@ -34,9 +34,9 @@ const Auth = {
     const browser = await firefox.launch({
       headless: true,
       proxy: {
-        server: process.env.PROXY_SERVER,
-        username: process.env.PROXY_USERNAME,
-        password: process.env.PROXY_PASSWORD,
+        server: process.env.PROXY_RANDOM_SERVER,
+        username: process.env.PROXY_RANDOM_USERNAME,
+        password: process.env.PROXY_RANDOM_PASSWORD,
       },
     });
     try {
@@ -77,6 +77,9 @@ const Auth = {
         `Signin ajax response: ${response.url()}: ${response.status()}`
       );
       body = await response.json();
+      if (!body?.payload?.cid) {
+        throw new Error(`Login body does not contain expected data: ${response.statusCode}: ${body}`);
+      }
 
       logger.info("Getting cookies");
       for (const cookie of await context.cookies()) {
