@@ -7,7 +7,7 @@ const Auth = {
   auth: {},
 
   get: async (authParam) => {
-    requestsSinceRefresh++;
+    requestsSinceRefresh += 1;
     if (Auth.auth[authParam]) {
       return Auth.auth[authParam];
     }

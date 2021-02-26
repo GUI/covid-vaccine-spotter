@@ -65,7 +65,9 @@ const Auth = {
       await page.fill("input[name=password]", process.env.WALGREENS_PASSWORD);
       await sleep(_.random(500, 750));
 
-      let waitForLoginResponsePromise = page.waitForResponse((response) => response.url().startsWith("https://www.walgreens.com/profile/v1/login"));
+      let waitForLoginResponsePromise = page.waitForResponse((response) =>
+        response.url().startsWith("https://www.walgreens.com/profile/v1/login")
+      );
       let waitForLoginIdlePromise = page.waitForLoadState("networkidle");
       await (await page.$("input[name=password]")).press("Enter");
       // await page.click("#submit_btn");
@@ -74,7 +76,7 @@ const Auth = {
       logger.info("Waiting on login idle state.");
       await waitForLoginIdlePromise;
 
-      for (let i = 0; i < 5; i++) {
+      for (let i = 0; i < 5; i += 1) {
         let errorVisible;
         try {
           errorVisible = await page.isVisible("#error_msg", { timeout: 1000 });
@@ -90,9 +92,10 @@ const Auth = {
           await page.click("input[name=password]");
           await sleep(_.random(300, 500));
 
-          waitForLoginResponsePromise = page.waitForResponse("https://www.walgreens.com/profile/v1/login")
+          waitForLoginResponsePromise = page.waitForResponse(
+            "https://www.walgreens.com/profile/v1/login"
+          );
           waitForLoginIdlePromise = page.waitForLoadState("networkidle");
-          const waitForLoginRetryPromise = page.waitForLoadState("networkidle");
           await (await page.$("input[name=password]")).press("Enter");
           logger.info("Waiting on login response.");
           await waitForLoginResponsePromise;

@@ -132,13 +132,13 @@ const Walgreens = {
             (appts, day) =>
               appts.concat(
                 day.slots.map((slot) => ({
-                    type: doseType,
-                    time: DateTime.fromFormat(
-                      `${day.date} ${slot}`,
-                      "yyyy-LL-dd hh:mm a",
-                      { zone: store.time_zone }
-                    ).toISO(),
-                  }))
+                  type: doseType,
+                  time: DateTime.fromFormat(
+                    `${day.date} ${slot}`,
+                    "yyyy-LL-dd hh:mm a",
+                    { zone: store.time_zone }
+                  ).toISO(),
+                }))
               ),
             []
           );

@@ -1,4 +1,4 @@
-exports.up = async function(knex) {
+exports.up = async function (knex) {
   // Lightly modified https://github.com/m-martinez/pg-audit-json
   await knex.raw(`
     CREATE SCHEMA audit;
@@ -385,7 +385,7 @@ exports.up = async function(knex) {
   `);
 };
 
-exports.down = async function(knex) {
+exports.down = async function (knex) {
   await knex.raw(`
     DROP FUNCTION audit.jsonb_minus(JSONB, TEXT[]) CASCADE;
     DROP FUNCTION audit.jsonb_minus(JSONB, JSONB) CASCADE;
