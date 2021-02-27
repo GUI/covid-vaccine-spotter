@@ -134,7 +134,7 @@ module.exports.refreshWebsite = async () => {
       "s3",
       "sync",
       "./_site_build/",
-      `s3://${process.env.VACCINEFINDERNICKMORG_NAME}/`,
+      `s3://${process.env.WWWVACCINESPOTTERORG_NAME}/`,
       "--cache-control",
       "public, max-age=0, s-maxage=10",
       "--delete",

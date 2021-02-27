@@ -1,6 +1,4 @@
 module.exports = function (eleventyConfig) {
-  eleventyConfig.addPassthroughCopy(".nojekyll");
-  eleventyConfig.addPassthroughCopy("CNAME");
   eleventyConfig.addPassthroughCopy("site/api/v0");
 
   eleventyConfig.setEjsOptions({

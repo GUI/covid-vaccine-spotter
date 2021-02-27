@@ -1,0 +1,105 @@
+Parameters:
+  App:
+    Type: String
+    Description: Your application's name.
+  Env:
+    Type: String
+    Description: The environment name your service, job, or workflow is being deployed to.
+  Name:
+    Type: String
+    Description: The name of the service, job, or workflow being deployed.
+Resources:
+  wwwvaccinespotterorg:
+    Metadata:
+      "aws:copilot:description": "An Amazon S3 bucket to store and retrieve objects for www.vaccinespotter.org"
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      AccessControl: Private
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      BucketName: www.vaccinespotter.org
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        BlockPublicPolicy: false
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: error.html
+
+  wwwvaccinespotterorgBucketPolicy:
+    Metadata:
+      "aws:copilot:description": "A bucket policy to deny unencrypted access to the bucket and its contents"
+    Type: AWS::S3::BucketPolicy
+    DeletionPolicy: Retain
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Sid: PublicReadGetObject
+            Effect: Allow
+            Principal: "*"
+            Action: "s3:GetObject"
+            Resource:
+              - !Sub ${ wwwvaccinespotterorg.Arn}/*
+              - !Sub ${ wwwvaccinespotterorg.Arn}
+            Condition:
+              IpAddress:
+                aws:SourceIp:
+                  - 2400:cb00::/32
+                  - 2405:8100::/32
+                  - 2405:b500::/32
+                  - 2606:4700::/32
+                  - 2803:f800::/32
+                  - 2c0f:f248::/32
+                  - 2a06:98c0::/29
+                  - 103.21.244.0/22
+                  - 103.22.200.0/22
+                  - 103.31.4.0/22
+                  - 104.16.0.0/12
+                  - 108.162.192.0/18
+                  - 131.0.72.0/22
+                  - 141.101.64.0/18
+                  - 162.158.0.0/15
+                  - 172.64.0.0/13
+                  - 173.245.48.0/20
+                  - 188.114.96.0/20
+                  - 190.93.240.0/20
+                  - 197.234.240.0/22
+                  - 198.41.128.0/17
+      Bucket: !Ref wwwvaccinespotterorg
+
+  wwwvaccinespotterorgAccessPolicy:
+    Metadata:
+      "aws:copilot:description": "An IAM ManagedPolicy for your service to access the www.vaccinespotter.org bucket"
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Description: !Sub
+        - Grants CRUD access to the S3 bucket ${Bucket}
+        - { Bucket: !Ref wwwvaccinespotterorg }
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Sid: S3ObjectActions
+            Effect: Allow
+            Action:
+              - s3:GetObject
+              - s3:PutObject
+              - s3:PutObjectACL
+              - s3:PutObjectTagging
+              - s3:DeleteObject
+              - s3:RestoreObject
+            Resource: !Sub ${ wwwvaccinespotterorg.Arn}/*
+          - Sid: S3ListAction
+            Effect: Allow
+            Action: s3:ListBucket
+            Resource: !Sub ${ wwwvaccinespotterorg.Arn}
+
+Outputs:
+  wwwvaccinespotterorgName:
+    Description: "The name of a user-defined bucket."
+    Value: !Ref wwwvaccinespotterorg
+  wwwvaccinespotterorgAccessPolicy:
+    Description: "The IAM::ManagedPolicy to attach to the task role"
+    Value: !Ref wwwvaccinespotterorgAccessPolicy
