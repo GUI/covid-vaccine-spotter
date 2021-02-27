@@ -1,9 +1,9 @@
 exports.up = async function (knex) {
   await knex.raw(
-    "UPDATE states SET boundaries = st_collectionextract(st_makevalid(boundaries::geometry), 3)::geography WHERE st_isvalid(boundaries::geometry) = false"
+    'UPDATE states SET boundaries = st_collectionextract(st_makevalid(boundaries::geometry), 3)::geography WHERE st_isvalid(boundaries::geometry) = false'
   );
 
-  await knex.raw("DROP MATERIALIZED VIEW country_grid_75km");
+  await knex.raw('DROP MATERIALIZED VIEW country_grid_75km');
 
   // Suitable for 50 mile radius searches.
   await knex.raw(`
@@ -177,38 +177,38 @@ exports.up = async function (knex) {
     WITH DATA;
   `);
 
-  await knex.schema.table("country_grid_110km", (table) => {
-    table.index("geom", null, "gist");
-    table.index("centroid_location", null, "gist");
+  await knex.schema.table('country_grid_110km', (table) => {
+    table.index('geom', null, 'gist');
+    table.index('centroid_location', null, 'gist');
   });
-  await knex.schema.table("state_grid_110km", (table) => {
-    table.index("geom", null, "gist");
-    table.index("centroid_location", null, "gist");
-  });
-
-  await knex.schema.table("country_grid_55km", (table) => {
-    table.index("geom", null, "gist");
-    table.index("centroid_location", null, "gist");
-  });
-  await knex.schema.table("state_grid_55km", (table) => {
-    table.index("geom", null, "gist");
-    table.index("centroid_location", null, "gist");
+  await knex.schema.table('state_grid_110km', (table) => {
+    table.index('geom', null, 'gist');
+    table.index('centroid_location', null, 'gist');
   });
 
-  await knex.schema.table("stores", (table) => {
-    table.index("location", null, "gist");
+  await knex.schema.table('country_grid_55km', (table) => {
+    table.index('geom', null, 'gist');
+    table.index('centroid_location', null, 'gist');
+  });
+  await knex.schema.table('state_grid_55km', (table) => {
+    table.index('geom', null, 'gist');
+    table.index('centroid_location', null, 'gist');
+  });
+
+  await knex.schema.table('stores', (table) => {
+    table.index('location', null, 'gist');
   });
 };
 
 exports.down = async function (knex) {
-  await knex.schema.table("stores", (table) => {
-    table.dropIndex("location");
+  await knex.schema.table('stores', (table) => {
+    table.dropIndex('location');
   });
 
-  await knex.raw("DROP MATERIALIZED VIEW country_grid_110km");
-  await knex.raw("DROP MATERIALIZED VIEW state_grid_110km");
-  await knex.raw("DROP MATERIALIZED VIEW country_grid_55km");
-  await knex.raw("DROP MATERIALIZED VIEW state_grid_55km");
+  await knex.raw('DROP MATERIALIZED VIEW country_grid_110km');
+  await knex.raw('DROP MATERIALIZED VIEW state_grid_110km');
+  await knex.raw('DROP MATERIALIZED VIEW country_grid_55km');
+  await knex.raw('DROP MATERIALIZED VIEW state_grid_55km');
 
   await knex.raw(`
     CREATE MATERIALIZED VIEW country_grid_75km

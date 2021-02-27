@@ -1,14 +1,14 @@
-const { firefox } = require("playwright-extra");
-const retry = require("async-retry");
-const _ = require("lodash");
-const sleep = require("sleep-promise");
-const { DateTime, Settings } = require("luxon");
-const getDatabase = require("../getDatabase");
-const got = require("got");
+const { firefox } = require('playwright-extra');
+const retry = require('async-retry');
+const _ = require('lodash');
+const sleep = require('sleep-promise');
+const { DateTime, Settings } = require('luxon');
+const getDatabase = require('../getDatabase');
+const got = require('got');
 
-Settings.defaultZoneName = "America/Denver";
+Settings.defaultZoneName = 'America/Denver';
 
-const HumanizePlugin = require("@extra/humanize");
+const HumanizePlugin = require('@extra/humanize');
 
 firefox.use(
   HumanizePlugin({
@@ -24,27 +24,27 @@ async function initBrowserPage(browser) {
 
   await retry(
     async () => {
-      console.info("Initializing new browser context and page...");
+      console.info('Initializing new browser context and page...');
 
       if (context) {
-        console.info("Closing context and trying again");
+        console.info('Closing context and trying again');
         await context.close();
       }
 
       context = await browser.newContext();
       page = await browser.newPage();
 
-      await page.goto("https://akamai.com", { waitUntil: "load" });
-      await page.goto("https://www.kingsoopers.com/", { waitUntil: "load" });
+      await page.goto('https://akamai.com', { waitUntil: 'load' });
+      await page.goto('https://www.kingsoopers.com/', { waitUntil: 'load' });
       await page.waitForSelector('[href="/i/coronavirus-update/vaccine"]');
       await page.click('[href="/i/coronavirus-update/vaccine"]');
-      await page.waitForLoadState("networkidle");
+      await page.waitForLoadState('networkidle');
       await page.waitForSelector('[href="/rx/covid-eligibility"]');
       await page.click('[href="/rx/covid-eligibility"]');
-      await page.waitForLoadState("networkidle");
-      if (await page.isVisible("#sec-overlay")) {
-        console.info("OVERLAY!");
-        throw "Captcha detected";
+      await page.waitForLoadState('networkidle');
+      if (await page.isVisible('#sec-overlay')) {
+        console.info('OVERLAY!');
+        throw 'Captcha detected';
       }
       await retry(
         async () => {
@@ -71,7 +71,7 @@ async function initBrowserPage(browser) {
       minTimeout: 1000,
       maxTimeout: 10000,
       onRetry: (err) => {
-        console.info("initBrowserPage Error: ", err);
+        console.info('initBrowserPage Error: ', err);
       },
     }
   );
@@ -82,7 +82,7 @@ async function initBrowserPage(browser) {
 module.exports.refreshKroger = async () => {
   const db = await getDatabase();
   const { container } = await db.containers.createIfNotExists({
-    id: "kroger_stores",
+    id: 'kroger_stores',
   });
 
   const startDate = DateTime.local();
@@ -104,10 +104,10 @@ module.exports.refreshKroger = async () => {
     let { resources } = await container.items
       .query({
         query:
-          "SELECT * from c WHERE NOT is_defined(c.lastFetched) OR c.lastFetched <= @minsAgo ORDER BY c.id",
+          'SELECT * from c WHERE NOT is_defined(c.lastFetched) OR c.lastFetched <= @minsAgo ORDER BY c.id',
         parameters: [
           {
-            name: "@minsAgo",
+            name: '@minsAgo',
             value: DateTime.utc().minus({ minutes: 2 }).toISO(),
           },
         ],
@@ -139,7 +139,7 @@ module.exports.refreshKroger = async () => {
       let reopen = false;
       await retry(
         async () => {
-          console.info("attempt");
+          console.info('attempt');
           if (reopen) {
             await page.close();
             await context.close();
@@ -153,11 +153,11 @@ module.exports.refreshKroger = async () => {
                 `https://www.kingsoopers.com/rx/api/anonymous/scheduler/slots/locationsearch/pharmacy/${options.zipCode}/${options.startDate}/${options.endDate}/50?appointmentReason=122&appointmentReason=125`,
                 {
                   headers: {
-                    accept: "application/json, text/plain, */*",
-                    "cache-control": "no-cache",
-                    pragma: "no-cache",
-                    "rx-channel": "WEB",
-                    "x-sec-clge-req-type": "ajax",
+                    accept: 'application/json, text/plain, */*',
+                    'cache-control': 'no-cache',
+                    pragma: 'no-cache',
+                    'rx-channel': 'WEB',
+                    'x-sec-clge-req-type': 'ajax',
                   },
                 }
               );
@@ -180,19 +180,19 @@ module.exports.refreshKroger = async () => {
           minTimeout: 60 * 1000,
           maxTimeout: 5 * 60 * 1000,
           onRetry: (err) => {
-            console.info("Data fetch error: ", err);
+            console.info('Data fetch error: ', err);
             reopen = true;
           },
         }
       );
 
       for (const appointments of data) {
-        const appointmentsStoreId = appointments.loc_no.replace(/^625/, "620");
+        const appointmentsStoreId = appointments.loc_no.replace(/^625/, '620');
         console.info(
           `  Processing appointment results for store #${appointmentsStoreId}`
         );
 
-        if (appointments.facilityDetails.address.state !== "CO") {
+        if (appointments.facilityDetails.address.state !== 'CO') {
           console.info(
             `  Skipping appointment result #${appointmentsStoreId} for being out of state: ${appointments.facilityDetails.address.state}.`
           );
@@ -223,7 +223,7 @@ module.exports.refreshKroger = async () => {
           await page.waitForSelector(
             '[data-testid="SiteMenuContent--CloseButton"]',
             {
-              state: "hidden",
+              state: 'hidden',
               timeout: 5000,
             }
           );
@@ -254,7 +254,7 @@ module.exports.refreshKroger = async () => {
           await page.waitForSelector(
             '[data-testid="SiteMenuContent--CloseButton"]',
             {
-              state: "hidden",
+              state: 'hidden',
               timeout: 5000,
             }
           );

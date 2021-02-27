@@ -1,11 +1,11 @@
 exports.up = async function (knex) {
-  await knex.schema.table("states", (table) => {
-    table.specificType("boundaries", "geography(multipolygon, 4326)");
+  await knex.schema.table('states', (table) => {
+    table.specificType('boundaries', 'geography(multipolygon, 4326)');
   });
 
-  await knex.schema.table("postal_codes", (table) => {
-    table.index("postal_code");
-    table.index("location", null, "gist");
+  await knex.schema.table('postal_codes', (table) => {
+    table.index('postal_code');
+    table.index('location', null, 'gist');
   });
 
   // Tweaked version of
@@ -105,15 +105,15 @@ exports.up = async function (knex) {
 };
 
 exports.down = async function (knex) {
-  await knex.raw("DROP MATERIALIZED VIEW country_grid_75km");
-  await knex.raw("DROP FUNCTION make_rect_grid");
+  await knex.raw('DROP MATERIALIZED VIEW country_grid_75km');
+  await knex.raw('DROP FUNCTION make_rect_grid');
 
-  await knex.schema.table("postal_codes", (table) => {
-    table.dropIndex("postal_code");
-    table.dropIndex("location");
+  await knex.schema.table('postal_codes', (table) => {
+    table.dropIndex('postal_code');
+    table.dropIndex('location');
   });
 
-  await knex.schema.table("states", (table) => {
-    table.dropColumn("boundaries");
+  await knex.schema.table('states', (table) => {
+    table.dropColumn('boundaries');
   });
 };

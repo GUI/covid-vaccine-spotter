@@ -1,10 +1,10 @@
-const csvParse = require("csv-parse");
-const fs = require("fs");
-const path = require("path");
-const download = require("download");
-const geoTz = require("geo-tz");
-const logger = require("../logger");
-const { PostalCode } = require("../models/PostalCode");
+const csvParse = require('csv-parse');
+const fs = require('fs');
+const path = require('path');
+const download = require('download');
+const geoTz = require('geo-tz');
+const logger = require('../logger');
+const { PostalCode } = require('../models/PostalCode');
 
 async function importGeoNamesFile(
   trx,
@@ -23,9 +23,9 @@ async function importGeoNamesFile(
 
   const parser = fs.createReadStream(filePath).pipe(
     csvParse({
-      delimiter: "\t",
+      delimiter: '\t',
       cast: (value) => {
-        if (value === "") {
+        if (value === '') {
           return null;
         }
         return value;
@@ -64,33 +64,33 @@ async function importGeoNamesFile(
     if (batch.length >= 1000) {
       await PostalCode.query(trx)
         .insert(batch)
-        .onConflict("postal_code")
+        .onConflict('postal_code')
         .merge();
       batch = [];
     }
   }
 
   if (batch.length > 0) {
-    await PostalCode.query(trx).insert(batch).onConflict("postal_code").merge();
+    await PostalCode.query(trx).insert(batch).onConflict('postal_code').merge();
   }
 }
 
 module.exports.importPostalCodes = async () => {
   const trx = await PostalCode.startTransaction();
 
-  const tmpPath = path.resolve(__dirname, "../../tmp");
+  const tmpPath = path.resolve(__dirname, '../../tmp');
   await download(
-    "https://download.geonames.org/export/zip/US.zip",
+    'https://download.geonames.org/export/zip/US.zip',
     `${tmpPath}/US`,
     { extract: true }
   );
   await download(
-    "https://download.geonames.org/export/zip/PR.zip",
+    'https://download.geonames.org/export/zip/PR.zip',
     `${tmpPath}/PR`,
     { extract: true }
   );
   await download(
-    "https://download.geonames.org/export/zip/VI.zip",
+    'https://download.geonames.org/export/zip/VI.zip',
     `${tmpPath}/VI`,
     { extract: true }
   );

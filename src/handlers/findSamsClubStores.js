@@ -1,21 +1,21 @@
-const got = require("got");
-const logger = require("../logger");
-const { Store } = require("../models/Store");
+const got = require('got');
+const logger = require('../logger');
+const { Store } = require('../models/Store');
 
 module.exports.findSamsClubStores = async () => {
   const resp = await got(
-    "https://www.samsclub.com/api/node/vivaldi/v2/clubfinder/list",
+    'https://www.samsclub.com/api/node/vivaldi/v2/clubfinder/list',
     {
       searchParams: {
-        singleLineAddr: "67123",
-        nbrOfStores: "10000",
-        distance: "10000",
+        singleLineAddr: '67123',
+        nbrOfStores: '10000',
+        distance: '10000',
       },
       headers: {
-        "User-Agent":
-          "covid-vaccine-finder (https://github.com/GUI/covid-vaccine-finder)",
+        'User-Agent':
+          'covid-vaccine-finder (https://github.com/GUI/covid-vaccine-finder)',
       },
-      responseType: "json",
+      responseType: 'json',
       retry: 0,
     }
   );
@@ -24,7 +24,7 @@ module.exports.findSamsClubStores = async () => {
     logger.info(`Importing store ${store.id}`);
     await Store.query()
       .insert({
-        brand: "sams_club",
+        brand: 'sams_club',
         brand_id: store.id,
         name: store.name,
         address: store.address.address1,
@@ -34,7 +34,7 @@ module.exports.findSamsClubStores = async () => {
         location: `point(${store.geoPoint.longitude} ${store.geoPoint.latitude})`,
         metadata_raw: store,
       })
-      .onConflict(["brand", "brand_id"])
+      .onConflict(['brand', 'brand_id'])
       .merge();
   }
 

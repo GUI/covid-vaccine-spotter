@@ -1,16 +1,16 @@
-const { Base } = require("./Base");
+const { Base } = require('./Base');
 
 class Store extends Base {
   static get tableName() {
-    return "stores";
+    return 'stores';
   }
 
   static get jsonSchema() {
     return {
-      type: "object",
+      type: 'object',
       properties: {
         appointments: {
-          type: "array",
+          type: 'array',
           items: {
             /*
             type: "string"

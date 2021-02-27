@@ -1,7 +1,7 @@
-const sleep = require("sleep-promise");
-const got = require("got");
-const logger = require("../logger");
-const { Store } = require("../models/Store");
+const sleep = require('sleep-promise');
+const got = require('got');
+const logger = require('../logger');
+const { Store } = require('../models/Store');
 
 module.exports.findWalgreensStores = async () => {
   const importedStores = {};
@@ -10,11 +10,11 @@ module.exports.findWalgreensStores = async () => {
   const grid = await knex
     .select(
       knex.raw(
-        "centroid_postal_code, st_y(centroid_location::geometry) AS latitude, st_x(centroid_location::geometry) AS longitude"
+        'centroid_postal_code, st_y(centroid_location::geometry) AS latitude, st_x(centroid_location::geometry) AS longitude'
       )
     )
-    .from("country_grid_110km")
-    .orderBy("centroid_postal_code");
+    .from('country_grid_110km')
+    .orderBy('centroid_postal_code');
   const count = grid.length;
   for (const [index, gridCell] of grid.entries()) {
     logger.info(
@@ -24,20 +24,20 @@ module.exports.findWalgreensStores = async () => {
     );
 
     const resp = await got.post(
-      "https://www.walgreens.com/locator/v1/stores/search",
+      'https://www.walgreens.com/locator/v1/stores/search',
       {
         searchParams: {
-          requestor: "search",
+          requestor: 'search',
         },
         headers: {
-          "User-Agent":
-            "covid-vaccine-finder (https://github.com/GUI/covid-vaccine-finder)",
+          'User-Agent':
+            'covid-vaccine-finder (https://github.com/GUI/covid-vaccine-finder)',
         },
-        responseType: "json",
+        responseType: 'json',
         json: {
-          r: "50",
-          requestType: "dotcom",
-          s: "1000",
+          r: '50',
+          requestType: 'dotcom',
+          s: '1000',
           p: 1,
           // address: '',
           // q: '',
@@ -49,7 +49,7 @@ module.exports.findWalgreensStores = async () => {
       }
     );
     if (resp.body && !resp.body.results) {
-      console.info("  Skipping no results");
+      console.info('  Skipping no results');
       console.info(resp.body);
       await sleep(1000);
       continue;
@@ -64,42 +64,42 @@ module.exports.findWalgreensStores = async () => {
         logger.info(`  Importing store ${store.storeNumber}`);
         let timeZone;
         switch (store.store.timeZone) {
-          case "AT":
-            timeZone = "America/Puerto_Rico";
+          case 'AT':
+            timeZone = 'America/Puerto_Rico';
             break;
-          case "EA":
-            timeZone = "America/New_York";
+          case 'EA':
+            timeZone = 'America/New_York';
             break;
-          case "CE":
-            timeZone = "America/Chicago";
+          case 'CE':
+            timeZone = 'America/Chicago';
             break;
-          case "MO":
-            timeZone = "America/Denver";
+          case 'MO':
+            timeZone = 'America/Denver';
             break;
-          case "PA":
-            timeZone = "America/Los_Angeles";
+          case 'PA':
+            timeZone = 'America/Los_Angeles';
             break;
-          case "AL":
-            timeZone = "America/Anchorage";
+          case 'AL':
+            timeZone = 'America/Anchorage';
             break;
-          case "HA":
-            timeZone = "Pacific/Honolulu";
+          case 'HA':
+            timeZone = 'Pacific/Honolulu';
             break;
           default:
             throw new Error(`Unknown timezone: ${store.store.timeZone}`);
         }
 
         if (
-          store.store.address.zip === "02986" &&
-          store.store.address.state === "RI" &&
-          store.store.address.city === "NORTH SMITHFIELD"
+          store.store.address.zip === '02986' &&
+          store.store.address.state === 'RI' &&
+          store.store.address.city === 'NORTH SMITHFIELD'
         ) {
-          store.store.address.zip = "02896";
+          store.store.address.zip = '02896';
         }
 
         await Store.query()
           .insert({
-            brand: "walgreens",
+            brand: 'walgreens',
             brand_id: store.storeNumber,
             name: store.store.name,
             address: store.store.address.street,
@@ -110,7 +110,7 @@ module.exports.findWalgreensStores = async () => {
             metadata_raw: store,
             time_zone: timeZone,
           })
-          .onConflict(["brand", "brand_id"])
+          .onConflict(['brand', 'brand_id'])
           .merge();
 
         importedStores[store.storeNumber] = true;
@@ -118,7 +118,7 @@ module.exports.findWalgreensStores = async () => {
     }
 
     if (resp.body.summary.hasMoreResult !== false) {
-      throw new Error("More results, but pagination not implemented.");
+      throw new Error('More results, but pagination not implemented.');
     }
 
     await sleep(1000);

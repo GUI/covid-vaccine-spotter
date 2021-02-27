@@ -1,10 +1,10 @@
 exports.up = function (knex) {
   return knex.schema
-    .createTable("states", (table) => {
-      table.increments("id").primary();
-      table.string("country_code", 2).notNullable();
-      table.string("code", 2).notNullable().unique();
-      table.string("name").notNullable();
+    .createTable('states', (table) => {
+      table.increments('id').primary();
+      table.string('country_code', 2).notNullable();
+      table.string('code', 2).notNullable().unique();
+      table.string('name').notNullable();
       table.timestamps(false, true);
     })
     .then(async () => {
@@ -24,13 +24,13 @@ exports.up = function (knex) {
             END;
             $$`);
       await knex.raw(
-        "CREATE TRIGGER states_updated_at BEFORE UPDATE ON states FOR EACH ROW EXECUTE PROCEDURE update_timestamp()"
+        'CREATE TRIGGER states_updated_at BEFORE UPDATE ON states FOR EACH ROW EXECUTE PROCEDURE update_timestamp()'
       );
     });
 };
 
 exports.down = function (knex) {
   return knex.schema
-    .dropTableIfExists("states")
-    .then(async () => knex.raw("DROP FUNCTION IF EXISTS update_timestamp"));
+    .dropTableIfExists('states')
+    .then(async () => knex.raw('DROP FUNCTION IF EXISTS update_timestamp'));
 };

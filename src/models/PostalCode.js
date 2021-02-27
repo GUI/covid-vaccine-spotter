@@ -1,8 +1,8 @@
-const { Base } = require("./Base");
+const { Base } = require('./Base');
 
 class PostalCode extends Base {
   static get tableName() {
-    return "postal_codes";
+    return 'postal_codes';
   }
 }
 

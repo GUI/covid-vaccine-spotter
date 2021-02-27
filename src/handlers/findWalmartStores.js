@@ -1,16 +1,16 @@
-const sleep = require("sleep-promise");
-const got = require("got");
-const logger = require("../logger");
-const { Store } = require("../models/Store");
+const sleep = require('sleep-promise');
+const got = require('got');
+const logger = require('../logger');
+const { Store } = require('../models/Store');
 
 module.exports.findWalmartStores = async () => {
   const importedStores = {};
 
   const knex = Store.knex();
   const grid = await knex
-    .select(knex.raw("centroid_postal_code"))
-    .from("country_grid_110km")
-    .orderBy("centroid_postal_code");
+    .select(knex.raw('centroid_postal_code'))
+    .from('country_grid_110km')
+    .orderBy('centroid_postal_code');
   const count = grid.length;
   for (const [index, gridCell] of grid.entries()) {
     logger.info(
@@ -20,17 +20,17 @@ module.exports.findWalmartStores = async () => {
     );
 
     const resp = await got(
-      "https://www.walmart.com/store/finder/electrode/api/stores",
+      'https://www.walmart.com/store/finder/electrode/api/stores',
       {
         searchParams: {
           singleLineAddr: gridCell.centroid_postal_code,
-          distance: "50",
+          distance: '50',
         },
         headers: {
-          "User-Agent":
-            "covid-vaccine-finder (https://github.com/GUI/covid-vaccine-finder)",
+          'User-Agent':
+            'covid-vaccine-finder (https://github.com/GUI/covid-vaccine-finder)',
         },
-        responseType: "json",
+        responseType: 'json',
         retry: 0,
       }
     );
@@ -44,7 +44,7 @@ module.exports.findWalmartStores = async () => {
         logger.info(`  Importing store ${store.id}`);
         await Store.query()
           .insert({
-            brand: "walmart",
+            brand: 'walmart',
             brand_id: store.id,
             name: store.displayName,
             address: store.address.address,
@@ -54,7 +54,7 @@ module.exports.findWalmartStores = async () => {
             location: `point(${store.geoPoint.longitude} ${store.geoPoint.latitude})`,
             metadata_raw: store,
           })
-          .onConflict(["brand", "brand_id"])
+          .onConflict(['brand', 'brand_id'])
           .merge();
 
         importedStores[store.id] = true;

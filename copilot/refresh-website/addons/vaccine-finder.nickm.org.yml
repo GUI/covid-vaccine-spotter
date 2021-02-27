@@ -11,7 +11,7 @@ Parameters:
 Resources:
   vaccinefindernickmorg:
     Metadata:
-      "aws:copilot:description": "An Amazon S3 bucket to store and retrieve objects for vaccine-finder.nickm.org"
+      'aws:copilot:description': 'An Amazon S3 bucket to store and retrieve objects for vaccine-finder.nickm.org'
     Type: AWS::S3::Bucket
     DeletionPolicy: Retain
     Properties:
@@ -30,7 +30,7 @@ Resources:
 
   vaccinefindernickmorgBucketPolicy:
     Metadata:
-      "aws:copilot:description": "A bucket policy to deny unencrypted access to the bucket and its contents"
+      'aws:copilot:description': 'A bucket policy to deny unencrypted access to the bucket and its contents'
     Type: AWS::S3::BucketPolicy
     DeletionPolicy: Retain
     Properties:
@@ -39,8 +39,8 @@ Resources:
         Statement:
           - Sid: PublicReadGetObject
             Effect: Allow
-            Principal: "*"
-            Action: "s3:GetObject"
+            Principal: '*'
+            Action: 's3:GetObject'
             Resource:
               - !Sub ${ vaccinefindernickmorg.Arn}/*
               - !Sub ${ vaccinefindernickmorg.Arn}
@@ -72,7 +72,7 @@ Resources:
 
   vaccinefindernickmorgAccessPolicy:
     Metadata:
-      "aws:copilot:description": "An IAM ManagedPolicy for your service to access the vaccine-finder.nickm.org bucket"
+      'aws:copilot:description': 'An IAM ManagedPolicy for your service to access the vaccine-finder.nickm.org bucket'
     Type: AWS::IAM::ManagedPolicy
     Properties:
       Description: !Sub
@@ -98,8 +98,8 @@ Resources:
 
 Outputs:
   vaccinefindernickmorgName:
-    Description: "The name of a user-defined bucket."
+    Description: 'The name of a user-defined bucket.'
     Value: !Ref vaccinefindernickmorg
   vaccinefindernickmorgAccessPolicy:
-    Description: "The IAM::ManagedPolicy to attach to the task role"
+    Description: 'The IAM::ManagedPolicy to attach to the task role'
     Value: !Ref vaccinefindernickmorgAccessPolicy

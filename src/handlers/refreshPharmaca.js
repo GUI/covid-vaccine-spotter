@@ -1,16 +1,16 @@
-const _ = require("lodash");
-const sleep = require("sleep-promise");
-const { DateTime, Settings } = require("luxon");
-const got = require("got");
-const cheerio = require("cheerio");
-const getDatabase = require("../getDatabase");
+const _ = require('lodash');
+const sleep = require('sleep-promise');
+const { DateTime, Settings } = require('luxon');
+const got = require('got');
+const cheerio = require('cheerio');
+const getDatabase = require('../getDatabase');
 
-Settings.defaultZoneName = "America/Denver";
+Settings.defaultZoneName = 'America/Denver';
 
 module.exports.refreshPharmaca = async () => {
   const db = await getDatabase();
   const { container } = await db.containers.createIfNotExists({
-    id: "pharmaca_stores",
+    id: 'pharmaca_stores',
   });
 
   let { resources } = await container.items
@@ -19,7 +19,7 @@ module.exports.refreshPharmaca = async () => {
         "SELECT * from c WHERE (c.state = 'Colorado' OR c.state = 'CO') AND (NOT is_defined(c.lastFetched) OR c.lastFetched <= @minsAgo)",
       parameters: [
         {
-          name: "@minsAgo",
+          name: '@minsAgo',
           value: DateTime.utc().minus({ minutes: 2 }).toISO(),
         },
       ],
@@ -37,8 +37,8 @@ module.exports.refreshPharmaca = async () => {
 
     const resp = await got(`https://pharmaca.as.me/${resource.scheduleId}`, {
       headers: {
-        "User-Agent":
-          "covid-vaccine-finder/1.0 (https://github.com/GUI/covid-vaccine-finder)",
+        'User-Agent':
+          'covid-vaccine-finder/1.0 (https://github.com/GUI/covid-vaccine-finder)',
       },
       retry: 0,
     });
@@ -53,33 +53,33 @@ module.exports.refreshPharmaca = async () => {
     for (const covidLabel of covidLabels) {
       const $covidLabel = $(covidLabel);
       const appointmentTypeId = $covidLabel
-        .attr("for")
+        .attr('for')
         .match(/appointmentType-(.+)/)[1];
       const appointmentCalendarId = resp.body.match(
         new RegExp(`typeToCalendars\\[${appointmentTypeId}\\].*?(\\d+)`)
       )[1];
 
       const scheduleResp = await got.post(
-        "https://pharmaca.as.me/schedule.php",
+        'https://pharmaca.as.me/schedule.php',
         {
           searchParams: {
-            action: "showCalendar",
-            fulldate: "1",
-            owner: "20105611",
-            template: "weekly",
+            action: 'showCalendar',
+            fulldate: '1',
+            owner: '20105611',
+            template: 'weekly',
           },
           headers: {
-            "User-Agent":
-              "covid-vaccine-finder/1.0 (https://github.com/GUI/covid-vaccine-finder)",
+            'User-Agent':
+              'covid-vaccine-finder/1.0 (https://github.com/GUI/covid-vaccine-finder)',
           },
           form: {
             type: appointmentTypeId,
             calendar: appointmentCalendarId,
-            skip: "true",
-            "options[qty]": "1",
-            "options[numDays]": "5",
-            ignoreAppointment: "",
-            appointmentType: "",
+            skip: 'true',
+            'options[qty]': '1',
+            'options[numDays]': '5',
+            ignoreAppointment: '',
+            appointmentType: '',
             calendarID: calendarId,
           },
         }
@@ -89,7 +89,7 @@ module.exports.refreshPharmaca = async () => {
       const timeInputs = $schedule('input[name="time[]"]');
       const times = [];
       for (const timeInput of timeInputs) {
-        const time = $(timeInput).attr("value");
+        const time = $(timeInput).attr('value');
         times.push(time);
         anyAppointments = true;
       }

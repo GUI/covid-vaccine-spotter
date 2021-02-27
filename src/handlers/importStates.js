@@ -1,9 +1,9 @@
-const csvParse = require("csv-parse");
-const fs = require("fs");
-const path = require("path");
-const statesTopojson = require("us-atlas/states-10m");
-const topojson = require("topojson-client");
-const { State } = require("../models/State");
+const csvParse = require('csv-parse');
+const fs = require('fs');
+const path = require('path');
+const statesTopojson = require('us-atlas/states-10m');
+const topojson = require('topojson-client');
+const { State } = require('../models/State');
 
 const statesGeojson = topojson.feature(
   statesTopojson,
@@ -14,7 +14,7 @@ function geojsonForState(name) {
   const geojson = statesGeojson.features.find((f) => f.properties.name === name)
     ?.geometry;
   return geojson
-    ? State.raw("ST_Multi(ST_GeomFromGeoJSON(?))", JSON.stringify(geojson))
+    ? State.raw('ST_Multi(ST_GeomFromGeoJSON(?))', JSON.stringify(geojson))
     : null;
 }
 
@@ -24,12 +24,12 @@ module.exports.importStates = async () => {
   const states = {};
 
   const parser = fs
-    .createReadStream(path.resolve(__dirname, "../../US/US.txt"))
+    .createReadStream(path.resolve(__dirname, '../../US/US.txt'))
     .pipe(
       csvParse({
-        delimiter: "\t",
+        delimiter: '\t',
         cast: (value) => {
-          if (value === "") {
+          if (value === '') {
             return null;
           }
           return value;
@@ -40,8 +40,8 @@ module.exports.importStates = async () => {
     const code = row[4];
     if (!states[code]) {
       let name = row[3];
-      if (code === "MH" && !name) {
-        name = "Marshall Islands";
+      if (code === 'MH' && !name) {
+        name = 'Marshall Islands';
       } else if (!code) {
         continue;
       }
@@ -54,7 +54,7 @@ module.exports.importStates = async () => {
           name,
           boundaries: geojsonForState(name),
         })
-        .onConflict("code")
+        .onConflict('code')
         .merge();
 
       states[code] = true;
@@ -63,22 +63,22 @@ module.exports.importStates = async () => {
 
   await State.query(trx)
     .insert({
-      country_code: "US",
-      code: "PR",
-      name: "Puerto Rico",
-      boundaries: geojsonForState("Puerto Rico"),
+      country_code: 'US',
+      code: 'PR',
+      name: 'Puerto Rico',
+      boundaries: geojsonForState('Puerto Rico'),
     })
-    .onConflict("code")
+    .onConflict('code')
     .merge();
 
   await State.query(trx)
     .insert({
-      country_code: "US",
-      code: "VI",
-      name: "United States Virgin Islands",
-      boundaries: geojsonForState("United States Virgin Islands"),
+      country_code: 'US',
+      code: 'VI',
+      name: 'United States Virgin Islands',
+      boundaries: geojsonForState('United States Virgin Islands'),
     })
-    .onConflict("code")
+    .onConflict('code')
     .merge();
 
   try {

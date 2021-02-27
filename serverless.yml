@@ -1,6 +1,6 @@
 service: covid-vaccine-finder
 
-frameworkVersion: "2"
+frameworkVersion: '2'
 
 useDotenv: true
 
@@ -12,19 +12,19 @@ provider:
   memorySize: 128
   timeout: 300
   environment:
-    DB_ENDPOINT: "${env:DB_ENDPOINT}"
-    DB_KEY: "${env:DB_KEY}"
-    GH_TOKEN: "${env:GH_TOKEN}"
+    DB_ENDPOINT: '${env:DB_ENDPOINT}'
+    DB_KEY: '${env:DB_KEY}'
+    GH_TOKEN: '${env:GH_TOKEN}'
     CACHE_DIR: /tmp/cache
-    WALMART_USERNAME: "${env:WALMART_USERNAME}"
-    WALMART_PASSWORD: "${env:WALMART_PASSWORD}"
-    SAMS_CLUB_EMAIL: "${env:SAMS_CLUB_EMAIL}"
-    SAMS_CLUB_PASSWORD: "${env:SAMS_CLUB_PASSWORD}"
-    DB_USERNAME: "${env:DB_USERNAME}"
-    DB_PASSWORD: "${env:DB_PASSWORD}"
-    DB_NAME: "${env:DB_NAME}"
-    DB_HOST: "${env:DB_HOST}"
-    PROXY_URL: "${env:PROXY_URL}"
+    WALMART_USERNAME: '${env:WALMART_USERNAME}'
+    WALMART_PASSWORD: '${env:WALMART_PASSWORD}'
+    SAMS_CLUB_EMAIL: '${env:SAMS_CLUB_EMAIL}'
+    SAMS_CLUB_PASSWORD: '${env:SAMS_CLUB_PASSWORD}'
+    DB_USERNAME: '${env:DB_USERNAME}'
+    DB_PASSWORD: '${env:DB_PASSWORD}'
+    DB_NAME: '${env:DB_NAME}'
+    DB_HOST: '${env:DB_HOST}'
+    PROXY_URL: '${env:PROXY_URL}'
   # os: windows  # windows is default, linux is available
   # prefix: "sample"  # prefix of generated resource name
   # subscriptionId: A356AC8C-E310-44F4-BF85-C7F29044AF99
@@ -51,18 +51,18 @@ functions:
     handler: index.refreshPharmaca
     reservedConcurrency: 1
     events:
-      - schedule: "rate(2 minutes)"
+      - schedule: 'rate(2 minutes)'
 
 resources:
   Resources:
     vaccineDB:
       Type: AWS::RDS::DBInstance
       Properties:
-        AllocatedStorage: "5"
-        DBInstanceIdentifier: "vaccine-db"
-        DBInstanceClass: "db.t3.micro"
-        Engine: "postgres"
-        EngineVersion: "12.5"
-        MasterUsername: "${env:DB_USERNAME}"
-        MasterUserPassword: "${env:DB_PASSWORD}"
-      DeletionPolicy: "Retain"
+        AllocatedStorage: '5'
+        DBInstanceIdentifier: 'vaccine-db'
+        DBInstanceClass: 'db.t3.micro'
+        Engine: 'postgres'
+        EngineVersion: '12.5'
+        MasterUsername: '${env:DB_USERNAME}'
+        MasterUserPassword: '${env:DB_PASSWORD}'
+      DeletionPolicy: 'Retain'

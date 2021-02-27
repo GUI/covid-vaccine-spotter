@@ -1,7 +1,7 @@
-const got = require("got");
-const _ = require("lodash");
-const sleep = require("sleep-promise");
-const { CookieJar } = require("tough-cookie");
+const got = require('got');
+const _ = require('lodash');
+const sleep = require('sleep-promise');
+const { CookieJar } = require('tough-cookie');
 
 const Auth = {
   auth: {},
@@ -15,24 +15,24 @@ const Auth = {
   },
 
   refresh: async (authParam) => {
-    console.info("requestsSinceRefresh: ", requestsSinceRefresh);
+    console.info('requestsSinceRefresh: ', requestsSinceRefresh);
     requestsSinceRefresh = 0;
     const cookieJar = new CookieJar();
     const resp = await got(
-      "https://kordinator.mhealthcoach.net/loginPharmacistFromEmail.do",
+      'https://kordinator.mhealthcoach.net/loginPharmacistFromEmail.do',
       {
         searchParams: {
           _r: _.random(0, 999999999999),
           p: authParam,
-          timeZone: "America/Denver",
-          type: "registration",
+          timeZone: 'America/Denver',
+          type: 'registration',
         },
         headers: {
-          "User-Agent":
-            "covid-vaccine-finder (https://github.com/GUI/covid-vaccine-finder)",
+          'User-Agent':
+            'covid-vaccine-finder (https://github.com/GUI/covid-vaccine-finder)',
         },
         cookieJar,
-        responseType: "json",
+        responseType: 'json',
       }
     );
 

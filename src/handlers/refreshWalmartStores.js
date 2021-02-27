@@ -1,14 +1,14 @@
-const _ = require("lodash");
-const sleep = require("sleep-promise");
-const { DateTime, Settings } = require("luxon");
-const got = require("got");
-const cheerio = require("cheerio");
-const getDatabase = require("../getDatabase");
-const { Store } = require("../models/Store");
+const _ = require('lodash');
+const sleep = require('sleep-promise');
+const { DateTime, Settings } = require('luxon');
+const got = require('got');
+const cheerio = require('cheerio');
+const getDatabase = require('../getDatabase');
+const { Store } = require('../models/Store');
 
 module.exports.refreshWalmartStores = async () => {
   await Store.query()
-    .where("brand", "walmart")
+    .where('brand', 'walmart')
     .update({
       carries_vaccine: Store.raw(
         "(metadata_raw->'servicesMap'->'COVID_IMMUNIZATIONS'->'active')::boolean"
@@ -21,10 +21,10 @@ module.exports.refreshWalmartStores = async () => {
   // day will fail for an hour every night (since we're requesting the previous
   // day). https://en.wikipedia.org/wiki/Phenix_City,_Alabama#Time_zone
   await Store.query()
-    .where("brand", "walmart")
-    .where("brand_id", "1284")
+    .where('brand', 'walmart')
+    .where('brand_id', '1284')
     .update({
-      time_zone: "America/New_York",
+      time_zone: 'America/New_York',
     });
 };
 

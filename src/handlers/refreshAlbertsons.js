@@ -1,13 +1,13 @@
-const _ = require("lodash");
-const got = require("got");
-const retry = require("p-retry");
-const { Mutex } = require("async-mutex");
-const { default: PQueue } = require("p-queue");
-const { DateTime } = require("luxon");
-const sleep = require("sleep-promise");
-const albertsonsAuth = require("../albertsons/auth");
-const logger = require("../logger");
-const { Store } = require("../models/Store");
+const _ = require('lodash');
+const got = require('got');
+const retry = require('p-retry');
+const { Mutex } = require('async-mutex');
+const { default: PQueue } = require('p-queue');
+const { DateTime } = require('luxon');
+const sleep = require('sleep-promise');
+const albertsonsAuth = require('../albertsons/auth');
+const logger = require('../logger');
+const { Store } = require('../models/Store');
 
 const authMutexes = {};
 requestsSinceRefresh = 0;
@@ -17,11 +17,11 @@ const Albertsons = {
     const queue = new PQueue({ concurrency: 5 });
 
     const stores = await Store.query()
-      .where("brand", "albertsons")
+      .where('brand', 'albertsons')
       .whereRaw(
         "(carries_vaccine = true AND (appointments_last_fetched IS NULL OR appointments_last_fetched <= (now() - interval '2 minutes')))"
       )
-      .orderByRaw("appointments_last_fetched NULLS FIRST");
+      .orderByRaw('appointments_last_fetched NULLS FIRST');
     for (const [index, store] of stores.entries()) {
       queue.add(() => Albertsons.refreshStore(store, index, stores.length));
     }
@@ -89,7 +89,7 @@ const Albertsons = {
     patch.appointments = slots.map((slot) =>
       DateTime.fromFormat(
         `${slot.date} ${slot.startTime}`,
-        "LL/dd/yyyy hh:mm a",
+        'LL/dd/yyyy hh:mm a',
         { zone: store.time_zone }
       ).toISO()
     );
@@ -105,34 +105,34 @@ const Albertsons = {
   },
 
   fetchDays: async (store, authParam, month) => {
-    console.info("  Fetching days with open appointments...");
+    console.info('  Fetching days with open appointments...');
     const auth = await authMutexes[authParam].runExclusive(async () =>
       albertsonsAuth.get(authParam)
     );
     return got.post(
-      "https://kordinator.mhealthcoach.net/loadEventSlotDaysForCoach.do",
+      'https://kordinator.mhealthcoach.net/loadEventSlotDaysForCoach.do',
       {
         searchParams: {
-          cva: "true",
-          type: "registration",
+          cva: 'true',
+          type: 'registration',
           _r: _.random(0, 999999999999),
           csrfKey: auth.body.csrfKey,
         },
         headers: {
-          "User-Agent":
-            "covid-vaccine-finder (https://github.com/GUI/covid-vaccine-finder)",
+          'User-Agent':
+            'covid-vaccine-finder (https://github.com/GUI/covid-vaccine-finder)',
         },
         cookieJar: auth.cookieJar,
-        responseType: "json",
+        responseType: 'json',
         form: {
           slotsYear: month.year,
           slotsMonth: month.month,
-          forceAllAgents: "",
-          manualOptionAgents: "",
+          forceAllAgents: '',
+          manualOptionAgents: '',
           companyName:
             store.metadata_raw.loadLocationsForClientAndApptType.clientName,
-          eventType: "COVID Vaccine Dose 1 Appt",
-          eventTitle: "",
+          eventType: 'COVID Vaccine Dose 1 Appt',
+          eventTitle: '',
           location: store.metadata_raw.loadLocationsForClientAndApptType.name,
           locationTimezone: store.time_zone,
           csrfKey: auth.body.csrfKey,
@@ -148,27 +148,27 @@ const Albertsons = {
       albertsonsAuth.get(authParam)
     );
     return got.post(
-      "https://kordinator.mhealthcoach.net/loadEventSlotsForCoach.do",
+      'https://kordinator.mhealthcoach.net/loadEventSlotsForCoach.do',
       {
         searchParams: {
-          cva: "true",
-          type: "registration",
+          cva: 'true',
+          type: 'registration',
           _r: _.random(0, 999999999999),
           csrfKey: auth.body.csrfKey,
         },
         headers: {
-          "User-Agent":
-            "covid-vaccine-finder (https://github.com/GUI/covid-vaccine-finder)",
+          'User-Agent':
+            'covid-vaccine-finder (https://github.com/GUI/covid-vaccine-finder)',
         },
         cookieJar: auth.cookieJar,
-        responseType: "json",
+        responseType: 'json',
         form: {
           eventDate: date,
           companyName:
             store.metadata_raw.loadLocationsForClientAndApptType.clientName,
-          forceAllAgents: "",
-          eventType: "COVID Vaccine Dose 1 Appt",
-          eventTitle: "",
+          forceAllAgents: '',
+          eventType: 'COVID Vaccine Dose 1 Appt',
+          eventTitle: '',
         },
         retry: 0,
       }
@@ -190,6 +190,6 @@ const Albertsons = {
 };
 
 module.exports.refreshAlbertsons = async () => {
-  console.info("hello");
+  console.info('hello');
   await Albertsons.refreshStores();
 };

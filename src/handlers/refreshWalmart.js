@@ -1,13 +1,13 @@
-const retry = require("p-retry");
-const { Mutex } = require("async-mutex");
-const { default: PQueue } = require("p-queue");
-const _ = require("lodash");
-const { DateTime } = require("luxon");
-const got = require("got");
-const sleep = require("sleep-promise");
-const logger = require("../logger");
-const walmartAuth = require("../walmart/auth");
-const { Store } = require("../models/Store");
+const retry = require('p-retry');
+const { Mutex } = require('async-mutex');
+const { default: PQueue } = require('p-queue');
+const _ = require('lodash');
+const { DateTime } = require('luxon');
+const got = require('got');
+const sleep = require('sleep-promise');
+const logger = require('../logger');
+const walmartAuth = require('../walmart/auth');
+const { Store } = require('../models/Store');
 
 const authMutex = new Mutex();
 
@@ -16,11 +16,11 @@ const Walmart = {
     const queue = new PQueue({ concurrency: 5 });
 
     const stores = await Store.query()
-      .where("brand", "walmart")
+      .where('brand', 'walmart')
       .whereRaw(
         "(carries_vaccine = true AND (appointments_last_fetched IS NULL OR appointments_last_fetched <= (now() - interval '2 minutes')))"
       )
-      .orderByRaw("appointments_last_fetched NULLS FIRST");
+      .orderByRaw('appointments_last_fetched NULLS FIRST');
     for (const [index, store] of stores.entries()) {
       queue.add(() => Walmart.refreshStore(store, index, stores.length));
     }
@@ -56,7 +56,7 @@ const Walmart = {
             day.slots.map((slot) =>
               DateTime.fromFormat(
                 `${day.slotDate} ${slot.startTime}`,
-                "LLddyyyy H:mm",
+                'LLddyyyy H:mm',
                 { zone: store.time_zone }
               ).toISO()
             )
@@ -83,14 +83,14 @@ const Walmart = {
         `https://www.walmart.com/pharmacy/v2/clinical-services/time-slots/${auth.body.payload.cid}`,
         {
           headers: {
-            "User-Agent":
-              "covid-vaccine-finder (https://github.com/GUI/covid-vaccine-finder)",
+            'User-Agent':
+              'covid-vaccine-finder (https://github.com/GUI/covid-vaccine-finder)',
           },
           cookieJar: auth.cookieJar,
-          responseType: "json",
+          responseType: 'json',
           json: {
-            startDate: now.toFormat("LLddyyyy"),
-            endDate: now.plus({ days: 6 }).toFormat("LLddyyyy"),
+            startDate: now.toFormat('LLddyyyy'),
+            endDate: now.plus({ days: 6 }).toFormat('LLddyyyy'),
             imzStoreNumber: {
               USStoreId: parseInt(store.brand_id, 10),
             },
@@ -99,8 +99,8 @@ const Walmart = {
         }
       );
     } catch (err) {
-      if (err.response?.body?.status === "2100") {
-        logger.warn("Time zone incorrect for store?", err);
+      if (err.response?.body?.status === '2100') {
+        logger.warn('Time zone incorrect for store?', err);
         logger.warn(err?.response?.body);
         return err.response;
       }
