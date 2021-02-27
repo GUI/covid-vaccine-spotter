@@ -4,11 +4,11 @@ const os = require("os");
 const stringify = require("json-stable-stringify");
 const ghpages = require("gh-pages");
 const util = require("util");
+const path = require("path");
 const logger = require("../logger");
 const getDatabase = require("../getDatabase");
 const { Store } = require("../models/Store");
 const { State } = require("../models/State");
-const path = require("path");
 
 const publish = util.promisify(ghpages.publish);
 

@@ -21,6 +21,13 @@ module.exports = {
       files: ["migrations/**/*.js"],
       rules: {
         "func-names": "off",
+        "import/no-extraneous-dependencies": "off",
+      },
+    },
+    {
+      files: ["src/tasks/**/*.js"],
+      rules: {
+        "import/no-extraneous-dependencies": "off",
       },
     },
   ],

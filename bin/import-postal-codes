@@ -1,0 +1,4 @@
+#!/usr/bin/env node
+
+const { importPostalCodes } = require("../src/tasks/importPostalCodes");
+importPostalCodes();

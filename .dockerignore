@@ -6,3 +6,4 @@ site/api/v0*
 .serverless
 host.json
 local.settings.json
+tmp

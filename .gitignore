@@ -6,3 +6,5 @@
 /.serverless
 /host.json
 /local.settings.json
+/tmp/*
+!/tmp/.keep
