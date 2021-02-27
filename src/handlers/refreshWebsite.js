@@ -1,16 +1,11 @@
 const execa = require("execa");
 const fs = require("fs").promises;
-const os = require("os");
 const stringify = require("json-stable-stringify");
-const ghpages = require("gh-pages");
-const util = require("util");
 const path = require("path");
 const logger = require("../logger");
 const getDatabase = require("../getDatabase");
 const { Store } = require("../models/Store");
 const { State } = require("../models/State");
-
-const publish = util.promisify(ghpages.publish);
 
 async function writeStoreData(dataPath, brand) {
   logger.info(`Writing data for ${brand}`);
@@ -152,15 +147,4 @@ module.exports.refreshWebsite = async () => {
     "public, max-age=0, s-maxage=10",
     "--delete",
   ]);
-
-  await runShell("./node_modules/gh-pages/bin/gh-pages-clean.js");
-  await publish("_site_build", {
-    repo: `https://${process.env.GH_TOKEN}@github.com/GUI/vaccine.git`,
-    dotfiles: true,
-    silent: false,
-    user: {
-      name: "Auto Builder",
-      email: "12112+GUI@users.noreply.github.com",
-    },
-  });
 };
