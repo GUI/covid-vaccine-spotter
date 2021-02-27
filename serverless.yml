@@ -46,12 +46,7 @@ package:
     - _site/**
     - site/_data/**
 
-functions:
-  refreshPharmaca:
-    handler: index.refreshPharmaca
-    reservedConcurrency: 1
-    events:
-      - schedule: "rate(2 minutes)"
+functions: []
 
 resources:
   Resources:

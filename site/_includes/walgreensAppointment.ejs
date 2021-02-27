@@ -8,11 +8,11 @@
         <span class="fs-5">Appointments available as of <%= lastFetched %></span>
       </div>
       <%
-        times = store.appointments.map((t) => {
+        times = store.appointments.map((appointment) => {
           const time = {
-            time: this.luxon.DateTime.fromISO(t.time, { setZone: true }),
+            time: this.luxon.DateTime.fromISO(appointment.time, { setZone: true }),
           };
-          switch(t.type) {
+          switch(appointment.type) {
             case 'both_doses':
               time.type = 'First Dose';
               break;
@@ -23,7 +23,7 @@
               time.type = 'Second Dose Only - Pfizer';
               break;
             default:
-              time.type = t.type;
+              time.type = appointment.type;
               break;
           }
           return time;

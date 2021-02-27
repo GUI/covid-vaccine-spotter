@@ -1,9 +1,9 @@
-# The manifest for the "refresh-website" service.
+# The manifest for the "pharmaca-refresh-appointments" service.
 # Read the full specification for the "Backend Service" type at:
 #  https://aws.github.io/copilot-cli/docs/manifest/backend-service/
 
 # Your service name will be used in naming your resources like log groups, ECS services, etc.
-name: refresh-website
+name: pharmaca-refresh-appointments
 # Your service does not allow any traffic.
 type: Backend Service
 
@@ -13,19 +13,19 @@ image:
   build:
     dockerfile: Dockerfile
     args:
-      task_bin: refresh-website
+      task_bin: pharmaca-refresh-appointments
 
 # Number of CPU units for the task.
-cpu: 512
+cpu: 256
 # Amount of memory in MiB used by the task.
-memory: 1024
+memory: 512
 # Number of tasks that should be running in your service.
 count: 1
+
 # Optional fields for more advanced use-cases.
 #
 variables:
   LOG_LEVEL: notice
-  PUBLISH_SITE: true
 #secrets:                      # Pass secrets from AWS Systems Manager (SSM) Parameter Store.
 #  GITHUB_TOKEN: GITHUB_TOKEN  # The key is the name of the environment variable, the value is the name of the SSM      parameter.
 

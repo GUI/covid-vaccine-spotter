@@ -1,7 +1,7 @@
 const sleep = require("sleep-promise");
 const logger = require("./logger");
 
-process.on("uncaughtException", function (err) {
+process.on("uncaughtException", (err) => {
   logger.error("Uncaught exception: ", err);
 });
 

@@ -57,12 +57,11 @@ async function runShell(...args) {
 }
 
 module.exports.refreshWebsite = async () => {
+  logger.notice("Begin refreshing website...");
+
   const db = await getDatabase();
   const { container: krogerStores } = await db.containers.createIfNotExists({
     id: "kroger_stores",
-  });
-  const { container: pharmacaStores } = await db.containers.createIfNotExists({
-    id: "pharmaca_stores",
   });
 
   const dataPath = path.resolve("site/api/v0");
@@ -98,15 +97,11 @@ module.exports.refreshWebsite = async () => {
     stringify(krogerData, { space: "  " })
   );
 
-  const { resources: pharmacaData } = await pharmacaStores.items
-    .query(
-      "SELECT * from c WHERE c.state = 'Colorado' OR c.state = 'CO' ORDER BY c.id"
-    )
-    .fetchAll();
-  await fs.writeFile(
-    `${dataPath}/stores/CO/pharmaca.json`,
-    stringify(pharmacaData, { space: "  " })
-  );
+  try {
+    await writeStoreData(dataPath, "pharmaca");
+  } catch (err) {
+    logger.info("Pharmaca Data Error: ", err);
+  }
 
   try {
     await writeStoreData(dataPath, "sams_club");
@@ -133,18 +128,18 @@ module.exports.refreshWebsite = async () => {
     "_site_build",
   ]);
 
-  console.info(
-    "VACCINEFINDERNICKMORG_NAME: ",
-    process.env.VACCINEFINDERNICKMORG_NAME
-  );
+  if (process.env.PUBLISH_SITE === "true") {
+    logger.notice("Begin publishing website...");
+    await runShell("aws", [
+      "s3",
+      "sync",
+      "./_site_build/",
+      `s3://${process.env.VACCINEFINDERNICKMORG_NAME}/`,
+      "--cache-control",
+      "public, max-age=0, s-maxage=10",
+      "--delete",
+    ]);
+  }
 
-  await runShell("aws", [
-    "s3",
-    "sync",
-    "./_site_build/",
-    `s3://${process.env.VACCINEFINDERNICKMORG_NAME}/`,
-    "--cache-control",
-    "public, max-age=0, s-maxage=10",
-    "--delete",
-  ]);
+  logger.notice("Finished refreshing website.");
 };

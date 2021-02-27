@@ -1,5 +1,9 @@
 exports.up = async function (knex) {
   // Lightly modified https://github.com/m-martinez/pg-audit-json
+  //
+  // Modified to work with RDS's permissions with operators only installed in
+  // the specific schema. Also modified to still store excluded column data if
+  // other non-excluded columns are changed.
   await knex.raw(`
     CREATE SCHEMA audit;
     REVOKE ALL ON SCHEMA audit FROM public;
@@ -236,17 +240,19 @@ exports.up = async function (knex) {
       END IF;
 
       IF (TG_OP = 'INSERT' AND TG_LEVEL = 'ROW') THEN
-        audit_row.changed_fields = to_jsonb(NEW.*) OPERATOR(audit.-) excluded_cols;
+        audit_row.changed_fields = to_jsonb(NEW.*);
       ELSIF (TG_OP = 'UPDATE' AND TG_LEVEL = 'ROW') THEN
-        audit_row.row_data = to_jsonb(OLD.*) OPERATOR(audit.-) excluded_cols;
+        audit_row.row_data = to_jsonb(OLD.*);
         audit_row.changed_fields =
           (to_jsonb(NEW.*) OPERATOR(audit.-) audit_row.row_data) OPERATOR(audit.-) excluded_cols;
         IF audit_row.changed_fields = '{}'::JSONB THEN
           -- All changed fields are ignored. Skip this update.
           RETURN NULL;
         END IF;
+        audit_row.changed_fields =
+          (to_jsonb(NEW.*) OPERATOR(audit.-) audit_row.row_data);
       ELSIF (TG_OP = 'DELETE' AND TG_LEVEL = 'ROW') THEN
-        audit_row.row_data = to_jsonb(OLD.*) OPERATOR(audit.-) excluded_cols;
+        audit_row.row_data = to_jsonb(OLD.*);
       ELSIF (TG_LEVEL = 'STATEMENT' AND
              TG_OP IN ('INSERT','UPDATE','DELETE','TRUNCATE')) THEN
         audit_row.statement_only = 't';
