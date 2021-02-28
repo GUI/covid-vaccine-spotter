@@ -8,7 +8,7 @@
 
 building the frontend probably depends on the backend to display data
 
-## Steps to Add a location
+## Adding a location (WIP)
 
-- add an export to `index.js` like this: ` exports.refreshAlbertsons = require('./src/handlers/refreshAlbertsons').refreshAlbertsons;`
+1. add an export to `index.js` like this: ` exports.refreshAlbertsons = require('./src/handlers/refreshAlbertsons').refreshAlbertsons;`
 
