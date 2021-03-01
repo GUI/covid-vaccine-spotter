@@ -79,7 +79,9 @@ const Auth = {
       body = await response.json();
       if (!body?.payload?.cid) {
         throw new Error(
-          `Login body does not contain expected data: ${response.statusCode}: ${body}`
+          `Login body does not contain expected data: ${response.status()}: ${JSON.stringify(
+            body
+          )}`
         );
       }
 

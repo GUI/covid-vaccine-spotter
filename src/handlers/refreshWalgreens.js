@@ -14,6 +14,8 @@ const authMutex = new Mutex();
 
 const Walgreens = {
   refreshGridCells: async () => {
+    logger.notice("Begin refreshing appointments for all stores...");
+
     const queue = new PQueue({ concurrency: 5 });
 
     const knex = Store.knex();
@@ -33,6 +35,8 @@ const Walgreens = {
       );
     }
     await queue.onIdle();
+
+    logger.notice("Finished refreshing appointments for all stores.");
   },
 
   refreshGridCell: async (gridCell, index, count) => {

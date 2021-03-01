@@ -7,6 +7,9 @@ const sleep = require("sleep-promise");
 const { firefox } = require("playwright-extra");
 const HumanizePlugin = require("@extra/humanize");
 const logger = require("../logger");
+const { PlaywrightBlocker } = require('@cliqz/adblocker-playwright');
+const fetch = require('cross-fetch');
+console.info(PlaywrightBlocker);
 
 firefox.use(
   HumanizePlugin({
@@ -44,6 +47,13 @@ const Auth = {
       });
 
       const page = await context.newPage();
+
+      const blocker = await PlaywrightBlocker.fromPrebuiltAdsAndTracking(fetch); // ads and tracking
+      await blocker.enableBlockingInPage(page);
+
+      blocker.on('request-blocked', (request) => {
+        logger.debug('blocked', request.url);
+      });
 
       logger.info("Navigating to login page...");
       await page.goto(

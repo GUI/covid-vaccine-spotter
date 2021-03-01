@@ -17,12 +17,14 @@ const Cvs = {
           Referer: "https://www.cvs.com/immunizations/covid-19-vaccine",
         },
         responseType: "json",
+        timeout: 30000,
         retry: 0,
       }
     ),
 
   refreshStores: async () => {
-    logger.info("Processing all CVS stores...");
+    logger.notice("Begin refreshing appointments for all stores...");
+
     const queue = new PQueue({ concurrency: 5 });
 
     const lastFetched = DateTime.utc().toISO();
@@ -50,24 +52,15 @@ const Cvs = {
           appointments_raw: raw,
         };
 
-        console.info(patch);
         queue.add(() =>
           Store.query().insert(patch).onConflict(["brand", "brand_id"]).merge()
         );
-
-        // queue.add(() => Cvs.refreshState(state, index, state.length));
-        /*
-        await container.items.upsert({
-          id: `${city.state}-${city.city}`,
-          ...city,
-          lastFetched,
-        });
-        */
       }
     }
 
     await queue.onIdle();
-    logger.info("Finished processing all CVS stores...");
+
+    logger.notice("Finished refreshing appointments for all stores.");
   },
 };
 

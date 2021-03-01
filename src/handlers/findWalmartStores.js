@@ -31,6 +31,7 @@ module.exports.findWalmartStores = async () => {
             "covid-vaccine-finder (https://github.com/GUI/covid-vaccine-finder)",
         },
         responseType: "json",
+        timeout: 30000,
         retry: 0,
       }
     );

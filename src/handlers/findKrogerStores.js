@@ -24,6 +24,7 @@ module.exports.findKrogerStores = async () => {
       form: {
         grant_type: "client_credentials",
       },
+      timeout: 30000,
       retry: 0,
     }
   );
@@ -50,6 +51,7 @@ module.exports.findKrogerStores = async () => {
         Authorization: `Bearer ${tokenResponse.body.access_token}`,
       },
       responseType: "json",
+      timeout: 30000,
       retry: 0,
     });
 

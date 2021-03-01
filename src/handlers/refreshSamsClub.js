@@ -122,6 +122,7 @@ const SamsClub = {
             imzType: "COVID",
           },
           http2: true,
+          timeout: 30000,
           retry: 0,
         }
       );
@@ -148,6 +149,7 @@ const SamsClub = {
         cookieJar: auth.cookieJar,
         responseType: "json",
         http2: true,
+        timeout: 30000,
         retry: 0,
       }
     );

@@ -45,6 +45,7 @@ module.exports.findWalgreensStores = async () => {
           lng: gridCell.longitude,
           // zip: '',
         },
+        timeout: 30000,
         retry: 0,
       }
     );

@@ -46,6 +46,7 @@ const PharmacaStores = {
           radius: "",
         },
         responseType: "json",
+        timeout: 30000,
         retry: 0,
       }
     );

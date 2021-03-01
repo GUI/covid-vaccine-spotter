@@ -13,6 +13,8 @@ const authMutex = new Mutex();
 
 const Walmart = {
   refreshStores: async () => {
+    logger.notice("Begin refreshing appointments for all stores...");
+
     const queue = new PQueue({ concurrency: 5 });
 
     const stores = await Store.query()
@@ -25,6 +27,8 @@ const Walmart = {
       queue.add(() => Walmart.refreshStore(store, index, stores.length));
     }
     await queue.onIdle();
+
+    logger.notice("Finished refreshing appointments for all stores.");
   },
 
   refreshStore: async (store, index, count) => {
@@ -95,6 +99,7 @@ const Walmart = {
               USStoreId: parseInt(store.brand_id, 10),
             },
           },
+          timeout: 30000,
           retry: 0,
         }
       );

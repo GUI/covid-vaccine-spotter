@@ -137,6 +137,7 @@ const Albertsons = {
           locationTimezone: store.time_zone,
           csrfKey: auth.body.csrfKey,
         },
+        timeout: 30000,
         retry: 0,
       }
     );
@@ -170,6 +171,7 @@ const Albertsons = {
           eventType: "COVID Vaccine Dose 1 Appt",
           eventTitle: "",
         },
+        timeout: 30000,
         retry: 0,
       }
     );

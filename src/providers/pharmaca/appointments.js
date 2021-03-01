@@ -117,6 +117,7 @@ const PharmacaAppointments = {
         "User-Agent":
           "covid-vaccine-finder/1.0 (https://github.com/GUI/covid-vaccine-finder)",
       },
+      timeout: 30000,
       retry: 0,
     }),
 

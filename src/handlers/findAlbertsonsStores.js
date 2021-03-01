@@ -27,6 +27,7 @@ module.exports.findAlbertsonsStores = async () => {
           "covid-vaccine-finder (https://github.com/GUI/covid-vaccine-finder)",
       },
       responseType: "json",
+      timeout: 30000,
       retry: 0,
     }
   );
@@ -88,6 +89,7 @@ module.exports.findAlbertsonsStores = async () => {
           "covid-vaccine-finder (https://github.com/GUI/covid-vaccine-finder)",
       },
       followRedirect: false,
+      timeout: 30000,
       retry: 0,
     });
     const redirect = coachResp.headers.location;
@@ -152,6 +154,7 @@ module.exports.findAlbertsonsStores = async () => {
               },
               cookieJar: auth.cookieJar,
               responseType: "json",
+              timeout: 30000,
               retry: 0,
             }
           );
