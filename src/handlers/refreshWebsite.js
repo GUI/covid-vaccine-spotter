@@ -24,8 +24,7 @@ async function writeStoreData(dataPath, brand) {
         'carries_vaccine', carries_vaccine,
         'appointments', appointments,
         'appointments_available', appointments_available,
-        'appointments_last_fetched', appointments_last_fetched,
-        'appointments_raw', appointments_raw
+        'appointments_last_fetched', appointments_last_fetched
       )
       ORDER BY id
     ) AS state_data
@@ -101,6 +100,12 @@ module.exports.refreshWebsite = async () => {
     await writeStoreData(dataPath, "pharmaca");
   } catch (err) {
     logger.info("Pharmaca Data Error: ", err);
+  }
+
+  try {
+    await writeStoreData(dataPath, "rite_aid");
+  } catch (err) {
+    logger.info("Rite Aid Data Error: ", err);
   }
 
   try {

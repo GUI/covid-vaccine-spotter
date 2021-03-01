@@ -16,6 +16,9 @@ permalink: "<%= state.code %>/"
 <% if (stores?.[state.code]?.pharmaca) { %>
   <% storesScanning.push("Pharmaca") %>
 <% } %>
+<% if (stores?.[state.code]?.rite_aid) { %>
+  <% storesScanning.push("Rite Aid") %>
+<% } %>
 <% if (stores?.[state.code]?.albertsons) { %>
   <% storesScanning.push("Safeway/Albertsons") %>
 <% } %>
@@ -362,9 +365,7 @@ permalink: "<%= state.code %>/"
         </div>
 
         <div class="alert alert-info" role="alert">
-          <p><strong>02/27/2021:</strong> 👋 Welcome to the new website name: <strong>Vaccine Spotter</strong>. It's the exact same tool, but I found my previous name was causing confusion with the CDC's VaccineFinder website (oops!), so I wanted to try to make this easier to find. I'm hopeful that the CDC's site can perhaps someday replace this tool, but currently the CDC VaccineFinder website doesn't cover appointment availability and only covers a few states, so for now I'll continue to try and make Vaccine Spotter useful to all of you.</p>
-          <p><strong>02/27/2021:</strong> Pharmaca locations are now being scanned for appointment availability in all of its states (CA, CO, IL, NM, OR, and WA). 💫</p>
-          <p class="mb-0">Unfortunately, Albertsons/Safeway and Sam's Club remains mostly broken due to changes they've made which block access to this tool, but I'm still trying to improve things. Any feedback is welcome: <a href="m&#97;ilto&#58;v%&#54;1&#99;&#99;&#105;ne&#64;nic&#107;%6D&#46;org">vacc&#105;ne&#64;ni&#99;k&#109;&#46;o&#114;&#103;</a> or <a href="https://twitter.com/nickblah">@nickblah</a>. And if you're a coder and have interest in helping out on <a href="https://github.com/GUI/covid-vaccine-finder/issues">GitHub</a>, that would be dandy (although the code's still messy)!</p>
+          <p class="mb-0"><strong>03/01/2021:</strong> <strong>Rite Aid</strong> locations are now being scanned across the country. 🎊 Hope these additional locations help you! Any feedback is welcome: <a href="m&#97;ilto&#58;v%&#54;1&#99;&#99;&#105;ne&#64;nic&#107;%6D&#46;org">vacc&#105;ne&#64;ni&#99;k&#109;&#46;o&#114;&#103;</a> or <a href="https://twitter.com/nickblah">@nickblah</a>. And if you're a coder and have interest in helping out on <a href="https://github.com/GUI/covid-vaccine-finder/issues">GitHub</a>, that would be dandy (although the code's still messy)!</p>
         </div>
 
         <% if (stores?.[state.code]?.cvs) { %>
@@ -395,6 +396,25 @@ permalink: "<%= state.code %>/"
           <% if(availableAppointments.length > 0) { %>
             <% availableAppointments.forEach((store) => { %>
               <%- include('./_includes/pharmacaAppointment', { store }) %>
+            <% }) %>
+          <% } else { %>
+            <p class="mb-0">No appointments available at any locations as of last check.</p>
+            <% if(lastFetched) { %>
+              <% lastFetched = (new Date(lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>
+              <p class="card-text text-secondary"><small>Last checked <%= lastFetched %></small></p>
+            <% } %>
+          <% } %>
+        <% } %>
+
+        <% if (stores?.[state.code]?.rite_aid) { %>
+          <% appointments = this.lodash.orderBy(stores[state.code].rite_aid.filter((s) => s.appointments_last_fetched), ['appointments_last_fetched'], ['desc']) %>
+          <% lastFetched = appointments?.[0]?.appointments_last_fetched %>
+          <h2 class="brand" data-last-fetched="<%= lastFetched %>">Rite Aid Appointments</h2>
+          <div class="brand-link"><a href="https://www.riteaid.com/pharmacy/covid-qualifier" target="_blank">Rite Aid Website<i class="fas fa-external-link-alt"></i></a></div>
+          <% availableAppointments = this.lodash.orderBy(this.lodash.filter(appointments, 'appointments_available').filter((s) => this.luxon.DateTime.fromISO(s.appointments_last_fetched) >= this.luxon.DateTime.utc().minus({ minutes: 45 })), ['city', 'address']) %>
+          <% if(availableAppointments.length > 0) { %>
+            <% availableAppointments.forEach((store) => { %>
+              <%- include('./_includes/riteAidAppointment', { store }) %>
             <% }) %>
           <% } else { %>
             <p class="mb-0">No appointments available at any locations as of last check.</p>

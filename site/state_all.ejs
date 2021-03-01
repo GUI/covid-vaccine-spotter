@@ -54,6 +54,13 @@ permalink: "<%= state.code %>/all/"
           <% }) %>
         <% } %>
 
+        <% if (stores?.[state.code]?.rite_aid) { %>
+          <h2>Rite Aid Appointments</h2>
+          <% this.lodash.orderBy(stores[state.code].rite_aid, ['id'], ['asc']).forEach((store) => { %>
+            <%- include('./_includes/riteAidAppointment', { store }) %>
+          <% }) %>
+        <% } %>
+
         <% if (stores?.[state.code]?.albertsons) { %>
           <h2>Safeway, Albertsons Appointments</h2>
           <% this.lodash.orderBy(stores[state.code].albertsons, ['id'], ['asc']).forEach((store) => { %>
