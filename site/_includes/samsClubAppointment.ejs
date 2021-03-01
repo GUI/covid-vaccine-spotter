@@ -1,11 +1,11 @@
-<% lastFetched = (new Date(store.appointments_last_fetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>
+<% lastFetched = new Date(store.appointments_last_fetched) %>
 <div class="card mb-4">
   <h5 class="card-header"><%= store.name %> - <%= store.address %>, <%= store.city %>, <%= store.state %>, <%= store.postal_code %></h5>
   <div class="card-body">
     <% if(store.appointments_available) { %>
       <div class="text-success fs-2">
         <i class="fas fa-check-circle"></i>
-        <span class="fs-5">Appointments available as of <%= lastFetched %></span>
+        <span class="fs-5">Appointments available as of <%- include('/localTime', { time: lastFetched, timeZone: store.time_zone }) %></span>
       </div>
       <% times = store.appointments.map((time) => this.luxon.DateTime.fromISO(time, { setZone: true })) %>
       <%- include('./appointmentTimes', { times }) %>
@@ -16,6 +16,6 @@
         No appointments available as of last check
       </div>
     <% } %>
-    <p class="card-text text-secondary mt-2"><small>Last checked <%= lastFetched %></small></p>
+    <p class="card-text text-secondary mt-2"><small>Last checked <%- include('/localTime', { time: lastFetched, timeZone: store.time_zone }) %></small></p>
   </div>
 </div>

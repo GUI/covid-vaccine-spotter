@@ -34,6 +34,7 @@ permalink: "<%= state.code %>/"
 <% if (stores?.[state.code]?.kroger) { %>
   <%# storesScanning.push("King Soopers/Kroger") %>
 <% } %>
+<% providerLastFetched = {} %>
 
 <!doctype html>
 <html lang="en">
@@ -371,6 +372,8 @@ permalink: "<%= state.code %>/"
         <% if (stores?.[state.code]?.cvs) { %>
           <% appointments = this.lodash.orderBy(stores[state.code].cvs.filter((s) => s.appointments_last_fetched), ['appointments_last_fetched'], ['desc']) %>
           <% lastFetched = appointments?.[0]?.appointments_last_fetched %>
+          <% lastFetchedDate = (lastFetched) ? new Date(lastFetched) : null %>
+          <% providerLastFetched.cvs = lastFetchedDate %>
           <h2 class="brand" data-last-fetched="<%= lastFetched %>">CVS Appointments</h2>
           <div class="brand-link"><a href="https://www.cvs.com/immunizations/covid-19-vaccine" target="_blank">CVS Website<i class="fas fa-external-link-alt"></i></a></div>
           <% availableAppointments = this.lodash.orderBy(this.lodash.filter(appointments, 'appointments_available').filter((s) => this.luxon.DateTime.fromISO(s.appointments_last_fetched) >= this.luxon.DateTime.utc().minus({ minutes: 45 })), ['city', 'address']) %>
@@ -381,8 +384,7 @@ permalink: "<%= state.code %>/"
           <% } else { %>
             <p class="mb-0">No appointments available at any locations as of last check.</p>
             <% if(lastFetched) { %>
-              <% lastFetched = (new Date(lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>
-              <p class="card-text text-secondary"><small>Last checked <%= lastFetched %></small></p>
+              <p class="card-text text-secondary"><small>Last checked <%- include('/localTime', { time: lastFetchedDate, timeZone: 'America/New_York' }) %></small></p>
             <% } %>
           <% } %>
         <% } %>
@@ -390,6 +392,8 @@ permalink: "<%= state.code %>/"
         <% if (stores?.[state.code]?.pharmaca) { %>
           <% appointments = this.lodash.orderBy(stores[state.code].pharmaca.filter((s) => s.appointments_last_fetched), ['lastFetched'], ['desc']) %>
           <% lastFetched = appointments?.[0]?.appointments_last_fetched %>
+          <% lastFetchedDate = (lastFetched) ? new Date(lastFetched) : null %>
+          <% providerLastFetched.pharmaca = lastFetchedDate %>
           <h2 class="brand" data-last-fetched="<%= lastFetched %>">Pharmaca Appointments</h2>
           <div class="brand-link"><a href="https://www.pharmacarx.com/covid-vaccine-faqs/" target="_blank">Pharmaca Website<i class="fas fa-external-link-alt"></i></a></div>
           <% availableAppointments = this.lodash.orderBy(this.lodash.filter(appointments, 'appointments_available').filter((s) => this.luxon.DateTime.fromISO(s.appointments_last_fetched) >= this.luxon.DateTime.utc().minus({ minutes: 45 })), ['city', 'address']) %>
@@ -400,8 +404,7 @@ permalink: "<%= state.code %>/"
           <% } else { %>
             <p class="mb-0">No appointments available at any locations as of last check.</p>
             <% if(lastFetched) { %>
-              <% lastFetched = (new Date(lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>
-              <p class="card-text text-secondary"><small>Last checked <%= lastFetched %></small></p>
+              <p class="card-text text-secondary"><small>Last checked <%- include('/localTime', { time: lastFetchedDate, timeZone: 'America/New_York' }) %></small></p>
             <% } %>
           <% } %>
         <% } %>
@@ -409,6 +412,8 @@ permalink: "<%= state.code %>/"
         <% if (stores?.[state.code]?.rite_aid) { %>
           <% appointments = this.lodash.orderBy(stores[state.code].rite_aid.filter((s) => s.appointments_last_fetched), ['appointments_last_fetched'], ['desc']) %>
           <% lastFetched = appointments?.[0]?.appointments_last_fetched %>
+          <% lastFetchedDate = (lastFetched) ? new Date(lastFetched) : null %>
+          <% providerLastFetched.rite_aid = lastFetchedDate %>
           <h2 class="brand" data-last-fetched="<%= lastFetched %>">Rite Aid Appointments</h2>
           <div class="brand-link"><a href="https://www.riteaid.com/pharmacy/covid-qualifier" target="_blank">Rite Aid Website<i class="fas fa-external-link-alt"></i></a></div>
           <% availableAppointments = this.lodash.orderBy(this.lodash.filter(appointments, 'appointments_available').filter((s) => this.luxon.DateTime.fromISO(s.appointments_last_fetched) >= this.luxon.DateTime.utc().minus({ minutes: 45 })), ['city', 'address']) %>
@@ -419,8 +424,7 @@ permalink: "<%= state.code %>/"
           <% } else { %>
             <p class="mb-0">No appointments available at any locations as of last check.</p>
             <% if(lastFetched) { %>
-              <% lastFetched = (new Date(lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>
-              <p class="card-text text-secondary"><small>Last checked <%= lastFetched %></small></p>
+              <p class="card-text text-secondary"><small>Last checked <%- include('/localTime', { time: lastFetchedDate, timeZone: 'America/New_York' }) %></small></p>
             <% } %>
           <% } %>
         <% } %>
@@ -428,6 +432,8 @@ permalink: "<%= state.code %>/"
         <% if (stores?.[state.code]?.albertsons) { %>
           <% appointments = this.lodash.orderBy(stores[state.code].albertsons.filter((s) => s.appointments_last_fetched), ['lastFetched'], ['desc']) %>
           <% lastFetched = appointments?.[0]?.appointments_last_fetched %>
+          <% lastFetchedDate = (lastFetched) ? new Date(lastFetched) : null %>
+          <% providerLastFetched.albertsons = lastFetchedDate %>
           <h2 class="brand" data-last-fetched="<%= lastFetched %>">Safeway, Albertsons Pharmacy Appointments</h2>
           <div class="brand-link"><a href="https://www.safeway.com/pharmacy/covid-19.html" target="_blank">Safeway Pharmacy Website<i class="fas fa-external-link-alt"></i></a></div>
           <% availableAppointments = this.lodash.orderBy(this.lodash.filter(appointments, 'appointments_available').filter((s) => this.luxon.DateTime.fromISO(s.appointments_last_fetched) >= this.luxon.DateTime.utc().minus({ minutes: 45 })), ['city', 'address']) %>
@@ -438,8 +444,7 @@ permalink: "<%= state.code %>/"
           <% } else { %>
             <p class="mb-0">No appointments available at any locations as of last check.</p>
             <% if(lastFetched) { %>
-              <% lastFetched = (new Date(lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>
-              <p class="card-text text-secondary"><small>Last checked <%= lastFetched %></small></p>
+              <p class="card-text text-secondary"><small>Last checked <%- include('/localTime', { time: lastFetchedDate, timeZone: 'America/New_York' }) %></small></p>
             <% } %>
           <% } %>
         <% } %>
@@ -447,6 +452,8 @@ permalink: "<%= state.code %>/"
         <% if (stores?.[state.code]?.sams_club) { %>
           <% appointments = this.lodash.orderBy(stores[state.code].sams_club.filter((s) => s.appointments_last_fetched), ['appointments_last_fetched'], ['desc']) %>
           <% lastFetched = appointments?.[0]?.appointments_last_fetched %>
+          <% lastFetchedDate = (lastFetched) ? new Date(lastFetched) : null %>
+          <% providerLastFetched.sams_club = lastFetchedDate %>
           <h2 class="brand" data-last-fetched="<%= lastFetched %>">Sam's Club Pharmacy Appointments</h2>
           <div class="brand-link"><a href="https://www.samsclub.com/pharmacy/immunization/form?imzType=covid" target="_blank">Sam's Club Pharmacy Website<i class="fas fa-external-link-alt"></i></a></div>
           <% availableAppointments = this.lodash.orderBy(this.lodash.filter(appointments, 'appointments_available').filter((s) => this.luxon.DateTime.fromISO(s.appointments_last_fetched) >= this.luxon.DateTime.utc().minus({ minutes: 45 })), ['city', 'address']) %>
@@ -457,8 +464,7 @@ permalink: "<%= state.code %>/"
           <% } else { %>
             <p class="mb-0">No appointments available at any locations as of last check.</p>
             <% if(lastFetched) { %>
-              <% lastFetched = (new Date(lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>
-              <p class="card-text text-secondary"><small>Last checked <%= lastFetched %></small></p>
+              <p class="card-text text-secondary"><small>Last checked <%- include('/localTime', { time: lastFetchedDate, timeZone: 'America/New_York' }) %></small></p>
             <% } %>
           <% } %>
         <% } %>
@@ -466,6 +472,8 @@ permalink: "<%= state.code %>/"
         <% if (stores?.[state.code]?.walgreens) { %>
           <% appointments = this.lodash.orderBy(stores[state.code].walgreens.filter((s) => s.appointments_last_fetched), ['appointments_last_fetched'], ['desc']) %>
           <% lastFetched = appointments?.[0]?.appointments_last_fetched %>
+          <% lastFetchedDate = (lastFetched) ? new Date(lastFetched) : null %>
+          <% providerLastFetched.walgreens = lastFetchedDate %>
           <h2 class="brand" data-last-fetched="<%= lastFetched %>">Walgreens Appointments</h2>
           <div class="brand-link"><a href="https://www.walgreens.com/findcare/vaccination/covid-19/location-screening" target="_blank">Walgreens Website<i class="fas fa-external-link-alt"></i></a></div>
           <% availableAppointments = this.lodash.orderBy(this.lodash.filter(appointments, 'appointments_available').filter((s) => this.luxon.DateTime.fromISO(s.appointments_last_fetched) >= this.luxon.DateTime.utc().minus({ minutes: 45 })), ['city', 'address']) %>
@@ -476,8 +484,7 @@ permalink: "<%= state.code %>/"
           <% } else { %>
             <p class="mb-0">No appointments available at any locations as of last check.</p>
             <% if(lastFetched) { %>
-              <% lastFetched = (new Date(lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>
-              <p class="card-text text-secondary"><small>Last checked <%= lastFetched %></small></p>
+              <p class="card-text text-secondary"><small>Last checked <%- include('/localTime', { time: lastFetchedDate, timeZone: 'America/New_York' }) %></small></p>
             <% } %>
           <% } %>
         <% } %>
@@ -485,6 +492,8 @@ permalink: "<%= state.code %>/"
         <% if (stores?.[state.code]?.walmart) { %>
           <% appointments = this.lodash.orderBy(stores[state.code].walmart.filter((s) => s.appointments_last_fetched), ['appointments_last_fetched'], ['desc']) %>
           <% lastFetched = appointments?.[0]?.appointments_last_fetched %>
+          <% lastFetchedDate = (lastFetched) ? new Date(lastFetched) : null %>
+          <% providerLastFetched.walmart = lastFetchedDate %>
           <h2 class="brand" data-last-fetched="<%= lastFetched %>">Walmart Pharmacy Appointments</h2>
           <div class="brand-link"><a href="https://www.walmart.com/pharmacy/clinical-services/immunization/scheduled?imzType=covid" target="_blank">Walmart Pharmacy Website<i class="fas fa-external-link-alt"></i></a></div>
           <% availableAppointments = this.lodash.orderBy(this.lodash.filter(appointments, 'appointments_available').filter((s) => this.luxon.DateTime.fromISO(s.appointments_last_fetched) >= this.luxon.DateTime.utc().minus({ minutes: 45 })), ['city', 'address']) %>
@@ -495,8 +504,7 @@ permalink: "<%= state.code %>/"
           <% } else { %>
             <p class="mb-0">No appointments available at any locations as of last check.</p>
             <% if(lastFetched) { %>
-              <% lastFetched = (new Date(lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>
-              <p class="card-text text-secondary"><small>Last checked <%= lastFetched %></small></p>
+              <p class="card-text text-secondary"><small>Last checked <%- include('/localTime', { time: lastFetchedDate, timeZone: 'America/New_York' }) %></small></p>
             <% } %>
           <% } %>
         <% } %>
@@ -504,6 +512,8 @@ permalink: "<%= state.code %>/"
         <% if (stores?.[state.code]?.kroger) { %>
           <% appointments = this.lodash.orderBy(stores[state.code].kroger, ['lastFetched'], ['desc']) %>
           <% lastFetched = appointments?.[0]?.lastFetched %>
+          <% lastFetchedDate = (lastFetched) ? new Date(lastFetched) : null %>
+          <% providerLastFetched.kroger = lastFetchedDate %>
           <h2 class="brand" data-last-fetched="<%= lastFetched %>">King Soopers, City Market Pharmacy Appointments</h2>
           <div class="brand-link"><a href="https://www.kingsoopers.com/rx/covid-eligibility" target="_blank">King Soopers Pharmacy Website<i class="fas fa-external-link-alt"></i></a></div>
           <% availableAppointments = this.lodash.filter(appointments.filter((s) => this.luxon.DateTime.fromISO(s.lastFetched) >= this.luxon.DateTime.utc().minus({ minutes: 45 })), (o) => o.appointments && o.appointments.dates && this.lodash.some(o.appointments.dates, (d) => d.slots && d.slots.length > 0)) %>
@@ -514,8 +524,7 @@ permalink: "<%= state.code %>/"
           <% } else { %>
             <p class="mb-0">No appointments available at any locations as of last check.</p>
             <% if(lastFetched) { %>
-              <% lastFetched = (new Date(lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>
-              <p class="card-text text-secondary"><small>Last checked <%= lastFetched %></small></p>
+              <p class="card-text text-secondary"><small>Last checked <%- include('/localTime', { time: lastFetchedDate, timeZone: 'America/New_York' }) %></small></p>
             <% } %>
           <% } %>
         <% } %>
@@ -526,27 +535,25 @@ permalink: "<%= state.code %>/"
         <h3>Tool Status</h3>
         <ul>
           <% if (stores?.[state.code]?.cvs) { %>
-            <li><strong>CVS:</strong> Last checked <%= (new Date(this.lodash.orderBy(stores[state.code].cvs.filter((s) => s.appointments_last_fetched), ['appointments_last_fetched'], ['desc'])[0].appointments_last_fetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>. Checking <%= stores[state.code].cvs.length %> <%= (stores[state.code].cvs.length === 1) ? 'city' : 'cities' %> (new cities will be added as CVS adds them).</li>
+            <li><strong>CVS:</strong> Last checked <%- include('/localTime', { time: providerLastFetched.cvs, timeZone: 'America/New_York' }).replace(/\s*$/, '') %>. Checking <%= stores[state.code].cvs.length %> <%= (stores[state.code].cvs.length === 1) ? 'city' : 'cities' %> (new cities will be added as CVS adds them).</li>
           <% } %>
           <% if (stores?.[state.code]?.pharmaca) { %>
-            <li><strong>Pharmaca:</strong> Last checked <%= (new Date(this.lodash.orderBy(stores[state.code].pharmaca.filter((s) => s.appointments_last_fetched), ['appointments_last_fetched'], ['desc'])[0]?.appointments_last_fetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>. Checking all <%= stores[state.code].pharmaca.length %> <%= (stores[state.code].pharmaca.length === 1) ? 'store' : 'stores' %> in <%= state.code %>.</li>
+            <li><strong>Pharmaca:</strong> Last checked <%- include('/localTime', { time: providerLastFetched.pharmaca, timeZone: 'America/New_York' }).replace(/\s*$/, '') %>. Checking all <%= stores[state.code].pharmaca.length %> <%= (stores[state.code].pharmaca.length === 1) ? 'store' : 'stores' %> in <%= state.code %>.</li>
           <% } %>
           <% if (stores?.[state.code]?.albertsons) { %>
-            <li><strong>Safeway, Albertsons:</strong> Last checked <%= (new Date(this.lodash.orderBy(stores[state.code].albertsons.filter((s) => s.appointments_last_fetched), ['appointments_last_fetched'], ['desc'])[0]?.appointments_last_fetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>. Checking all <%= stores[state.code].albertsons.length %> <%= (stores[state.code].albertsons.length === 1) ? 'store' : 'stores' %> in <%= state.code %>.</li>
+            <li><strong>Safeway, Albertsons:</strong> Last checked <%- include('/localTime', { time: providerLastFetched.albertsons, timeZone: 'America/New_York' }).replace(/\s*$/, '') %>. Checking all <%= stores[state.code].albertsons.length %> <%= (stores[state.code].albertsons.length === 1) ? 'store' : 'stores' %> in <%= state.code %>.</li>
           <% } %>
           <% if (stores?.[state.code]?.sams_club) { %>
-            <li><strong>Sam's Club:</strong> Last checked <%= (new Date(this.lodash.orderBy(stores[state.code].sams_club.filter((s) => s.appointments_last_fetched), ['appointments_last_fetched'], ['desc'])[0]?.appointments_last_fetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>. Checking all <%= stores[state.code].sams_club.length %> <%= (stores[state.code].sams_club.length === 1) ? 'store' : 'stores' %> in <%= state.code %>.</li>
+            <li><strong>Sam's Club:</strong> Last checked <%- include('/localTime', { time: providerLastFetched.sams_club, timeZone: 'America/New_York' }).replace(/\s*$/, '') %>. Checking all <%= stores[state.code].sams_club.length %> <%= (stores[state.code].sams_club.length === 1) ? 'store' : 'stores' %> in <%= state.code %>.</li>
           <% } %>
           <% if (stores?.[state.code]?.walgreens) { %>
-            <li><strong>Walgreens:</strong> Last checked <%= (new Date(this.lodash.orderBy(stores[state.code].walgreens.filter((s) => s.appointments_last_fetched), ['appointments_last_fetched'], ['desc'])[0]?.appointments_last_fetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>. Checking all <%= stores[state.code].walgreens.length %> <%= (stores[state.code].walgreens.length === 1) ? 'store' : 'stores' %> in <%= state.code %>.</li>
+            <li><strong>Walgreens:</strong> Last checked <%- include('/localTime', { time: providerLastFetched.walgreens, timeZone: 'America/New_York' }).replace(/\s*$/, '') %>. Checking all <%= stores[state.code].walgreens.length %> <%= (stores[state.code].walgreens.length === 1) ? 'store' : 'stores' %> in <%= state.code %>.</li>
           <% } %>
           <% if (stores?.[state.code]?.walmart) { %>
-            <% appointments = this.lodash.orderBy(stores[state.code].walmart.filter((s) => s.appointments_last_fetched), ['appointments_last_fetched'], ['desc']) %>
-            <% lastFetched = appointments?.[0]?.appointments_last_fetched %>
-            <li><strong>Walmart:</strong> Last checked <%= (lastFetched) ? (new Date(lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) : "recently (no locations yet carry the vaccine, but we're checking regularly)" %>. Checking all <%= stores[state.code].walmart.length %> <%= (stores[state.code].walmart.length === 1) ? 'store' : 'stores' %> in <%= state.code %>.</li>
+            <li><strong>Walmart:</strong> Last checked <% if (providerLastFetched.walmart) { %><%- include('/localTime', { time: providerLastFetched.walmart, timeZone: 'America/New_York' }).replace(/\s*$/, '') %><% } else { %>recently (no locations yet carry the vaccine, but we're checking regularly)<% } %>. Checking all <%= stores[state.code].walmart.length %> <%= (stores[state.code].walmart.length === 1) ? 'store' : 'stores' %> in <%= state.code %>.</li>
           <% } %>
           <% if (stores?.[state.code]?.kroger) { %>
-            <li><strong>King Soopers, City Market, Dillons, Smith's:</strong> Semi-Broken. The tool was checking, but is now being blocked from accessing Kroger's website. I'm still able to get it to update sometimes, but not always.</li>
+            <li><strong>King Soopers, City Market, Dillons, Smith's:</strong> Last checked <%- include('/localTime', { time: providerLastFetched.kroger, timeZone: 'America/New_York' }).replace(/\s*$/, '') %>. Checking all <%= stores[state.code].kroger.length %> <%= (stores[state.code].kroger.length === 1) ? 'store' : 'stores' %> in <%= state.code %>.</li>
           <% } %>
         </ul>
 
@@ -633,8 +640,6 @@ permalink: "<%= state.code %>/"
         for (var i = 0; i < brands.length; i++) {
           var brand = brands[i];
           var lastFetched = new Date(brand.getAttribute('data-last-fetched'));
-          console.info(lastFetched);
-          console.info(lastFetched.getTime());
           if (lastFetched.getTime() < (now - 1000 * 60 * 30)) {
             if (brand.innerText.indexOf('King Soopers') !== -1) {
               brand.nextElementSibling.insertAdjacentHTML('afterend', '<div class="alert alert-warning" role="alert"><i class="fas fa-exclamation-triangle"></i> <strong>Uh oh!</strong> It looks like the data for this store is older than 30 minutes. King Soopers is blocking our tool from accessing its data. We\'ve tried to employ some workarounds, so this will still sometimes update, but it\'s prone to breaking, so unfortunately this is somewhat expected right now. We\'ve reached out to King Soopers to try and resolve this. Sorry!</div>');
@@ -649,5 +654,8 @@ permalink: "<%= state.code %>/"
         }
       }
     </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/custom-elements/1.4.3/custom-elements.min.js" integrity="sha512-PLDz+cN5TNZKRezSF9Zk+n/TTHG6ISM466kmCQkFcIkp4Mw+1S15qnvEsd5pyMNOlOMp9hGz6YS9eusXqh0rnA==" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/@github/time-elements@3.1.1"></script>
   </body>
 </html>
