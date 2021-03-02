@@ -11,7 +11,7 @@ module.exports.refreshWalmartStores = async () => {
     .where("brand", "walmart")
     .update({
       carries_vaccine: Store.raw(
-        "(metadata_raw->'servicesMap'->'COVID_IMMUNIZATIONS'->'active')::boolean"
+        "coalesce((metadata_raw->'servicesMap'->'COVID_IMMUNIZATIONS'->'active')::boolean, false)"
       ),
       time_zone: Store.raw("metadata_raw->>'timeZone'"),
     });

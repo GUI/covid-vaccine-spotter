@@ -372,6 +372,9 @@ permalink: "<%= state.code %>/"
         <% if (stores?.[state.code]?.cvs) { %>
           <% appointments = this.lodash.orderBy(stores[state.code].cvs.filter((s) => s.appointments_last_fetched), ['appointments_last_fetched'], ['desc']) %>
           <% lastFetched = appointments?.[0]?.appointments_last_fetched %>
+          <% if(!lastFetched && !appointments?.[0]?.carries_vaccine) { %>
+            <% lastFetched = (new Date()).toISOString() %>
+          <% } %>
           <% lastFetchedDate = (lastFetched) ? new Date(lastFetched) : null %>
           <% providerLastFetched.cvs = lastFetchedDate %>
           <h2 class="brand" data-last-fetched="<%= lastFetched %>">CVS Appointments</h2>
@@ -392,6 +395,9 @@ permalink: "<%= state.code %>/"
         <% if (stores?.[state.code]?.pharmaca) { %>
           <% appointments = this.lodash.orderBy(stores[state.code].pharmaca.filter((s) => s.appointments_last_fetched), ['lastFetched'], ['desc']) %>
           <% lastFetched = appointments?.[0]?.appointments_last_fetched %>
+          <% if(!lastFetched && !appointments?.[0]?.carries_vaccine) { %>
+            <% lastFetched = (new Date()).toISOString() %>
+          <% } %>
           <% lastFetchedDate = (lastFetched) ? new Date(lastFetched) : null %>
           <% providerLastFetched.pharmaca = lastFetchedDate %>
           <h2 class="brand" data-last-fetched="<%= lastFetched %>">Pharmaca Appointments</h2>
@@ -412,6 +418,9 @@ permalink: "<%= state.code %>/"
         <% if (stores?.[state.code]?.rite_aid) { %>
           <% appointments = this.lodash.orderBy(stores[state.code].rite_aid.filter((s) => s.appointments_last_fetched), ['appointments_last_fetched'], ['desc']) %>
           <% lastFetched = appointments?.[0]?.appointments_last_fetched %>
+          <% if(!lastFetched && !appointments?.[0]?.carries_vaccine) { %>
+            <% lastFetched = (new Date()).toISOString() %>
+          <% } %>
           <% lastFetchedDate = (lastFetched) ? new Date(lastFetched) : null %>
           <% providerLastFetched.rite_aid = lastFetchedDate %>
           <h2 class="brand" data-last-fetched="<%= lastFetched %>">Rite Aid Appointments</h2>
@@ -432,6 +441,9 @@ permalink: "<%= state.code %>/"
         <% if (stores?.[state.code]?.albertsons) { %>
           <% appointments = this.lodash.orderBy(stores[state.code].albertsons.filter((s) => s.appointments_last_fetched), ['lastFetched'], ['desc']) %>
           <% lastFetched = appointments?.[0]?.appointments_last_fetched %>
+          <% if(!lastFetched && !appointments?.[0]?.carries_vaccine) { %>
+            <% lastFetched = (new Date()).toISOString() %>
+          <% } %>
           <% lastFetchedDate = (lastFetched) ? new Date(lastFetched) : null %>
           <% providerLastFetched.albertsons = lastFetchedDate %>
           <h2 class="brand" data-last-fetched="<%= lastFetched %>">Safeway, Albertsons Pharmacy Appointments</h2>
@@ -452,6 +464,9 @@ permalink: "<%= state.code %>/"
         <% if (stores?.[state.code]?.sams_club) { %>
           <% appointments = this.lodash.orderBy(stores[state.code].sams_club.filter((s) => s.appointments_last_fetched), ['appointments_last_fetched'], ['desc']) %>
           <% lastFetched = appointments?.[0]?.appointments_last_fetched %>
+          <% if(!lastFetched && !appointments?.[0]?.carries_vaccine) { %>
+            <% lastFetched = (new Date()).toISOString() %>
+          <% } %>
           <% lastFetchedDate = (lastFetched) ? new Date(lastFetched) : null %>
           <% providerLastFetched.sams_club = lastFetchedDate %>
           <h2 class="brand" data-last-fetched="<%= lastFetched %>">Sam's Club Pharmacy Appointments</h2>
@@ -472,6 +487,9 @@ permalink: "<%= state.code %>/"
         <% if (stores?.[state.code]?.walgreens) { %>
           <% appointments = this.lodash.orderBy(stores[state.code].walgreens.filter((s) => s.appointments_last_fetched), ['appointments_last_fetched'], ['desc']) %>
           <% lastFetched = appointments?.[0]?.appointments_last_fetched %>
+          <% if(!lastFetched && !appointments?.[0]?.carries_vaccine) { %>
+            <% lastFetched = (new Date()).toISOString() %>
+          <% } %>
           <% lastFetchedDate = (lastFetched) ? new Date(lastFetched) : null %>
           <% providerLastFetched.walgreens = lastFetchedDate %>
           <h2 class="brand" data-last-fetched="<%= lastFetched %>">Walgreens Appointments</h2>
@@ -492,6 +510,9 @@ permalink: "<%= state.code %>/"
         <% if (stores?.[state.code]?.walmart) { %>
           <% appointments = this.lodash.orderBy(stores[state.code].walmart.filter((s) => s.appointments_last_fetched), ['appointments_last_fetched'], ['desc']) %>
           <% lastFetched = appointments?.[0]?.appointments_last_fetched %>
+          <% if(!lastFetched && !appointments?.[0]?.carries_vaccine) { %>
+            <% lastFetched = (new Date()).toISOString() %>
+          <% } %>
           <% lastFetchedDate = (lastFetched) ? new Date(lastFetched) : null %>
           <% providerLastFetched.walmart = lastFetchedDate %>
           <h2 class="brand" data-last-fetched="<%= lastFetched %>">Walmart Pharmacy Appointments</h2>
@@ -512,6 +533,9 @@ permalink: "<%= state.code %>/"
         <% if (stores?.[state.code]?.kroger) { %>
           <% appointments = this.lodash.orderBy(stores[state.code].kroger, ['lastFetched'], ['desc']) %>
           <% lastFetched = appointments?.[0]?.lastFetched %>
+          <% if(!lastFetched && !appointments?.[0]?.carries_vaccine) { %>
+            <% lastFetched = (new Date()).toISOString() %>
+          <% } %>
           <% lastFetchedDate = (lastFetched) ? new Date(lastFetched) : null %>
           <% providerLastFetched.kroger = lastFetchedDate %>
           <h2 class="brand" data-last-fetched="<%= lastFetched %>">King Soopers, City Market Pharmacy Appointments</h2>
@@ -540,6 +564,9 @@ permalink: "<%= state.code %>/"
           <% if (stores?.[state.code]?.pharmaca) { %>
             <li><strong>Pharmaca:</strong> Last checked <%- include('/localTime', { time: providerLastFetched.pharmaca, timeZone: 'America/New_York' }).replace(/\s*$/, '') %>. Checking all <%= stores[state.code].pharmaca.length %> <%= (stores[state.code].pharmaca.length === 1) ? 'store' : 'stores' %> in <%= state.code %>.</li>
           <% } %>
+          <% if (stores?.[state.code]?.rite_aid) { %>
+            <li><strong>Rite Aid:</strong> Last checked <%- include('/localTime', { time: providerLastFetched.rite_aid, timeZone: 'America/New_York' }).replace(/\s*$/, '') %>. Checking all <%= stores[state.code].rite_aid.length %> <%= (stores[state.code].rite_aid.length === 1) ? 'store' : 'stores' %> in <%= state.code %>.</li>
+          <% } %>
           <% if (stores?.[state.code]?.albertsons) { %>
             <li><strong>Safeway, Albertsons:</strong> Last checked <%- include('/localTime', { time: providerLastFetched.albertsons, timeZone: 'America/New_York' }).replace(/\s*$/, '') %>. Checking all <%= stores[state.code].albertsons.length %> <%= (stores[state.code].albertsons.length === 1) ? 'store' : 'stores' %> in <%= state.code %>.</li>
           <% } %>
@@ -550,7 +577,7 @@ permalink: "<%= state.code %>/"
             <li><strong>Walgreens:</strong> Last checked <%- include('/localTime', { time: providerLastFetched.walgreens, timeZone: 'America/New_York' }).replace(/\s*$/, '') %>. Checking all <%= stores[state.code].walgreens.length %> <%= (stores[state.code].walgreens.length === 1) ? 'store' : 'stores' %> in <%= state.code %>.</li>
           <% } %>
           <% if (stores?.[state.code]?.walmart) { %>
-            <li><strong>Walmart:</strong> Last checked <% if (providerLastFetched.walmart) { %><%- include('/localTime', { time: providerLastFetched.walmart, timeZone: 'America/New_York' }).replace(/\s*$/, '') %><% } else { %>recently (no locations yet carry the vaccine, but we're checking regularly)<% } %>. Checking all <%= stores[state.code].walmart.length %> <%= (stores[state.code].walmart.length === 1) ? 'store' : 'stores' %> in <%= state.code %>.</li>
+            <li><strong>Walmart:</strong> Last checked <%- include('/localTime', { time: providerLastFetched.walmart, timeZone: 'America/New_York' }).replace(/\s*$/, '') %>. Checking all <%= stores[state.code].walmart.length %> <%= (stores[state.code].walmart.length === 1) ? 'store' : 'stores' %> in <%= state.code %>.</li>
           <% } %>
           <% if (stores?.[state.code]?.kroger) { %>
             <li><strong>King Soopers, City Market, Dillons, Smith's:</strong> Last checked <%- include('/localTime', { time: providerLastFetched.kroger, timeZone: 'America/New_York' }).replace(/\s*$/, '') %>. Checking all <%= stores[state.code].kroger.length %> <%= (stores[state.code].kroger.length === 1) ? 'store' : 'stores' %> in <%= state.code %>.</li>
