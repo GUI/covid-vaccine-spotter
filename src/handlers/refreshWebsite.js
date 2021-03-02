@@ -91,6 +91,12 @@ module.exports.refreshWebsite = async () => {
     logger.info("CVS Data Error: ", err);
   }
 
+  try {
+    await writeStoreData(dataPath, "heb");
+  } catch (err) {
+    logger.info("H-E-B Data Error: ", err);
+  }
+
   const { resources: krogerData } = await krogerStores.items
     .query("SELECT * from c ORDER BY c.id")
     .fetchAll();

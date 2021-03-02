@@ -37,6 +37,7 @@
     "playwright-extra": "^4.2.1-next.616",
     "random-http-useragent": "^1.1.32",
     "sleep-promise": "^9.1.0",
+    "slugify": "^1.4.7",
     "topojson-client": "^3.1.0",
     "tough-cookie": "^4.0.0",
     "us-atlas": "^3.0.0"
