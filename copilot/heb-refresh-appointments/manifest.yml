@@ -1,9 +1,9 @@
-# The manifest for the "refresh-heb" service.
+# The manifest for the "heb-refresh-appointments" service.
 # Read the full specification for the "Backend Service" type at:
 #  https://aws.github.io/copilot-cli/docs/manifest/backend-service/
 
 # Your service name will be used in naming your resources like log groups, ECS services, etc.
-name: refresh-heb
+name: heb-refresh-appointments
 # Your service does not allow any traffic.
 type: Backend Service
 
@@ -13,7 +13,7 @@ image:
   build:
     dockerfile: Dockerfile
     args:
-      task_bin: refresh-heb
+      task_bin: heb-refresh-appointments
 
 # Number of CPU units for the task.
 cpu: 256
