@@ -360,11 +360,11 @@ permalink: "<%= state.code %>/"
               <h2 class="display-6 text-center mb-4">Step 1: Review your county's availability and <%= state.code %>'s eligibility</h2>
               <% if (state.code === "CO") { %>
                 <p class="lead">Visit <a href="https://covid19.colorado.gov/for-coloradans/vaccine/where-can-i-get-vaccinated" class="text-white"><strong class="fw-bold">Colorado.gov</strong></a> for detailed information about your county's vaccine options and review whether or not you are eligible yet.</p>
-                <p class="lead">You may be able to signup for vaccines with a health provider in your area (Kaiser, SCL Health, your county, etc.), in which case you will be contacted when it's your turn and you may not need this tool.</p>
+                <p class="lead">You may be able to signup for vaccines with a health care provider in your area (Kaiser, SCL Health, your county, etc.), in which case you will be contacted when it's your turn and you may not need this tool.</p>
                 <a href="https://covid19.colorado.gov/for-coloradans/vaccine/where-can-i-get-vaccinated" class="btn btn-light fw-bold fs-5 text-primary">Visit Colorado.gov <i class="fas fa-arrow-alt-circle-right"></i></a>
               <% } else { %>
                 <p class="lead">Be sure to visit your own state's official vaccination website for detailed information about your county's vaccine options and review whether or not you are eligible yet.</p>
-                <p class="lead">You may be able to signup for vaccines with a health providers or there may be other options in your area, in which case you may not need this tool.</p>
+                <p class="lead">You may be able to signup for vaccines with a health care provider or there may be other options in your area, in which case you may not need this tool.</p>
               <% } %>
             </div>
           </div>
@@ -379,6 +379,9 @@ permalink: "<%= state.code %>/"
         </div>
 
         <div class="alert alert-info" role="alert">
+          <% if (state.code === 'TX') { %>
+            <p><strong>03/02/2021:</strong> <strong>H-E-B Pharmacy</strong> locations are now being scanned regularly for appointment availability. Many thanks to <a href="https://github.com/ddnewell">@ddnewell</a> for contributing the code for this! 🙌</p>
+          <% } %>
           <p class="mb-0"><strong>03/01/2021:</strong> <strong>Rite Aid</strong> locations are now being scanned across the country. 🎊 Hope these additional locations help you! Any feedback is welcome: <a href="m&#97;ilto&#58;v%&#54;1&#99;&#99;&#105;ne&#64;nic&#107;%6D&#46;org">vacc&#105;ne&#64;ni&#99;k&#109;&#46;o&#114;&#103;</a> or <a href="https://twitter.com/nickblah">@nickblah</a>. And if you're a coder and have interest in helping out on <a href="https://github.com/GUI/covid-vaccine-finder/issues">GitHub</a>, that would be dandy (although the code's still messy)!</p>
         </div>
 
