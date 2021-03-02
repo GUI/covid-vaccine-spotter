@@ -13,6 +13,9 @@ permalink: "<%= state.code %>/"
 <% if (stores?.[state.code]?.cvs) { %>
   <% storesScanning.push("CVS") %>
 <% } %>
+<% if (stores?.[state.code]?.heb) { %>
+  <% storesScanning.push("H-E-B") %>
+<% } %>
 <% if (stores?.[state.code]?.pharmaca) { %>
   <% storesScanning.push("Pharmaca") %>
 <% } %>
