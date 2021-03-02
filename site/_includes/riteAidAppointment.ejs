@@ -7,6 +7,11 @@
         <i class="fas fa-check-circle"></i>
         <span class="fs-5">Appointments available as of <%- include('/localTime', { time: lastFetched, timeZone: store.time_zone }) %></span>
       </div>
+      <div class="mb-3">
+        <ul class="mb-0">
+          <li>View available appointment times on the Rite Aid website.</li>
+        </ul>
+      </div>
       <a href="https://www.riteaid.com/pharmacy/covid-qualifier" class="btn btn-primary" target="_blank">Visit Rite Aid Website <i class="fas fa-arrow-alt-circle-right"></i></a>
     <% } else { %>
       <div>
