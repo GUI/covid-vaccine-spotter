@@ -174,12 +174,14 @@ class KrogerAppointments {
       `Error fetching data (${err?.response?.statusCode}), retrying (attempt ${err.attemptNumber}, retries left ${err.retriesLeft})`
     );
 
+    /*
     if (await KrogerAuth.page.isVisible("#sec-overlay")) {
       logger.info("OVERLAY!");
       // await solver(KrogerAuth.page);
     } else {
       logger.info("NO OVERLAY!");
     }
+    */
 
     if (err.retriesLeft === 0) {
       logger.warn(err);
