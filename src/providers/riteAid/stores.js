@@ -13,14 +13,12 @@ const RiteAidStores = {
     );
     const $stateList = cheerio.load(stateListResp.body);
     const stateLinks = $stateList("a.c-directory-list-content-item-link");
-    let states = [];
+    const states = [];
     for (const stateLink of stateLinks) {
       states.push(
         stateLink.attribs.href.match(/^([a-z]{2})(\.|\/)/i)[1].toUpperCase()
       );
     }
-    states = ["CT"];
-    states = ["MD", "MI", "NJ", "NY", "OH", "OR", "PA", "VA", "WA", "CA"];
 
     const reprocess110kmGridIds = [];
     const reprocess22kmGridIds = [];
@@ -226,8 +224,6 @@ const RiteAidStores = {
     }
 
     for (const store of resp.body.Data.stores) {
-      store.id = store.storeNumber;
-
       if (importedStores[store.storeNumber]) {
         logger.info(`  Skipping already imported store ${store.storeNumber}`);
       } else {
@@ -260,8 +256,8 @@ const RiteAidStores = {
             state: store.state,
             postal_code: store.zipcode,
             location: `point(${store.longitude} ${store.latitude})`,
-            metadata_raw: store,
             time_zone: timeZone,
+            metadata_raw: store,
           })
           .onConflict(["brand", "brand_id"])
           .merge();
