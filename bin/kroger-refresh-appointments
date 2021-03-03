@@ -1,4 +1,6 @@
 #!/usr/bin/env node
 
 const { refreshStores } = require("../src/providers/kroger/appointments");
-refreshStores();
+const runTask = require("../src/runTask");
+
+runTask(refreshStores, 5000);

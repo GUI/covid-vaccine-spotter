@@ -7,6 +7,7 @@ permalink: "<%= state.code %>/all/"
 ---
 
 <% title = `${state.name} COVID-19 Vaccine Spotter` %>
+<% description = `A tool to help you track down COVID-19 vaccine appointment openings at ${state.name} pharmacies. Updated every minute.` %>
 
 <!doctype html>
 <html lang="en">
@@ -54,35 +55,42 @@ permalink: "<%= state.code %>/all/"
 
         <% if (stores?.[state.code]?.cvs) { %>
           <h2>CVS Appointments</h2>
-          <% this.lodash.orderBy(stores[state.code].cvs, ['id'], ['asc']).forEach((store) => { %>
+          <% this.lodash.orderBy(stores[state.code].cvs, ['city', 'address']).forEach((store) => { %>
             <%- include('./_includes/cvsAppointment', { store }) %>
           <% }) %>
         <% } %>
 
         <% if (stores?.[state.code]?.heb) { %>
           <h2>H-E-B Pharmacy Appointments</h2>
-          <% this.lodash.orderBy(stores[state.code].heb, ['id'], ['asc']).forEach((store) => { %>
+          <% this.lodash.orderBy(stores[state.code].heb, ['city', 'address']).forEach((store) => { %>
             <%- include('./_includes/hebAppointment', { store }) %>
+          <% }) %>
+        <% } %>
+
+        <% if (stores?.[state.code]?.kroger) { %>
+          <h2>King Soopers, City Market Appointments</h2>
+          <% this.lodash.orderBy(stores[state.code].kroger, ['city', 'address']).forEach((store) => { %>
+            <%- include('./_includes/krogerAppointment', { store }) %>
           <% }) %>
         <% } %>
 
         <% if (stores?.[state.code]?.pharmaca) { %>
           <h2>Pharmaca Appointments</h2>
-          <% this.lodash.orderBy(stores[state.code].pharmaca, ['id'], ['asc']).forEach((store) => { %>
+          <% this.lodash.orderBy(stores[state.code].pharmaca, ['city', 'address']).forEach((store) => { %>
             <%- include('./_includes/pharmacaAppointment', { store }) %>
           <% }) %>
         <% } %>
 
         <% if (stores?.[state.code]?.rite_aid) { %>
           <h2>Rite Aid Appointments</h2>
-          <% this.lodash.orderBy(stores[state.code].rite_aid, ['id'], ['asc']).forEach((store) => { %>
+          <% this.lodash.orderBy(stores[state.code].rite_aid, ['city', 'address']).forEach((store) => { %>
             <%- include('./_includes/riteAidAppointment', { store }) %>
           <% }) %>
         <% } %>
 
         <% if (stores?.[state.code]?.albertsons) { %>
           <h2>Safeway, Albertsons Appointments</h2>
-          <% this.lodash.orderBy(stores[state.code].albertsons, ['id'], ['asc']).forEach((store) => { %>
+          <% this.lodash.orderBy(stores[state.code].albertsons, ['city', 'address']).forEach((store) => { %>
             <%- include('./_includes/albertsonsAppointment', { store }) %>
           <% }) %>
         <% } %>
@@ -103,15 +111,8 @@ permalink: "<%= state.code %>/all/"
 
         <% if (stores?.[state.code]?.walmart) { %>
           <h2>Walmart Appointments</h2>
-          <% this.lodash.orderBy(stores[state.code].walmart, ['id'], ['asc']).forEach((store) => { %>
+          <% this.lodash.orderBy(stores[state.code].walmart, ['city', 'address']).forEach((store) => { %>
             <%- include('./_includes/walmartAppointment', { store }) %>
-          <% }) %>
-        <% } %>
-
-        <% if (stores?.[state.code]?.kroger) { %>
-          <h2>King Soopers, City Market Appointments</h2>
-          <% this.lodash.orderBy(stores[state.code].kroger, ['id'], ['asc']).forEach((store) => { %>
-            <%- include('./_includes/krogerAppointment', { store }) %>
           <% }) %>
         <% } %>
       </div>

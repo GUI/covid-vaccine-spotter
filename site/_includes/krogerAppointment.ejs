@@ -1,22 +1,13 @@
-<% lastFetched = (new Date(store.lastFetched)).toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: 'America/Denver' }) %>
+<% lastFetched = new Date(store.appointments_last_fetched) %>
 <div class="card mb-4">
-  <h5 class="card-header"><%= store.name %> - <%= store.address.addressLine1 %>, <%= store.address.city %>, <%= store.address.state %> <%= store.address.zipCode %></h5>
+  <h5 class="card-header"><%= store.name %> - <%= store.address %>, <%= store.city %>, <%= store.state %> <%= store.postal_code %></h5>
   <div class="card-body">
-    <% let availableDays = [] %>
-    <% if(store.appointments && store.appointments.dates) { %>
-      <% availableDays = this.lodash.filter(store.appointments.dates, (d) => d.slots && d.slots.length > 0) %>
-    <% } %>
-    <% if(availableDays.length > 0) { %>
+    <% if(store.appointments_available) { %>
       <div class="text-success fs-2">
         <i class="fas fa-check-circle"></i>
-        <span class="fs-5">Appointments available as of <%= lastFetched %></span>
+        <span class="fs-5">Appointments available as of <%- include('/localTime', { time: lastFetched, timeZone: store.time_zone }) %></span>
       </div>
-      <% times = [] %>
-      <% availableDays.forEach((day) => { %>
-        <% day.slots.forEach((slot) => { %>
-          <% times.push(this.luxon.DateTime.fromFormat(`${day.date} ${slot.start_time}`, 'yyyy-LL-dd HH:mm:ss')) %>
-        <% }) %>
-      <% }) %>
+      <% times = store.appointments.map((appointment) => { return { ...appointment, time: this.luxon.DateTime.fromISO(appointment.time, { setZone: true }) } }) %>
       <%- include('./appointmentTimes', { times }) %>
       <p class="text-warning"><small><i class="fas fa-exclamation-triangle"></i> 03/01/2021: I've received reports from various users that despite King Soopers showing availability, you may not be able to book a second dose appointment at this time. Sorry for the frustration! I think this may be an issue on King Soopers' side, so not sure there's much I can do to detect this, but I'm investigating more. In the meantime, it may still be worth trying to book an appointment in hopes that King Soopers has fixed things.</small></p>
       <a href="https://www.kingsoopers.com/rx/covid-eligibility" class="btn btn-primary" target="_blank">Visit King Soopers Website <i class="fas fa-arrow-alt-circle-right"></i></a>
@@ -26,6 +17,6 @@
         No appointments available as of last check
       </div>
     <% } %>
-    <p class="card-text text-secondary mt-2"><small>Last checked <%= lastFetched %></small></p>
+    <p class="card-text text-secondary mt-2"><small>Last checked <%- include('/localTime', { time: lastFetched, timeZone: store.time_zone }) %></small></p>
   </div>
 </div>

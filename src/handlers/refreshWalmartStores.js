@@ -3,7 +3,6 @@ const sleep = require("sleep-promise");
 const { DateTime, Settings } = require("luxon");
 const got = require("got");
 const cheerio = require("cheerio");
-const getDatabase = require("../getDatabase");
 const { Store } = require("../models/Store");
 
 module.exports.refreshWalmartStores = async () => {

@@ -4,11 +4,10 @@ const _ = require("lodash");
 const { DateTime } = require("luxon");
 const got = require("got");
 const sleep = require("sleep-promise");
-const cheerio = require("cheerio");
-const logger = require("../../logger");
-const solver = require("../../solver");
-const KrogerAuth = require("./auth");
 const { Mutex } = require("async-mutex");
+const logger = require("../../logger");
+// const solver = require("../../solver");
+const KrogerAuth = require("./auth");
 const { Store } = require("../../models/Store");
 
 const authMutex = new Mutex();
@@ -51,7 +50,8 @@ class KrogerAppointments {
         `  Skipping already processed store #${store.id} as part of earlier request.`
       );
       return;
-    } else if (KrogerAppointments.processedPostalCodes[store.postal_code]) {
+    }
+    if (KrogerAppointments.processedPostalCodes[store.postal_code]) {
       logger.info(
         `  Skipping already processed zip code ${store.postal_code} as part of earlier request.`
       );
@@ -60,26 +60,26 @@ class KrogerAppointments {
 
     await sleep(_.random(250, 750));
 
-    const lastFetched = DateTime.utc().toISO()
+    const lastFetched = DateTime.utc().toISO();
 
-    const slotsResp = await retry(async () => KrogerAppointments.fetchSlots(store), {
-      retries: 2,
-      onFailedAttempt: KrogerAppointments.onFailedAttempt,
-    });
+    const slotsResp = await retry(
+      async () => KrogerAppointments.fetchSlots(store),
+      {
+        retries: 2,
+        onFailedAttempt: KrogerAppointments.onFailedAttempt,
+      }
+    );
 
     for (const location of slotsResp.body) {
       const brandId = location.loc_no.replace(/^625/, "620");
-      logger.info(
-        `  Processing appointment results for store #${brandId}`
-      );
+      logger.info(`  Processing appointment results for store #${brandId}`);
 
-      const locationStore = await Store.query()
-        .findOne({
-          brand: "kroger",
-          brand_id: brandId,
-        })
+      const locationStore = await Store.query().findOne({
+        brand: "kroger",
+        brand_id: brandId,
+      });
       if (!locationStore) {
-        throw `Store not found for ${brandId}`;
+        throw new Error(`Store not found for ${brandId}`);
       }
 
       const patch = {
@@ -93,16 +93,14 @@ class KrogerAppointments {
         patch.appointments = location.dates.reduce(
           (appointments, day) =>
             appointments.concat(
-              day.slots.map((slot) => {
-                return {
+              day.slots.map((slot) => ({
                 type: slot.ar_reason,
                 time: DateTime.fromFormat(
                   `${day.date} ${slot.start_time}`,
                   "yyyy-LL-dd HH:mm:ss",
                   { zone: locationStore.time_zone }
-                ).toISO()
-              }
-              })
+                ).toISO(),
+              }))
             ),
           []
         );
@@ -113,9 +111,7 @@ class KrogerAppointments {
         patch.appointments_available = true;
       }
 
-      await Store.query()
-        .findById(locationStore.id)
-        .patch(patch);
+      await Store.query().findById(locationStore.id).patch(patch);
 
       KrogerAppointments.processedBrandIds[brandId] = true;
     }
@@ -126,11 +122,14 @@ class KrogerAppointments {
   }
 
   static async fetchSlots(store) {
+    logger.info("begin fetchSlots", store.id);
     const auth = await authMutex.runExclusive(KrogerAuth.get);
+    logger.info("fetchSlots got auth");
 
     const startDate = DateTime.now().setZone(store.time_zone);
     const endDate = startDate.plus({ days: 7 });
 
+    logger.info("fetchSlots begin eval");
     const resp = await auth.page.evaluate(
       async (options) => {
         const response = await fetch(
@@ -151,7 +150,7 @@ class KrogerAppointments {
           statusCode: response.status,
           headers: response.headers,
           body: await response.text(),
-        }
+        };
       },
       {
         zipCode: store.postal_code,
@@ -159,6 +158,7 @@ class KrogerAppointments {
         endDate: endDate.toISODate(),
       }
     );
+    logger.info("fetchSlots done eval: ", resp);
 
     if (resp.statusCode !== 200) {
       throw new got.HTTPError({ ...resp, request: { response: resp } });
@@ -170,13 +170,15 @@ class KrogerAppointments {
   }
 
   static async onFailedAttempt(err) {
-    logger.info(`Error fetching data (${err?.response?.statusCode}), retrying (attempt ${err.attemptNumber}, retries left ${err.retriesLeft})`);
+    logger.info(
+      `Error fetching data (${err?.response?.statusCode}), retrying (attempt ${err.attemptNumber}, retries left ${err.retriesLeft})`
+    );
 
     if (await KrogerAuth.page.isVisible("#sec-overlay")) {
-      console.info("OVERLAY!");
+      logger.info("OVERLAY!");
       // await solver(KrogerAuth.page);
     } else {
-      console.info("NO OVERLAY!");
+      logger.info("NO OVERLAY!");
     }
 
     if (err.retriesLeft === 0) {
@@ -187,14 +189,12 @@ class KrogerAppointments {
         `Error fetching data (${err?.response?.statusCode}), last retry attempt`
       );
       if (!authMutex.isLocked()) {
-        logger.warn(
-          `Refreshing auth for last retry.`
-        );
+        logger.warn(`Refreshing auth for last retry.`);
         await sleep(5000);
         await authMutex.runExclusive(KrogerAuth.refresh);
       }
     }
   }
-};
+}
 
 module.exports = KrogerAppointments;

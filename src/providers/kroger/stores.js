@@ -1,12 +1,10 @@
 const got = require("got");
-const sleep = require("sleep-promise");
-const cheerio = require("cheerio");
 const logger = require("../../logger");
 const { Store } = require("../../models/Store");
 
-const KrogerStores = {
-  findStores: async () => {
-    const importedStores = {};
+class KrogerStores {
+  static async findStores() {
+    KrogerStores.importedStores = {};
 
     const knex = Store.knex();
     const grid = await knex
@@ -25,10 +23,7 @@ const KrogerStores = {
         },${gridCell.longitude}) (${index + 1} of ${count})...`
       );
 
-      const resp = await KrogerStores.importStoresInGridCell(
-        gridCell,
-        importedStores
-      );
+      const resp = await KrogerStores.importStoresInGridCell(gridCell);
 
       if (resp.body.data.length >= 200) {
         logger.error(
@@ -38,9 +33,9 @@ const KrogerStores = {
     }
 
     await Store.knex().destroy();
-  },
+  }
 
-  getTokenResponse: async () => {
+  static async getTokenResponse() {
     if (!KrogerStores.tokenResponse) {
       KrogerStores.tokenResponse = await got.post(
         "https://api.kroger.com/v1/connect/oauth2/token",
@@ -62,9 +57,9 @@ const KrogerStores = {
     }
 
     return KrogerStores.tokenResponse;
-  },
+  }
 
-  importStoresInGridCell: async (gridCell, importedStores) => {
+  static async importStoresInGridCell(gridCell) {
     const tokenResponse = await KrogerStores.getTokenResponse();
 
     const resp = await got.get("https://api.kroger.com/v1/locations", {
@@ -78,9 +73,7 @@ const KrogerStores = {
       headers: {
         "User-Agent":
           "covid-vaccine-finder (https://github.com/GUI/covid-vaccine-finder)",
-        Authorization: `Bearer ${
-          tokenResponse.body.access_token
-        }`,
+        Authorization: `Bearer ${tokenResponse.body.access_token}`,
       },
       responseType: "json",
       timeout: 30000,
@@ -88,7 +81,7 @@ const KrogerStores = {
     });
 
     for (const store of resp.body.data) {
-      if (importedStores[store.locationId]) {
+      if (KrogerStores.importedStores[store.locationId]) {
         logger.info(`  Skipping already imported store ${store.locationId}`);
       } else {
         logger.info(`  Importing store ${store.locationId}`);
@@ -109,12 +102,12 @@ const KrogerStores = {
           .onConflict(["brand", "brand_id"])
           .merge();
 
-        importedStores[store.locationId] = true;
+        KrogerStores.importedStores[store.locationId] = true;
       }
     }
 
     return resp;
-  },
-};
+  }
+}
 
 module.exports = KrogerStores;

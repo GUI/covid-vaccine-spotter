@@ -1,4 +1,4 @@
-exports.up = async function(knex) {
+exports.up = async function (knex) {
   // Suitable for 100 mile radius searches.
   await knex.raw(`
     CREATE MATERIALIZED VIEW country_grid_220km
@@ -95,7 +95,7 @@ exports.up = async function(knex) {
   });
 };
 
-exports.down = async function(knex) {
+exports.down = async function (knex) {
   await knex.raw("DROP MATERIALIZED VIEW country_grid_220km");
   await knex.raw("DROP MATERIALIZED VIEW state_grid_220km");
 };
