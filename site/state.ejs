@@ -16,6 +16,9 @@ permalink: "<%= state.code %>/"
 <% if (stores?.[state.code]?.heb) { %>
   <% storesScanning.push("H-E-B") %>
 <% } %>
+<% if (stores?.[state.code]?.kroger) { %>
+  <% storesScanning.push("King Soopers/City Market") %>
+<% } %>
 <% if (stores?.[state.code]?.pharmaca) { %>
   <% storesScanning.push("Pharmaca") %>
 <% } %>
@@ -28,14 +31,14 @@ permalink: "<%= state.code %>/"
 <% if (stores?.[state.code]?.sams_club) { %>
   <% storesScanning.push("Sam's Club") %>
 <% } %>
+<% if (stores?.[state.code]?.thrifty_white) { %>
+  <% storesScanning.push("Thrifty White") %>
+<% } %>
 <% if (stores?.[state.code]?.walgreens) { %>
   <% storesScanning.push("Walgreens") %>
 <% } %>
 <% if (stores?.[state.code]?.walmart) { %>
   <% storesScanning.push("Walmart") %>
-<% } %>
-<% if (stores?.[state.code]?.kroger) { %>
-  <%# storesScanning.push("King Soopers/Kroger") %>
 <% } %>
 <% providerLastFetched = {} %>
 
@@ -395,10 +398,7 @@ permalink: "<%= state.code %>/"
         </div>
 
         <div class="alert alert-info" role="alert">
-          <% if (state.code === 'TX') { %>
-            <p><strong>03/02/2021:</strong> <strong>H-E-B Pharmacy</strong> locations are now being scanned regularly for appointment availability. Many thanks to <a href="https://github.com/ddnewell">@ddnewell</a> for contributing the code for this! 🙌</p>
-          <% } %>
-          <p class="mb-0"><strong>03/01/2021:</strong> <strong>Rite Aid</strong> locations are now being scanned across the country. 🎊 Hope these additional locations help you! Any feedback is welcome: <a href="m&#97;ilto&#58;v%&#54;1&#99;&#99;&#105;ne&#64;nic&#107;%6D&#46;org">vacc&#105;ne&#64;ni&#99;k&#109;&#46;o&#114;&#103;</a> or <a href="https://twitter.com/nickblah">@nickblah</a>. And if you're a coder and have interest in helping out on <a href="https://github.com/GUI/covid-vaccine-finder/issues">GitHub</a>, that would be dandy (although the code's still messy)!</p>
+          <p class="mb-0"><strong>03/03/2021:</strong> <strong>Thrifty White</strong> locations are now being scanned in all supported states (Iowa, Minnesota, and North Dakota). 🥳 Hope these additional locations help you! Any feedback is welcome: <a href="m&#97;ilto&#58;v%&#54;1&#99;&#99;&#105;ne&#64;nic&#107;%6D&#46;org">vacc&#105;ne&#64;ni&#99;k&#109;&#46;o&#114;&#103;</a> or <a href="https://twitter.com/nickblah">@nickblah</a>. And if you're a coder and have interest in helping out on <a href="https://github.com/GUI/covid-vaccine-finder/issues">GitHub</a>, that would be dandy (although the code's still messy)!</p>
         </div>
 
         <% if (stores?.[state.code]?.cvs) { %>
@@ -438,6 +438,29 @@ permalink: "<%= state.code %>/"
           <% if(availableAppointments.length > 0) { %>
             <% availableAppointments.forEach((store) => { %>
               <%- include('./_includes/hebAppointment', { store }) %>
+            <% }) %>
+          <% } else { %>
+            <p class="mb-0">No appointments available at any locations as of last check.</p>
+            <% if(lastFetched) { %>
+              <p class="card-text text-secondary"><small>Last checked <%- include('/localTime', { time: lastFetchedDate, timeZone: 'America/New_York' }) %></small></p>
+            <% } %>
+          <% } %>
+        <% } %>
+
+        <% if (stores?.[state.code]?.kroger) { %>
+          <% appointments = this.lodash.orderBy(stores[state.code].kroger.filter((s) => s.appointments_last_fetched), ['appointments_last_fetched'], ['desc']) %>
+          <% lastFetched = appointments?.[0]?.appointments_last_fetched %>
+          <% if(!lastFetched && !appointments?.[0]?.carries_vaccine) { %>
+            <% lastFetched = (new Date()).toISOString() %>
+          <% } %>
+          <% lastFetchedDate = (lastFetched) ? new Date(lastFetched) : null %>
+          <% providerLastFetched.kroger = lastFetchedDate %>
+          <h2 class="brand" data-last-fetched="<%= lastFetched %>">King Soopers, City Market Pharmacy Appointments</h2>
+          <div class="brand-link"><a href="https://www.kingsoopers.com/rx/covid-eligibility" target="_blank">King Soopers Pharmacy Website<i class="fas fa-external-link-alt"></i></a></div>
+          <% availableAppointments = this.lodash.orderBy(this.lodash.filter(appointments, 'appointments_available').filter((s) => this.luxon.DateTime.fromISO(s.appointments_last_fetched) >= this.luxon.DateTime.utc().minus({ minutes: 45 })), ['city', 'address']) %>
+          <% if(availableAppointments.length > 0) { %>
+            <% availableAppointments.forEach((store) => { %>
+              <%- include('./_includes/krogerAppointment', { store }) %>
             <% }) %>
           <% } else { %>
             <p class="mb-0">No appointments available at any locations as of last check.</p>
@@ -539,6 +562,29 @@ permalink: "<%= state.code %>/"
           <% } %>
         <% } %>
 
+        <% if (stores?.[state.code]?.thrifty_white) { %>
+          <% appointments = this.lodash.orderBy(stores[state.code].thrifty_white.filter((s) => s.appointments_last_fetched), ['appointments_last_fetched'], ['desc']) %>
+          <% lastFetched = appointments?.[0]?.appointments_last_fetched %>
+          <% if(!lastFetched && !appointments?.[0]?.carries_vaccine) { %>
+            <% lastFetched = (new Date()).toISOString() %>
+          <% } %>
+          <% lastFetchedDate = (lastFetched) ? new Date(lastFetched) : null %>
+          <% providerLastFetched.thrifty_white = lastFetchedDate %>
+          <h2 class="brand" data-last-fetched="<%= lastFetched %>">Thrifty White Appointments</h2>
+          <div class="brand-link"><a href="https://www.thriftywhite.com/covid19vaccine" target="_blank">Thrifty White Website<i class="fas fa-external-link-alt"></i></a></div>
+          <% availableAppointments = this.lodash.orderBy(this.lodash.filter(appointments, 'appointments_available').filter((s) => this.luxon.DateTime.fromISO(s.appointments_last_fetched) >= this.luxon.DateTime.utc().minus({ minutes: 45 })), ['city', 'address']) %>
+          <% if(availableAppointments.length > 0) { %>
+            <% availableAppointments.forEach((store) => { %>
+              <%- include('./_includes/thriftyWhiteAppointment', { store }) %>
+            <% }) %>
+          <% } else { %>
+            <p class="mb-0">No appointments available at any locations as of last check.</p>
+            <% if(lastFetched) { %>
+              <p class="card-text text-secondary"><small>Last checked <%- include('/localTime', { time: lastFetchedDate, timeZone: 'America/New_York' }) %></small></p>
+            <% } %>
+          <% } %>
+        <% } %>
+
         <% if (stores?.[state.code]?.walgreens) { %>
           <% appointments = this.lodash.orderBy(stores[state.code].walgreens.filter((s) => s.appointments_last_fetched), ['appointments_last_fetched'], ['desc']) %>
           <% lastFetched = appointments?.[0]?.appointments_last_fetched %>
@@ -584,29 +630,6 @@ permalink: "<%= state.code %>/"
             <% } %>
           <% } %>
         <% } %>
-
-        <% if (stores?.[state.code]?.kroger) { %>
-          <% appointments = this.lodash.orderBy(stores[state.code].kroger, ['lastFetched'], ['desc']) %>
-          <% lastFetched = appointments?.[0]?.lastFetched %>
-          <% if(!lastFetched && !appointments?.[0]?.carries_vaccine) { %>
-            <% lastFetched = (new Date()).toISOString() %>
-          <% } %>
-          <% lastFetchedDate = (lastFetched) ? new Date(lastFetched) : null %>
-          <% providerLastFetched.kroger = lastFetchedDate %>
-          <h2 class="brand" data-last-fetched="<%= lastFetched %>">King Soopers, City Market Pharmacy Appointments</h2>
-          <div class="brand-link"><a href="https://www.kingsoopers.com/rx/covid-eligibility" target="_blank">King Soopers Pharmacy Website<i class="fas fa-external-link-alt"></i></a></div>
-          <% availableAppointments = this.lodash.filter(appointments.filter((s) => this.luxon.DateTime.fromISO(s.lastFetched) >= this.luxon.DateTime.utc().minus({ minutes: 45 })), (o) => o.appointments && o.appointments.dates && this.lodash.some(o.appointments.dates, (d) => d.slots && d.slots.length > 0)) %>
-          <% if(availableAppointments.length > 0) { %>
-            <% availableAppointments.forEach((store) => { %>
-              <%- include('./_includes/krogerAppointment', { store }) %>
-            <% }) %>
-          <% } else { %>
-            <p class="mb-0">No appointments available at any locations as of last check.</p>
-            <% if(lastFetched) { %>
-              <p class="card-text text-secondary"><small>Last checked <%- include('/localTime', { time: lastFetchedDate, timeZone: 'America/New_York' }) %></small></p>
-            <% } %>
-          <% } %>
-        <% } %>
       </div>
     </main>
     <footer class="mt-3">
@@ -630,6 +653,9 @@ permalink: "<%= state.code %>/"
           <% } %>
           <% if (stores?.[state.code]?.sams_club) { %>
             <li><strong>Sam's Club:</strong> Last checked <%- include('/localTime', { time: providerLastFetched.sams_club, timeZone: 'America/New_York' }).replace(/\s*$/, '') %>. Checking all <%= stores[state.code].sams_club.length %> <%= (stores[state.code].sams_club.length === 1) ? 'store' : 'stores' %> in <%= state.code %>.</li>
+          <% } %>
+          <% if (stores?.[state.code]?.thrifty_white) { %>
+            <li><strong>Thrifty White:</strong> Last checked <%- include('/localTime', { time: providerLastFetched.thrifty_white, timeZone: 'America/New_York' }).replace(/\s*$/, '') %>. Checking all <%= stores[state.code].thrifty_white.length %> <%= (stores[state.code].thrifty_white.length === 1) ? 'store' : 'stores' %> in <%= state.code %>.</li>
           <% } %>
           <% if (stores?.[state.code]?.walgreens) { %>
             <li><strong>Walgreens:</strong> Last checked <%- include('/localTime', { time: providerLastFetched.walgreens, timeZone: 'America/New_York' }).replace(/\s*$/, '') %>. Checking all <%= stores[state.code].walgreens.length %> <%= (stores[state.code].walgreens.length === 1) ? 'store' : 'stores' %> in <%= state.code %>.</li>

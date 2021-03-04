@@ -3,11 +3,10 @@ const fs = require("fs").promises;
 const stringify = require("json-stable-stringify");
 const path = require("path");
 const logger = require("../logger");
-const getDatabase = require("../getDatabase");
 const { Store } = require("../models/Store");
 const { State } = require("../models/State");
 
-async function writeStoreData(dataPath, brand) {
+async function writeStoreData(dataPath, brand, conditions = {}) {
   logger.info(`Writing data for ${brand}`);
   const storeSelect = Store.knex().raw(`
     state,
@@ -37,6 +36,7 @@ async function writeStoreData(dataPath, brand) {
     .select(storeSelect)
     .from("stores")
     .where("brand", brand)
+    .where(conditions)
     .whereNotNull("state")
     .groupBy("state")
     .orderBy("state");
@@ -61,11 +61,6 @@ async function runShell(...args) {
 module.exports.refreshWebsite = async () => {
   logger.notice("Begin refreshing website...");
 
-  const db = await getDatabase();
-  const { container: krogerStores } = await db.containers.createIfNotExists({
-    id: "kroger_stores",
-  });
-
   const dataPath = path.resolve("site/api/v0");
   await runShell("rm", ["-rf", "_site_build", dataPath]);
   await runShell("mkdir", ["-p", dataPath]);
@@ -82,7 +77,7 @@ module.exports.refreshWebsite = async () => {
   try {
     await writeStoreData(dataPath, "albertsons");
   } catch (err) {
-    logger.info("CVS Data Error: ", err);
+    logger.info("Albertsons Data Error: ", err);
   }
 
   try {
@@ -97,13 +92,11 @@ module.exports.refreshWebsite = async () => {
     logger.info("H-E-B Data Error: ", err);
   }
 
-  const { resources: krogerData } = await krogerStores.items
-    .query("SELECT * from c ORDER BY c.id")
-    .fetchAll();
-  await fs.writeFile(
-    `${dataPath}/stores/CO/kroger.json`,
-    stringify(krogerData, { space: "  " })
-  );
+  try {
+    await writeStoreData(dataPath, "kroger", { state: "CO" });
+  } catch (err) {
+    logger.info("Kroger Data Error: ", err);
+  }
 
   try {
     await writeStoreData(dataPath, "pharmaca");
@@ -121,6 +114,12 @@ module.exports.refreshWebsite = async () => {
     await writeStoreData(dataPath, "sams_club");
   } catch (err) {
     logger.info("Sam's Club Data Error: ", err);
+  }
+
+  try {
+    await writeStoreData(dataPath, "thrifty_white");
+  } catch (err) {
+    logger.info("Thrifty White Data Error: ", err);
   }
 
   try {
