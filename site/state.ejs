@@ -856,6 +856,9 @@ permalink: "<%= state.code %>/"
         // REMOVED because this may skip providers who will carry it down the road
         //if (item.carries_vaccine != true) return;
 
+        // No point will be exactly zero,zero
+        if (item.latitude == null || item.latitude == 0 || item.longitude == null || item.longitude == 0) return;
+
         // Bootstrap default success and danger colors
         var color = item.appointments_available == true ? "#28a745" : "#dc3545";
 
