@@ -881,11 +881,11 @@ permalink: "<%= state.code %>/"
         // Bind the popup
         item.marker.bindPopup(
           "<p>" +
-          (item.name != null ? "<span class='font-weight-bold'>" + item.name + "</span><br /><br />" : "")
+          (item.name != null ? "<span class='fw-bold'>" + item.name + "</span><br /><br />" : "")
           +
-            (item.is_stale ? "<span class='text-danger font-weight-bold'>STALE DATA</span><br />" : "")
+            (item.is_stale ? "<span class='text-danger fw-bold'>STALE DATA</span><br />" : "")
             +
-            "<span class='font-weight-bold'>Appointments Available:</span> " + (item.appointments_available == true ? "Yes" : "No") + "<br />"
+            "<span class='fw-bold'>Appointments Available:</span> " + (item.appointments_available == true ? "Yes" : "No") + "<br />"
             +
             (item.address != null && item.city != null && item.state != null && item.postal_code != null ? item.address + "<br />" + item.city + ", " + item.state + " " + item.postal_code + "<br />" : "")
           + "</p>"
