@@ -102,6 +102,13 @@ permalink: "<%= state.code %>/all/"
           <% }) %>
         <% } %>
 
+        <% if (stores?.[state.code]?.thrifty_white) { %>
+          <h2>Thrifty White Appointments</h2>
+          <% this.lodash.orderBy(stores[state.code].thrifty_white, ['city', 'address']).forEach((store) => { %>
+            <%- include('./_includes/thriftyWhiteAppointment', { store }) %>
+          <% }) %>
+        <% } %>
+
         <% if (stores?.[state.code]?.walgreens) { %>
           <h2>Walgreens Appointments</h2>
           <% this.lodash.orderBy(stores[state.code].walgreens, ['city'], ['address']).forEach((store) => { %>

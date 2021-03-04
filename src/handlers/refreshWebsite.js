@@ -117,6 +117,12 @@ module.exports.refreshWebsite = async () => {
   }
 
   try {
+    await writeStoreData(dataPath, "thrifty_white");
+  } catch (err) {
+    logger.info("Thrifty White Data Error: ", err);
+  }
+
+  try {
     await writeStoreData(dataPath, "walgreens");
   } catch (err) {
     logger.info("Walgreens Data Error: ", err);
