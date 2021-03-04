@@ -791,15 +791,23 @@ permalink: "<%= state.code %>/"
           
           // We determine if it is green (all open), yellow (some open), or red (none open)
           var p = points.filter(function(a) { return ids.includes(a.id) });
+          var stale =p.filter(function(a) { return a.is_stale == true }); 
           var open = p.filter(function(a) { return a.appointments_available == true });
 
-          if (p.length == open.length) {
+          if (p.length == stale.length) {
+            // Everything is stale
+            colorClass = "bg-secondary";
+            textClass = "text-white";
+          } else if (p.length == open.length) {
+            // Everything is current + has appointments
             colorClass = "bg-success";
             textClass = "text-white";
           } else if (open.length == 0) {
+            // Everything doesn't have appointments
             colorClass = "bg-danger";
             textClass = "text-white";
           } else {
+            // Mixture
             colorClass = "bg-warning";
             textClass = "text-dark";
           }
@@ -860,8 +868,10 @@ permalink: "<%= state.code %>/"
         if (item.latitude == null || item.latitude == 0 || item.longitude == null || item.longitude == 0) return;
 
         // Bootstrap default success and danger colors
-        var color = item.appointments_available == true ? "#28a745" : "#dc3545";
-        var size = item.appointments_available == true ? 6 : 3;
+        var last_fetched = Date.parse(item.appointments_last_fetched);
+        item.is_stale = isNaN(last_fetched) || last_fetched < (Date.now() - 1000 * 60 * 30);
+        var color = item.is_stale ? "#6c757d" : (item.appointments_available == true ? "#28a745" : "#dc3545");
+        var size = !item.is_stale && item.appointments_available == true ? 6 : 3;
 
         item.marker = L.circleMarker({lat: item.latitude, lon: item.longitude}, {radius: size, color: color, fillOpacity: 1, fillColor: color});
 
@@ -873,6 +883,8 @@ permalink: "<%= state.code %>/"
           "<p>" +
           (item.name != null ? "<span class='font-weight-bold'>" + item.name + "</span><br /><br />" : "")
           +
+            (item.is_stale ? "<span class='text-danger font-weight-bold'>STALE DATA</span><br />" : "")
+            +
             "<span class='font-weight-bold'>Appointments Available:</span> " + (item.appointments_available == true ? "Yes" : "No") + "<br />"
             +
             (item.address != null && item.city != null && item.state != null && item.postal_code != null ? item.address + "<br />" + item.city + ", " + item.state + " " + item.postal_code + "<br />" : "")
