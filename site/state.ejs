@@ -821,8 +821,8 @@ permalink: "<%= state.code %>/"
           
           // We determine if it is green (all open), yellow (some open), or red (none open)
           var p = points.filter(function(a) { return ids.includes(a.id) });
-          var stale =p.filter(function(a) { return a.is_stale == true }); 
-          var open = p.filter(function(a) { return a.appointments_available == true });
+          var stale = p.filter(function(a) { return a.is_stale });
+          var open = p.filter(function(a) { return !a.is_stale && a.appointments_available == true });
 
           if (p.length == stale.length) {
             // Everything is stale
@@ -844,6 +844,31 @@ permalink: "<%= state.code %>/"
 
           return L.divIcon({ html: "<div class='" + colorClass + " "  + textClass + "'><span>" + p.length + "</span></div>", className: 'marker-cluster ' + colorClass, iconSize: L.point(40, 40) });
         }
+      }).on('clustermouseover', function(c) {
+        var markers = c.layer.getAllChildMarkers();
+        var ids = markers.map(function(item) { return item.sourceId; });
+
+        var p = points.filter(function(a) { return ids.includes(a.id) });
+        var stale = p.filter(function(a) { return a.is_stale }).length;
+        var open = p.filter(function(a) { return !a.is_stale && a.appointments_available == true }).length;
+        var closed = p.filter(function(a) { return !a.is_stale && a.appointments_available != true }).length;
+
+        var popup = L.popup()
+          .setLatLng(c.layer.getLatLng())
+          .setContent(
+            markers.length +' Locations <br />'
+            +
+            "Available: " + open + "<br />"
+            +
+            "Not Available: " + closed + "<br />"
+            +
+            "Stale: " + stale
+          )
+          .openOn(map);
+      }).on('clustermouseout',function(c){
+        map.closePopup();
+      }).on('clusterclick',function(c){
+        map.closePopup();
       });
 
       function loadMap() {
