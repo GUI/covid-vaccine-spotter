@@ -942,9 +942,10 @@ permalink: "<%= state.code %>/"
             +
             (item.is_stale ? "<span class='text-danger fw-bold'>STALE DATA</span><br />" : "")
             +
-            (item.address != null && item.city != null && item.state != null && item.postal_code != null ? item.address + "<br />" + item.city + ", " + item.state + " " + item.postal_code + "<br />" : "")
+            (item.address != null && item.city != null && item.state != null && item.postal_code != null ? item.address + "<br />" + item.city + ", " + item.state + " " + item.postal_code : "")
             +
-            "<a href='#store-" + item.id + "' class='text-primary'>Link</a>"
+            // Only show the link when appointments are available, otherwise the anchors don't exist
+            (item.appointments_available == true ? "<br /><a href='#store-" + item.id + "' class='text-primary'>Link</a>" : "")
           + "</p>"
         );
 
