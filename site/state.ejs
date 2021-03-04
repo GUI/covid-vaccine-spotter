@@ -357,6 +357,26 @@ permalink: "<%= state.code %>/"
 
     <!-- Open Street Map helper for Leaflet -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-providers/1.11.0/leaflet-providers.min.js" integrity="sha512-TO+Wd5hbpDsACTmvzSqAZL83jMQCXGRFNoS4WZxcxrlJBTdgMYaT7g5uX49C5+Kbuxzlg2A+TFJ6UqdsXuOKLw==" crossorigin="anonymous"></script>
+
+    <!-- Colors for clustering -->
+    <style type="text/css">
+    /* These are BS colors with alpha applied */
+    .marker-cluster.bg-secondary {
+      background: rgba(108, 117, 125, 0.4) !important;
+    }
+    
+    .marker-cluster.bg-success {
+      background: rgba(40, 167, 69, 0.4) !important;
+    }
+    
+    .marker-cluster.bg-warning {
+      background: rgba(255, 193, 7, 0.4) !important;
+    }
+    
+    .marker-cluster.bg-danger {
+      background: rgba(220, 53, 69, 0.4) !important;
+    }
+    </style>
   </head>
   <body>
     <header>
@@ -822,7 +842,7 @@ permalink: "<%= state.code %>/"
             textClass = "text-dark";
           }
 
-          return L.divIcon({ html: "<div class='" + textClass + "'><span>" + p.length + "</span></div>", className: 'marker-cluster ' + colorClass, iconSize: L.point(40, 40) });
+          return L.divIcon({ html: "<div class='" + colorClass + " "  + textClass + "'><span>" + p.length + "</span></div>", className: 'marker-cluster ' + colorClass, iconSize: L.point(40, 40) });
         }
       });
 
@@ -881,7 +901,7 @@ permalink: "<%= state.code %>/"
         var last_fetched = Date.parse(item.appointments_last_fetched);
         item.is_stale = isNaN(last_fetched) || last_fetched < (Date.now() - 1000 * 60 * 30);
         var color = item.is_stale ? "#6c757d" : (item.appointments_available == true ? "#28a745" : "#dc3545");
-        var size = !item.is_stale && item.appointments_available == true ? 6 : 3;
+        var size = !item.is_stale && item.appointments_available == true ? 10 : 5;
 
         item.marker = L.circleMarker({lat: item.latitude, lon: item.longitude}, {radius: size, color: color, fillOpacity: 1, fillColor: color});
 
