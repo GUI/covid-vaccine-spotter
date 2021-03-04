@@ -54,7 +54,7 @@ class KrogerAuth {
 
         await KrogerAuth.ensureBrowserClosed();
         KrogerAuth.browser = await firefox.launch({
-          headless: false,
+          headless: true,
           /*
           proxy: {
             server: process.env.PROXY_RANDOM_SERVER,
