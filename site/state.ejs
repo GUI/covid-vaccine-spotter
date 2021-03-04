@@ -740,6 +740,124 @@ permalink: "<%= state.code %>/"
       }
     </script>
 
+    <script type="text/javascript">
+      // List of JSON sources to load for this state
+      const list = [
+        <% for (const state of this.lodash.orderBy(states, 'code')) { %>
+          <% if (stores?.[state.code]) { %>
+            <% for (const brand of Object.keys(stores?.[state.code]).sort()) { %>
+              "/api/v0/stores/<%= state.code %>/<%= brand %>.json",
+            <% } %>
+          <% } %>
+        <% } %>
+      ];
+
+      var map = null;
+      var points = [];
+
+      var markers = L.markerClusterGroup({
+        showCoverageOnHover: false,
+        iconCreateFunction: function (cluster) {
+          var markers = cluster.getAllChildMarkers();
+          var ids = markers.map(function(item) { return item.sourceId; });
+          
+          // We determine if it is green (all open), yellow (some open), or red (none open)
+          var p = points.filter(function(a) { return ids.includes(a.id) });
+          var open = p.filter(function(a) { return a.appointments_available == true });
+
+          if (p.length == open.length) {
+            colorClass = "bg-success";
+            textClass = "text-white";
+          } else if (open.length == 0) {
+            colorClass = "bg-danger";
+            textClass = "text-white";
+          } else {
+            colorClass = "bg-warning";
+            textClass = "text-dark";
+          }
+
+          return L.divIcon({ html: "<div class='" + textClass + "'><span>" + p.length + "</span></div>", className: 'marker-cluster ' + colorClass, iconSize: L.point(40, 40) });
+        }
+      });
+
+      function loadMap() {
+        // Start in the center of the contiguous US
+        map = L.map('map').setView([39.8282, -98.5696], 6);
+
+        // Add the OSM layer
+        new L.OSM.Mapnik().addTo(map);
+
+        // Add the marker layer
+        map.addLayer(markers);
+
+        // Need to go through and load each source
+        $.each(list, function(index, value) { $.getJSON(value, null, loadSource) });
+      }
+
+      function fitNewBounds() {
+        if (points.length == 0) return;
+
+        var llon = Math.min(...points.map(function(a) { return a.longitude }));
+        var ulon = Math.max(...points.map(function(a) { return a.longitude }));
+        var llat = Math.min(...points.map(function(a) { return a.latitude }));
+        var ulat = Math.max(...points.map(function(a) { return a.latitude }));
+
+        if (isNaN(llon) || isNaN(ulon) || isNaN(llat) || isNaN(ulat)) return;
+
+        map.fitBounds([
+            [ulat, llon],
+            [llat, ulon]
+        ]);
+      }
+
+      function loadSource(data, textStatus) {
+        // We've loaded a list, need to add it to our points
+        data.forEach(function(item) {
+          // If we're on the list, skip for now
+          //if (points.filter(function (a) { a.id == item.id }).length > 0) continue;
+
+          // New point, let's work it
+          addPoint(item);
+        });
+
+        fitNewBounds();
+      }
+
+      function addPoint(item) {
+        // If they don't carry vaccine, we do nothing
+        // REMOVED because this may skip providers who will carry it down the road
+        //if (item.carries_vaccine != true) return;
+
+        // Bootstrap default success and danger colors
+        var color = item.appointments_available == true ? "#28a745" : "#dc3545";
+
+        item.marker = L.circleMarker({lat: item.latitude, lon: item.longitude}, {radius: 5, color: color, fillOpacity: 1, fillColor: color});
+
+        // Save the ID to the marker because we will reference it later
+        item.marker.sourceId = item.id;
+
+        // Bind the popup
+        item.marker.bindPopup(
+          "<p>" +
+          (item.name != null ? "<span class='font-weight-bold'>" + item.name + "</span><br /><br />" : "")
+          +
+            "<span class='font-weight-bold'>Appointments Available:</span> " + (item.appointments_available == true ? "Yes" : "No") + "<br />"
+            +
+            (item.address != null && item.city != null && item.state != null && item.postal_code != null ? item.address + "<br />" + item.city + ", " + item.state + " " + item.postal_code + "<br />" : "")
+          + "</p>"
+        );
+
+        // Add to the map
+        markers.addLayer(item.marker);
+
+        // Add to our list
+        points.push(item);
+      }
+
+      /* On load functions */
+      $(function() { loadMap(); });
+    </script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/custom-elements/1.4.3/custom-elements.min.js" integrity="sha512-PLDz+cN5TNZKRezSF9Zk+n/TTHG6ISM466kmCQkFcIkp4Mw+1S15qnvEsd5pyMNOlOMp9hGz6YS9eusXqh0rnA==" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/@github/time-elements@3.1.1"></script>
   </body>
