@@ -861,8 +861,9 @@ permalink: "<%= state.code %>/"
 
         // Bootstrap default success and danger colors
         var color = item.appointments_available == true ? "#28a745" : "#dc3545";
+        var size = item.appointments_available == true ? 6 : 3;
 
-        item.marker = L.circleMarker({lat: item.latitude, lon: item.longitude}, {radius: 5, color: color, fillOpacity: 1, fillColor: color});
+        item.marker = L.circleMarker({lat: item.latitude, lon: item.longitude}, {radius: size, color: color, fillOpacity: 1, fillColor: color});
 
         // Save the ID to the marker because we will reference it later
         item.marker.sourceId = item.id;
