@@ -21,6 +21,8 @@ This process is clunky right now, so my apologies.
     * `curl -o site/api/v0/stores/CO/walmart.json https://www.vaccinespotter.org/api/v0/stores/CO/walmart.json`
 4. To run the development server for the website: `yarn run eleventy --serve`. The development site should then be available at http://localhost:8080/.
 
+TODO: While this should cover running the website with existing, this doesn't cover running the database and other pieces necessary for working on the scanners or other backend pieces. Still need to document that part.
+
 ## Very Beta API
 
 All of the data being collected is published as JSON files here: https://www.vaccinespotter.org/api/
