@@ -93,6 +93,12 @@ module.exports.refreshWebsite = async () => {
   }
 
   try {
+    await writeStoreData(dataPath, "hyvee");
+  } catch (err) {
+    logger.info("Hy-Vee Data Error: ", err);
+  }
+
+  try {
     await writeStoreData(dataPath, "kroger", { state: "CO" });
   } catch (err) {
     logger.info("Kroger Data Error: ", err);

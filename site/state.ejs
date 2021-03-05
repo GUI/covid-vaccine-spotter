@@ -16,6 +16,9 @@ permalink: "<%= state.code %>/"
 <% if (stores?.[state.code]?.heb) { %>
   <% storesScanning.push("H-E-B") %>
 <% } %>
+<% if (stores?.[state.code]?.hyvee) { %>
+  <% storesScanning.push("Hy-Vee") %>
+<% } %>
 <% if (stores?.[state.code]?.kroger) { %>
   <% storesScanning.push("King Soopers/City Market") %>
 <% } %>
@@ -382,7 +385,7 @@ permalink: "<%= state.code %>/"
         </div>
 
         <div class="alert alert-info" role="alert">
-          <p class="mb-0"><strong>03/03/2021:</strong> <strong>Thrifty White</strong> locations are now being scanned in all supported states (Iowa, Minnesota, and North Dakota). 🥳 Hope these additional locations help you! Any feedback is welcome: <a href="m&#97;ilto&#58;v%&#54;1&#99;&#99;&#105;ne&#64;nic&#107;%6D&#46;org">vacc&#105;ne&#64;ni&#99;k&#109;&#46;o&#114;&#103;</a> or <a href="https://twitter.com/nickblah">@nickblah</a>. And if you're a coder and have interest in helping out on <a href="https://github.com/GUI/covid-vaccine-finder/issues">GitHub</a>, that would be dandy (although the code's still messy)!</p>
+          <p class="mb-0"><strong>03/05/2021:</strong> <strong>Hy-Vee</strong> locations are now being scanned in all supported states (Illinois, Iowa, Kansas, Minnesota, Missouri, Nebraska, South Dakota, and Wisconsin). 🌟 Hope these additional locations help you! Any feedback is welcome: <a href="m&#97;ilto&#58;v%&#54;1&#99;&#99;&#105;ne&#64;nic&#107;%6D&#46;org">vacc&#105;ne&#64;ni&#99;k&#109;&#46;o&#114;&#103;</a> or <a href="https://twitter.com/nickblah">@nickblah</a>. And if you're a coder and have interest in helping out on <a href="https://github.com/GUI/covid-vaccine-finder/issues">GitHub</a>, that would be dandy (although the code's still messy)!</p>
         </div>
 
         <% if (stores?.[state.code]?.cvs) { %>
@@ -422,6 +425,29 @@ permalink: "<%= state.code %>/"
           <% if(availableAppointments.length > 0) { %>
             <% availableAppointments.forEach((store) => { %>
               <%- include('./_includes/hebAppointment', { store }) %>
+            <% }) %>
+          <% } else { %>
+            <p class="mb-0">No appointments available at any locations as of last check.</p>
+            <% if(lastFetched) { %>
+              <p class="card-text text-secondary"><small>Last checked <%- include('/localTime', { time: lastFetchedDate, timeZone: 'America/New_York' }) %></small></p>
+            <% } %>
+          <% } %>
+        <% } %>
+
+        <% if (stores?.[state.code]?.hyvee) { %>
+          <% appointments = this.lodash.orderBy(stores[state.code].hyvee.filter((s) => s.appointments_last_fetched), ['appointments_last_fetched'], ['desc']) %>
+          <% lastFetched = appointments?.[0]?.appointments_last_fetched %>
+          <% if(!lastFetched && !appointments?.[0]?.carries_vaccine) { %>
+            <% lastFetched = (new Date()).toISOString() %>
+          <% } %>
+          <% lastFetchedDate = (lastFetched) ? new Date(lastFetched) : null %>
+          <% providerLastFetched.hyvee = lastFetchedDate %>
+          <h2 class="brand" data-last-fetched="<%= lastFetched %>">Hy-Vee Pharmacy Appointments</h2>
+          <div class="brand-link"><a href="https://www.hy-vee.com/my-pharmacy/covid-vaccine-consent" target="_blank">Hy-Vee Pharmacy Website<i class="fas fa-external-link-alt"></i></a></div>
+          <% availableAppointments = this.lodash.orderBy(this.lodash.filter(appointments, 'appointments_available').filter((s) => this.luxon.DateTime.fromISO(s.appointments_last_fetched) >= this.luxon.DateTime.utc().minus({ minutes: 45 })), ['city', 'address']) %>
+          <% if(availableAppointments.length > 0) { %>
+            <% availableAppointments.forEach((store) => { %>
+              <%- include('./_includes/hyveeAppointment', { store }) %>
             <% }) %>
           <% } else { %>
             <p class="mb-0">No appointments available at any locations as of last check.</p>
@@ -624,7 +650,10 @@ permalink: "<%= state.code %>/"
             <li><strong>CVS:</strong> Last checked <%- include('/localTime', { time: providerLastFetched.cvs, timeZone: 'America/New_York' }).replace(/\s*$/, '') %>. Checking <%= stores[state.code].cvs.length %> <%= (stores[state.code].cvs.length === 1) ? 'city' : 'cities' %> (new cities will be added as CVS adds them).</li>
           <% } %>
           <% if (stores?.[state.code]?.heb) { %>
-            <li><strong>H-E-B Pharmacy:</strong> Last checked <%- include('/localTime', { time: providerLastFetched.heb, timeZone: 'America/New_York' }).replace(/\s*$/, '') %>. Checking <%= stores[state.code].heb.length %> <%= (stores[state.code].heb.length === 1) ? 'city' : 'cities' %> (new cities will be added as CVS adds them).</li>
+            <li><strong>H-E-B Pharmacy:</strong> Last checked <%- include('/localTime', { time: providerLastFetched.heb, timeZone: 'America/New_York' }).replace(/\s*$/, '') %>. Checking all <%= stores[state.code].heb.length %> <%= (stores[state.code].heb.length === 1) ? 'store' : 'stores' %> in <%= state.code %>.</li>
+          <% } %>
+          <% if (stores?.[state.code]?.hyvee) { %>
+            <li><strong>Hy-Vee Pharmacy:</strong> Last checked <%- include('/localTime', { time: providerLastFetched.hyvee, timeZone: 'America/New_York' }).replace(/\s*$/, '') %>. Checking all <%= stores[state.code].hyvee.length %> <%= (stores[state.code].hyvee.length === 1) ? 'store' : 'stores' %> in <%= state.code %>.</li>
           <% } %>
           <% if (stores?.[state.code]?.pharmaca) { %>
             <li><strong>Pharmaca:</strong> Last checked <%- include('/localTime', { time: providerLastFetched.pharmaca, timeZone: 'America/New_York' }).replace(/\s*$/, '') %>. Checking all <%= stores[state.code].pharmaca.length %> <%= (stores[state.code].pharmaca.length === 1) ? 'store' : 'stores' %> in <%= state.code %>.</li>

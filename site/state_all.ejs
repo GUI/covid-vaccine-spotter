@@ -67,6 +67,13 @@ permalink: "<%= state.code %>/all/"
           <% }) %>
         <% } %>
 
+        <% if (stores?.[state.code]?.hyvee) { %>
+          <h2>Hy-Vee Pharmacy Appointments</h2>
+          <% this.lodash.orderBy(stores[state.code].hyvee, ['city', 'address']).forEach((store) => { %>
+            <%- include('./_includes/hyveeAppointment', { store }) %>
+          <% }) %>
+        <% } %>
+
         <% if (stores?.[state.code]?.kroger) { %>
           <h2>King Soopers, City Market Appointments</h2>
           <% this.lodash.orderBy(stores[state.code].kroger, ['city', 'address']).forEach((store) => { %>
