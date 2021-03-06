@@ -1,7 +1,9 @@
 {
   "scripts": {
     "start": "func host start --verbose",
-    "lint": "eslint 'src/**/*.js' 'migrations/**/*.js' '*.js'"
+    "lint": "eslint 'src/**/*.js' 'migrations/**/*.js' '*.js'",
+    "dev": "./scripts/setupDev.sh",
+    "serve": "yarn run eleventy --serve"
   },
   "dependencies": {
     "@11ty/eleventy": "^0.11.1",
