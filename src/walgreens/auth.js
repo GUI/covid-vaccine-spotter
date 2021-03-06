@@ -10,8 +10,6 @@ const { PlaywrightBlocker } = require("@cliqz/adblocker-playwright");
 const fetch = require("cross-fetch");
 const logger = require("../logger");
 
-console.info(PlaywrightBlocker);
-
 firefox.use(
   HumanizePlugin({
     mouse: {
@@ -49,11 +47,11 @@ const Auth = {
 
       const page = await context.newPage();
 
-      const blocker = await PlaywrightBlocker.fromPrebuiltAdsAndTracking(fetch); // ads and tracking
+      const blocker = await PlaywrightBlocker.fromPrebuiltAdsAndTracking(fetch);
       await blocker.enableBlockingInPage(page);
 
       blocker.on("request-blocked", (request) => {
-        logger.debug("blocked", request.url);
+        logger.debug("Blocked:", request.url);
       });
 
       logger.info("Navigating to login page...");

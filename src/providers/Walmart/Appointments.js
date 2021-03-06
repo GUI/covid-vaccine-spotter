@@ -5,17 +5,17 @@ const _ = require("lodash");
 const { DateTime } = require("luxon");
 const got = require("got");
 const sleep = require("sleep-promise");
-const logger = require("../logger");
-const walmartAuth = require("../walmart/auth");
-const { Store } = require("../models/Store");
+const logger = require("../../logger");
+const Auth = require("./Auth");
+const { Store } = require("../../models/Store");
 
 const authMutex = new Mutex();
 
-const Walmart = {
-  refreshStores: async () => {
+class Appointments {
+  static async refreshStores() {
     logger.notice("Begin refreshing appointments for all stores...");
 
-    const queue = new PQueue({ concurrency: 5 });
+    const queue = new PQueue({ concurrency: 10 });
 
     const stores = await Store.query()
       .where("brand", "walmart")
@@ -24,14 +24,14 @@ const Walmart = {
       )
       .orderByRaw("appointments_last_fetched NULLS FIRST");
     for (const [index, store] of stores.entries()) {
-      queue.add(() => Walmart.refreshStore(store, index, stores.length));
+      queue.add(() => Appointments.refreshStore(store, index, stores.length));
     }
     await queue.onIdle();
 
     logger.notice("Finished refreshing appointments for all stores.");
-  },
+  }
 
-  refreshStore: async (store, index, count) => {
+  static async refreshStore(store, index, count) {
     logger.info(
       `Processing ${store.name} #${store.brand_id} (${
         index + 1
@@ -47,9 +47,9 @@ const Walmart = {
       appointments_raw: {},
     };
 
-    const slotsResp = await retry(async () => Walmart.fetchSlots(store), {
+    const slotsResp = await retry(async () => Appointments.fetchSlots(store), {
       retries: 2,
-      onFailedAttempt: Walmart.onFailedAttempt,
+      onFailedAttempt: (err) => Appointments.onFailedAttempt(err, store),
     });
 
     patch.appointments_raw = slotsResp.body;
@@ -77,10 +77,10 @@ const Walmart = {
     await Store.query().findById(store.id).patch(patch);
 
     await sleep(_.random(250, 750));
-  },
+  }
 
-  fetchSlots: async (store) => {
-    const auth = await authMutex.runExclusive(walmartAuth.get);
+  static async fetchSlots(store) {
+    const auth = await authMutex.runExclusive(Auth.get);
     const now = DateTime.now().setZone(store.time_zone);
     try {
       return await got.post(
@@ -111,20 +111,15 @@ const Walmart = {
       }
       throw err;
     }
-  },
+  }
 
-  onFailedAttempt: async (err) => {
-    logger.warn(err);
-    logger.warn(err?.response?.body);
+  static onFailedAttempt(err, store) {
     logger.warn(
-      `Error fetching data (${err?.response?.statusCode}), attempting to refresh auth and then retry.`
+      `Error fetching data for ${store.name} #${store.brand_id} (${err?.response?.statusCode}), retrying (attempt ${err.attemptNumber}, retries left ${err.retriesLeft})`
     );
-    if (!authMutex.isLocked()) {
-      await authMutex.runExclusive(walmartAuth.refresh);
-    }
-  },
-};
+    logger.info(err);
+    logger.info(err?.response?.body);
+  }
+}
 
-module.exports.refreshWalmart = async () => {
-  await Walmart.refreshStores();
-};
+module.exports = Appointments;
