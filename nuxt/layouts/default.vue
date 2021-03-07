@@ -12,9 +12,7 @@
       </div>
     </header>
     <main>
-      <div class="container">
-        <Nuxt />
-      </div>
+      <Nuxt />
     </main>
     <footer class="mt-3">
       <div class="container">

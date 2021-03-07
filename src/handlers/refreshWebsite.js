@@ -199,6 +199,25 @@ module.exports.refreshWebsite = async () => {
     );
   }
 
+  const postalCodeData = await State.knex().raw(`
+    SELECT
+      state_code,
+      jsonb_object_agg(
+        postal_code, jsonb_build_array(st_x(location::geometry), st_y(location::geometry))
+        ORDER BY postal_code
+      ) AS data
+    FROM postal_codes
+    GROUP BY state_code
+    ORDER BY state_code
+  `);
+  for (const state of postalCodeData.rows) {
+    await runShell("mkdir", ["-p", `${dataPath}/states/${state.state_code}`]);
+    await fs.writeFile(
+      `${dataPath}/states/${state.state_code}/postal_codes.json`,
+      JSON.stringify(state.data)
+    );
+  }
+
   try {
     await writeStoreData(dataPath, "albertsons");
   } catch (err) {

@@ -19,7 +19,6 @@ export default {
         rel: 'stylesheet',
         href:
           'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css',
-        rel: 'stylesheet',
         integrity:
           'sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl',
         crossorigin: 'anonymous',
@@ -40,7 +39,7 @@ export default {
   css: [],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [],
+  plugins: ['~/plugins/vuex-router-sync'],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -56,4 +55,10 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
+
+  vue: {
+    config: {
+      ignoredElements: ['local-time'],
+    },
+  },
 }

@@ -13,7 +13,11 @@
   "dependencies": {
     "@nuxt/http": "^0.6.4",
     "core-js": "^3.8.3",
-    "nuxt": "^2.14.12"
+    "geokdbush": "^1.1.0",
+    "kdbush": "^3.0.0",
+    "maplibre-gl": "^1.13.0-rc.5",
+    "nuxt": "^2.14.12",
+    "vuex-router-sync": "^5.0.0"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^5.0.0",
