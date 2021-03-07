@@ -49,7 +49,7 @@ class Appointments {
 
     const slotsResp = await retry(async () => Appointments.fetchSlots(store), {
       retries: 2,
-      onFailedAttempt: (err) => Appointments.onFailedAttempt(err, store),
+      onFailedAttempt: async (err) => Appointments.onFailedAttempt(err, store),
     });
 
     patch.appointments_raw = slotsResp.body;
@@ -113,12 +113,27 @@ class Appointments {
     }
   }
 
-  static onFailedAttempt(err, store) {
+  static async onFailedAttempt(err, store) {
     logger.warn(
-      `Error fetching data for ${store.name} #${store.brand_id} (${err?.response?.statusCode}), retrying (attempt ${err.attemptNumber}, retries left ${err.retriesLeft})`
+      `Error fetching data for ${store.name} #${store.brand_id} (${
+        err?.response?.statusCode
+      }), retrying (attempt ${err.attemptNumber}, retries left ${
+        err.retriesLeft
+      }): ${JSON.stringify(err?.response?.body)}`
     );
     logger.info(err);
     logger.info(err?.response?.body);
+
+    // message: 'Invalid session. Need to be logged in'
+    if (
+      err?.response?.statusCode === 400 &&
+      err.response?.body?.status === "1000"
+    ) {
+      logger.warn("Invalid session detected, refreshing auth.");
+      if (!authMutex.isLocked()) {
+        await authMutex.runExclusive(Auth.refresh);
+      }
+    }
   }
 }
 
