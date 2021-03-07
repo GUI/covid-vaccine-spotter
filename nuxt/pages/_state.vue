@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="container">
+    <div class="container-lg">
       <p class="lead text-center text-muted py-lg-4">DESCRIPTION</p>
 
       <div class="row mb-2">
@@ -30,8 +30,9 @@
               <a
                 href="https://covid19.colorado.gov/for-coloradans/vaccine/where-can-i-get-vaccinated"
                 class="btn btn-light fw-bold fs-5 text-primary"
-                >Visit Colorado.gov <i class="fas fa-arrow-alt-circle-right"></i
-              ></a>
+                >Visit Colorado.gov
+                <font-awesome-icon icon="arrow-alt-circle-right"
+              /></a>
             </template>
             <template v-else>
               <p class="lead">
@@ -91,33 +92,38 @@
       </div>
 
       <location-filters-form />
-      <div
-        v-if="filteredLocationsError"
-        class="alert alert-danger"
-        role="alert"
-      >
-        {{ filteredLocationsError }}
-      </div>
-      <div
-        v-else-if="filteredLocations.length === 0"
-        class="alert alert-warning"
-        role="alert"
-      >
-        No open appointments for your search can currently be found. Try
-        expanding your search or check again later (appointments can come and go
-        quickly).
-      </div>
     </div>
-    <div class="row">
-      <div class="col-sm-6">
-        <store
-          v-for="store in filteredLocations"
-          :key="store.id"
-          :store="store"
-        ></store>
-      </div>
-      <div class="col-sm-6">
-        <location-map />
+    <div class="container-fluid container-lg-no-padding">
+      <div class="row g-3 g-lg-0">
+        <div class="col-lg-6 col-map">
+          <location-map />
+        </div>
+        <div class="col-lg-6 col-list">
+          <div class="results-container">
+            <div
+              v-if="filteredLocationsError"
+              class="alert alert-danger"
+              role="alert"
+            >
+              {{ filteredLocationsError }}
+            </div>
+            <div
+              v-else-if="filteredLocations.length === 0"
+              class="alert alert-warning"
+              role="alert"
+            >
+              No open appointments for your search can currently be found. Try
+              expanding your search or check again later (appointments can come
+              and go quickly).
+            </div>
+
+            <store
+              v-for="store in filteredLocations"
+              :key="store.id"
+              :store="store"
+            ></store>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -135,8 +141,6 @@ export default {
     )
     */
 
-    console.info('store: ', store)
-    console.info('$store: ', $store)
     store.commit('regions/set', state)
     store.commit('postalCodes/set', postalCodes)
 
@@ -145,8 +149,6 @@ export default {
 
   computed: {
     filteredLocations() {
-      console.info('this.$store', this.$store)
-      console.info('this.$store.getters', this.$store.getters)
       return this.$store.getters['regions/getFilteredLocations']
     },
 
@@ -157,4 +159,28 @@ export default {
 }
 </script>
 
-<style></style>
+<style>
+@media (min-width: 992px) {
+  .container-lg-no-padding {
+    padding: 0px !important;
+  }
+
+  .container-lg-no-padding > .row {
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+  }
+
+  .container-lg-no-padding > .row > .col-map {
+    padding-right: 0.5rem;
+  }
+
+  .container-lg-no-padding > .row > .col-list {
+    padding-left: 0.5rem;
+    padding-right: 1rem;
+  }
+
+  .results-container .location-result:last-child {
+    margin-bottom: 0px !important;
+  }
+}
+</style>

@@ -1,7 +1,7 @@
 <template>
-  <form class="row location-filters" @submit.prevent="submitForm">
+  <form class="row g-2 location-filters" @submit.prevent="submitForm">
     <div class="col-sm">
-      <div class="row">
+      <div class="row g-2">
         <div class="col-sm">
           <label for="zip" class="form-label"
             >Search for appointments near</label
@@ -85,13 +85,9 @@ export default {
 
     queryIncludeAll: {
       get() {
-        console.info('include_all: ', this.$route.query.include_all)
-        console.info('include_all: ', typeof this.$route.query.include_all)
         return this.$route.query.include_all || false
       },
       set(value) {
-        console.info('value: ', value)
-        console.info('value: ', typeof value)
         this.pendingQueryParams.include_all = value
       },
     },
@@ -133,7 +129,9 @@ export default {
   margin-bottom: 0.2rem;
 }
 
-.location-filters .btn-primary {
-  margin-top: 1.6rem;
+@media (min-width: 576px) {
+  .location-filters .btn-primary {
+    margin-top: 1.6rem;
+  }
 }
 </style>

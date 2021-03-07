@@ -2,7 +2,7 @@
   <div>
     <header>
       <div class="navbar fixed-top navbar-dark bg-primary shadow">
-        <div class="container">
+        <div class="container-lg">
           <h1 class="navbar-brand mb-0 fw-bold">
             <a href="/" class="text-white" style="text-decoration: none"
               >TITLE</a
@@ -15,7 +15,7 @@
       <Nuxt />
     </main>
     <footer class="mt-3">
-      <div class="container">
+      <div class="container-lg">
         <h3>About</h3>
         <p>
           Finding vaccines seems tough! Hopefully things will become easier

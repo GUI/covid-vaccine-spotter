@@ -24,22 +24,19 @@ export default {
         crossorigin: 'anonymous',
       },
     ],
-    script: [
-      {
-        defer: true,
-        src: 'https://use.fontawesome.com/releases/v5.15.2/js/all.js',
-        integrity:
-          'sha384-vuFJ2JiSdUpXLKGK+tDteQZBqNlMwAjhZ3TvPaDfN9QmbPb7Q8qUpbSNapQev3YF',
-        crossorigin: 'anonymous',
-      },
-    ],
+    script: [],
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: [],
+  css: [
+    '@fortawesome/fontawesome-svg-core/styles.css',
+  ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: ['~/plugins/vuex-router-sync'],
+  plugins: [
+    '~/plugins/vuex-router-sync',
+    '~/plugins/fontawesome.js',
+  ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,

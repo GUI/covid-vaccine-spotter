@@ -3,17 +3,20 @@
     <div class="card-header">
       <div class="row">
         <h5 class="col-sm mb-0">
-          {{ store.properties.name }} - {{ store.properties.address }},
-          {{ store.properties.city }}, {{ store.properties.state }}
+          {{ store.properties.provider_brand_name }} -
+          {{ store.properties.address }}, {{ store.properties.city }},
+          {{ store.properties.state }}
           {{ store.properties.postal_code }}
         </h5>
-        <div class="col-sm-auto">{{ store.distance }} miles</div>
+        <div class="col-sm-auto" v-if="store.distance">
+          {{ store.distance }} miles
+        </div>
       </div>
     </div>
     <div class="card-body">
-      <template v-if="store.properties.appointments_available">
+      <div v-if="store.properties.appointments_available === true">
         <div class="location-status text-success fs-2">
-          <i class="fas fa-check-circle align-middle"></i>
+          <font-awesome-icon icon="check-circle" class="align-middle" />
           <span class="fs-5"
             >Appointments available as of
             <display-local-time
@@ -23,7 +26,7 @@
         </div>
         <p class="text-warning">
           <small
-            ><i class="fas fa-exclamation-triangle"></i> 03/01/2021: I've
+            ><font-awesome-icon icon="exclamation-triangle" /> 03/01/2021: I've
             received reports from various users that despite Walgreens showing
             availability, you may not be able to book a second dose appointment
             at this time. Sorry for the frustration! I think this may be an
@@ -34,24 +37,33 @@
           >
         </p>
         <a
-          href="https://www.walgreens.com/findcare/vaccination/covid-19/location-screening"
+          :href="store.properties.provider_brand_url"
           class="btn btn-primary"
           target="_blank"
-          >Visit Walgreens Website <i class="fas fa-arrow-alt-circle-right"></i
-        ></a>
-      </template>
+          >Visit {{ store.properties.provider_brand_name }} Website
+          <font-awesome-icon icon="arrow-alt-circle-right"
+        /></a>
+      </div>
       <div v-else class="location-status">
-        <p>
-          <i class="fas fa-times-circle"></i>
-          No appointments available as of last check.
-        </p>
+        <div v-if="store.properties.appointments_available === false">
+          <p class="text-danger">
+            <font-awesome-icon icon="times-circle" />
+            No appointments available as of last check
+          </p>
+        </div>
+        <div v-else>
+          <p>
+            <font-awesome-icon icon="times-circle" />
+            Unknown status
+          </p>
+        </div>
 
         <p>
           <a
             href="https://www.walgreens.com/findcare/vaccination/covid-19/location-screening"
             target="_blank"
-            >Walgreens Website<i class="fas fa-external-link-alt"></i
-          ></a>
+            >Walgreens Website<font-awesome-icon icon="external-link-alt"
+          /></a>
         </p>
       </div>
 

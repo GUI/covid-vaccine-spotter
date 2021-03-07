@@ -112,6 +112,17 @@ module.exports.refreshWebsite = async () => {
     await runShell("mkdir", ["-p", `${dataPath}/stores/${state.code}`]);
   }
 
+  await Store.knex().raw(`
+    UPDATE stores
+    SET appointments_available = NULL, appointments = NULL
+    WHERE
+      appointments_last_fetched <= (now() - interval '1 hour')
+      AND (
+        appointments_available IS NOT NULL
+        OR appointments IS NOT NULL
+      )
+  `);
+
   const statesData = await State.knex().raw(`
     SELECT
       states.code,
@@ -120,6 +131,7 @@ module.exports.refreshWebsite = async () => {
         'metadata', jsonb_build_object(
           'code', states.code,
           'name', states.name,
+          'bounding_box', st_asgeojson(st_envelope(boundaries::geometry))::jsonb,
           'store_count', COUNT(stores.id),
           'provider_brand_count', COUNT(DISTINCT stores.provider_brand_id),
           'appointments_last_fetched', MAX(stores.appointments_last_fetched),
@@ -162,9 +174,9 @@ module.exports.refreshWebsite = async () => {
               ),
               'properties', jsonb_build_object(
                 'id', stores.id,
-                'provider_id', stores.provider_id,
+                'provider', stores.provider_id,
                 'provider_location_id', provider_location_id,
-                'provider_brand_key', provider_brands.key,
+                'provider_brand', provider_brands.key,
                 'provider_brand_name', provider_brands.name,
                 'provider_brand_url', provider_brands.url,
                 'name', stores.name,
@@ -179,7 +191,7 @@ module.exports.refreshWebsite = async () => {
                 'appointments_last_fetched', appointments_last_fetched
               )
             )
-            ORDER BY stores.id
+            ORDER BY CASE WHEN appointments_available = false THEN 1 WHEN appointments_available IS NULL THEN 2 WHEN appointments_available = true THEN 3 END, appointments_last_fetched
           )
           FROM stores
           LEFT JOIN provider_brands ON provider_brands.id = stores.provider_brand_id

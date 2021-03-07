@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container-lg">
     <p
       class="lead text-center text-muted py-lg-4"
       style="padding-bottom: 0px !important"
@@ -45,8 +45,8 @@
           :to="`/${state.code}`"
           class="btn btn-light fw-bold fs-5 text-primary d-block"
           style="border: 1px solid #ddd"
-          >{{ state.name }} <i class="fas fa-arrow-alt-circle-right"></i
-        ></NuxtLink>
+          >{{ state.name }} <font-awesome-icon icon="arrow-alt-circle-right"
+        /></NuxtLink>
         <p class="text-center text-secondary mb-0">
           <small
             >Scanning {{ state.provider_brand_count }} pharmacy chains ({{
