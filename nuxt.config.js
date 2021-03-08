@@ -1,4 +1,6 @@
-const buildModules = [];
+const buildModules = [
+  "@nuxtjs/google-analytics",
+];
 if (process.env.NODE_ENV !== 'production') {
   // https://go.nuxtjs.dev/eslint
   buildModules.push("@nuxtjs/eslint-module");
@@ -62,5 +64,9 @@ export default {
     trailingSlash: true,
     prefetchLinks: false,
     prefetchPayloads: false,
+  },
+
+  googleAnalytics: {
+    id: "UA-49484378-1",
   },
 };
