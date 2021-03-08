@@ -300,6 +300,29 @@ module.exports.refreshWebsite = async () => {
 
   if (process.env.PUBLISH_SITE === "true") {
     logger.notice("Begin publishing website...");
+
+    // Sync the cache-busted assets first out to S3. Otherwise, if new HTML
+    // files get deployed first that reference these assets, we may
+    // periodically have a half broken site (as the HTML pages can't find the
+    // javascript files that haven't been synced yet).
+    await runShell("aws", [
+      "s3",
+      "sync",
+      "./dist/_nuxt/",
+      `s3://${process.env.WWWVACCINESPOTTERORG_NAME}/_nuxt/`,
+      "--cache-control",
+      "public, max-age=10, s-maxage=30",
+    ]);
+
+    await runShell("aws", [
+      "s3",
+      "sync",
+      "./dist/api/",
+      `s3://${process.env.WWWVACCINESPOTTERORG_NAME}/api/`,
+      "--cache-control",
+      "public, max-age=10, s-maxage=30",
+    ]);
+
     await runShell("aws", [
       "s3",
       "sync",
