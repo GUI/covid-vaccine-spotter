@@ -93,14 +93,14 @@
           <div class="col-lg-6 col-list">
             <div class="results-container">
               <div
-                v-if="filteredLocationsError"
+                v-show="filteredLocationsError"
                 class="alert alert-danger"
                 role="alert"
               >
                 {{ filteredLocationsError }}
               </div>
               <div
-                v-else-if="filteredLocations.length === 0"
+                v-show="filteredLocations.length === 0"
                 class="alert alert-warning"
                 role="alert"
               >
