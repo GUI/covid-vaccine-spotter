@@ -1,6 +1,7 @@
 .git
 node_modules
 dist
+.nuxt
 website/static/api/v0*
 .serverless
 host.json

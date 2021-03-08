@@ -11,7 +11,6 @@
     "lint": "yarn lint:js"
   },
   "dependencies": {
-    "@11ty/eleventy": "^0.11.1",
     "@cliqz/adblocker-playwright": "^1.20.3",
     "@extra/humanize": "^4.2.2-next.616",
     "@extra/recaptcha": "^4.2.1-next.616",
