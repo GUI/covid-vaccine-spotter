@@ -307,7 +307,6 @@ module.exports.refreshWebsite = async () => {
       `s3://${process.env.WWWVACCINESPOTTERORG_NAME}/`,
       "--cache-control",
       "public, max-age=10, s-maxage=30",
-      "--delete",
     ]);
   }
 
