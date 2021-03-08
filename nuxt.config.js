@@ -1,3 +1,9 @@
+const buildModules = [];
+if (process.env.NODE_ENV !== 'production') {
+  // https://go.nuxtjs.dev/eslint
+  buildModules.push("@nuxtjs/eslint-module");
+}
+
 export default {
   srcDir: "website/",
 
@@ -38,10 +44,7 @@ export default {
   components: true,
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
-  buildModules: [
-    // https://go.nuxtjs.dev/eslint
-    "@nuxtjs/eslint-module",
-  ],
+  buildModules,
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: ["@nuxt/http"],
