@@ -1,8 +1,7 @@
 .git
 node_modules
-_site*
-site/_data*
-site/api/v0*
+dist
+website/static/api/v0*
 .serverless
 host.json
 local.settings.json

@@ -1,12 +1,16 @@
-exports.up = async function(knex) {
+exports.up = async function (knex) {
   await knex.schema.createTable("providers", (table) => {
     table.string("id").primary();
   });
 
   await knex.schema.createTable("provider_brands", (table) => {
     table.increments("id").primary();
-    table.string("provider_id").references("id").inTable("providers").notNullable();
-    table.string("key")
+    table
+      .string("provider_id")
+      .references("id")
+      .inTable("providers")
+      .notNullable();
+    table.string("key");
     table.string("name");
     table.string("url");
     table.unique(["provider_id", "key"]);
@@ -16,11 +20,16 @@ exports.up = async function(knex) {
     table.boolean("active").defaultTo(true).notNullable();
     table.string("provider_id").references("id").inTable("providers");
     table.string("provider_location_id");
-    table.integer("provider_brand_id").references("id").inTable("provider_brands");
+    table
+      .integer("provider_brand_id")
+      .references("id")
+      .inTable("provider_brands");
     table.unique(["provider_id", "provider_location_id"]);
   });
 
-  await knex.raw("INSERT INTO providers (id) SELECT DISTINCT brand FROM stores ORDER BY brand");
+  await knex.raw(
+    "INSERT INTO providers (id) SELECT DISTINCT brand FROM stores ORDER BY brand"
+  );
   await knex.raw(`
     WITH store_brands AS (
       SELECT
@@ -80,10 +89,12 @@ exports.up = async function(knex) {
     WHERE stores.id = brands.id
   `);
 
-  await knex.raw("UPDATE stores SET active = false WHERE provider_id = 'kroger' AND state != 'CO'");
+  await knex.raw(
+    "UPDATE stores SET active = false WHERE provider_id = 'kroger' AND state != 'CO'"
+  );
 };
 
-exports.down = async function(knex) {
+exports.down = async function (knex) {
   await knex.schema.table("stores", (table) => {
     table.dropColumn("active");
     table.dropColumn("provider_id");

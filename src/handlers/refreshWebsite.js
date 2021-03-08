@@ -61,8 +61,7 @@ async function runShell(...args) {
 module.exports.refreshWebsite = async () => {
   logger.notice("Begin refreshing website...");
 
-  const dataPath = path.resolve("site/api/v0");
-  await runShell("rm", ["-rf", "_site_build", dataPath]);
+  const dataPath = path.resolve("website/static/api/v0");
   await runShell("mkdir", ["-p", dataPath]);
 
   const states = await State.knex().raw(`
@@ -106,10 +105,7 @@ module.exports.refreshWebsite = async () => {
     GROUP BY states.id
     ORDER BY states.name
   `);
-  await fs.writeFile(
-    `${dataPath}/states.json`,
-    JSON.stringify(states.rows)
-  );
+  await fs.writeFile(`${dataPath}/states.json`, JSON.stringify(states.rows));
   for (const state of states.rows) {
     await runShell("mkdir", ["-p", `${dataPath}/stores/${state.code}`]);
   }
@@ -300,19 +296,14 @@ module.exports.refreshWebsite = async () => {
     logger.info("Walmart Data Error: ", err);
   }
 
-  await runShell("./node_modules/@11ty/eleventy/cmd.js", [
-    "--input",
-    "site",
-    "--output",
-    "_site_build",
-  ]);
+  await runShell("yarn", ["run", "generate"]);
 
   if (process.env.PUBLISH_SITE === "true") {
     logger.notice("Begin publishing website...");
     await runShell("aws", [
       "s3",
       "sync",
-      "./_site_build/",
+      "./dist/",
       `s3://${process.env.WWWVACCINESPOTTERORG_NAME}/`,
       "--cache-control",
       "public, max-age=10, s-maxage=30",

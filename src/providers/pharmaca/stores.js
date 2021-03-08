@@ -6,7 +6,9 @@ const { ProviderBrand } = require("../../models/ProviderBrand");
 
 const PharmacaStores = {
   findStores: async () => {
-    const providerBrand = await ProviderBrand.query().findOne({ provider_id: "pharmaca" });
+    const providerBrand = await ProviderBrand.query().findOne({
+      provider_id: "pharmaca",
+    });
 
     const resp = await got.post(
       "https://www.pharmacarx.com/wp-admin/admin-ajax.php",

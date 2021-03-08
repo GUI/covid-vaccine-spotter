@@ -1,5 +1,0 @@
-<%_ if (time) { _%>
-  <local-time datetime="<%= time.toISOString() %>" month="long" day="numeric" year="numeric" hour="numeric" minute="numeric" time-zone-name="short"><%= time.toLocaleDateString('en-US', { dateStyle: 'long', timeStyle: 'long', timeZone: timeZone || 'America/New_York' }) %></local-time>
-<%_ } else { _%>
-  Unknown Time
-<%_ } _%>

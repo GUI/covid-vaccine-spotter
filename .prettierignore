@@ -1,7 +1,7 @@
 /node_modules
-/_site*
+/dist*
 /.env*
-/site/_data*
-/site/api/v0*
+/website/static/api/v0*
 /.serverless
 /tmp/
+/.nuxt
