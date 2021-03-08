@@ -1,6 +1,15 @@
 <template>
   <div class="sticky-top sticky-navbar-offset">
     <div id="map" style="width: 100%"></div>
+    <div class="map-overlay" id="legend">
+      <div>
+        <span class="available-marker"></span> Appointments recently available
+      </div>
+      <div>
+        <span class="unavailable-marker"></span> Appointments not available
+      </div>
+      <div><span class="unknown-marker"></span> Appointment status unknown</div>
+    </div>
   </div>
 </template>
 
@@ -155,7 +164,7 @@ export default {
 @import "maplibre-gl/dist/maplibre-gl.css";
 
 .sticky-navbar-offset {
-  top: 50px;
+  top: 54px;
 }
 
 #map {
@@ -166,9 +175,55 @@ export default {
   border-radius: 4px;
 }
 
+.map-overlay {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.9);
+  margin-right: 5px;
+  font-family: Arial, sans-serif;
+  overflow: auto;
+  border-radius: 3px;
+}
+
+#legend {
+  padding: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  line-height: 16px;
+  height: 64px;
+  width: 210px;
+  font-size: 0.75rem;
+  top: 0px;
+  margin-top: 5px;
+}
+
+#legend span {
+  height: 14px;
+  width: 14px;
+  vertical-align: middle;
+  margin-top: -2px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+  border: 1px solid #fff;
+  opacity: 0.8;
+}
+
+#legend span.available-marker {
+  background-color: #2ca25f;
+}
+
+#legend span.unavailable-marker {
+  background-color: #e34a33;
+}
+
+#legend span.unknown-marker {
+  background-color: #636363;
+}
+
 @media (min-width: 992px) {
   #map {
-    height: calc(100vh - 50px) !important;
+    height: calc(100vh - 54px) !important;
     border-left-width: 0px;
     border-radius: 0px;
   }
