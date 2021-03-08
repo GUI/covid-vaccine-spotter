@@ -111,7 +111,7 @@
 
               <store
                 v-for="store in filteredLocations"
-                :key="store.id"
+                :key="store.properties.id"
                 :store="store"
               ></store>
             </div>
