@@ -8,36 +8,79 @@
     </p>
     <div>
       <div v-if="store.properties.appointments_available === true">
-        <div class="text-success">
+        <p class="text-success">
           <font-awesome-icon icon="check-circle" />
           Appointments available as of
           <display-local-time
             :time="appointmentsLastFetchedDate"
             :time-zone="store.properties.time_zone"
           />
-        </div>
-      </div>
-      <div v-else-if="store.properties.appointments_available === false">
-        <p class="text-danger">
-          <font-awesome-icon icon="times-circle" />
-          No appointments available as of last check
+        </p>
+        <p>
+          <a :href="`#location-${store.properties.id}`"
+            >View Appointment Details</a
+          >
         </p>
       </div>
       <div v-else>
-        <p>
-          <font-awesome-icon icon="times-circle" />
-          Unknown status
-        </p>
+        <div v-if="store.properties.appointments_available === false">
+          <p class="text-danger">
+            <font-awesome-icon icon="times-circle" />
+            No appointments available as of last check
+          </p>
+        </div>
+        <div v-else>
+          <div v-if="store.properties.appointments_available === false">
+            <p class="text-danger">
+              <font-awesome-icon icon="times-circle" />
+              No appointments available as of last check
+            </p>
+          </div>
+          <div v-else>
+            <p>
+              <font-awesome-icon icon="times-circle" />
+              Unknown status
+            </p>
+            <p v-if="store.properties.carries_vaccine === false">
+              At last check, this location does not carry the vaccine at all, so
+              we have not fetched any appointments.
+            </p>
+            <p v-else-if="store.properties.appointments_last_fetched === null">
+              We haven't collected any data for this pharmacy yet.
+            </p>
+            <p v-else>
+              <strong>Uh oh!</strong> The data for this pharmacy is old. Please
+              visit the
+              <a :href="store.properties.url" target="_blank"
+                >pharmacy's website</a
+              >
+              directly for appointment availability. This likely means that the
+              pharmacy is blocking our tool from accessing their site.
+            </p>
+          </div>
+
+          <p>
+            <a :href="store.properties.url" target="_blank"
+              >Visit {{ store.properties.provider_brand_name }} Website
+              <font-awesome-icon icon="external-link-alt"
+            /></a>
+          </p>
+        </div>
       </div>
 
-      <small
-        >Last checked
-        <display-local-time
-          :time="appointmentsLastFetchedDate"
-          :time-zone="store.properties.time_zone"
-      /></small>
+      <p class="mb-0">
+        <small
+          >Last checked
+          <display-local-time
+            :time="appointmentsLastFetchedDate"
+            v-if="store.properties.appointments_last_fetched"
+          />
+          <span v-if="!store.properties.appointments_last_fetched"
+            >never</span
+          ></small
+        >
+      </p>
     </div>
-    <p class="mb-0"><a href="">View Appointment Details</a></p>
   </div>
 </template>
 

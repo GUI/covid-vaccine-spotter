@@ -126,6 +126,9 @@
         </div>
       </div>
     </div>
+    <div class="container-lg mt-3">
+      <tool-status />
+    </div>
   </div>
 </template>
 
@@ -178,9 +181,9 @@ export default {
     padding-left: 0.5rem;
     padding-right: 1rem;
   }
+}
 
-  .results-container .location-result:last-child {
-    margin-bottom: 0px !important;
-  }
+.results-container .location-result:last-child {
+  margin-bottom: 0px !important;
 }
 </style>

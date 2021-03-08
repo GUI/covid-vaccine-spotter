@@ -82,14 +82,16 @@ module.exports.refreshWebsite = async () => {
             'provider_id', p.provider_id,
             'url', p.url,
             'location_count', p.location_count,
-            'appointments_last_fetched', p.appointments_last_fetched
+            'appointments_last_fetched', p.appointments_last_fetched,
+            'status', p.status
           )
         )
         FROM (
           SELECT
             provider_brands.*,
             COUNT(stores.id) AS location_count,
-            MAX(appointments_last_fetched) AS appointments_last_fetched
+            MAX(appointments_last_fetched) AS appointments_last_fetched,
+            CASE WHEN MAX(appointments_last_fetched) > (now() - interval '1 hour') THEN 'active' WHEN MAX(appointments_last_fetched) IS NULL THEN 'unknown' ELSE 'inactive' END AS status
           FROM stores
           LEFT JOIN provider_brands ON stores.provider_brand_id = provider_brands.id
           WHERE
@@ -145,14 +147,16 @@ module.exports.refreshWebsite = async () => {
                 'provider_id', p.provider_id,
                 'url', p.url,
                 'location_count', p.location_count,
-                'appointments_last_fetched', p.appointments_last_fetched
+                'appointments_last_fetched', p.appointments_last_fetched,
+                'status', p.status
               )
             )
             FROM (
               SELECT
                 provider_brands.*,
                 COUNT(stores.id) AS location_count,
-                MAX(appointments_last_fetched) AS appointments_last_fetched
+                MAX(appointments_last_fetched) AS appointments_last_fetched,
+                CASE WHEN MAX(appointments_last_fetched) > (now() - interval '1 hour') THEN 'active' WHEN MAX(appointments_last_fetched) IS NULL THEN 'unknown' ELSE 'inactive' END AS status
               FROM stores
               LEFT JOIN provider_brands ON stores.provider_brand_id = provider_brands.id
               WHERE
@@ -178,7 +182,7 @@ module.exports.refreshWebsite = async () => {
                 'provider_location_id', provider_location_id,
                 'provider_brand', provider_brands.key,
                 'provider_brand_name', provider_brands.name,
-                'provider_brand_url', provider_brands.url,
+                'url', coalesce(stores.url, provider_brands.url),
                 'name', stores.name,
                 'address', address,
                 'city', city,
@@ -191,7 +195,7 @@ module.exports.refreshWebsite = async () => {
                 'appointments_last_fetched', appointments_last_fetched
               )
             )
-            ORDER BY CASE WHEN appointments_available = false THEN 1 WHEN appointments_available IS NULL THEN 2 WHEN appointments_available = true THEN 3 END, appointments_last_fetched
+            ORDER BY CASE WHEN appointments_available = false THEN 1 WHEN appointments_available IS NULL THEN 2 WHEN appointments_available = true THEN 3 END, appointments_last_fetched DESC, city
           )
           FROM stores
           LEFT JOIN provider_brands ON provider_brands.id = stores.provider_brand_id

@@ -227,7 +227,10 @@ export default {
           coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360
         }
 
-        new Popup().setLngLat(coordinates).setHTML(description).addTo(this.map)
+        new Popup({ maxWidth: '400px' })
+          .setLngLat(coordinates)
+          .setHTML(description)
+          .addTo(this.map)
       })
     })
   },
