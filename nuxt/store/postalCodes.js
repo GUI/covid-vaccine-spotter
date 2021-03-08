@@ -4,6 +4,6 @@ export const state = () => ({
 
 export const mutations = {
   set(state, postalCodes) {
-    state.postalCodes = postalCodes
+    state.postalCodes = Object.freeze(postalCodes)
   },
 }

@@ -23,7 +23,7 @@
             name="radius"
             class="form-select form-select-lg mb-3"
           >
-            <option value="" selected>Any distance</option>
+            <option value="">Any distance</option>
             <option value="5">5 miles</option>
             <option value="10">10 miles</option>
             <option value="25">25 miles</option>

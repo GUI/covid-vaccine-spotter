@@ -33,19 +33,19 @@
           <td>
             <div class="fw-bold">
               <font-awesome-icon
+                v-if="providerBrand.status === 'active'"
                 icon="check-circle"
                 class="text-success"
-                v-if="providerBrand.status === 'active'"
               />
               <font-awesome-icon
+                v-if="providerBrand.status === 'inactive'"
                 icon="times-circle"
                 class="text-danger"
-                v-if="providerBrand.status === 'inactive'"
               />
 
               <display-local-time
-                :time="new Date(providerBrand.appointments_last_fetched)"
                 v-if="providerBrand.appointments_last_fetched"
+                :time="new Date(providerBrand.appointments_last_fetched)"
               />
               <span v-if="!providerBrand.appointments_last_fetched">Never</span>
             </div>

@@ -4,6 +4,6 @@ export const state = () => ({
 
 export const mutations = {
   setLocations(state, locations) {
-    state.locations = locations
+    state.locations = Object.freeze(locations)
   },
 }

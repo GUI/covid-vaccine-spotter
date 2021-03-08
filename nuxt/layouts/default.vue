@@ -1,19 +1,6 @@
 <template>
   <div>
-    <header>
-      <div class="navbar fixed-top navbar-dark bg-primary shadow">
-        <div class="container-lg">
-          <h1 class="navbar-brand mb-0 fw-bold">
-            <a href="/" class="text-white" style="text-decoration: none"
-              >TITLE</a
-            >
-          </h1>
-        </div>
-      </div>
-    </header>
-    <main>
-      <Nuxt />
-    </main>
+    <Nuxt />
     <footer class="mt-3">
       <div class="container-lg">
         <h3>About</h3>
@@ -275,6 +262,13 @@
         </p>
       </div>
     </footer>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/custom-elements/1.4.3/custom-elements.min.js"
+      integrity="sha512-PLDz+cN5TNZKRezSF9Zk+n/TTHG6ISM466kmCQkFcIkp4Mw+1S15qnvEsd5pyMNOlOMp9hGz6YS9eusXqh0rnA=="
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://unpkg.com/@github/time-elements@3.1.1"></script>
   </div>
 </template>
 
@@ -515,26 +509,6 @@
 .resp-sharing-button--hackernews:hover .resp-sharing-button--hackernews:active {
   background-color: #fb6200;
   border-color: #fb6200;
-}
-
-body {
-  padding-top: 70px;
-}
-
-h1.navbar-brand {
-  font-size: 1rem;
-}
-
-@media (min-width: 992px) {
-  body {
-    padding-top: 50px;
-  }
-}
-
-@media (min-width: 360px) {
-  h1.navbar-brand {
-    font-size: 1.25rem;
-  }
 }
 
 h2.brand {

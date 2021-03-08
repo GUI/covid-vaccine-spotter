@@ -3,12 +3,12 @@
     <template v-if="time">
       <local-time
         :datetime="timeISO"
+        time-zone-name="short"
         month="long"
         day="numeric"
         year="numeric"
         hour="numeric"
         minute="numeric"
-        time-zone-name="short"
         >{{ timeLocale }}</local-time
       >
     </template>

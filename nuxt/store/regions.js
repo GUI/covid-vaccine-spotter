@@ -43,14 +43,6 @@ export const getters = {
 
     if (!bounds) {
       bounds = bbox(state.region.metadata.bounding_box)
-      /*
-      const bboxPolygon = this.$store.state.regions.region.metadata.bounding_box
-        .coordinates[0]
-      bounds = [
-        [bboxPolygon[0][0], bboxPolygon[0][1]],
-        [bboxPolygon[2][0], bboxPolygon[2][1]],
-      ]
-      */
     }
 
     return bounds
@@ -125,6 +117,6 @@ export const getters = {
 
 export const mutations = {
   set(state, region) {
-    state.region = region
+    state.region = Object.freeze(region)
   },
 }

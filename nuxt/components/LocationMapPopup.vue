@@ -72,8 +72,8 @@
         <small
           >Last checked
           <display-local-time
-            :time="appointmentsLastFetchedDate"
             v-if="store.properties.appointments_last_fetched"
+            :time="appointmentsLastFetchedDate"
           />
           <span v-if="!store.properties.appointments_last_fetched"
             >never</span

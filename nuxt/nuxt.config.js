@@ -11,7 +11,6 @@ export default {
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' },
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
@@ -24,19 +23,25 @@ export default {
         crossorigin: 'anonymous',
       },
     ],
-    script: [],
+    script: [
+      /*
+      {
+        src:
+          'https://cdnjs.cloudflare.com/ajax/libs/custom-elements/1.4.3/custom-elements.min.js',
+        integrity:
+          'sha512-PLDz+cN5TNZKRezSF9Zk+n/TTHG6ISM466kmCQkFcIkp4Mw+1S15qnvEsd5pyMNOlOMp9hGz6YS9eusXqh0rnA==',
+        crossorigin: 'anonymous',
+      },
+      { src: 'https://unpkg.com/@github/time-elements@3.1.1' },
+      */
+    ],
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: [
-    '@fortawesome/fontawesome-svg-core/styles.css',
-  ],
+  css: ['@fortawesome/fontawesome-svg-core/styles.css'],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [
-    '~/plugins/vuex-router-sync',
-    '~/plugins/fontawesome.js',
-  ],
+  plugins: ['~/plugins/vuex-router-sync', '~/plugins/fontawesome.js'],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -57,5 +62,11 @@ export default {
     config: {
       ignoredElements: ['local-time'],
     },
+  },
+
+  router: {
+    trailingSlash: true,
+    prefetchLinks: false,
+    prefetchPayloads: false,
   },
 }

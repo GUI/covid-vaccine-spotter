@@ -1,6 +1,7 @@
 <template>
   <div class="card mb-4 location-result">
-    <div class="card-header" :id="`location-${store.properties.id}`">
+    <a :id="`location-${store.properties.id}`" class="location-anchor" />
+    <div class="card-header">
       <div class="row">
         <h5 class="col-sm mb-0">
           {{ store.properties.provider_brand_name }} -
@@ -8,7 +9,8 @@
           {{ store.properties.state }}
           {{ store.properties.postal_code }}
         </h5>
-        <div class="col-sm-auto" v-if="store.distance">
+        {{ /* Use v-show, not v-if for conditions without "else". Otherwise, strange things happen in production that cause rendering to fail (if the page is reloaded with a zip code pre-filled): https://github.com/nuxt/nuxt.js/issues/5800 */ }}
+        <div v-show="store.distance" class="col-sm-auto">
           {{ store.distance }} miles
         </div>
       </div>
@@ -24,12 +26,14 @@
               :time-zone="store.properties.time_zone"
           /></span>
         </div>
+        <appointment-times :store="store" />
+        {{ /* Use v-show, not v-if for conditions without "else". Otherwise, strange things happen in production that cause rendering to fail (if the page is reloaded with a zip code pre-filled): https://github.com/nuxt/nuxt.js/issues/5800 */ }}
         <p
-          class="text-warning"
-          v-if="
+          v-show="
             store.properties.provider === 'kroger' ||
             store.properties.provider === 'walgreens'
           "
+          class="text-warning"
         >
           <small
             ><font-awesome-icon icon="exclamation-triangle" />
@@ -87,8 +91,8 @@
         <small
           >Last checked
           <display-local-time
-            :time="appointmentsLastFetchedDate"
             v-if="store.properties.appointments_last_fetched"
+            :time="appointmentsLastFetchedDate"
           />
           <span v-if="!store.properties.appointments_last_fetched"
             >never</span
@@ -108,10 +112,25 @@ export default {
     },
   },
 
+  data() {
+    return {
+      loaded: false,
+    }
+  },
+
   computed: {
     appointmentsLastFetchedDate() {
       return new Date(this.store.properties.appointments_last_fetched)
     },
+  },
+
+  created() {
+    // "loaded" workaround due to odd issues in built production mode (if zip
+    // code is set and the page is reloaded then things fail to render):
+    // https://github.com/nuxt/nuxt.js/issues/5800#issuecomment-613739824
+    this.$nextTick(() => {
+      this.loaded = true
+    })
   },
 }
 </script>
@@ -124,5 +143,10 @@ export default {
 
 .text-warning {
   color: #d99011 !important;
+}
+
+.location-anchor {
+  padding-top: 56px;
+  margin-top: -56px;
 }
 </style>

@@ -7,6 +7,7 @@ import {
   faExclamationTriangle,
   faTimesCircle,
   faExternalLinkAlt,
+  faRedoAlt,
 } from '@fortawesome/free-solid-svg-icons'
 
 // This is important, we are going to let Nuxt.js worry about the CSS
@@ -19,7 +20,8 @@ library.add(
   faCheckCircle,
   faExclamationTriangle,
   faTimesCircle,
-  faExternalLinkAlt
+  faExternalLinkAlt,
+  faRedoAlt
 )
 
 // Register the component globally
