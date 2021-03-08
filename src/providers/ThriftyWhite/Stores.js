@@ -29,7 +29,7 @@ class ThriftyWhiteStores {
           city: location.CITY,
           state: location.STATE,
           postal_code: location.ZIP,
-          location: `point(${location.XCOORD} ${location.YCOORD})`,
+          location: `point(${location.YCOORD} ${location.XCOORD})`,
           metadata_raw: location,
         })
         .onConflict(["brand", "brand_id"])

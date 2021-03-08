@@ -1,0 +1,4 @@
+#!/usr/bin/env node
+
+const { findStores } = require("../src/providers/Walmart/Stores");
+findStores();

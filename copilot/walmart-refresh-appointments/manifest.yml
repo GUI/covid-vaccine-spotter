@@ -1,0 +1,35 @@
+# The manifest for the "walmart-refresh-appointments" service.
+# Read the full specification for the "Backend Service" type at:
+#  https://aws.github.io/copilot-cli/docs/manifest/backend-service/
+
+# Your service name will be used in naming your resources like log groups, ECS services, etc.
+name: walmart-refresh-appointments
+# Your service does not allow any traffic.
+type: Backend Service
+
+image:
+  # Docker build arguments.
+  # For additional overrides: https://aws.github.io/copilot-cli/docs/manifest/backend-service/#image-build
+  build:
+    dockerfile: Dockerfile-playwright
+    args:
+      task_bin: walmart-refresh-appointments
+
+# Number of CPU units for the task.
+cpu: 512
+# Amount of memory in MiB used by the task.
+memory: 1024
+# Number of tasks that should be running in your service.
+count: 1
+
+# Optional fields for more advanced use-cases.
+#
+variables:
+  LOG_LEVEL: notice
+#secrets:                      # Pass secrets from AWS Systems Manager (SSM) Parameter Store.
+#  GITHUB_TOKEN: GITHUB_TOKEN  # The key is the name of the environment variable, the value is the name of the SSM      parameter.
+
+# You can override any of the values defined above by environment.
+#environments:
+#  test:
+#    count: 2               # Number of tasks to run for the "test" environment.
