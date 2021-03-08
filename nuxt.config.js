@@ -1,7 +1,5 @@
-const buildModules = [
-  "@nuxtjs/google-analytics",
-];
-if (process.env.NODE_ENV !== 'production') {
+const buildModules = ["@nuxtjs/google-analytics"];
+if (process.env.NODE_ENV !== "production") {
   // https://go.nuxtjs.dev/eslint
   buildModules.push("@nuxtjs/eslint-module");
 }

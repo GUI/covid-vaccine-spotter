@@ -24,7 +24,7 @@
             ]"
           >
             <td class="text-nowrap fw-bold">
-              <a :href="providerBrand.url" target="_blank">{{
+              <a :href="providerBrand.url" target="_blank" rel="noopener">{{
                 providerBrand.name
               }}</a>
             </td>
@@ -56,7 +56,7 @@
               <div v-if="providerBrand.status === 'inactive'">
                 <strong>Uh oh!</strong> The data for this pharmacy is old.
                 Please visit the
-                <a :href="providerBrand.url" target="_blank"
+                <a :href="providerBrand.url" target="_blank" rel="noopener"
                   >pharmacy's website</a
                 >
                 directly for appointment availability.<br /><br />This likely
