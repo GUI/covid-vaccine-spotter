@@ -2,7 +2,7 @@
   <div class="mb-3">
     <ul class="mb-0">
       <template v-if="initialAppointments.length > 0">
-        <li v-for="appointment in initialAppointments" :key="appointment.time">
+        <li v-for="appointment in initialAppointments" :key="appointment.id">
           {{ appointment.time }}
           <span v-show="appointment.type">({{ appointment.type }})</span>
         </li>
@@ -28,7 +28,7 @@
         class="mb-0"
         style="display: none"
       >
-        <li v-for="appointment in moreAppointments" :key="appointment.time">
+        <li v-for="appointment in moreAppointments" :key="appointment.id">
           {{ appointment.time }}
           <span v-show="appointment.type">({{ appointment.type }})</span>
         </li>
@@ -87,6 +87,8 @@ export default {
 
     normalizeAppointments(appointments) {
       return appointments.map((appointment) => {
+        let normalized;
+
         if (appointment.time && appointment.type) {
           let { type } = appointment;
           switch (type) {
@@ -104,15 +106,20 @@ export default {
               break;
           }
 
-          return {
+          normalized = {
             time: this.formatTime(appointment.time),
             type,
           };
+        } else {
+          normalized = {
+            time: this.formatTime(appointment),
+            type: null,
+          };
         }
-        return {
-          time: this.formatTime(appointment),
-          type: null,
-        };
+
+        normalized.id = `${normalized.time}-${normalized.type}`;
+
+        return normalized;
       });
     },
   },

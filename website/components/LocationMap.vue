@@ -1,7 +1,7 @@
 <template>
   <div class="sticky-top sticky-navbar-offset">
     <div id="map" style="width: 100%"></div>
-    <div class="map-overlay" id="legend">
+    <div id="legend" class="map-overlay">
       <div>
         <span class="available-marker"></span> Appointments recently available
       </div>

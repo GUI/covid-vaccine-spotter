@@ -37,6 +37,18 @@ export default {
       },
     };
   },
+
+  // Workaround for bodyAttrs not always seeming to work:
+  // https://stackoverflow.com/a/55909431/222487
+  mounted() {
+    window.onNuxtReady(() => {
+      if (this.withReload) {
+        document.body.classList.add("has-navbar-with-reload");
+      } else {
+        document.body.classList.remove("has-navbar-with-reload");
+      }
+    });
+  },
 };
 </script>
 
