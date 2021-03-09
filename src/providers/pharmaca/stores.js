@@ -2,9 +2,14 @@ const got = require("got");
 const sleep = require("sleep-promise");
 const logger = require("../../logger");
 const { Store } = require("../../models/Store");
+const { ProviderBrand } = require("../../models/ProviderBrand");
 
 const PharmacaStores = {
   findStores: async () => {
+    const providerBrand = await ProviderBrand.query().findOne({
+      provider_id: "pharmaca",
+    });
+
     const resp = await got.post(
       "https://www.pharmacarx.com/wp-admin/admin-ajax.php",
       {
@@ -102,12 +107,17 @@ const PharmacaStores = {
         .insert({
           brand: "pharmaca",
           brand_id: store.id,
+          provider_id: "pharmaca",
+          provider_location_id: store.id,
+          provider_brand_id: providerBrand.id,
           name: store.name,
           address: store.address,
           city: store.city,
           state,
           postal_code: store.zip,
           location: `point(${store.lng} ${store.lat})`,
+          location_source: "provider",
+          url: `https://pharmaca.as.me/${scheduleUrlId}`,
           metadata_raw: {
             store,
             schedule_url_id: scheduleUrlId,

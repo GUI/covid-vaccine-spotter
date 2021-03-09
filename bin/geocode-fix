@@ -1,0 +1,4 @@
+#!/usr/bin/env node
+
+const Geocode = require("../src/Geocode");
+Geocode.fix();

@@ -1,10 +1,11 @@
 /node_modules
-/_site*
 /.env*
-/site/_data*
-/site/api/v0
+/website/static/api/v0
+/dist
+/.nuxt
 /.serverless
 /host.json
 /local.settings.json
 /tmp/*
 !/tmp/.keep
+/.eslintcache

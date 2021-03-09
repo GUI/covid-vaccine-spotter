@@ -13,6 +13,7 @@ RUN set -x && yarn install $YARN_INSTALL_ARGS
 COPY . /app
 
 ENV NODE_OPTIONS="--unhandled-rejections=strict --trace-warnings"
+ENV NODE_ENV=production
 
 ARG task_bin
 ENV task_bin ${task_bin}

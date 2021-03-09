@@ -60,11 +60,6 @@ class Auth {
             server: process.env.WALMART_PROXY_SERVER,
             username: process.env.WALMART_PROXY_USERNAME,
             password: process.env.WALMART_PROXY_PASSWORD,
-            /*
-            server: process.env.PROXY_RANDOM_SERVER,
-            username: process.env.PROXY_RANDOM_USERNAME,
-            password: process.env.PROXY_RANDOM_PASSWORD,
-            */
           },
         });
 
