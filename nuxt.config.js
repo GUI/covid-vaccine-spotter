@@ -52,6 +52,22 @@ export default {
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
 
+  generate: {
+    cache: {
+      ignore: [
+        "Dockerfile*",
+        "LICENSE.txt",
+        "bin/**/*",
+        "copilot/**/*",
+        "knexfile.js",
+        "migrations/**/*",
+        "serverless.yml",
+        "src/**/*",
+        "website/static/**/*",
+      ],
+    },
+  },
+
   vue: {
     config: {
       ignoredElements: ["local-time"],
