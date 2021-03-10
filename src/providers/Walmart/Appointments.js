@@ -126,19 +126,22 @@ class Appointments {
 
   static async fetchInventory(store) {
     const auth = await authMutex.runExclusive(Auth.get);
-    return await got(`https://www.walmart.com/pharmacy/v2/clinical-services/inventory/store/${store.brand_id}/${auth.body.payload.cid}`, {
-      searchParams: {
-        type: 'imz',
-      },
-      headers: {
-        "User-Agent":
-          "covid-vaccine-finder (https://github.com/GUI/covid-vaccine-finder)",
-      },
-      cookieJar: auth.cookieJar,
-      responseType: "json",
-      timeout: 30000,
-      retry: 0,
-    });
+    return got(
+      `https://www.walmart.com/pharmacy/v2/clinical-services/inventory/store/${store.brand_id}/${auth.body.payload.cid}`,
+      {
+        searchParams: {
+          type: "imz",
+        },
+        headers: {
+          "User-Agent":
+            "covid-vaccine-finder (https://github.com/GUI/covid-vaccine-finder)",
+        },
+        cookieJar: auth.cookieJar,
+        responseType: "json",
+        timeout: 30000,
+        retry: 0,
+      }
+    );
   }
 
   static async fetchSlots(store) {
