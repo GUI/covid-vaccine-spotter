@@ -3,6 +3,8 @@ const fs = require("fs").promises;
 const stringify = require("json-stable-stringify");
 const path = require("path");
 const logger = require("../logger");
+const del = require("del");
+const mkdirp = require("mkdirp");
 const { Store } = require("../models/Store");
 const { State } = require("../models/State");
 
@@ -65,8 +67,10 @@ async function runShell(...args) {
 module.exports.refreshWebsite = async () => {
   logger.notice("Begin refreshing website...");
 
+  await del("./dist");
+
   const dataPath = path.resolve("website/static/api/v0");
-  await runShell("mkdir", ["-p", dataPath]);
+  await mkdirp(dataPath);
 
   const states = await State.knex().raw(`
     SELECT
@@ -111,7 +115,7 @@ module.exports.refreshWebsite = async () => {
   `);
   await fs.writeFile(`${dataPath}/states.json`, JSON.stringify(states.rows));
   for (const state of states.rows) {
-    await runShell("mkdir", ["-p", `${dataPath}/stores/${state.code}`]);
+    await mkdirp(`${dataPath}/stores/${state.code}`);
   }
 
   await Store.knex().raw(`
@@ -207,7 +211,7 @@ module.exports.refreshWebsite = async () => {
     GROUP BY states.id
     ORDER BY states.name
   `);
-  await runShell("mkdir", ["-p", `${dataPath}/states`]);
+  await mkdirp(`${dataPath}/states`);
   for (const state of statesData.rows) {
     await fs.writeFile(
       `${dataPath}/states/${state.code}.json`,
@@ -227,7 +231,7 @@ module.exports.refreshWebsite = async () => {
     ORDER BY state_code
   `);
   for (const state of postalCodeData.rows) {
-    await runShell("mkdir", ["-p", `${dataPath}/states/${state.state_code}`]);
+    await mkdirp(`${dataPath}/states/${state.state_code}`);
     await fs.writeFile(
       `${dataPath}/states/${state.state_code}/postal_codes.json`,
       JSON.stringify(state.data)
