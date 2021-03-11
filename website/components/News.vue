@@ -1,12 +1,12 @@
 <template>
   <div class="alert alert-info" role="alert">
     <p class="mb-0">
-      <strong>03/08/2021:</strong> <strong>New website features!</strong> 🗺️ You
-      can now search for appointments near your ZIP code and view the results on
-      a map! This has been a frequent request, so I hope this helps make the
-      tool easier to use. The dust may still be settling on all of these
-      changes, so give a shout if you notice anything misbehaving. Thanks for
-      all the feedback and contributions! Contact me at
+      <strong>03/10/2021:</strong> <strong>Walgreens</strong> appointment
+      availability should hopefully be much more reliable now. 😌 I've had to
+      workaround issues with how the Walgreens website works, but now
+      appointments should only show up on Vaccine Spotter if you can book both a
+      first and second appointment. Sorry, I know this has been a source of
+      frustration for many! Any feedback is welcome:
       <a
         href="m&#97;ilto&#58;v%&#54;1&#99;&#99;&#105;ne&#64;nic&#107;%6D&#46;org"
         >vacc&#105;ne&#64;ni&#99;k&#109;&#46;o&#114;&#103;</a

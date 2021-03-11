@@ -28,13 +28,7 @@
         </div>
         <appointment-times :store="store" />
         {{ /* Use v-show, not v-if for conditions without "else". Otherwise, strange things happen in production that cause rendering to fail (if the page is reloaded with a zip code pre-filled): https://github.com/nuxt/nuxt.js/issues/5800 */ }}
-        <p
-          v-show="
-            store.properties.provider === 'kroger' ||
-            store.properties.provider === 'walgreens'
-          "
-          class="text-warning"
-        >
+        <p v-show="store.properties.provider === 'kroger'" class="text-warning">
           <small
             ><font-awesome-icon icon="exclamation-triangle" />
             <strong>Warning:</strong> Many users are reporting issues booking

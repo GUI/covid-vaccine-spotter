@@ -2,9 +2,9 @@ const execa = require("execa");
 const fs = require("fs").promises;
 const stringify = require("json-stable-stringify");
 const path = require("path");
-const logger = require("../logger");
 const del = require("del");
 const mkdirp = require("mkdirp");
+const logger = require("../logger");
 const { Store } = require("../models/Store");
 const { State } = require("../models/State");
 
