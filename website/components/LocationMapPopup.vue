@@ -2,9 +2,13 @@
   <div>
     <h6>{{ store.properties.provider_brand_name }}</h6>
     <p>
-      {{ store.properties.address }}<br />
+      <template v-if="store.properties.address">
+        {{ store.properties.address }}<br />
+      </template>
       {{ store.properties.city }}, {{ store.properties.state }}
-      {{ store.properties.postal_code }}
+      <template v-if="store.properties.postal_code">
+        {{ store.properties.postal_code }}
+      </template>
     </p>
     <div>
       <div v-if="store.properties.appointments_available === true">
