@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}-refresh-cvs-deployment
+  labels:
+    app: {{ .Chart.Name }}-refresh-cvs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}-refresh-cvs
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}-refresh-cvs
+    spec:
+      imagePullSecrets:
+        - name: {{ .Chart.Name }}-container-registry-secret
+      containers:
+        - name: {{ .Chart.Name }}-refresh-cvs
+{{ tuple "covid-vaccine-spotter" . | werf_container_image | indent 10 }}
+          args: ["bin/refresh-cvs"]
+          env:
+{{ tuple "covid-vaccine-spotter" . | werf_container_env | indent 12 }}
+            - name: LOG_LEVEL
+              value: notice
+          envFrom:
+            - secretRef:
+                name: {{ .Chart.Name }}-secrets

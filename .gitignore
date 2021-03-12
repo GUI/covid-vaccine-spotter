@@ -9,3 +9,7 @@
 /tmp/*
 !/tmp/.keep
 /.eslintcache
+/yarn-error.log
+/terraform/.terraform*
+/terraform/*.tfstate*
+/.werf_secret_key

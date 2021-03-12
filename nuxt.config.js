@@ -63,6 +63,7 @@ export default {
         "migrations/**/*",
         "serverless.yml",
         "src/**/*",
+        "tmp/**/*",
         "website/static/**/*",
       ],
     },

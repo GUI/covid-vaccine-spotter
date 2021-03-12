@@ -93,8 +93,6 @@ class Stores {
     }
 
     logger.notice("Finished finding stores.");
-
-    await Store.knex().destroy();
   }
 }
 

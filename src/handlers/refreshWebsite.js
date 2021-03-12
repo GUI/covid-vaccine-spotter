@@ -1,6 +1,5 @@
 const execa = require("execa");
 const fs = require("fs").promises;
-const stringify = require("json-stable-stringify");
 const path = require("path");
 const del = require("del");
 const mkdirp = require("mkdirp");
@@ -45,7 +44,7 @@ async function writeStoreData(dataPath, brand, conditions = {}) {
   for (const state of states) {
     await fs.writeFile(
       `${dataPath}/stores/${state.state}/${brand}.json`,
-      stringify(state.state_data, { space: "  " })
+      JSON.stringify(state.state_data)
     );
   }
 
@@ -309,35 +308,50 @@ module.exports.refreshWebsite = async () => {
   if (process.env.PUBLISH_SITE === "true") {
     logger.notice("Begin publishing website...");
 
+    await runShell("rsync", [
+      "-a",
+      "-v",
+      "--delete",
+      "--checksum",
+      "--no-times",
+      "./dist/",
+      "./tmp/dist-sync/",
+    ]);
+
     // Sync the cache-busted assets first out to S3. Otherwise, if new HTML
     // files get deployed first that reference these assets, we may
     // periodically have a half broken site (as the HTML pages can't find the
     // javascript files that haven't been synced yet).
-    await runShell("aws", [
-      "s3",
-      "sync",
-      "./dist/_nuxt/",
-      `s3://${process.env.WWWVACCINESPOTTERORG_NAME}/_nuxt/`,
-      "--cache-control",
-      "public, max-age=10, s-maxage=30",
+    await runShell("gsutil", [
+      "-m",
+      "-h",
+      "Cache-Control: public, max-age=15, s-maxage=40",
+      "rsync",
+      "-r",
+      "./tmp/dist-sync/_nuxt/",
+      `gs://${process.env.WEBSITE_BUCKET}/_nuxt/`,
     ]);
 
-    await runShell("aws", [
-      "s3",
-      "sync",
-      "./dist/api/",
-      `s3://${process.env.WWWVACCINESPOTTERORG_NAME}/api/`,
-      "--cache-control",
-      "public, max-age=10, s-maxage=30",
+    await runShell("gsutil", [
+      "-m",
+      "-h",
+      "Cache-Control: public, max-age=15, s-maxage=40",
+      "rsync",
+      "-r",
+      "./tmp/dist-sync/api/",
+      `gs://${process.env.WEBSITE_BUCKET}/api/`,
     ]);
 
-    await runShell("aws", [
-      "s3",
-      "sync",
-      "./dist/",
-      `s3://${process.env.WWWVACCINESPOTTERORG_NAME}/`,
-      "--cache-control",
-      "public, max-age=10, s-maxage=30",
+    await runShell("gsutil", [
+      "-m",
+      "-h",
+      "Cache-Control: public, max-age=15, s-maxage=40",
+      "rsync",
+      "-r",
+      "-x",
+      "^(api|_nuxt)/.*",
+      "./tmp/dist-sync/",
+      `gs://${process.env.WEBSITE_BUCKET}/`,
     ]);
   }
 
