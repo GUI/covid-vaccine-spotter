@@ -27,3 +27,7 @@ TODO: While this should cover running the website with existing, this doesn't co
 All of the data being collected is published as JSON files here: https://www.vaccinespotter.org/api/
 
 Subscribe to this discussion for any announcement of API changes: https://github.com/GUI/covid-vaccine-spotter/discussions/27
+
+## License
+
+This project is licensed under the terms of the [MIT license](./LICENSE.txt).
