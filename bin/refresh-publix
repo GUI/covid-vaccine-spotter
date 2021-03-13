@@ -1,0 +1,6 @@
+#!/usr/bin/env node
+
+const { refreshCvs } = require("../src/handlers/refreshPublix");
+const runTask = require("../src/runTask");
+
+runTask(refreshPublix, 40000);
