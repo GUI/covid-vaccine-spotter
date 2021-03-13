@@ -39,41 +39,6 @@
             issues, but in the meantime, sorry for any frustration!</small
           >
         </p>
-        <p
-          v-show="
-            store.properties.provider === 'rite_aid' &&
-            (store.properties.state === 'CA' ||
-              store.properties.state === 'MI' ||
-              store.properties.state === 'NY' ||
-              store.properties.state === 'PA' ||
-              store.properties.state === 'NJ' ||
-              store.properties.state === 'OH' ||
-              store.properties.state === 'OR' ||
-              store.properties.state === 'WA')
-          "
-          class="text-warning"
-        >
-          <font-awesome-icon icon="exclamation-triangle" />
-          <strong
-            >Education Staff and Childcare Providers Only<span
-              v-show="store.properties.state === 'NY'"
-            >
-              in NYC</span
-            >:</strong
-          >
-          Rite Aid appointments are
-          <a
-            href="https://www.riteaid.com/corporate/news/-/pressreleases/news-room/2021/rite-aid-expands-and-prioritizes-covid-19-vaccine-eligibility-to-teachers-school-staff-and-childcare-providers"
-            target="_blank"
-            rel="noopener"
-            >only bookable by teachers, school staff and childcare providers</a
-          >
-          until Saturday, March 13<span
-            v-show="store.properties.state === 'NY'"
-          >
-            in NYC (outside of NYC other groups may still be eligible)</span
-          >.
-        </p>
 
         <a
           :href="store.properties.url"
