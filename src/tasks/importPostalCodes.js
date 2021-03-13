@@ -1,7 +1,6 @@
 const csvParse = require("csv-parse");
 const fs = require("fs");
 const path = require("path");
-const download = require("download");
 const geoTz = require("geo-tz");
 const logger = require("../logger");
 const { PostalCode } = require("../models/PostalCode");
@@ -79,21 +78,6 @@ module.exports.importPostalCodes = async () => {
   const trx = await PostalCode.startTransaction();
 
   const tmpPath = path.resolve(__dirname, "../../tmp");
-  await download(
-    "https://download.geonames.org/export/zip/US.zip",
-    `${tmpPath}/US`,
-    { extract: true }
-  );
-  await download(
-    "https://download.geonames.org/export/zip/PR.zip",
-    `${tmpPath}/PR`,
-    { extract: true }
-  );
-  await download(
-    "https://download.geonames.org/export/zip/VI.zip",
-    `${tmpPath}/VI`,
-    { extract: true }
-  );
 
   await importGeoNamesFile(trx, `${tmpPath}/US/US.txt`);
   await importGeoNamesFile(trx, `${tmpPath}/PR/PR.txt`, {

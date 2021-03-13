@@ -66,7 +66,7 @@ async function runShell(...args) {
 module.exports.refreshWebsite = async () => {
   logger.notice("Begin refreshing website...");
 
-  await del("./dist");
+  await del("./dist/*");
 
   const dataPath = path.resolve("website/static/api/v0");
   await mkdirp(dataPath);
