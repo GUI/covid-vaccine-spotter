@@ -18,9 +18,10 @@ services:
     depends_on:
       - postgres
     volumes:
+      # Task output will be saved in website/static/
+      - ./website/static/:/app/dist
       # Mapping some common directories for less rebuilding and easy
       # inter-container communication
-      - ./dist:/app/dist
       - ./src:/app/src
       - ./bin:/app/bin
       - ./tmp:/app/tmp
@@ -35,15 +36,16 @@ services:
       - default
     entrypoint: /app/bin/bootstrap-entrypoint.sh
 
-  refresh_website:
+  task_runner:
     image: baseimage:1
     command: "bin/refresh-website"
     depends_on:
       - bootstrap_db
     volumes:
+      # Task output will be saved in website/static/
+      - ./website/static/:/app/dist
       # Mapping some common directories for less rebuilding and easy
       # inter-container communication
-      - ./dist:/app/dist
       - ./src:/app/src
       - ./bin:/app/bin
       - ./tmp:/app/tmp

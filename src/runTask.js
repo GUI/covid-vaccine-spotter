@@ -17,7 +17,7 @@ module.exports = async (task, sleepTime) => {
 
     if (runOnce) {
       logger.notice("Exiting task");
-      break;
+      process.exit();
     }
 
     logger.info(`End task run, sleeping for ${sleepTime}ms...`);

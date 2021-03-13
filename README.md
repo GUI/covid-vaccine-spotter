@@ -29,6 +29,12 @@ docker-compose build
 docker-compose up
 ```
 
+To run additional tasks, you can use `docker-compose run`:
+
+```
+docker-compose run --no-deps task_runner bin/refresh-cvs
+```
+
 ## Very Beta API
 
 All of the data being collected is published as JSON files here: https://www.vaccinespotter.org/api/

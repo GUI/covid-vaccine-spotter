@@ -30,7 +30,7 @@ set -e
 
 # /app/tmp is for inter-container communication
 touch /app/tmp/bootstrapped
-# /tmp is for local to this container, to remember if we have ran it
+# /tmp is for local to this container, to remember if we have ran
 touch /tmp/bootstrapped
 
 exec "$@"

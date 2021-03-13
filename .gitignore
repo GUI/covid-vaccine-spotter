@@ -1,6 +1,6 @@
 /node_modules
 /.env*
-/website/static/api/v0
+/website/static/
 /dist
 /.nuxt
 /.serverless
