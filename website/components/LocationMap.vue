@@ -116,10 +116,10 @@ export default {
             "match",
             ["to-string", ["get", "appointments_available"]],
             "true",
-            "#2ca25f",
+            "#66c2a5",
             "false",
-            "#e34a33",
-            "#636363",
+            "#fc8d62",
+            "#8da0cb",
           ],
         },
       });
@@ -210,15 +210,15 @@ export default {
 }
 
 #legend span.available-marker {
-  background-color: #2ca25f;
+  background-color: #66c2a5;
 }
 
 #legend span.unavailable-marker {
-  background-color: #e34a33;
+  background-color: #fc8d62;
 }
 
 #legend span.unknown-marker {
-  background-color: #636363;
+  background-color: #8da0cb;
 }
 
 @media (min-width: 992px) {
