@@ -308,6 +308,25 @@ module.exports.refreshWebsite = async () => {
   if (process.env.PUBLISH_SITE === "true") {
     logger.notice("Begin publishing website...");
 
+    // Pre-compress all files.
+    await runShell("find", [
+      "./dist",
+      "-type",
+      "f",
+      "-print",
+      "-exec",
+      "gzip",
+      "-n",
+      "{}",
+      ";",
+      "-exec",
+      "mv",
+      "{}.gz",
+      "{}",
+      ";",
+    ]);
+
+    // Sync to a temporary local dir to preserve timestamps.
     await runShell("rsync", [
       "-a",
       "-v",
@@ -322,37 +341,71 @@ module.exports.refreshWebsite = async () => {
     // files get deployed first that reference these assets, we may
     // periodically have a half broken site (as the HTML pages can't find the
     // javascript files that haven't been synced yet).
-    await runShell("gsutil", [
-      "-m",
-      "-h",
+    await runShell("rclone", [
+      "copy",
+      "-v",
+      "--header-upload",
       "Cache-Control: public, max-age=15, s-maxage=40",
-      "rsync",
-      "-r",
+      "--header-upload",
+      "Content-Encoding: gzip",
       "./tmp/dist-sync/_nuxt/",
-      `gs://${process.env.WEBSITE_BUCKET}/_nuxt/`,
+      `:gcs:${process.env.WEBSITE_BUCKET}/_nuxt/`,
     ]);
 
-    await runShell("gsutil", [
-      "-m",
-      "-h",
+    // Sync the API files first to ensure they're live before other files that
+    // rely on them might go live.
+    await runShell("rclone", [
+      "copy",
+      "-v",
+      "--header-upload",
       "Cache-Control: public, max-age=15, s-maxage=40",
-      "rsync",
-      "-r",
+      "--header-upload",
+      "Content-Encoding: gzip",
       "./tmp/dist-sync/api/",
-      `gs://${process.env.WEBSITE_BUCKET}/api/`,
+      `:gcs:${process.env.WEBSITE_BUCKET}/api/`,
     ]);
 
-    await runShell("gsutil", [
-      "-m",
-      "-h",
+    // Sync the remaining files.
+    await runShell("rclone", [
+      "copy",
+      "-v",
+      "--header-upload",
       "Cache-Control: public, max-age=15, s-maxage=40",
-      "rsync",
-      "-r",
-      "-x",
-      "^(api|_nuxt)/.*",
+      "--header-upload",
+      "Content-Encoding: gzip",
+      "--exclude",
+      "api/**",
+      "--exclude",
+      "_nuxt/**",
       "./tmp/dist-sync/",
-      `gs://${process.env.WEBSITE_BUCKET}/`,
+      `:gcs:${process.env.WEBSITE_BUCKET}/`,
     ]);
+
+    // Each new deployment contains a new timestamped directory of assets in
+    // _nuxt/static/*. To prevent these from growing indefinitely (which can
+    // slow down other syncs), prune all but the last 15. We keep some previous
+    // deployments around to prevent race conditions with someone loading an
+    // old HTML file that may still rely on the previous deployed assets (15 is
+    // probably overkill, but just to be safe).
+    const staticDirsCmd = await runShell("rclone", [
+      "lsjson",
+      `:gcs:${process.env.WEBSITE_BUCKET}/_nuxt/static/`,
+    ]);
+    const staticDirs = JSON.parse(staticDirsCmd.stdout).map((d) => d.Path);
+    staticDirs.sort();
+    const keepCount = 15;
+    const staticDirsKeep = staticDirs.slice(-1 * keepCount);
+    const staticDirsDelete = staticDirs.slice(0, -1 * keepCount);
+    logger.info(
+      `Deleting old _nuxt/static dirs: ${staticDirsDelete}. Keeping: ${staticDirsKeep}`
+    );
+    for (dir of staticDirsDelete) {
+      await runShell("rclone", [
+        "purge",
+        "-v",
+        `:gcs:${process.env.WEBSITE_BUCKET}/_nuxt/static/${dir}`,
+      ]);
+    }
   }
 
   logger.notice("Finished refreshing website.");
