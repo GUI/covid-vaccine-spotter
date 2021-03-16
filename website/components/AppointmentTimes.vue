@@ -85,6 +85,19 @@ export default {
       );
     },
 
+    formatDate(date) {
+      console.info("formatDate: ", JSON.stringify(date));
+      console.info(
+        "formatDate2: ",
+        DateTime.fromISO(date, { setZone: true }).toLocaleString(
+          DateTime.DATE_SHORT
+        )
+      );
+      return DateTime.fromISO(date, { setZone: true }).toLocaleString(
+        DateTime.DATE_SHORT
+      );
+    },
+
     normalizeAppointments(appointments) {
       return appointments.map((appointment) => {
         let normalized;
@@ -109,6 +122,16 @@ export default {
           normalized = {
             time: this.formatTime(appointment.time),
             type,
+          };
+        } else if (appointment.date && appointment.type) {
+          normalized = {
+            time: this.formatDate(appointment.date),
+            type: appointment.type,
+          };
+        } else if (appointment.date) {
+          normalized = {
+            time: this.formatDate(appointment.date),
+            type: null,
           };
         } else {
           normalized = {
