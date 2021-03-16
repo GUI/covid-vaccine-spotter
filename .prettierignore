@@ -1,6 +1,7 @@
 /node_modules
 /dist*
 /.env*
+/website/static/404.html
 /website/static/api/v0*
 /.serverless
 /tmp/
