@@ -2,10 +2,15 @@
   <header>
     <div class="navbar fixed-top navbar-dark bg-primary shadow">
       <div class="container-lg flex-column flex-md-row">
+        <a
+          v-if="routeURL"
+          href="/"
+          class="text-white"
+          style="text-decoration: none"
+          >View Other States</a
+        >
         <h1 class="navbar-brand mb-0 fw-bold">
-          <a href="/" class="text-white" style="text-decoration: none">{{
-            title
-          }}</a>
+          {{ title }}
         </h1>
         <div v-if="withReload">
           <button class="btn btn-light" onclick="window.location.reload();">
@@ -37,6 +42,11 @@ export default {
       },
     };
   },
+  computed: {
+    routeURL() {
+      return this.$route.name !== "index";
+    },
+  },
 
   // Workaround for bodyAttrs not always seeming to work:
   // https://stackoverflow.com/a/55909431/222487
@@ -59,6 +69,10 @@ body {
 
 body.has-navbar-with-reload {
   padding-top: 88px;
+}
+
+.navbar a:hover {
+  color: #b3d1fd !important;
 }
 
 h1.navbar-brand {
