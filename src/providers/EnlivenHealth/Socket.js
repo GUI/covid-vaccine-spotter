@@ -4,48 +4,20 @@ const sleep = require("sleep-promise");
 const _ = require("lodash");
 const pTimeout = require("p-timeout");
 
-const UrlToken =
-  "df425c2e5d5e1084510b834c2fddcda8a459d7239c01d1766380e3d49fa7f936";
-
-const stateUrlIds = {
-  FL: "c20605cb988e4a18a3eab5f7fd466cf6",
-  MS: "04ec5ed02145433ea25759a38403253d",
-};
-
-const stateSockets = {};
-
 class Socket {
-  static getSocketForState(state, index) {
-    const key = `${state}-${index}`;
-    console.info("key: ", key);
-    if (!stateSockets[key]) {
-      stateSockets[key] = new Socket(state);
-    }
-
-    return stateSockets[key];
-  }
-
-  constructor(state) {
+  constructor(urlId) {
     this.socket = io("wss://endpoint-chat.ateb.com", {
       upgrade: false,
       transports: ["websocket"],
     });
 
-    this.socket.on("disconnect", () => {
-      console.info("disconnect!");
-    });
-
-    this.state = state;
-    this.stateUrlId = stateUrlIds[this.state];
-    if (!this.stateUrlId) {
-      throw new Error(`Unknown URL ID for state: ${this.state}`);
-    }
-
+    this.urlId = urlId;
     this.userId = uuidv4();
     this.sessionId = `session-${uuidv4()}`;
 
     this.baseMessage = {
-      URLToken: UrlToken,
+      URLToken:
+        "df425c2e5d5e1084510b834c2fddcda8a459d7239c01d1766380e3d49fa7f936",
       userId: this.userId,
       sessionId: this.sessionId,
       channel: "webchat-client",
@@ -64,7 +36,7 @@ class Socket {
     if (!this.initComplete) {
       await this.sendMessage({
         data: {},
-        text: this.stateUrlId,
+        text: this.urlId,
       });
       await this.sendMessage({
         data: {
@@ -80,35 +52,29 @@ class Socket {
 
   async checkPostalCode(postalCode, startDate) {
     await this.init();
-    try {
-      return await this.sendMessage({
-        data: {
-          adaptivecards: {
-            offerings: "covid",
-            start: startDate,
-            zipCode: postalCode,
-          },
+    return this.sendMessage({
+      data: {
+        adaptivecards: {
+          offerings: "covid",
+          start: startDate,
+          zipCode: postalCode,
         },
-      });
-    } finally {
-      /*
-      await this.sendMessage({
-        data: {
-          adaptivecards: {
-            id: 'locationName',
-            postBack: 'ZIP_SEARCH',
-            scheduleLocation: "",
-          },
+      },
+    });
+  }
+
+  async checkState(state, startDate) {
+    await this.init();
+    return this.sendMessage({
+      data: {
+        adaptivecards: {
+          offerings: "covid",
+          start: startDate,
+          state,
+          zipCode: "",
         },
-      });
-      */
-      /*
-      await this.sendMessage({
-        data: null,
-        text: 'SEARCH_CLINIC',
-      });
-      */
-    }
+      },
+    });
   }
 
   async sendMessage(message) {

@@ -86,13 +86,6 @@ export default {
     },
 
     formatDate(date) {
-      console.info("formatDate: ", JSON.stringify(date));
-      console.info(
-        "formatDate2: ",
-        DateTime.fromISO(date, { setZone: true }).toLocaleString(
-          DateTime.DATE_SHORT
-        )
-      );
       return DateTime.fromISO(date, { setZone: true }).toLocaleString(
         DateTime.DATE_SHORT
       );

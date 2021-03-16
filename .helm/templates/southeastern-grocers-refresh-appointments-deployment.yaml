@@ -1,25 +1,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Chart.Name }}-winn-dixie-refresh-appointments-deployment
+  name: {{ .Chart.Name }}-southeastern-grocers-refresh-appointments-deployment
   labels:
-    app: {{ .Chart.Name }}-winn-dixie-refresh-appointments
+    app: {{ .Chart.Name }}-southeastern-grocers-refresh-appointments
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .Chart.Name }}-winn-dixie-refresh-appointments
+      app: {{ .Chart.Name }}-southeastern-grocers-refresh-appointments
   template:
     metadata:
       labels:
-        app: {{ .Chart.Name }}-winn-dixie-refresh-appointments
+        app: {{ .Chart.Name }}-southeastern-grocers-refresh-appointments
     spec:
       imagePullSecrets:
         - name: {{ .Chart.Name }}-container-registry-secret
       containers:
-        - name: {{ .Chart.Name }}-winn-dixie-refresh-appointments
+        - name: {{ .Chart.Name }}-southeastern-grocers-refresh-appointments
 {{ tuple "covid-vaccine-spotter-playwright" . | werf_container_image | indent 10 }}
-          args: ["bin/winn-dixie-refresh-appointments"]
+          args: ["bin/southeastern-grocers-refresh-appointments"]
           env:
 {{ tuple "covid-vaccine-spotter-playwright" . | werf_container_env | indent 12 }}
             - name: LOG_LEVEL

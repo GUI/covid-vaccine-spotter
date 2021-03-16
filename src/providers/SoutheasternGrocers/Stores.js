@@ -9,14 +9,66 @@ class Stores {
   static async findStores() {
     await Provider.query()
       .insert({
-        id: "winn_dixie",
+        id: "southeastern_grocers",
       })
       .onConflict(["id"])
       .merge();
 
+    await Stores.findFrescoYMasStores();
+    await Stores.findHarveysStores();
+    await Stores.findWinnDixieStores();
+
+    await Store.knex().destroy();
+  }
+
+  static async findFrescoYMasStores() {
     await ProviderBrand.query()
       .insert({
-        provider_id: "winn_dixie",
+        provider_id: "southeastern_grocers",
+        key: "fresco_y_mas",
+        name: "Fresco y Más",
+        url: "https://www.frescoymas.com/pharmacy/covid-vaccine",
+      })
+      .onConflict(["provider_id", "key"])
+      .merge();
+
+    const providerBrand = await ProviderBrand.query().findOne({
+      provider_id: "southeastern_grocers",
+      key: "fresco_y_mas",
+    });
+
+    await Stores.importBrand(
+      "https://www.frescoymas.com/V2/storelocator/getStores?search=jacksonville,%20fl&strDefaultMiles=1000&filter=",
+      providerBrand
+    );
+  }
+
+  static async findHarveysStores() {
+    await ProviderBrand.query()
+      .insert({
+        provider_id: "southeastern_grocers",
+        key: "harveys",
+        name: "Harveys",
+        url: "https://www.harveyssupermarkets.com/pharmacy/covid-vaccine",
+      })
+      .onConflict(["provider_id", "key"])
+      .merge();
+
+    const providerBrand = await ProviderBrand.query().findOne({
+      provider_id: "southeastern_grocers",
+      key: "harveys",
+    });
+
+    await Stores.importBrand(
+      "https://www.harveyssupermarkets.com/V2/storelocator/getStores?search=jacksonville,%20fl&strDefaultMiles=1000&filter=",
+      providerBrand
+    );
+  }
+
+  static async findWinnDixieStores() {
+    await ProviderBrand.query()
+      .insert({
+        provider_id: "southeastern_grocers",
         key: "winn_dixie",
         name: "Winn-Dixie",
         url: "https://www.winndixie.com/pharmacy/covid-vaccine",
@@ -25,22 +77,26 @@ class Stores {
       .merge();
 
     const providerBrand = await ProviderBrand.query().findOne({
-      provider_id: "winn_dixie",
+      provider_id: "southeastern_grocers",
       key: "winn_dixie",
     });
 
+    await Stores.importBrand(
+      "https://www.winndixie.com/V2/storelocator/getStores?search=jacksonville,%20fl&strDefaultMiles=1000&filter=",
+      providerBrand
+    );
+  }
+
+  static async importBrand(url, providerBrand) {
     // Note, using "got" against this URL seems to result in 403s, despite
     // identical headers as curl (including user-agent). Perhaps related to:
     // https://github.com/sindresorhus/got/discussions/1661. So using curl
     // here.
-    const { data } = await curly.get(
-      "https://www.winndixie.com/V2/storelocator/getStores?search=jacksonville,%20fl&strDefaultMiles=1000&filter=",
-      {
-        httpHeader: [
-          "User-Agent: covid-vaccine-finder (https://github.com/GUI/covid-vaccine-finder)",
-        ],
-      }
-    );
+    const { data } = await curly.get(url, {
+      httpHeader: [
+        "User-Agent: covid-vaccine-finder (https://github.com/GUI/covid-vaccine-finder)",
+      ],
+    });
 
     const count = data.length;
     for (const [index, store] of data.entries()) {
@@ -73,10 +129,10 @@ class Stores {
 
       await Store.query()
         .insert({
-          brand: "winn_dixie",
-          brand_id: store.StoreCode,
-          provider_id: "winn_dixie",
-          provider_location_id: store.StoreCode,
+          brand: "southeastern_grocers",
+          brand_id: `${store.Chain_ID}-${store.StoreCode}`,
+          provider_id: "southeastern_grocers",
+          provider_location_id: `${store.Chain_ID}-${store.StoreCode}`,
           provider_brand_id: providerBrand.id,
           name: store.StoreName,
           address: store.Address.AddressLine2,
@@ -86,7 +142,9 @@ class Stores {
           time_zone: timeZone,
           location: `point(${store.Location.Longitude} ${store.Location.Latitude})`,
           normalized_address_key: normalizedAddressKey(
-            `${store.Address.AddressLine2}, ${store.Address.City}, ${store.Address.State}, ${store.Address.Zipcode}`
+            `${store.Address.AddressLine2.replace(/,/g, "")}, ${
+              store.Address.City
+            }, ${store.Address.State}, ${store.Address.Zipcode}`
           ),
           metadata_raw: store,
           active: false,
@@ -94,8 +152,6 @@ class Stores {
         .onConflict(["provider_id", "provider_location_id"])
         .merge();
     }
-
-    await Store.knex().destroy();
   }
 }
 
