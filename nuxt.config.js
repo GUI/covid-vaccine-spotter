@@ -1,7 +1,5 @@
-const buildModules = [
-  "@nuxtjs/google-analytics",
-];
-if (process.env.NODE_ENV !== 'production') {
+const buildModules = ["@nuxtjs/google-analytics"];
+if (process.env.NODE_ENV !== "production") {
   // https://go.nuxtjs.dev/eslint
   buildModules.push("@nuxtjs/eslint-module");
 }
@@ -53,6 +51,23 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
+
+  generate: {
+    cache: {
+      ignore: [
+        "Dockerfile*",
+        "LICENSE.txt",
+        "bin/**/*",
+        "copilot/**/*",
+        "knexfile.js",
+        "migrations/**/*",
+        "serverless.yml",
+        "src/**/*",
+        "tmp/**/*",
+        "website/static/**/*",
+      ],
+    },
+  },
 
   vue: {
     config: {

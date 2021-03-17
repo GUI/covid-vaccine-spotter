@@ -2,10 +2,15 @@ const got = require("got");
 const sleep = require("sleep-promise");
 const logger = require("../../logger");
 const { Store } = require("../../models/Store");
+const { ProviderBrand } = require("../../models/ProviderBrand");
 
 class Stores {
   static async findStores() {
     logger.notice("Begin finding stores...");
+
+    const providerBrand = await ProviderBrand.query().findOne({
+      provider_id: "walmart",
+    });
 
     const importedStores = {};
 
@@ -48,6 +53,9 @@ class Stores {
           const patch = {
             brand: "walmart",
             brand_id: store.id,
+            provider_id: "walmart",
+            provider_location_id: store.id,
+            provider_brand_id: providerBrand.id,
             name: store.displayName,
             address: store.address.address,
             city: store.address.city,
@@ -85,8 +93,6 @@ class Stores {
     }
 
     logger.notice("Finished finding stores.");
-
-    await Store.knex().destroy();
   }
 }
 

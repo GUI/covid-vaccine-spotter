@@ -1,7 +1,8 @@
 const execa = require("execa");
 const fs = require("fs").promises;
-const stringify = require("json-stable-stringify");
 const path = require("path");
+const del = require("del");
+const mkdirp = require("mkdirp");
 const logger = require("../logger");
 const { Store } = require("../models/Store");
 const { State } = require("../models/State");
@@ -43,7 +44,7 @@ async function writeStoreData(dataPath, brand, conditions = {}) {
   for (const state of states) {
     await fs.writeFile(
       `${dataPath}/stores/${state.state}/${brand}.json`,
-      stringify(state.state_data, { space: "  " })
+      JSON.stringify(state.state_data)
     );
   }
 
@@ -52,6 +53,10 @@ async function writeStoreData(dataPath, brand, conditions = {}) {
 
 async function runShell(...args) {
   const cmd = execa(...args);
+  if (logger.level.levelStr === "DEBUG") {
+    cmd.stdout.pipe(process.stdout);
+    cmd.stderr.pipe(process.stderr);
+  }
   logger.info(cmd.spawnargs.join(" "));
   await cmd;
   logger.info(`Shell command complete (${cmd.spawnargs.join(" ")})`);
@@ -61,8 +66,10 @@ async function runShell(...args) {
 module.exports.refreshWebsite = async () => {
   logger.notice("Begin refreshing website...");
 
+  await del("./dist");
+
   const dataPath = path.resolve("website/static/api/v0");
-  await runShell("mkdir", ["-p", dataPath]);
+  await mkdirp(dataPath);
 
   const states = await State.knex().raw(`
     SELECT
@@ -107,7 +114,7 @@ module.exports.refreshWebsite = async () => {
   `);
   await fs.writeFile(`${dataPath}/states.json`, JSON.stringify(states.rows));
   for (const state of states.rows) {
-    await runShell("mkdir", ["-p", `${dataPath}/stores/${state.code}`]);
+    await mkdirp(`${dataPath}/stores/${state.code}`);
   }
 
   await Store.knex().raw(`
@@ -203,7 +210,7 @@ module.exports.refreshWebsite = async () => {
     GROUP BY states.id
     ORDER BY states.name
   `);
-  await runShell("mkdir", ["-p", `${dataPath}/states`]);
+  await mkdirp(`${dataPath}/states`);
   for (const state of statesData.rows) {
     await fs.writeFile(
       `${dataPath}/states/${state.code}.json`,
@@ -223,7 +230,7 @@ module.exports.refreshWebsite = async () => {
     ORDER BY state_code
   `);
   for (const state of postalCodeData.rows) {
-    await runShell("mkdir", ["-p", `${dataPath}/states/${state.state_code}`]);
+    await mkdirp(`${dataPath}/states/${state.state_code}`);
     await fs.writeFile(
       `${dataPath}/states/${state.state_code}/postal_codes.json`,
       JSON.stringify(state.data)
@@ -301,36 +308,104 @@ module.exports.refreshWebsite = async () => {
   if (process.env.PUBLISH_SITE === "true") {
     logger.notice("Begin publishing website...");
 
+    // Pre-compress all files.
+    await runShell("find", [
+      "./dist",
+      "-type",
+      "f",
+      "-print",
+      "-exec",
+      "gzip",
+      "-n",
+      "{}",
+      ";",
+      "-exec",
+      "mv",
+      "{}.gz",
+      "{}",
+      ";",
+    ]);
+
+    // Sync to a temporary local dir to preserve timestamps.
+    await runShell("rsync", [
+      "-a",
+      "-v",
+      "--delete",
+      "--checksum",
+      "--no-times",
+      "./dist/",
+      "./tmp/dist-sync/",
+    ]);
+
     // Sync the cache-busted assets first out to S3. Otherwise, if new HTML
     // files get deployed first that reference these assets, we may
     // periodically have a half broken site (as the HTML pages can't find the
     // javascript files that haven't been synced yet).
-    await runShell("aws", [
-      "s3",
-      "sync",
-      "./dist/_nuxt/",
-      `s3://${process.env.WWWVACCINESPOTTERORG_NAME}/_nuxt/`,
-      "--cache-control",
-      "public, max-age=10, s-maxage=30",
+    await runShell("rclone", [
+      "copy",
+      "-v",
+      "--header-upload",
+      "Cache-Control: public, max-age=15, s-maxage=40",
+      "--header-upload",
+      "Content-Encoding: gzip",
+      "./tmp/dist-sync/_nuxt/",
+      `:gcs:${process.env.WEBSITE_BUCKET}/_nuxt/`,
     ]);
 
-    await runShell("aws", [
-      "s3",
-      "sync",
-      "./dist/api/",
-      `s3://${process.env.WWWVACCINESPOTTERORG_NAME}/api/`,
-      "--cache-control",
-      "public, max-age=10, s-maxage=30",
+    // Sync the API files first to ensure they're live before other files that
+    // rely on them might go live.
+    await runShell("rclone", [
+      "copy",
+      "-v",
+      "--header-upload",
+      "Cache-Control: public, max-age=15, s-maxage=40",
+      "--header-upload",
+      "Content-Encoding: gzip",
+      "./tmp/dist-sync/api/",
+      `:gcs:${process.env.WEBSITE_BUCKET}/api/`,
     ]);
 
-    await runShell("aws", [
-      "s3",
-      "sync",
-      "./dist/",
-      `s3://${process.env.WWWVACCINESPOTTERORG_NAME}/`,
-      "--cache-control",
-      "public, max-age=10, s-maxage=30",
+    // Sync the remaining files.
+    await runShell("rclone", [
+      "copy",
+      "-v",
+      "--header-upload",
+      "Cache-Control: public, max-age=15, s-maxage=40",
+      "--header-upload",
+      "Content-Encoding: gzip",
+      "--exclude",
+      "api/**",
+      "--exclude",
+      "_nuxt/**",
+      "./tmp/dist-sync/",
+      `:gcs:${process.env.WEBSITE_BUCKET}/`,
     ]);
+
+    // Each new deployment contains a new timestamped directory of assets in
+    // _nuxt/static/*. To prevent these from growing indefinitely (which can
+    // slow down other syncs), prune all but the last 15. We keep some previous
+    // deployments around to prevent race conditions with someone loading an
+    // old HTML file that may still rely on the previous deployed assets (15 is
+    // probably overkill, but just to be safe).
+    const staticDirsCmd = await runShell("rclone", [
+      "lsjson",
+      `:gcs:${process.env.WEBSITE_BUCKET}/_nuxt/static/`,
+    ]);
+    const staticDirs = JSON.parse(staticDirsCmd.stdout).map((d) => d.Path);
+    staticDirs.sort();
+    const keepCount = 15;
+    const staticDirsKeep = staticDirs.slice(-1 * keepCount);
+    const staticDirsDelete = staticDirs.slice(0, -1 * keepCount);
+    logger.info(
+      `Deleting old _nuxt/static dirs: ${staticDirsDelete}. Keeping: ${staticDirsKeep}`
+    );
+    for (dir of staticDirsDelete) {
+      await runShell("rclone", [
+        "purge",
+        "-v",
+        `:gcs:${process.env.WEBSITE_BUCKET}/_nuxt/static/${dir}`,
+      ]);
+    }
   }
 
   logger.notice("Finished refreshing website.");

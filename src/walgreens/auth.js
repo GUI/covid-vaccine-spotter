@@ -34,13 +34,14 @@ const Auth = {
     const browser = await firefox.launch({
       headless: true,
       proxy: {
-        server: process.env.PROXY_RANDOM_SERVER,
-        username: process.env.PROXY_RANDOM_USERNAME,
-        password: process.env.PROXY_RANDOM_PASSWORD,
+        server: process.env.WALGREENS_PROXY_SERVER,
+        username: process.env.WALGREENS_PROXY_USERNAME,
+        password: process.env.WALGREENS_PROXY_PASSWORD,
       },
     });
     try {
       const context = await browser.newContext({
+        ignoreHTTPSErrors: true,
         userAgent:
           "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:85.0) Gecko/20100101 Firefox/85.0",
       });

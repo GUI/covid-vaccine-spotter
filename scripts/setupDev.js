@@ -7,32 +7,28 @@ createDirRecursive = (path) => {
 }
 
 const apiBaseUri = `https://www.vaccinespotter.org/api/v0`
-const supportedStores = ['albertsons', 'walgreens', 'walmart', 'cvs',
-                         'sams_club', 'pharmaca', 'rite_aid', 'kroger',
-                         'hyvee', 'thrifty_white'];
 
-const baseStoresDir = 'site/api/v0/stores'
-createDirRecursive(baseStoresDir);
+const baseStaticAssetsDir = `website/static/api/v0/`
+createDirRecursive(baseStaticAssetsDir);
 (async () => {
     // Download the state data first for state code scraping
-    await download(`${apiBaseUri}/states.json`, `site/api/v0/`);
-    const stateData = JSON.parse(fs.readFileSync('site/api/v0/states.json'));
-    let storeApptDownloadPromises = [];
+    await download(`${apiBaseUri}/states.json`, baseStaticAssetsDir);
+    const stateData = JSON.parse(fs.readFileSync(`${baseStaticAssetsDir}/states.json`));
+    let vaccineSpotterApiFetchPromises = [];
     stateData.forEach(state => {
-        createDirRecursive(`${baseStoresDir}/${state.code}`);
-        supportedStores.forEach(store => {
-            const uri = `${apiBaseUri}/stores/${state.code}/${store}.json`;
-            const filePath = `${baseStoresDir}/${state.code}/`
-            storeApptDownloadPromises.push(download(uri, filePath)
-                .catch(error => {
-                    // It is expected that many calls will result in a 404, as
-                    //  not all states have the same stores
-                    if (error.statusCode !== 404) {
-                        console.log(`ERROR downloading store data: ${error}`);
-                    }
-                })
-            )
-        });
+        const statesDir = `${baseStaticAssetsDir}/states`;
+        const statePostalCodeDir = `${statesDir}/${state.code}`;
+        const stateDataUri = `${apiBaseUri}/states/${state.code}.json`;
+        const statePostalCodeUri = `${apiBaseUri}/states/${state.code}/postal_codes.json`;
+        vaccineSpotterApiFetchPromises.push(download(stateDataUri, statesDir)
+        .catch(error => {
+            console.log(`ERROR downloading ${state.name} (${state.code}) data: ${error}`);
+        }));
+        createDirRecursive(statePostalCodeDir);
+        vaccineSpotterApiFetchPromises.push(download(statePostalCodeUri, statePostalCodeDir)
+        .catch(error => {
+            console.log(`ERROR downloading ${state.name} (${state.code}) postal code data: ${error}`);
+        }));
     });
-    Promise.all(storeApptDownloadPromises);
+    Promise.all(vaccineSpotterApiFetchPromises);
 })();

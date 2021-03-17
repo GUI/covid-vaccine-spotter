@@ -51,7 +51,7 @@
             <p v-else>
               <strong>Uh oh!</strong> The data for this pharmacy is old. Please
               visit the
-              <a :href="store.properties.url" target="_blank"
+              <a :href="store.properties.url" target="_blank" rel="noopener"
                 >pharmacy's website</a
               >
               directly for appointment availability. This likely means that the
@@ -60,7 +60,7 @@
           </div>
 
           <p>
-            <a :href="store.properties.url" target="_blank"
+            <a :href="store.properties.url" target="_blank" rel="noopener"
               >Visit {{ store.properties.provider_brand_name }} Website
               <font-awesome-icon icon="external-link-alt"
             /></a>

@@ -28,13 +28,7 @@
         </div>
         <appointment-times :store="store" />
         {{ /* Use v-show, not v-if for conditions without "else". Otherwise, strange things happen in production that cause rendering to fail (if the page is reloaded with a zip code pre-filled): https://github.com/nuxt/nuxt.js/issues/5800 */ }}
-        <p
-          v-show="
-            store.properties.provider === 'kroger' ||
-            store.properties.provider === 'walgreens'
-          "
-          class="text-warning"
-        >
+        <p v-show="store.properties.provider === 'kroger'" class="text-warning">
           <small
             ><font-awesome-icon icon="exclamation-triangle" />
             <strong>Warning:</strong> Many users are reporting issues booking
@@ -45,7 +39,12 @@
             issues, but in the meantime, sorry for any frustration!</small
           >
         </p>
-        <a :href="store.properties.url" class="btn btn-primary" target="_blank"
+
+        <a
+          :href="store.properties.url"
+          class="btn btn-primary"
+          target="_blank"
+          rel="noopener"
           >Visit {{ store.properties.provider_brand_name }} Website
           <font-awesome-icon icon="arrow-alt-circle-right"
         /></a>
@@ -72,7 +71,7 @@
           <p v-else>
             <strong>Uh oh!</strong> The data for this pharmacy is old. Please
             visit the
-            <a :href="store.properties.url" target="_blank"
+            <a :href="store.properties.url" target="_blank" rel="noopener"
               >pharmacy's website</a
             >
             directly for appointment availability. This likely means that the
@@ -80,7 +79,7 @@
           </p>
         </div>
         <p>
-          <a :href="store.properties.url" target="_blank"
+          <a :href="store.properties.url" target="_blank" rel="noopener"
             >Visit {{ store.properties.provider_brand_name }} Website
             <font-awesome-icon icon="external-link-alt"
           /></a>

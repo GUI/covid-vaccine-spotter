@@ -47,27 +47,72 @@ class Appointments {
       appointments_raw: {},
     };
 
-    const slotsResp = await retry(async () => Appointments.fetchSlots(store), {
-      retries: 2,
-      onFailedAttempt: async (err) => Appointments.onFailedAttempt(err, store),
-    });
+    const inventoryResp = await retry(
+      async () => Appointments.fetchInventory(store),
+      {
+        retries: 2,
+        onFailedAttempt: async (err) =>
+          Appointments.onFailedAttempt(err, store),
+      }
+    );
 
-    patch.appointments_raw = slotsResp.body;
-    if (patch.appointments_raw?.data?.slotDays) {
-      patch.appointments = patch.appointments_raw.data.slotDays.reduce(
-        (appointments, day) =>
-          appointments.concat(
-            day.slots.map((slot) =>
-              DateTime.fromFormat(
-                `${day.slotDate} ${slot.startTime}`,
-                "LLddyyyy H:mm",
-                { zone: store.time_zone }
-              ).toISO()
-            )
-          ),
+    patch.appointments_raw.inventory = inventoryResp.body;
+    const hasInventory = inventoryResp.body?.data?.inventory?.some(
+      (inventory) => inventory.quantity > 0
+    );
+
+    if (hasInventory) {
+      const vaccineTypes = inventoryResp.body.data.inventory.reduce(
+        (types, inventory) => {
+          if (inventory.quantity > 0) {
+            let name;
+            switch (inventory.productMdsFamId) {
+              case 181947:
+                name = "Pfizer";
+                break;
+              case 181948:
+                name = "Moderna";
+                break;
+              default:
+                name = inventory.shortName;
+                break;
+            }
+
+            types.push(name);
+          }
+
+          return types;
+        },
         []
       );
-      patch.appointments.sort();
+
+      const slotsResp = await retry(
+        async () => Appointments.fetchSlots(store),
+        {
+          retries: 2,
+          onFailedAttempt: async (err) =>
+            Appointments.onFailedAttempt(err, store),
+        }
+      );
+
+      patch.appointments_raw.slots = slotsResp.body;
+      if (slotsResp.body?.data?.slotDays) {
+        patch.appointments = slotsResp.body.data.slotDays.reduce(
+          (appointments, day) =>
+            appointments.concat(
+              day.slots.map((slot) => ({
+                type: vaccineTypes.join(", "),
+                time: DateTime.fromFormat(
+                  `${day.slotDate} ${slot.startTime}`,
+                  "LLddyyyy H:mm",
+                  { zone: store.time_zone }
+                ).toISO(),
+              }))
+            ),
+          []
+        );
+        patch.appointments.sort();
+      }
     }
 
     if (patch.appointments.length > 0) {
@@ -77,6 +122,26 @@ class Appointments {
     await Store.query().findById(store.id).patch(patch);
 
     await sleep(_.random(250, 750));
+  }
+
+  static async fetchInventory(store) {
+    const auth = await authMutex.runExclusive(Auth.get);
+    return got(
+      `https://www.walmart.com/pharmacy/v2/clinical-services/inventory/store/${store.brand_id}/${auth.body.payload.cid}`,
+      {
+        searchParams: {
+          type: "imz",
+        },
+        headers: {
+          "User-Agent":
+            "covid-vaccine-finder (https://github.com/GUI/covid-vaccine-finder)",
+        },
+        cookieJar: auth.cookieJar,
+        responseType: "json",
+        timeout: 30000,
+        retry: 0,
+      }
+    );
   }
 
   static async fetchSlots(store) {
