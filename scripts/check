@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+set -o nounset
+set -o pipefail
+set -o errexit
+
+check_installed () {
+    local exe="$1"
+
+    if ! type $exe >/dev/null ; then
+        echo "Missing $exe"
+        exit 1
+    fi
+}
+
+check_installed node
+check_installed yarn
+
+version="$(node --version)"
+if [[ "v14.*" =~ "$version" ]] ; then
+    echo "Expecting node v14+"
+    exit 1
+fi
