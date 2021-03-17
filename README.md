@@ -1,8 +1,8 @@
-# COVID-19 Vaccine Spotter
+# 🩺 COVID-19 Vaccine Spotter
 
 A tool to help you track down COVID-19 vaccine appointment openings at your state's pharmacies. The code behind https://www.vaccinespotter.org.
 
-## Development Setup
+## 💻 Development Setup
 
 Requirements:
 
@@ -22,12 +22,12 @@ This process is clunky right now, so my apologies.
 
 TODO: While this should cover running the website with existing, this doesn't cover running the database and other pieces necessary for working on the scanners or other backend pieces. Still need to document that part.
 
-## Very Beta API
+## 🔈 Very Beta API
 
 All of the data being collected is published as JSON files here: https://www.vaccinespotter.org/api/
 
 Subscribe to this discussion for any announcement of API changes: https://github.com/GUI/covid-vaccine-spotter/discussions/27
 
-## License
+## ⛓ License
 
 This project is licensed under the terms of the [MIT license](./LICENSE.txt).
