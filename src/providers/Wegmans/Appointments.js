@@ -1,5 +1,3 @@
-/* eslint no-underscore-dangle: ["error", { "allow": ["_plugin"] }] */
-
 const _ = require("lodash");
 const { default: PQueue } = require("p-queue");
 const { DateTime } = require("luxon");
@@ -9,7 +7,27 @@ const normalizedAddressKey = require("../../normalizedAddressKey");
 const { Store } = require("../../models/Store");
 const Socket = require("../EnlivenHealth/Socket");
 
-const normalizedAddressMapping = {};
+const normalizedAddressMapping = {
+  "6660-fourth-section-rd-brockport-ny-14420":
+    "6660-4th-section-rd-brockport-ny-14420",
+  "7954-brewerton-rd-cicero-ny-13039": "7952-brewerton-rd-cicero-ny-13039",
+  "5885-circle-dr-e-cicero-ny-13039": "7952-brewerton-rd-cicero-ny-13039",
+  "3325-w-genesee-st-geddes-ny-13219": "3325-w-genesee-st-syracuse-ny-13219",
+  "851-fairport-rd-east-rochester-ny-14445":
+    "fairport-marsh-rds-east-rochester-ny-14445",
+  "4276-lakeville-rd-geneseo-ny-14454":
+    "4287-genesee-valley-plz-geneseo-ny-14454",
+  "3953-route-31-liverpool-ny-13090": "3955-route-31-liverpool-ny-13090",
+  "1000-hwy-36-n-hornell-ny-14843": "1000-highway-36-n-hornell-ny-14843",
+  "500-s-meadow-dr-ithaca-ny-14850": "500-s-meadow-st-ithaca-ny-14850",
+  "s-3740-mckinley-pkwy": "3740-mckinley-pkwy-buffalo-ny-14219",
+  "3737-mt-read-blvd-rochester-ny-14616":
+    "3701-mt-read-blvd-rochester-ny-14616",
+  "miller-st-finch-st-newark-ny-14513": "800-w-miller-st-newark-ny-14513",
+  "2155-penfield-rd-penfield-ny-14526": "2157-penfield-rd-penfield-ny-14526",
+  "wegmans-conference-center-200-market-st-rochester-ny-14624":
+    "200-wegmans-market-st-rochester-ny-14624",
+};
 
 class Appointments {
   static async refreshStores() {
@@ -22,7 +40,7 @@ class Appointments {
     Appointments.processedStoreIds = {};
 
     const stores = await Store.query()
-      .where("stores.provider_id", "weis")
+      .where("stores.provider_id", "wegmans")
       .whereRaw(
         "(appointments_last_fetched IS NULL OR appointments_last_fetched <= (now() - interval '2 minutes'))"
       )
@@ -37,12 +55,16 @@ class Appointments {
 
   static getSocketUrlId(store) {
     let urlId;
-    if (store.state === "NY") {
-      urlId = "3f647956b456425d9c12360db8e4fdb4";
-    } else if (store.state === "NJ") {
-      urlId = "a650b502db904b0195d640fd68a4a2a0";
-    } else if (store.state === "PA") {
-      urlId = "8d8feb6dce7d4d598f753362d06d1e64";
+    switch (store.state) {
+      case "NY":
+        urlId = "c7f2e9cb1982412bb53430a84dfd72ad";
+        break;
+      case "PA":
+        urlId = "15f5aede2e3b479b94e35e63c19473dd";
+        break;
+      case "VA":
+        urlId = "a0cdfb37d60d4a85ab01641d82efc1dc";
+        break;
     }
 
     return urlId;
@@ -50,8 +72,8 @@ class Appointments {
 
   static async refreshStore(store, index, count) {
     logger.info(
-      `Processing ${store.name} #${store.provider_location_id}, ${
-        store.state
+      `Processing ${store.name}, ${store.state} #${
+        store.provider_location_id
       } (${index + 1} of ${count})...`
     );
 
@@ -81,6 +103,7 @@ class Appointments {
       appointments_raw: {
         messages: [],
       },
+      url: `https://c.ateb.com/${urlId}/`,
       active: true,
     };
 
@@ -127,7 +150,7 @@ class Appointments {
     }
 
     await Store.query()
-      .where("provider_id", "weis")
+      .where("provider_id", "wegmans")
       .where("state", store.state)
       .whereNotIn("id", updatedStoreIds)
       .patch(patch);
@@ -148,19 +171,8 @@ class Appointments {
         message.type === "output" &&
         message.data?.data?._plugin?.type === "adaptivecards"
       ) {
-        let vaccineType;
-
         const { body } = message.data.data._plugin.payload;
         for (const data of body) {
-          if (
-            data.type === "ColumnSet" &&
-            data?.columns?.[0]?.items?.[0]?.type === "TextBlock" &&
-            data?.columns?.[0]?.items?.[0]?.text &&
-            data?.columns?.[0]?.items?.[0]?.text.includes("COVID")
-          ) {
-            vaccineType = data.columns[0].items[0].text;
-          }
-
           if (
             data.type === "Container" &&
             data?.items?.[0].columns?.[0].items?.[1]?.id ===
@@ -211,7 +223,6 @@ class Appointments {
               storeAppointments[storeId] = [];
             }
             storeAppointments[storeId].push({
-              type: vaccineType,
               date: scheduleData.scheduleDate,
             });
           }

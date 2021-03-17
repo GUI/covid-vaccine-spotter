@@ -31,8 +31,8 @@ module.exports = (address) => {
     }
   }
 
-  normalized = _.trim(
-    normalized.toLowerCase().replace(/[^A-Za-z0-9\-\s]/g, "")
-  ).replace(/\s+/g, "-");
+  normalized = _.trim(normalized.toLowerCase().replace(/[^A-Za-z0-9\-\s]/g, ""))
+    .replace(/\s+/g, "-")
+    .replace(/\-+/g, "-");
   return normalized;
 };

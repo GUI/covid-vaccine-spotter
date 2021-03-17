@@ -18,10 +18,10 @@ spec:
         - name: {{ .Chart.Name }}-container-registry-secret
       containers:
         - name: {{ .Chart.Name }}-weis-refresh-appointments
-{{ tuple "covid-vaccine-spotter-playwright" . | werf_container_image | indent 10 }}
+{{ tuple "covid-vaccine-spotter" . | werf_container_image | indent 10 }}
           args: ["bin/weis-refresh-appointments"]
           env:
-{{ tuple "covid-vaccine-spotter-playwright" . | werf_container_env | indent 12 }}
+{{ tuple "covid-vaccine-spotter" . | werf_container_env | indent 12 }}
             - name: LOG_LEVEL
               value: notice
           envFrom:

@@ -162,9 +162,9 @@ class Appointments {
 
   static async refreshStore(store, index, count) {
     logger.info(
-      `Processing ${store.provider_brand_key} ${store.name} #${
-        store.provider_location_id
-      } (${index + 1} of ${count})...`
+      `Processing ${store.provider_brand_key} ${store.name}, ${
+        store.postal_code
+      } #${store.provider_location_id} (${index + 1} of ${count})...`
     );
 
     if (Appointments.processedStoreIds[store.id]) {
@@ -225,6 +225,8 @@ class Appointments {
           }
         }
 
+        Appointments.processedPostalCodes[store.postal_code] = true;
+
         const storePatches = await Appointments.buildStoreSpecificPatches(
           patch,
           store
@@ -245,8 +247,6 @@ class Appointments {
       .where("postal_code", store.postal_code)
       .whereNotIn("id", updatedStoreIds)
       .patch(patch);
-
-    Appointments.processedPostalCodes[store.postal_code] = true;
   }
 
   static async buildStoreSpecificPatches(basePatch, searchStore) {
@@ -336,7 +336,7 @@ class Appointments {
     }
 
     if (!noAppointmentsMessage && Object.keys(storeAppointments).length === 0) {
-      logger.error(
+      throw new Error(
         `Appointments should have been found, but no data detected: ${JSON.stringify(
           basePatch.appointments_raw.messages
         )}`
