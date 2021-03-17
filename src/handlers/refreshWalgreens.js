@@ -429,8 +429,12 @@ const Walgreens = {
         "https://www.walgreens.com/hcschedulersvc/svc/v2/immunizationLocations/timeslots",
         {
           headers: {
+            /*
             "User-Agent":
               "covid-vaccine-finder/1.0 (https://github.com/GUI/covid-vaccine-finder)",
+              */
+            "User-Agent":
+              "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:85.0) Gecko/20100101 Firefox/85.0",
             Referer:
               "https://www.walgreens.com/findcare/vaccination/covid-19/appointment/next-available",
             "Accept-Language": "en-US,en;q=0.9",
