@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+set -o nounset
+set -o pipefail
+set -o errexit
+
+
+state="${1:-}"
+
+if [[ -z "$state" ]] ; then
+    echo "Please provide a 2-letter state abbreviation"
+    exit
+fi
+
+case $state in
+    "--help" | "-h" )
+        echo "Usage: $0 state"
+        echo "  where state is the 2-letter abbreviation"
+        exit
+        ;;
+esac
+
+echo "===> Running \`yarn install\`"
+yarn install
+echo "===> Preparing static assets with state '$state'"
+mkdir -p website/static/api/v0/states/$state
+curl -s -o website/static/api/v0/states.json https://www.vaccinespotter.org/api/v0/states.json
+curl -s -o website/static/api/v0/states/$state.json https://www.vaccinespotter.org/api/v0/states/$state.json
+curl -s -o website/static/api/v0/states/$state/postal_codes.json https://www.vaccinespotter.org/api/v0/states/$state/postal_codes.json
