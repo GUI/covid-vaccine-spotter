@@ -103,7 +103,7 @@ class Appointments {
       appointments_raw: {
         messages: [],
       },
-      url: `https://c.ateb.com/${urlId}/`,
+      url: null,
       active: true,
     };
 
