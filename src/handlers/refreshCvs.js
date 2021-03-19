@@ -5,6 +5,8 @@ const got = require("got");
 const { capitalCase } = require("capital-case");
 const logger = require("../logger");
 const { Store } = require("../models/Store");
+const { Provider } = require("../models/Provider");
+const { ProviderBrand } = require("../models/ProviderBrand");
 
 const Cvs = {
   fetchStatus: async () =>
@@ -25,6 +27,28 @@ const Cvs = {
   refreshStores: async () => {
     logger.notice("Begin refreshing appointments for all stores...");
 
+    await Provider.query()
+      .insert({
+        id: "cvs",
+      })
+      .onConflict(["id"])
+      .merge();
+
+    await ProviderBrand.query()
+      .insert({
+        provider_id: "cvs",
+        key: "cvs",
+        name: "CVS",
+        url: "https://www.cvs.com/immunizations/covid-19-vaccine",
+      })
+      .onConflict(["provider_id", "key"])
+      .merge();
+
+    const providerBrand = await ProviderBrand.query().findOne({
+      provider_id: "cvs",
+      key: "cvs",
+    });
+
     const queue = new PQueue({ concurrency: 5 });
 
     const lastFetched = DateTime.utc().toISO();
@@ -38,8 +62,9 @@ const Cvs = {
         raw.responsePayloadData.data = {};
         raw.responsePayloadData.data[stateCode] = [city];
         const patch = {
-          brand: "cvs",
-          brand_id: `${city.state}-${city.city}`,
+          provider_id: "cvs",
+          provider_location_id: `${city.state}-${city.city}`,
+          provider_brand_id: providerBrand.id,
           name: `${capitalCase(city.city)}, ${city.state}`,
           city: capitalCase(city.city),
           state: city.state,
@@ -51,9 +76,14 @@ const Cvs = {
             city.status !== "Fully Booked",
           appointments_raw: raw,
         };
+        patch.brand = patch.provider_id;
+        patch.brand_id = patch.provider_location_id;
 
         queue.add(() =>
-          Store.query().insert(patch).onConflict(["brand", "brand_id"]).merge()
+          Store.query()
+            .insert(patch)
+            .onConflict(["provider_id", "provider_location_id"])
+            .merge()
         );
       }
     }

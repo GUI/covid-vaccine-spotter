@@ -6,6 +6,8 @@ const { capitalCase } = require("capital-case");
 const slugify = require("slugify");
 const logger = require("../../logger");
 const { Store } = require("../../models/Store");
+const { Provider } = require("../../models/Provider");
+const { ProviderBrand } = require("../../models/ProviderBrand");
 
 const HebAppointments = {
   fetchStatus: async () =>
@@ -26,11 +28,33 @@ const HebAppointments = {
   refreshStores: async () => {
     logger.notice("Begin refreshing appointments for all stores...");
 
+    await Provider.query()
+      .insert({
+        id: "heb",
+      })
+      .onConflict(["id"])
+      .merge();
+
+    await ProviderBrand.query()
+      .insert({
+        provider_id: "heb",
+        key: "heb",
+        name: "H-E-B Pharmacy",
+        url: "https://vaccine.heb.com/scheduler",
+      })
+      .onConflict(["provider_id", "key"])
+      .merge();
+
+    const providerBrand = await ProviderBrand.query().findOne({
+      provider_id: "heb",
+      key: "heb",
+    });
+
     const queue = new PQueue({ concurrency: 5 });
 
     const lastFetched = DateTime.utc().toISO();
 
-    const updatedBrandIds = [];
+    const updatedProviderLocationIds = [];
     const resp = await HebAppointments.fetchStatus();
     for (const loc of resp.body.locations) {
       const raw = _.cloneDeep(loc);
@@ -41,18 +65,22 @@ const HebAppointments = {
         postalCode = postalCode.substr(0, 5);
       }
 
-      let brandId = loc.storeNumber;
-      if (!brandId) {
-        brandId = slugify(`${loc.type}-${postalCode}-${loc.street}`, {
-          strict: true,
-          lower: true,
-        });
+      let providerLocationId = loc.storeNumber;
+      if (!providerLocationId) {
+        providerLocationId = slugify(
+          `${loc.type}-${postalCode}-${loc.street}`,
+          {
+            strict: true,
+            lower: true,
+          }
+        );
       }
-      updatedBrandIds.push(brandId);
+      updatedProviderLocationIds.push(providerLocationId);
 
       const patch = {
-        brand: "heb",
-        brand_id: brandId,
+        provider_id: "heb",
+        provider_location_id: providerLocationId,
+        provider_brand_id: providerBrand.id,
         name: loc.name,
         address: capitalCase(loc.street),
         city: capitalCase(loc.city),
@@ -64,21 +92,26 @@ const HebAppointments = {
         appointments_available: parseInt(loc.openAppointmentSlots, 10) > 0,
         appointments_raw: raw,
       };
+      patch.brand = patch.provider_id;
+      patch.brand_id = patch.provider_location_id;
 
       if (loc.latitude && loc.longitude) {
         patch.location = `point(${loc.longitude} ${loc.latitude})`;
       }
 
       queue.add(() =>
-        Store.query().insert(patch).onConflict(["brand", "brand_id"]).merge()
+        Store.query()
+          .insert(patch)
+          .onConflict(["provider_id", "provider_location_id"])
+          .merge()
       );
     }
 
     await queue.onIdle();
 
     await Store.query()
-      .where("brand", "heb")
-      .whereNotIn("brand_id", updatedBrandIds)
+      .where("provider_id", "heb")
+      .whereNotIn("provider_location_id", updatedProviderLocationIds)
       .patch({ appointments_available: false, appointments: [] });
 
     await Store.knex().raw(`
@@ -86,7 +119,7 @@ const HebAppointments = {
       SET time_zone = p.time_zone
       FROM postal_codes p
       WHERE
-        s.brand = 'heb'
+        s.provider_id = 'heb'
         AND s.time_zone IS NULL
         AND s.postal_code = p.postal_code
     `);
@@ -96,7 +129,7 @@ const HebAppointments = {
       SET location = p.location
       FROM postal_codes p
       WHERE
-        s.brand = 'heb'
+        s.provider_id = 'heb'
         AND s.location IS NULL
         AND s.postal_code = p.postal_code
     `);
