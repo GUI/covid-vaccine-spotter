@@ -3,7 +3,7 @@ const { default: PQueue } = require("p-queue");
 const retry = require("p-retry");
 const sleep = require("sleep-promise");
 const { DateTime, Interval, Duration } = require("luxon");
-const got = require("got");
+const { curly } = require("node-libcurl");
 const { Mutex } = require("async-mutex");
 const logger = require("../logger");
 const walgreensAuth = require("../walgreens/auth");
@@ -25,7 +25,7 @@ const Walgreens = {
 
     Walgreens.locationStores = {};
 
-    const queue = new PQueue({ concurrency: 5 });
+    const queue = new PQueue({ concurrency: 15 });
 
     const knex = Store.knex();
     const gridCells = await knex
@@ -72,11 +72,11 @@ const Walgreens = {
         onFailedAttempt: Walgreens.onFailedAttempt,
       }
     );
-    patch.appointments_raw.first_dose = firstDoseResp.body;
+    patch.appointments_raw.first_dose = firstDoseResp.data;
 
     let firstDoseDates = [];
-    if (firstDoseResp.body?.locations) {
-      for (const location of firstDoseResp.body.locations) {
+    if (firstDoseResp.data?.locations) {
+      for (const location of firstDoseResp.data.locations) {
         for (const availability of location.appointmentAvailability) {
           firstDoseDates.push(availability.date);
         }
@@ -103,7 +103,7 @@ const Walgreens = {
         }
       );
       patch.appointments_raw.second_doses[secondDoseFetchDate] =
-        secondDoseResp.body;
+        secondDoseResp.data;
     }
 
     const secondDoseOnlyModernaResp = await retry(
@@ -115,7 +115,7 @@ const Walgreens = {
       }
     );
     patch.appointments_raw.second_dose_only.moderna =
-      secondDoseOnlyModernaResp.body;
+      secondDoseOnlyModernaResp.data;
 
     const secondDoseOnlyPfizerResp = await retry(
       async () =>
@@ -126,7 +126,7 @@ const Walgreens = {
       }
     );
     patch.appointments_raw.second_dose_only.pfizer =
-      secondDoseOnlyPfizerResp.body;
+      secondDoseOnlyPfizerResp.data;
 
     const storePatches = await Walgreens.buildStoreSpecificPatches(patch);
     for (const [storeId, storePatch] of Object.entries(storePatches)) {
@@ -421,62 +421,71 @@ const Walgreens = {
       startDateTime = tomorrow.toISODate();
     }
 
-    try {
-      logger.debug(
-        `Fetching timeslots for productId: ${productId}, startDateTime: ${startDateTime}`
+    logger.debug(
+      `Fetching timeslots for productId: ${productId}, startDateTime: ${startDateTime}`
+    );
+    const url =
+      "https://www.walgreens.com/hcschedulersvc/svc/v2/immunizationLocations/timeslots";
+    const resp = await curly.post(url, {
+      httpHeader: [
+        "Accept-Language: en-US,en;q=0.9",
+        "Accept: application/json, text/plain, */*",
+        "Authority: www.walgreens.com",
+        "Cache-Control: no-cache",
+        "Content-Type: application/json; charset=UTF-8",
+        "Origin: https://www.walgreens.com",
+        "Pragma: no-cache",
+        "Referer: https://www.walgreens.com/findcare/vaccination/covid-19/appointment/next-available",
+        "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:85.0) Gecko/20100101 Firefox/85.0",
+        `Cookie: ${await auth.cookieJar.getCookieString(url)}`,
+      ],
+      postFields: JSON.stringify({
+        serviceId: "99",
+        position: {
+          latitude: gridCell.latitude,
+          longitude: gridCell.longitude,
+        },
+        state: gridCell.state_code,
+        vaccine: {
+          productId,
+        },
+        appointmentAvailability: {
+          startDateTime,
+        },
+        radius: 25,
+        size: 25,
+      }),
+      timeoutMs: 15000,
+      proxy: process.env.WALGREENS_TIMESLOTS_PROXY_SERVER,
+      proxyUsername: process.env.WALGREENS_TIMESLOTS_PROXY_USERNAME,
+      proxyPassword: process.env.WALGREENS_TIMESLOTS_PROXY_PASSWORD,
+      sslVerifyPeer: false,
+    });
+
+    if (
+      resp.statusCode === 404 &&
+      resp.data?.error?.[0]?.code === "FC_904_NoData" &&
+      (resp.data?.error?.[0]?.message === "Insufficient inventory." ||
+        resp.data?.error?.[0]?.message === "No participating store.")
+    ) {
+      return resp;
+    }
+
+    if (!resp.statusCode || resp.statusCode < 200 || resp.statusCode >= 300) {
+      const err = new Error(
+        `Request failed with status code ${resp.statusCode}`
       );
-      return await got.post(
-        "https://www.walgreens.com/hcschedulersvc/svc/v2/immunizationLocations/timeslots",
-        {
-          headers: {
-            /*
-            "User-Agent":
-              "covid-vaccine-finder/1.0 (https://github.com/GUI/covid-vaccine-finder)",
-              */
-            "User-Agent":
-              "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:85.0) Gecko/20100101 Firefox/85.0",
-            Referer:
-              "https://www.walgreens.com/findcare/vaccination/covid-19/appointment/next-available",
-            "Accept-Language": "en-US,en;q=0.9",
-          },
-          json: {
-            serviceId: "99",
-            position: {
-              latitude: gridCell.latitude,
-              longitude: gridCell.longitude,
-            },
-            state: gridCell.state_code,
-            vaccine: {
-              productId,
-            },
-            appointmentAvailability: {
-              startDateTime,
-            },
-            radius: 25,
-            size: 25,
-          },
-          cookieJar: auth.cookieJar,
-          responseType: "json",
-          timeout: 15000,
-          retry: 0,
-        }
-      );
-    } catch (err) {
-      if (
-        err?.response?.statusCode === 404 &&
-        err?.response?.body?.error?.[0]?.code === "FC_904_NoData" &&
-        err?.response?.body?.error?.[0]?.message === "Insufficient inventory."
-      ) {
-        return err.response;
-      }
+      err.response = resp;
       throw err;
     }
+
+    return resp;
   },
 
   onFailedAttempt: async (err) => {
     logger.warn(err);
     logger.warn(err?.response?.statusCode);
-    logger.warn(err?.response?.body);
+    logger.warn(err?.response?.data);
     logger.warn(`Retrying due to error: ${err}`);
     await sleep(5000);
     if (err?.response?.statusCode === 401) {

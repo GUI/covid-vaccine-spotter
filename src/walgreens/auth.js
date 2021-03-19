@@ -1,6 +1,7 @@
 require("dotenv").config();
 
 const util = require("util");
+const fs = require("fs").promises;
 const _ = require("lodash");
 const { Cookie, CookieJar } = require("tough-cookie");
 const sleep = require("sleep-promise");
@@ -23,7 +24,20 @@ const Auth = {
     if (Auth.auth) {
       return Auth.auth;
     }
-    return Auth.refresh();
+    try {
+      const cookieJarJson = await fs.readFile("tmp/WalgreensCookieJar.json");
+      const cookieJar = CookieJar.fromJSON(JSON.parse(cookieJarJson));
+
+      const auth = {
+        cookieJar,
+      };
+      Auth.set(auth);
+
+      return auth;
+    } catch (err) {
+      logger.info("Auth not found in existing cached cookies, refreshing");
+      return Auth.refresh();
+    }
   },
 
   refresh: async () => {
@@ -177,6 +191,11 @@ const Auth = {
         await browser.close();
       }
     }
+
+    await fs.writeFile(
+      "tmp/WalgreensCookieJar.json",
+      JSON.stringify(cookieJar.toJSON())
+    );
 
     const auth = {
       cookieJar,
