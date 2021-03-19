@@ -56,7 +56,7 @@
             <!-- Sharingbutton Twitter -->
             <a
               class="resp-sharing-button__link"
-              href="https://twitter.com/intent/tweet/?text=Colorado%20COVID-19%20Vaccine%20Spotter.%20A%20tool%20to%20help%20you%20track%20down%20COVID-19%20vaccine%20appointment%20openings%20at%20Colorado%20pharmacies.%20Updated%20every%20minute.&amp;url=https%3A%2F%2Fwww.vaccinespotter.org"
+              href="https://twitter.com/intent/tweet/?text=COVID-19%20Vaccine%20Spotter.%20A%20tool%20to%20help%20you%20track%20down%20COVID-19%20vaccine%20appointment%20openings%20at%USA%20pharmacies.%20Updated%20every%20minute.&amp;url=https%3A%2F%2Fwww.vaccinespotter.org"
               target="_blank"
               rel="noopener"
               aria-label="Share on Twitter"
@@ -81,7 +81,7 @@
             <!-- Sharingbutton Tumblr -->
             <a
               class="resp-sharing-button__link"
-              href="https://www.tumblr.com/widgets/share/tool?posttype=link&amp;title=Colorado%20COVID-19%20Vaccine%20Spotter.%20A%20tool%20to%20help%20you%20track%20down%20COVID-19%20vaccine%20appointment%20openings%20at%20Colorado%20pharmacies.%20Updated%20every%20minute.&amp;caption=Colorado%20COVID-19%20Vaccine%20Spotter.%20A%20tool%20to%20help%20you%20track%20down%20COVID-19%20vaccine%20appointment%20openings%20at%20Colorado%20pharmacies.%20Updated%20every%20minute.&amp;content=https%3A%2F%2Fwww.vaccinespotter.org&amp;canonicalUrl=https%3A%2F%2Fwww.vaccinespotter.org&amp;shareSource=tumblr_share_button"
+              href="https://www.tumblr.com/widgets/share/tool?posttype=link&amp;title=COVID-19%20Vaccine%20Spotter.%20A%20tool%20to%20help%20you%20track%20down%20COVID-19%20vaccine%20appointment%20openings%20at%20USA%20pharmacies.%20Updated%20every%20minute.&amp;caption=COVID-19%20Vaccine%20Spotter.%20A%20tool%20to%20help%20you%20track%20down%20COVID-19%20vaccine%20appointment%20openings%20at%20USA%20pharmacies.%20Updated%20every%20minute.&amp;content=https%3A%2F%2Fwww.vaccinespotter.org&amp;canonicalUrl=https%3A%2F%2Fwww.vaccinespotter.org&amp;shareSource=tumblr_share_button"
               target="_blank"
               rel="noopener"
               aria-label="Share on Tumblr"
@@ -106,7 +106,7 @@
             <!-- Sharingbutton E-Mail -->
             <a
               class="resp-sharing-button__link"
-              href="mailto:?subject=Colorado%20COVID-19%20Vaccine%20Spotter.%20A%20tool%20to%20help%20you%20track%20down%20COVID-19%20vaccine%20appointment%20openings%20at%20Colorado%20pharmacies.%20Updated%20every%20minute.&amp;body=https%3A%2F%2Fwww.vaccinespotter.org"
+              href="mailto:?subject=COVID-19%20Vaccine%20Spotter.%20A%20tool%20to%20help%20you%20track%20down%20COVID-19%20vaccine%20appointment%20openings%20at%20USA%20pharmacies.%20Updated%20every%20minute.&amp;body=https%3A%2F%2Fwww.vaccinespotter.org"
               target="_self"
               rel="noopener"
               aria-label="Share by E-Mail"
@@ -131,7 +131,7 @@
             <!-- Sharingbutton Pinterest -->
             <a
               class="resp-sharing-button__link"
-              href="https://pinterest.com/pin/create/button/?url=https%3A%2F%2Fwww.vaccinespotter.org&amp;media=https%3A%2F%2Fwww.vaccinespotter.org&amp;description=Colorado%20COVID-19%20Vaccine%20Spotter.%20A%20tool%20to%20help%20you%20track%20down%20COVID-19%20vaccine%20appointment%20openings%20at%20Colorado%20pharmacies.%20Updated%20every%20minute."
+              href="https://pinterest.com/pin/create/button/?url=https%3A%2F%2Fwww.vaccinespotter.org&amp;media=https%3A%2F%2Fwww.vaccinespotter.org&amp;description=COVID-19%20Vaccine%20Spotter.%20A%20tool%20to%20help%20you%20track%20down%20COVID-19%20vaccine%20appointment%20openings%20at%20USA%20pharmacies.%20Updated%20every%20minute."
               target="_blank"
               rel="noopener"
               aria-label="Share on Pinterest"
@@ -156,7 +156,7 @@
             <!-- Sharingbutton LinkedIn -->
             <a
               class="resp-sharing-button__link"
-              href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3A%2F%2Fwww.vaccinespotter.org&amp;title=Colorado%20COVID-19%20Vaccine%20Spotter.%20A%20tool%20to%20help%20you%20track%20down%20COVID-19%20vaccine%20appointment%20openings%20at%20Colorado%20pharmacies.%20Updated%20every%20minute.&amp;summary=Colorado%20COVID-19%20Vaccine%20Spotter.%20A%20tool%20to%20help%20you%20track%20down%20COVID-19%20vaccine%20appointment%20openings%20at%20Colorado%20pharmacies.%20Updated%20every%20minute.&amp;source=https%3A%2F%2Fwww.vaccinespotter.org"
+              href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3A%2F%2Fwww.vaccinespotter.org&amp;title=COVID-19%20Vaccine%20Spotter.%20A%20tool%20to%20help%20you%20track%20down%20COVID-19%20vaccine%20appointment%20openings%20at%20USA%20pharmacies.%20Updated%20every%20minute.&amp;summary=COVID-19%20Vaccine%20Spotter.%20A%20tool%20to%20help%20you%20track%20down%20COVID-19%20vaccine%20appointment%20openings%20at%20USA%20pharmacies.%20Updated%20every%20minute.&amp;source=https%3A%2F%2Fwww.vaccinespotter.org"
               target="_blank"
               rel="noopener"
               aria-label="Share on LinkedIn"
@@ -181,7 +181,7 @@
             <!-- Sharingbutton Reddit -->
             <a
               class="resp-sharing-button__link"
-              href="https://reddit.com/submit/?url=https%3A%2F%2Fwww.vaccinespotter.org&amp;resubmit=true&amp;title=Colorado%20COVID-19%20Vaccine%20Spotter.%20A%20tool%20to%20help%20you%20track%20down%20COVID-19%20vaccine%20appointment%20openings%20at%20Colorado%20pharmacies.%20Updated%20every%20minute."
+              href="https://reddit.com/submit/?url=https%3A%2F%2Fwww.vaccinespotter.org&amp;resubmit=true&amp;title=COVID-19%20Vaccine%20Spotter.%20A%20tool%20to%20help%20you%20track%20down%20COVID-19%20vaccine%20appointment%20openings%20at%20USA%20pharmacies.%20Updated%20every%20minute."
               target="_blank"
               rel="noopener"
               aria-label="Share on Reddit"
@@ -206,7 +206,7 @@
             <!-- Sharingbutton WhatsApp -->
             <a
               class="resp-sharing-button__link"
-              href="whatsapp://send?text=Colorado%20COVID-19%20Vaccine%20Spotter.%20A%20tool%20to%20help%20you%20track%20down%20COVID-19%20vaccine%20appointment%20openings%20at%20Colorado%20pharmacies.%20Updated%20every%20minute.%20https%3A%2F%2Fwww.vaccinespotter.org"
+              href="whatsapp://send?text=COVID-19%20Vaccine%20Spotter.%20A%20tool%20to%20help%20you%20track%20down%20COVID-19%20vaccine%20appointment%20openings%20at%20USA%20pharmacies.%20Updated%20every%20minute.%20https%3A%2F%2Fwww.vaccinespotter.org"
               target="_blank"
               rel="noopener"
               aria-label="Share on WhatsApp"
@@ -231,7 +231,7 @@
             <!-- Sharingbutton Hacker News -->
             <a
               class="resp-sharing-button__link"
-              href="https://news.ycombinator.com/submitlink?u=https%3A%2F%2Fwww.vaccinespotter.org&amp;t=Colorado%20COVID-19%20Vaccine%20Spotter.%20A%20tool%20to%20help%20you%20track%20down%20COVID-19%20vaccine%20appointment%20openings%20at%20Colorado%20pharmacies.%20Updated%20every%20minute."
+              href="https://news.ycombinator.com/submitlink?u=https%3A%2F%2Fwww.vaccinespotter.org&amp;t=COVID-19%20Vaccine%20Spotter.%20A%20tool%20to%20help%20you%20track%20down%20COVID-19%20vaccine%20appointment%20openings%20at%20USA%20pharmacies.%20Updated%20every%20minute."
               target="_blank"
               rel="noopener"
               aria-label="Share on Hacker News"
