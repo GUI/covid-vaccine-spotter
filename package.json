@@ -55,6 +55,7 @@
     "playwright-core": "~1.8.1",
     "playwright-extra": "^4.2.1-next.616",
     "random-http-useragent": "^1.1.32",
+    "rollbar": "^2.21.1",
     "sleep-promise": "^9.1.0",
     "slug": "^4.0.3",
     "slugify": "^1.4.7",
