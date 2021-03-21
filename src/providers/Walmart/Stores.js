@@ -1,5 +1,6 @@
 const got = require("got");
 const sleep = require("sleep-promise");
+const { HttpsProxyAgent } = require("hpagent");
 const logger = require("../../logger");
 const { Store } = require("../../models/Store");
 const { ProviderBrand } = require("../../models/ProviderBrand");
@@ -41,6 +42,19 @@ class Stores {
           responseType: "json",
           timeout: 30000,
           retry: 0,
+          agent: {
+            https: new HttpsProxyAgent({
+              keepAlive: true,
+              keepAliveMsecs: 1000,
+              maxSockets: 256,
+              maxFreeSockets: 256,
+              scheduling: "lifo",
+              proxy: process.env.WALMART_STORES_PROXY_URL,
+            }),
+          },
+          https: {
+            rejectUnauthorized: false,
+          },
         }
       );
 
