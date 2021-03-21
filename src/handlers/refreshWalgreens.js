@@ -460,6 +460,7 @@ const Walgreens = {
       proxyUsername: process.env.WALGREENS_TIMESLOTS_PROXY_USERNAME,
       proxyPassword: process.env.WALGREENS_TIMESLOTS_PROXY_PASSWORD,
       sslVerifyPeer: false,
+      acceptEncoding: "gzip",
     });
 
     if (
