@@ -215,6 +215,7 @@ export default {
 
 #legend span.unavailable-marker {
   background-color: #e34a33;
+  width: 7px;
 }
 
 #legend span.unknown-marker {
