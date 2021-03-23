@@ -203,6 +203,7 @@ module.exports.refreshWebsite = async () => {
           FROM stores
           LEFT JOIN provider_brands ON provider_brands.id = stores.provider_brand_id
           WHERE stores.state = states.code
+          AND stores.active = true
         )
       ) AS data
     FROM states
