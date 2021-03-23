@@ -5,9 +5,10 @@ const sleep = require("sleep-promise");
 const { DateTime, Interval, Duration } = require("luxon");
 const { curly } = require("node-libcurl");
 const { Mutex } = require("async-mutex");
-const logger = require("../logger");
-const walgreensAuth = require("../walgreens/auth");
-const { Store } = require("../models/Store");
+const { convertLength } = require("@turf/helpers");
+const logger = require("../../logger");
+const Auth = require("./Auth");
+const { Store } = require("../../models/Store");
 
 const authMutex = new Mutex();
 
@@ -19,40 +20,58 @@ const timeslotsFetchDuration = Duration.fromObject({ days: 3 });
 // scheduling, regardless of vaccine type (Pfizer or Moderna).
 const secondDoseFutureDuration = Duration.fromObject({ days: 28 });
 
-const Walgreens = {
-  refreshGridCells: async () => {
+class Appointments {
+  static async refreshGridCells() {
     logger.notice("Begin refreshing appointments for all stores...");
 
-    Walgreens.locationStores = {};
+    Appointments.locationStores = {};
 
-    const queue = new PQueue({ concurrency: 15 });
+    const queue = new PQueue({ concurrency: 50 });
 
-    const knex = Store.knex();
-    const gridCells = await knex
+    const gridCells = await Store.query()
       .select(
-        knex.raw(
-          "DISTINCT ON (state_grid_55km.centroid_postal_code, state_grid_55km.id) state_grid_55km.id, state_grid_55km.centroid_postal_code, st_y(state_grid_55km.centroid_land_location::geometry) AS latitude, st_x(state_grid_55km.centroid_land_location::geometry) AS longitude, stores.time_zone"
-        )
+        "walgreens_grid.id",
+        "centroid_postal_code",
+        Store.raw(
+          "st_y(walgreens_grid.centroid_land_location::geometry) AS latitude"
+        ),
+        Store.raw(
+          "st_x(walgreens_grid.centroid_land_location::geometry) AS longitude"
+        ),
+        "walgreens_grid.state_code",
+        "walgreens_grid.furthest_point",
+        Store.raw("MIN(stores.time_zone) AS time_zone")
       )
-      .from(knex.raw("state_grid_55km, stores"))
-      .where("stores.brand", "walgreens")
-      .whereRaw("st_intersects(stores.location, state_grid_55km.geom)")
-      .orderBy("centroid_postal_code");
-    for (const [index, gridCell] of _.shuffle(gridCells).entries()) {
+      .where("stores.provider_id", "walgreens")
+      .from(Store.raw("stores, walgreens_grid"))
+      .whereRaw("st_intersects(stores.location, walgreens_grid.geom)")
+      .whereRaw(
+        "(appointments_last_fetched IS NULL OR appointments_last_fetched <= (now() - interval '2 minutes'))"
+      )
+      .groupBy("walgreens_grid.id")
+      .orderByRaw("MIN(appointments_last_fetched) NULLS FIRST");
+    for (const [index, gridCell] of gridCells.entries()) {
       queue.add(() =>
-        Walgreens.refreshGridCell(gridCell, index, gridCells.length)
+        Appointments.refreshGridCell(gridCell, index, gridCells.length)
       );
     }
     await queue.onIdle();
 
     logger.notice("Finished refreshing appointments for all stores.");
-  },
+  }
 
-  refreshGridCell: async (gridCell, index, count) => {
+  static async refreshGridCell(gridCell, index, count) {
+    const radiusMiles = Math.ceil(
+      convertLength(gridCell.furthest_point, "meters", "miles") + 0.1
+    );
+    if (radiusMiles > 25) {
+      // radiusMiles = 25;
+    }
+
     logger.info(
-      `Refreshing stores within 25 miles of ${gridCell.centroid_postal_code} (${
-        index + 1
-      } of ${count})...`
+      `Refreshing stores within ${radiusMiles} miles of ${
+        gridCell.centroid_postal_code
+      } (${index + 1} of ${count})...`
     );
 
     const patch = {
@@ -65,14 +84,48 @@ const Walgreens = {
       },
     };
 
-    const firstDoseResp = await retry(
-      async () => Walgreens.fetchTimeslots(gridCell, ""),
+    const firstDoseRespPromise = await retry(
+      async () => Appointments.fetchTimeslots(gridCell, radiusMiles, ""),
       {
         retries: 4,
-        onFailedAttempt: Walgreens.onFailedAttempt,
+        onFailedAttempt: Appointments.onFailedAttempt,
       }
     );
+
+    const secondDoseOnlyModernaRespPromise = retry(
+      async () =>
+        Appointments.fetchTimeslots(
+          gridCell,
+          radiusMiles,
+          "5fd42921195d89e656c0b028"
+        ),
+      {
+        retries: 4,
+        onFailedAttempt: Appointments.onFailedAttempt,
+      }
+    );
+
+    const secondDoseOnlyPfizerRespPromise = await retry(
+      async () =>
+        Appointments.fetchTimeslots(
+          gridCell,
+          radiusMiles,
+          "5fd1ab9f5fa47e056c076ff2"
+        ),
+      {
+        retries: 4,
+        onFailedAttempt: Appointments.onFailedAttempt,
+      }
+    );
+
+    const firstDoseResp = await firstDoseRespPromise;
+    const secondDoseOnlyModernaResp = await secondDoseOnlyModernaRespPromise;
+    const secondDoseOnlyPfizerResp = await secondDoseOnlyPfizerRespPromise;
     patch.appointments_raw.first_dose = firstDoseResp.data;
+    patch.appointments_raw.second_dose_only.moderna =
+      secondDoseOnlyModernaResp.data;
+    patch.appointments_raw.second_dose_only.pfizer =
+      secondDoseOnlyPfizerResp.data;
 
     let firstDoseDates = [];
     if (firstDoseResp.data?.locations) {
@@ -85,7 +138,7 @@ const Walgreens = {
     firstDoseDates = _.uniq(firstDoseDates, gridCell);
     logger.debug(`First dose dates: ${JSON.stringify(firstDoseDates)}`);
 
-    const secondDoseFetchDates = Walgreens.getSecondDoseFetchDates(
+    const secondDoseFetchDates = Appointments.getSecondDoseFetchDates(
       firstDoseDates,
       gridCell
     );
@@ -96,54 +149,38 @@ const Walgreens = {
     );
     for (const secondDoseFetchDate of secondDoseFetchDates) {
       const secondDoseResp = await retry(
-        async () => Walgreens.fetchTimeslots(gridCell, "", secondDoseFetchDate),
+        async () =>
+          Appointments.fetchTimeslots(
+            gridCell,
+            radiusMiles,
+            "",
+            secondDoseFetchDate
+          ),
         {
           retries: 4,
-          onFailedAttempt: Walgreens.onFailedAttempt,
+          onFailedAttempt: Appointments.onFailedAttempt,
         }
       );
       patch.appointments_raw.second_doses[secondDoseFetchDate] =
         secondDoseResp.data;
     }
 
-    const secondDoseOnlyModernaResp = await retry(
-      async () =>
-        Walgreens.fetchTimeslots(gridCell, "5fd42921195d89e656c0b028"),
-      {
-        retries: 4,
-        onFailedAttempt: Walgreens.onFailedAttempt,
-      }
-    );
-    patch.appointments_raw.second_dose_only.moderna =
-      secondDoseOnlyModernaResp.data;
-
-    const secondDoseOnlyPfizerResp = await retry(
-      async () =>
-        Walgreens.fetchTimeslots(gridCell, "5fd1ab9f5fa47e056c076ff2"),
-      {
-        retries: 4,
-        onFailedAttempt: Walgreens.onFailedAttempt,
-      }
-    );
-    patch.appointments_raw.second_dose_only.pfizer =
-      secondDoseOnlyPfizerResp.data;
-
-    const storePatches = await Walgreens.buildStoreSpecificPatches(patch);
+    const storePatches = await Appointments.buildStoreSpecificPatches(patch);
     for (const [storeId, storePatch] of Object.entries(storePatches)) {
       await Store.query().findById(storeId).patch(storePatch);
     }
 
     await Store.query()
-      .where("brand", "walgreens")
+      .where("provider_id", "walgreens")
       .where("id", "NOT IN", Object.keys(storePatches))
       .whereRaw(
-        "st_within(location::geometry, (SELECT geom FROM state_grid_55km WHERE id = ?))",
+        "st_within(location::geometry, (SELECT geom FROM walgreens_grid WHERE id = ?))",
         gridCell.id
       )
       .patch(patch);
-  },
+  }
 
-  getSecondDoseFetchDates: (firstDoseDates, gridCell) => {
+  static getSecondDoseFetchDates(firstDoseDates, gridCell) {
     // Based on the days when 1st appointments are available, determine what
     // date ranges in the future we need to check for 2nd doses on. Walgreens
     // currently always checks 28 days from the initially selected 1st dose
@@ -191,22 +228,22 @@ const Walgreens = {
     }
 
     return secondDoseFetchDates;
-  },
+  }
 
-  getRespAppointments: async (resp) => {
+  static async getRespAppointments(resp) {
     const appointments = {};
 
     if (resp?.locations) {
       for (const location of resp.locations) {
-        if (!Walgreens.locationStores[location.storenumber]) {
-          Walgreens.locationStores[
+        if (!Appointments.locationStores[location.storenumber]) {
+          Appointments.locationStores[
             location.storenumber
           ] = await Store.query().findOne({
-            brand: "walgreens",
-            brand_id: location.storenumber,
+            provider_id: "walgreens",
+            provider_location_id: location.storenumber,
           });
         }
-        const store = Walgreens.locationStores[location.storenumber];
+        const store = Appointments.locationStores[location.storenumber];
         if (!store) {
           logger.warn(
             `Store in database not found for store number #${location.storenumber}, skipping`
@@ -231,14 +268,14 @@ const Walgreens = {
     }
 
     return appointments;
-  },
+  }
 
-  buildStoreSpecificPatches: async (basePatch) => {
+  static async buildStoreSpecificPatches(basePatch) {
     const secondDoseAvailableDates = {};
     for (const secondDoseResp of Object.values(
       basePatch.appointments_raw.second_doses
     )) {
-      const secondDoseAppointments = await Walgreens.getRespAppointments(
+      const secondDoseAppointments = await Appointments.getRespAppointments(
         secondDoseResp
       );
       for (const [storeId, appointments] of Object.entries(
@@ -260,7 +297,7 @@ const Walgreens = {
       `secondDoseAvailableDates: ${JSON.stringify(secondDoseAvailableDates)}`
     );
 
-    const firstDoseAppointments = await Walgreens.getRespAppointments(
+    const firstDoseAppointments = await Appointments.getRespAppointments(
       basePatch.appointments_raw.first_dose
     );
     logger.debug(
@@ -311,7 +348,7 @@ const Walgreens = {
       }
     }
 
-    const secondDoseOnlyModernaAppointments = await Walgreens.getRespAppointments(
+    const secondDoseOnlyModernaAppointments = await Appointments.getRespAppointments(
       basePatch.appointments_raw.second_dose_only.moderna
     );
     logger.debug(
@@ -320,7 +357,7 @@ const Walgreens = {
       )}`
     );
 
-    const secondDoseOnlyPfizerAppointments = await Walgreens.getRespAppointments(
+    const secondDoseOnlyPfizerAppointments = await Appointments.getRespAppointments(
       basePatch.appointments_raw.second_dose_only.pfizer
     );
     logger.debug(
@@ -406,12 +443,12 @@ const Walgreens = {
     }
 
     return storePatches;
-  },
+  }
 
-  fetchTimeslots: async (gridCell, productId, date) => {
-    await sleep(_.random(250, 750));
+  static async fetchTimeslots(gridCell, radiusMiles, productId, date) {
+    await sleep(_.random(1, 5));
 
-    const auth = await authMutex.runExclusive(walgreensAuth.get);
+    const auth = await authMutex.runExclusive(Auth.get);
 
     let startDateTime = date;
     if (!startDateTime) {
@@ -452,8 +489,8 @@ const Walgreens = {
         appointmentAvailability: {
           startDateTime,
         },
-        radius: 25,
-        size: 25,
+        radius: radiusMiles,
+        size: radiusMiles,
       }),
       timeoutMs: 15000,
       proxy: process.env.WALGREENS_TIMESLOTS_PROXY_SERVER,
@@ -480,23 +517,37 @@ const Walgreens = {
       throw err;
     }
 
-    return resp;
-  },
+    logger.debug(
+      `${resp?.data?.locations?.length} locations found for productId: ${productId}, startDateTime: ${startDateTime}`
+    );
+    if (resp?.data?.locations && resp.data.locations.length >= 10) {
+      logger.warn(
+        `There may be more stores within the ${radiusMiles} mile radius than returned, since the maximum of 10 stores was returned: ${gridCell.centroid_postal_code}. Locations returned: ${resp.data.locations.length}`
+      );
+    }
 
-  onFailedAttempt: async (err) => {
-    logger.warn(err);
-    logger.warn(err?.response?.statusCode);
-    logger.warn(err?.response?.data);
+    return resp;
+  }
+
+  static async onFailedAttempt(err) {
+    logger.info(err);
+    logger.info(err?.response?.statusCode);
+    logger.info(err?.response?.data);
     logger.warn(`Retrying due to error: ${err}`);
-    await sleep(5000);
-    if (err?.response?.statusCode === 401) {
+    await sleep(_.random(250, 750));
+    if (
+      err?.response?.statusCode === 401 ||
+      (err?.response?.statusCode === 403 && err.retriesLeft <= 1)
+    ) {
       if (!authMutex.isLocked()) {
-        await authMutex.runExclusive(walgreensAuth.refresh);
+        await authMutex.runExclusive(Auth.refresh);
+      } else {
+        await authMutex.runExclusive(() => {
+          logger.info("Waiting on other task to refresh auth.");
+        });
       }
     }
-  },
-};
+  }
+}
 
-module.exports.refreshWalgreens = async () => {
-  await Walgreens.refreshGridCells();
-};
+module.exports = Appointments;

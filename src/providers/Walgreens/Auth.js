@@ -9,7 +9,7 @@ const { firefox } = require("playwright-extra");
 const HumanizePlugin = require("@extra/humanize");
 const { PlaywrightBlocker } = require("@cliqz/adblocker-playwright");
 const fetch = require("cross-fetch");
-const logger = require("../logger");
+const logger = require("../../logger");
 
 firefox.use(
   HumanizePlugin({
@@ -19,8 +19,8 @@ firefox.use(
   })
 );
 
-const Auth = {
-  get: async () => {
+class Auth {
+  static async get() {
     if (Auth.auth) {
       return Auth.auth;
     }
@@ -38,9 +38,9 @@ const Auth = {
       logger.info("Auth not found in existing cached cookies, refreshing");
       return Auth.refresh();
     }
-  },
+  }
 
-  refresh: async () => {
+  static async refresh() {
     logger.info("Refreshing Walgreens auth");
 
     const cookieJar = new CookieJar();
@@ -204,11 +204,11 @@ const Auth = {
     Auth.set(auth);
 
     return auth;
-  },
+  }
 
-  set: (auth) => {
+  static set(auth) {
     Auth.auth = auth;
-  },
-};
+  }
+}
 
 module.exports = Auth;
