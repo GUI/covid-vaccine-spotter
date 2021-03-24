@@ -5,6 +5,8 @@ const _ = require("lodash");
 const got = require("got");
 const parseAddress = require("parse-address");
 const logger = require("../../logger");
+const normalizedVaccineTypes = require("../../normalizedVaccineTypes");
+const setComputedStoreValues = require("../../setComputedStoreValues");
 const Auth = require("./Auth");
 const { Store } = require("../../models/Store");
 const { PostalCode } = require("../../models/PostalCode");
@@ -128,6 +130,8 @@ class Appointments {
       );
       const appointments = _.orderBy(
         bookableSlots.map((slot) => ({
+          appointment_types: [],
+          vaccine_types: normalizedVaccineTypes(vaccineType),
           type: vaccineType,
           time: DateTime.fromISO(slot.starts_at, {
             zone: timeZone,
@@ -153,12 +157,10 @@ class Appointments {
         carries_vaccine: true,
         appointments,
         appointments_last_fetched: lastFetched,
-        appointments_available: appointments.length > 0,
         appointments_raw: raw,
         active: true,
       };
-      patch.brand = patch.provider_id;
-      patch.brand_id = patch.provider_location_id;
+      setComputedStoreValues(patch);
 
       queue.add(() =>
         Store.query()

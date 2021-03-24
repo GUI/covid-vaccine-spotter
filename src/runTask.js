@@ -32,6 +32,7 @@ process.on("uncaughtException", (err) => {
 });
 
 module.exports = async (task, sleepTime) => {
+  // eslint-disable-next-line no-constant-condition
   while (true) {
     logger.info("Begin task run...");
     try {

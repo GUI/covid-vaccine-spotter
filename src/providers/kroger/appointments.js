@@ -6,6 +6,8 @@ const got = require("got");
 const sleep = require("sleep-promise");
 const { Mutex } = require("async-mutex");
 const logger = require("../../logger");
+const normalizedVaccineTypes = require("../../normalizedVaccineTypes");
+const setComputedStoreValues = require("../../setComputedStoreValues");
 // const solver = require("../../solver");
 const KrogerAuth = require("./auth");
 const { Store } = require("../../models/Store");
@@ -94,6 +96,8 @@ class KrogerAppointments {
           (appointments, day) =>
             appointments.concat(
               day.slots.map((slot) => ({
+                appointment_types: [],
+                vaccine_types: normalizedVaccineTypes(slot.ar_reason),
                 type: slot.ar_reason,
                 time: DateTime.fromFormat(
                   `${day.date} ${slot.start_time}`,
@@ -107,9 +111,7 @@ class KrogerAppointments {
         patch.appointments = _.orderBy(patch.appointments, ["time", "type"]);
       }
 
-      if (patch.appointments.length > 0) {
-        patch.appointments_available = true;
-      }
+      setComputedStoreValues(patch);
 
       await Store.query().findById(locationStore.id).patch(patch);
 

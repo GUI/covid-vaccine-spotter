@@ -7,6 +7,8 @@ const { curly } = require("node-libcurl");
 const { Mutex } = require("async-mutex");
 const { convertLength } = require("@turf/helpers");
 const logger = require("../../logger");
+const normalizedVaccineTypes = require("../../normalizedVaccineTypes");
+const setComputedStoreValues = require("../../setComputedStoreValues");
 const Auth = require("./Auth");
 const { Store } = require("../../models/Store");
 
@@ -394,6 +396,8 @@ class Appointments {
         }
 
         allAppointments[storeId].push({
+          appointment_types: [],
+          vaccine_types: normalizedVaccineTypes(types.join(", ")),
           time: appointment.time,
           type: types.length > 0 ? types.join(", ") : null,
         });
@@ -408,9 +412,12 @@ class Appointments {
       }
 
       for (const appointment of appointments) {
+        const type = "Moderna - 2nd Dose Only";
         allAppointments[storeId].push({
+          appointment_types: ["2nd_dose_only"],
+          vaccine_types: normalizedVaccineTypes(type),
           time: appointment.time,
-          type: "Moderna - 2nd Dose Only",
+          type,
         });
       }
     }
@@ -423,9 +430,12 @@ class Appointments {
       }
 
       for (const appointment of appointments) {
+        const type = "Pfizer - 2nd Dose Only";
         allAppointments[storeId].push({
+          appointment_types: ["2nd_dose_only"],
+          vaccine_types: normalizedVaccineTypes(type),
           time: appointment.time,
-          type: "Pfizer - 2nd Dose Only",
+          type,
         });
       }
     }
@@ -435,8 +445,12 @@ class Appointments {
       const storePatch = _.cloneDeep(basePatch);
       storePatch.appointments = _.orderBy(appointments, ["time", "type"]);
 
+      setComputedStoreValues(storePatch);
+
       if (firstDoseWithSecondDoseAppointments[storeId]) {
         storePatch.appointments_available = true;
+      } else {
+        storePatch.appointments_available = false;
       }
 
       storePatches[storeId] = storePatch;

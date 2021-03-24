@@ -10,7 +10,7 @@ const logger = require("../logger");
 const { Store } = require("../models/Store");
 
 const authMutexes = {};
-requestsSinceRefresh = 0;
+albertsonsAuth.requestsSinceRefresh = 0;
 
 const Albertsons = {
   refreshStores: async () => {

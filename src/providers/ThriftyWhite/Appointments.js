@@ -3,6 +3,8 @@ const { DateTime } = require("luxon");
 const got = require("got");
 const sleep = require("sleep-promise");
 const logger = require("../../logger");
+const normalizedVaccineTypes = require("../../normalizedVaccineTypes");
+const setComputedStoreValues = require("../../setComputedStoreValues");
 const { Store } = require("../../models/Store");
 
 class Appointments {
@@ -84,13 +86,13 @@ class Appointments {
       }
     }
 
-    const updatedBrandIds = [];
-    for (const [brandId, data] of Object.entries(storeResponses)) {
-      updatedBrandIds.push(brandId);
+    const updatedProviderLocationIds = [];
+    for (const [providerLocationId, data] of Object.entries(storeResponses)) {
+      updatedProviderLocationIds.push(providerLocationId);
 
       const store = await Store.query().findOne({
-        brand: "thrifty_white",
-        brand_id: brandId,
+        provider_id: "thrifty_white",
+        provider_location_id: providerLocationId,
       });
 
       const patch = {
@@ -104,6 +106,8 @@ class Appointments {
         for (const [key, value] of Object.entries(dateData)) {
           if (key.match(/^t\d+\w+$/)) {
             patch.appointments.push({
+              appointment_types: [],
+              vaccine_types: normalizedVaccineTypes(value.manuf),
               type: value.manuf,
               time: DateTime.fromFormat(
                 `${dateData.dateF} ${value.t1}`,
@@ -119,16 +123,14 @@ class Appointments {
 
       patch.appointments = _.orderBy(patch.appointments, ["time", "type"]);
 
-      if (patch.appointments.length > 0) {
-        patch.appointments_available = true;
-      }
+      setComputedStoreValues(patch);
 
       await Store.query().findById(store.id).patch(patch);
     }
 
     await Store.query()
-      .where("brand", "thrifty_white")
-      .whereNotIn("brand_id", updatedBrandIds)
+      .where("provider_id", "thrifty_white")
+      .whereNotIn("provider_location_id", updatedProviderLocationIds)
       .patch({
         appointments_available: false,
         appointments: [],

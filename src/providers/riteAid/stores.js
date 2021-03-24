@@ -262,6 +262,7 @@ const RiteAidStores = {
           .onConflict(["brand", "brand_id"])
           .merge();
 
+        // eslint-disable-next-line no-param-reassign
         importedStores[store.storeNumber] = true;
       }
     }
