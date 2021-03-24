@@ -1,3 +1,4 @@
+import content from "./language";
 const buildModules = ["@nuxtjs/google-analytics"];
 if (process.env.NODE_ENV !== "production") {
   // https://go.nuxtjs.dev/eslint
@@ -47,7 +48,7 @@ export default {
   buildModules,
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: ["@nuxt/http"],
+  modules: ["@nuxt/http", "nuxt-i18n"],
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
@@ -83,5 +84,9 @@ export default {
 
   googleAnalytics: {
     id: "UA-49484378-1",
+  },
+
+  i18n: {
+    ...content,
   },
 };

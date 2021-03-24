@@ -13,9 +13,7 @@
       </p>
 
       <p class="lead text-center text-muted py-2 sub-lead">
-        Rather than searching around on each pharmacy's website, we'll
-        automatically scan the pharmacy websites and show you any available
-        appointments we can find on one page.
+        {{ longDescription }}
       </p>
 
       <news />
@@ -29,12 +27,13 @@
             >{{ state.name }} <font-awesome-icon icon="arrow-alt-circle-right"
           /></NuxtLink>
           <p class="text-center text-secondary mb-0">
-            <small
-              >Scanning {{ state.provider_brand_count }} pharmacy chains ({{
-                state.store_count
-              }}
-              stores) in {{ state.code }}</small
-            >
+            <small>{{
+              $t("scanningDetails.scanning", {
+                chain_count: state.provider_brand_count,
+                store_count: state.store_count,
+                state: state.code,
+              })
+            }}</small>
           </p>
         </div>
       </div>
@@ -51,9 +50,9 @@ export default {
 
   data() {
     return {
-      title: "COVID-19 Vaccine Spotter",
-      description:
-        "A tool to help you track down COVID-19 vaccine appointment openings at your state's pharmacies. Updated every minute.",
+      title: this.$t("metadata.title"),
+      description: this.$t("metadata.description"),
+      longDescription: this.$t("metadata.longDescription"),
       states: [],
     };
   },

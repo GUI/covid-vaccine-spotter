@@ -10,58 +10,58 @@
       <div v-if="store.properties.appointments_available === true">
         <p class="text-success">
           <font-awesome-icon icon="check-circle" />
-          Appointments available as of
+          {{ $t("appointmentStatus.available") + " " }}
           <display-local-time
             :time="appointmentsLastFetchedDate"
             :time-zone="store.properties.time_zone"
           />
         </p>
         <p>
-          <a :href="`#location-${store.properties.id}`"
-            >View Appointment Details</a
-          >
+          <a :href="`#location-${store.properties.id}`">{{
+            $t("appointments.viewDetails")
+          }}</a>
         </p>
       </div>
       <div v-else>
         <div v-if="store.properties.appointments_available === false">
           <p class="text-danger">
             <font-awesome-icon icon="times-circle" />
-            No appointments available as of last check
+            {{ $t("appointments.noneAvailable") }}
           </p>
         </div>
         <div v-else>
           <div v-if="store.properties.appointments_available === false">
             <p class="text-danger">
               <font-awesome-icon icon="times-circle" />
-              No appointments available as of last check
+              {{ $t("appointments.noneAvailable") }}
             </p>
           </div>
           <div v-else>
             <p>
               <font-awesome-icon icon="times-circle" />
-              Unknown status
+              {{ $t("appointments.unknown") }}
             </p>
             <p v-if="store.properties.carries_vaccine === false">
-              At last check, this location does not carry the vaccine at all, so
-              we have not fetched any appointments.
+              {{ $t("appointments.doesNotCarry") }}
             </p>
             <p v-else-if="store.properties.appointments_last_fetched === null">
-              We haven't collected any data for this pharmacy yet.
+              {{ $t("appointments.notCollected") }}
             </p>
-            <p v-else>
-              <strong>Uh oh!</strong> The data for this pharmacy is old. Please
-              visit the
-              <a :href="store.properties.url" target="_blank" rel="noopener"
-                >pharmacy's website</a
-              >
-              directly for appointment availability. This likely means that the
-              pharmacy is blocking our tool from accessing their site.
-            </p>
+            <p
+              v-else
+              v-html="
+                $t('appointments.oldData', { link: store.properties.url })
+              "
+            ></p>
           </div>
 
           <p>
             <a :href="store.properties.url" target="_blank" rel="noopener"
-              >Visit {{ store.properties.provider_brand_name }} Website
+              >{{
+                $t("appointments.visitWebsite", {
+                  name: store.properties.provider_brand_name,
+                })
+              }}
               <font-awesome-icon icon="external-link-alt"
             /></a>
           </p>
@@ -70,14 +70,14 @@
 
       <p class="mb-0">
         <small
-          >Last checked
+          >{{ $t("appointments.lastChecked") }}
           <display-local-time
             v-if="store.properties.appointments_last_fetched"
             :time="appointmentsLastFetchedDate"
           />
-          <span v-if="!store.properties.appointments_last_fetched"
-            >never</span
-          ></small
+          <span v-if="!store.properties.appointments_last_fetched">{{
+            $t("appointments.never")
+          }}</span></small
         >
       </p>
     </div>

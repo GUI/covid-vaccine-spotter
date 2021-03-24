@@ -3,32 +3,44 @@
     <div class="col-sm">
       <div class="row g-2">
         <div class="col-sm">
-          <label for="zip" class="form-label"
-            >Search for appointments near</label
-          >
+          <label for="zip" class="form-label">{{
+            $t("searchBar.zipTextField.header")
+          }}</label>
           <input
             id="zip"
             v-model="queryZip"
             type="text"
             name="zip"
             class="form-control form-control-lg"
-            placeholder="Enter a 5 digit ZIP code"
+            :placeholder="$t('searchBar.zipTextField.placeholder')"
           />
         </div>
         <div class="col-sm-auto">
-          <label for="radius" class="form-label">Within</label>
+          <label for="radius" class="form-label">{{
+            $t("searchBar.radius.header")
+          }}</label>
           <select
             id="radius"
             v-model="queryRadius"
             name="radius"
             class="form-select form-select-lg mb-3"
           >
-            <option value="">Any distance</option>
-            <option value="5">5 miles</option>
-            <option value="10">10 miles</option>
-            <option value="25">25 miles</option>
-            <option value="50">50 miles</option>
-            <option value="100">100 miles</option>
+            <option value="">{{ $t("searchBar.radius.anyDistance") }}</option>
+            <option value="5">
+              {{ $t("searchBar.radius.xDistance", { distance: 5 }) }}
+            </option>
+            <option value="10">
+              {{ $t("searchBar.radius.xDistance", { distance: 10 }) }}
+            </option>
+            <option value="25">
+              {{ $t("searchBar.radius.xDistance", { distance: 25 }) }}
+            </option>
+            <option value="50">
+              {{ $t("searchBar.radius.xDistance", { distance: 50 }) }}
+            </option>
+            <option value="100">
+              {{ $t("searchBar.radius.xDistance", { distance: 100 }) }}
+            </option>
           </select>
         </div>
       </div>
@@ -44,14 +56,16 @@
               type="checkbox"
             />
             <label class="form-check-label" for="include_all">
-              Show locations without current appointments
+              {{ $t("searchBar.withoutAppointments") }}
             </label>
           </div>
         </div>
       </div>
     </div>
     <div class="col-auto">
-      <button type="submit" class="btn btn-primary btn-lg">Search</button>
+      <button type="submit" class="btn btn-primary btn-lg">
+        {{ $t("searchBar.button") }}
+      </button>
     </div>
   </form>
 </template>

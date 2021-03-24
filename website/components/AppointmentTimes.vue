@@ -8,8 +8,7 @@
         </li>
       </template>
       <li v-else>
-        View available appointment times on the
-        {{ store.properties.provider_brand_name }} website.
+        {{ $t("appointmentTimes.viewOnWebsite") }}
       </li>
     </ul>
 
@@ -19,8 +18,12 @@
         <a
           href="#"
           :onclick="`document.getElementById('location-${store.properties.id}-more-appointments').style.display = 'block'; document.getElementById('location-${store.properties.id}-more-appointments-toggle').style.display = 'none'; return false;`"
-          >View {{ moreAppointments.length }} other appointment times</a
-        >
+          >{{
+            $t("appointmentTimes.moreAppointments", {
+              count: moreAppointments.length,
+            })
+          }}
+        </a>
       </div>
 
       <ul
@@ -99,13 +102,13 @@ export default {
           let { type } = appointment;
           switch (type) {
             case "both_doses":
-              type = "First Dose";
+              type = this.$t("doses.first");
               break;
             case "second_dose_moderna":
-              type = "Second Dose Only - Moderna";
+              type = this.$t("doses.first", { type: "Moderna" });
               break;
             case "second_dose_pfizer":
-              type = "Second Dose Only - Pfizer";
+              type = this.$t("doses.first", { type: "Pfizer" });
               break;
             default:
               type = appointment.type;

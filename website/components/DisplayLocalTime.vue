@@ -12,7 +12,7 @@
         >{{ timeLocale }}</local-time
       >
     </template>
-    <template v-else> Unknown Time </template>
+    <template v-else> {{ $t("time.unknown") }} </template>
   </span>
 </template>
 

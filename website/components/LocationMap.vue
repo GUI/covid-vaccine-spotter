@@ -3,12 +3,15 @@
     <div id="map" style="width: 100%"></div>
     <div id="legend" class="map-overlay">
       <div>
-        <span class="available-marker"></span> Appointments recently available
+        <span class="available-marker"></span> {{ $t("map.legend.available") }}
       </div>
       <div>
-        <span class="unavailable-marker"></span> Appointments not available
+        <span class="unavailable-marker"></span>
+        {{ $t("map.legend.notAvailable") }}
       </div>
-      <div><span class="unknown-marker"></span> Appointment status unknown</div>
+      <div>
+        <span class="unknown-marker"></span> {{ $t("map.legend.unknown") }}
+      </div>
     </div>
   </div>
 </template>

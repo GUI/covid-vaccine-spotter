@@ -9,7 +9,8 @@
         </h1>
         <div v-if="withReload">
           <button class="btn btn-light" onclick="window.location.reload();">
-            <font-awesome-icon icon="redo-alt" /> Check for New Appointments
+            <font-awesome-icon icon="redo-alt" />
+            {{ $t("buttons.newAppointments") }}
           </button>
         </div>
       </div>
