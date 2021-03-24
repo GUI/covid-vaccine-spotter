@@ -1,4 +1,4 @@
-import content from "./language";
+import language from "./website/language";
 const buildModules = ["@nuxtjs/google-analytics"];
 if (process.env.NODE_ENV !== "production") {
   // https://go.nuxtjs.dev/eslint
@@ -87,6 +87,6 @@ export default {
   },
 
   i18n: {
-    ...content,
+    ...language,
   },
 };
