@@ -38,25 +38,12 @@
         <p v-show="riteAidEducationOnly" class="text-warning">
           <font-awesome-icon icon="exclamation-triangle" />
           <strong
-            >Education Staff and Childcare Providers Only<span
-              v-show="store.properties.state === 'PA'"
-            >
-              in Philadelphia</span
+            >{{ $t("store.educationStaff")
+            }}<span v-show="store.properties.state === 'PA'">
+              {{ $t("store.inPhiladelphia") }}</span
             >:</strong
           >
-          Rite Aid appointments are
-          <a
-            href="https://www.riteaid.com/corporate/news/-/pressreleases/news-room/2021/rite-aid-extends-covid-19-vaccine-priority-scheduling-period-for-teachers-school-staff-and-childcare-providers"
-            target="_blank"
-            rel="noopener"
-            >only bookable by teachers, school staff and childcare providers</a
-          >
-          on Friday, March 19, Saturday, March 20, Friday, March 26, and
-          Saturday, March 27<span v-show="store.properties.state === 'PA'">
-            in Philadelphia (outside of Philadelphia other groups may still be
-            eligible)</span
-          >. Rite Aid appointments should re-open to other eligible groups again
-          on other days.
+          <span v-html="$t('store.riteAid')" />
         </p>
 
         <a
@@ -64,7 +51,11 @@
           class="btn btn-primary"
           target="_blank"
           rel="noopener"
-          >Visit {{ store.properties.provider_brand_name }} Website
+          >{{
+            $t("buttons.visitWebsite", {
+              name: store.properties.provider_brand_name,
+            })
+          }}
           <font-awesome-icon icon="arrow-alt-circle-right"
         /></a>
       </div>
@@ -72,7 +63,7 @@
         <div v-if="store.properties.appointments_available === false">
           <p class="text-danger">
             <font-awesome-icon icon="times-circle" />
-            No appointments available as of last check
+            {{ $t("appointment.noteAvailable") }}
           </p>
         </div>
         <div v-else>

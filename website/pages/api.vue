@@ -14,26 +14,27 @@
 
       <div class="alert alert-danger my-4" role="alert">
         <p>
-          Here's all of the underlying data in JSON format used for this tool.
-          Things are moving fast, so this is subject to change. So while I'm
-          hesitant to call this any type of stable API, I wanted to at least
-          share what I have. If you do use this data just note that things may
-          change. Feel free to reach out to let me know you're using this, so I
-          can maybe give you a heads up about breaking changes:
-          <a href="https://github.com/GUI/covid-vaccine-finder/issues">GitHub</a
+          {{ $t("api.blockText") }}
+          <a href="https://github.com/GUI/covid-vaccine-finder/issues">{{
+            $t("contact.github")
+          }}</a
           >,
           <a
             href="m&#97;ilto&#58;v%&#54;1&#99;&#99;&#105;ne&#64;nic&#107;%6D&#46;org"
             >vacc&#105;ne&#64;ni&#99;k&#109;&#46;o&#114;&#103;</a
-          >, or <a href="https://twitter.com/nickblah">@nickblah</a>.
+          >, {{ $t("api.or") }}
+          <a href="https://twitter.com/nickblah">{{
+            $t("contact.twitterHandle")
+          }}</a
+          >.
         </p>
         <p class="mb-0">
-          Subscribe to the
-          <a href="https://github.com/GUI/covid-vaccine-spotter/discussions/27"
-            >API Changelog</a
+          {{ $t("api.changelog.beforeLink") }}
+          <a
+            href="https://github.com/GUI/covid-vaccine-spotter/discussions/27"
+            >{{ $t("api.changelog.linkText") }}</a
           >
-          discussion on GitHub for announcements on any API changes or
-          additions.
+          {{ $t("api.changelog.afterLink") }}
         </p>
       </div>
 
@@ -62,9 +63,8 @@ export default {
 
   data() {
     return {
-      title: "Very Beta API | COVID-19 Vaccine Spotter",
-      description:
-        "The machine readable data behind the COIVD-19 Vaccine Spotter tool. Very beta.",
+      title: this.$t("api.title"),
+      description: this.$t("api.description"),
       states: [],
     };
   },

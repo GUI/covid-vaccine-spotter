@@ -36,13 +36,15 @@ export default {
           },
           withoutAppointments: "Show locations without current appointments",
           button: "Search",
+          noResults:
+            "No open appointments for your search can currently be found. Try expanding your search or check again later (appointments can come and go quickly).",
         },
         buttons: {
           newAppointments: "Check for New Appointments",
           visitWebsite: "Visit {name} Website",
         },
         share: {
-          button: "Share on {name}",
+          button: { on: "Share on {name}", by: "Share by {name}" },
           sites: {
             facebook: "Facebook",
             twitter: "Twitter",
@@ -54,10 +56,6 @@ export default {
             whatsApp: "WhatsApp",
             hackerNews: "Hacker News",
           },
-        },
-        about: {
-          header: "About",
-          description: "",
         },
         map: {
           legend: {
@@ -81,9 +79,7 @@ export default {
             '<strong>Uh oh!</strong> The data for this pharmacy is old. Please visit the <a href="{link} target="_blank" rel="noopener">pharmacy\'s website</a> directly for appointment availability. this likely means that the pharmacy is blocking our tool from accessing their website.',
           visitWebsite: "Visit {name} Website",
           lastChecked: "Last Checked",
-          never: "never",
-        },
-        appointmentTimes: {
+          never: "Never",
           viewOnWebsite:
             "View available appointment times on the {name} website.",
           moreAppointments: "View {count} other appointment times",
@@ -103,8 +99,65 @@ export default {
             'Rite Aid appointments are <a href="https://www.riteaid.com/corporate/news/-/pressreleases/news-room/2021/rite-aid-extends-covid-19-vaccine-priority-scheduling-period-for-teachers-school-staff-and-childcare-providers" target="_blank" rel="noopener"> only bookable by teachers, school staff and childcare providers</a> on Friday, March 19, Saturday, March 20, Friday, March 26, and Saturday, March 27<span v-show="store.properties.state === \'PA\'"> in Philadelphia (outside of Philadelphia other groups may still be eligible)</span>. Rite Aid appointments should re-open to other eligible groups again on other days.',
         },
         status: {
-          header: 'Tool Status'
-        }
+          title: "Tool Status",
+          columnHeaders: ["Pharmacy", "Scanning", "Last Checked"],
+          scanningCount: "{count} locations",
+        },
+        api: {
+          title: "Very Beta API | COVID-19 Vaccine Spotter",
+          description:
+            "The machine readable data behind the COIVD-19 Vaccine Spotter tool. Very beta.",
+          blockText:
+            "Here's all of the underlying data in JSON format used for this tool. Things are moving fast, so this is subject to change. So while I'm hesitant to call this any type of stable API, I wanted to at least share what I have. If you do use this data just note that things may change. Feel free to reach out to let me know you're using this, so I can maybe give you a heads up about breaking changes:",
+          or: "or",
+          changelog: {
+            beforeLink: "Subscribe to the",
+            linkText: "API Changelog",
+            afterLink:
+              "discussion on GitHub for announcements on any API changes or additions.",
+          },
+        },
+        contact: {
+          github: "GitHub",
+          twitterHandle: "@nickblah",
+        },
+        steps: [
+          {
+            header:
+              "Step 1: Review your county's availability and {state}'s eligibility",
+            colorado: `Visit <a href="https://covid19.colorado.gov/for-coloradans/vaccine/where-can-i-get-vaccinated" class="text-white"><strong class="fw-bold">Colorado.gov</strong></a > for detailed information about your county's vaccine options and review whether or not you are eligible yet.`,
+            localProvider:
+              "You may be able to signup for vaccines with a health care provider or there may be other options in your area, in which case you may not need this tool.",
+            eligibility:
+              "Be sure to visit your own state's official vaccination website for detailed information about your county's vaccine options and review whether or not you are eligible yet.",
+          },
+          {
+            header:
+              "Step 2: Use this tool to try and find a pharmacy appointment",
+            text: [
+              "If you decide you want to find an appointment at a local pharmacy (and are currently eligible for the vaccine), this tool might be able to help.",
+              "Rather than searching around on each pharmacy's website, we'll automatically scan the pharmacy websites and show you any available appointments we can find on one page.",
+              "All supported locations in {name} are scanned on a regular basis and this page is updated with any available appointments in the state. If you don't see locations near you right now, appointments can come and go quickly so try visiting the page at different times throughout the day.",
+            ],
+          },
+        ],
+        _state: {
+          title: "{state} COVID-19 Vaccine Spotter",
+          description: `A tool to help you track down COVID-19 vaccine appointment openings at {state} pharmacies. Updated every minute.`,
+        },
+        defaultVue: {
+          forDevs: "For Developers:",
+          api: "Very Beta API",
+          github: "GitHub",
+
+          about: {
+            header: "About",
+            text: [
+              "Finding vaccines seems tough! Hopefully things will become easier soon, but in the meantime, maybe this can help. If you find this useful, feel free to share it around. Get in touch with any questions:",
+              "I'd like to add additional functionality (scanning additional pharmacies and sending e-mail or text notifications when appointments open up) if this proves useful and as time permits. If you're a computer programmer and would like to contribute, the project is <a href=\"https://github.com/GUI/covid-vaccine-finder\"   >open source on GitHub</a > (it's currently very messy and undocumented, though).",
+            ],
+          },
+        },
       },
       es: {
         welcome: "Bienvenido",

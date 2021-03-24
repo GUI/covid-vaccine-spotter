@@ -3,28 +3,23 @@
     <Nuxt />
     <footer class="mt-3">
       <div class="container-lg">
-        <h3>About</h3>
+        <h3>{{ $t("defaultVue.about.header") }}</h3>
         <p>
-          Finding vaccines seems tough! Hopefully things will become easier
-          soon, but in the meantime, maybe this can help. If you find this
-          useful, feel free to share it around. Get in touch with any questions:
+          {{ $t("defaultVue.about.text.0") }}
           <a
             href="m&#97;ilto&#58;v%&#54;1&#99;&#99;&#105;ne&#64;nic&#107;%6D&#46;org"
             >vacc&#105;ne&#64;ni&#99;k&#109;&#46;o&#114;&#103;</a
-          >, <a href="https://twitter.com/nickblah">@nickblah</a>, or
-          <a href="https://github.com/GUI/covid-vaccine-finder/issues">GitHub</a
+          >,
+          <a href="https://twitter.com/nickblah">{{
+            $t("contact.twitterHandle")
+          }}</a
+          >, or
+          <a href="https://github.com/GUI/covid-vaccine-finder/issues">{{
+            $t("contact.github")
+          }}</a
           >.
         </p>
-        <p>
-          I'd like to add additional functionality (scanning additional
-          pharmacies and sending e-mail or text notifications when appointments
-          open up) if this proves useful and as time permits. If you're a
-          computer programmer and would like to contribute, the project is
-          <a href="https://github.com/GUI/covid-vaccine-finder"
-            >open source on GitHub</a
-          >
-          (it's currently very messy and undocumented, though).
-        </p>
+        <p v-html="$t('defaultVue.about.text.1')" />
 
         <div class="text-center mb-3">
           <span style="display: inline-block; max-width: 620px">
@@ -34,7 +29,9 @@
               href="https://facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.vaccinespotter.org"
               target="_blank"
               rel="noopener"
-              aria-label="Share on Facebook"
+              :aria-label="
+                $t('share.button.on', { name: $t('share.sites.facebook') })
+              "
             >
               <div
                 class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--large"
@@ -49,7 +46,9 @@
                     />
                   </svg>
                 </div>
-                Share on Facebook
+                {{
+                  $t("share.button.on", { name: $t("share.sites.facebook") })
+                }}
               </div>
             </a>
 
@@ -59,7 +58,9 @@
               href="https://twitter.com/intent/tweet/?text=COVID-19%20Vaccine%20Spotter.%20A%20tool%20to%20help%20you%20track%20down%20COVID-19%20vaccine%20appointment%20openings%20at%USA%20pharmacies.%20Updated%20every%20minute.&amp;url=https%3A%2F%2Fwww.vaccinespotter.org"
               target="_blank"
               rel="noopener"
-              aria-label="Share on Twitter"
+              :aria-label="
+                $t('share.button.on', { name: $t('share.sites.twitter') })
+              "
             >
               <div
                 class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--large"
@@ -74,7 +75,7 @@
                     />
                   </svg>
                 </div>
-                Share on Twitter
+                {{ $t("share.button.on", { name: $t("share.sites.twitter") }) }}
               </div>
             </a>
 
@@ -84,7 +85,9 @@
               href="https://www.tumblr.com/widgets/share/tool?posttype=link&amp;title=COVID-19%20Vaccine%20Spotter.%20A%20tool%20to%20help%20you%20track%20down%20COVID-19%20vaccine%20appointment%20openings%20at%20USA%20pharmacies.%20Updated%20every%20minute.&amp;caption=COVID-19%20Vaccine%20Spotter.%20A%20tool%20to%20help%20you%20track%20down%20COVID-19%20vaccine%20appointment%20openings%20at%20USA%20pharmacies.%20Updated%20every%20minute.&amp;content=https%3A%2F%2Fwww.vaccinespotter.org&amp;canonicalUrl=https%3A%2F%2Fwww.vaccinespotter.org&amp;shareSource=tumblr_share_button"
               target="_blank"
               rel="noopener"
-              aria-label="Share on Tumblr"
+              :aria-label="
+                $t('share.button.on', { name: $t('share.sites.tumblr') })
+              "
             >
               <div
                 class="resp-sharing-button resp-sharing-button--tumblr resp-sharing-button--large"
@@ -99,7 +102,7 @@
                     />
                   </svg>
                 </div>
-                Share on Tumblr
+                {{ $t("share.button.on", { name: $t("share.sites.tumblr") }) }}
               </div>
             </a>
 
@@ -109,7 +112,9 @@
               href="mailto:?subject=COVID-19%20Vaccine%20Spotter.%20A%20tool%20to%20help%20you%20track%20down%20COVID-19%20vaccine%20appointment%20openings%20at%20USA%20pharmacies.%20Updated%20every%20minute.&amp;body=https%3A%2F%2Fwww.vaccinespotter.org"
               target="_self"
               rel="noopener"
-              aria-label="Share by E-Mail"
+              :aria-label="
+                $t('share.button.by', { name: $t('share.sites.email') })
+              "
             >
               <div
                 class="resp-sharing-button resp-sharing-button--email resp-sharing-button--large"
@@ -124,7 +129,7 @@
                     />
                   </svg>
                 </div>
-                Share by E-Mail
+                {{ $t("share.button.by", { name: $t("share.sites.email") }) }}
               </div>
             </a>
 
@@ -134,7 +139,9 @@
               href="https://pinterest.com/pin/create/button/?url=https%3A%2F%2Fwww.vaccinespotter.org&amp;media=https%3A%2F%2Fwww.vaccinespotter.org&amp;description=COVID-19%20Vaccine%20Spotter.%20A%20tool%20to%20help%20you%20track%20down%20COVID-19%20vaccine%20appointment%20openings%20at%20USA%20pharmacies.%20Updated%20every%20minute."
               target="_blank"
               rel="noopener"
-              aria-label="Share on Pinterest"
+              :aria-label="
+                $t('share.button.on', { name: $t('share.sites.pinterest') })
+              "
             >
               <div
                 class="resp-sharing-button resp-sharing-button--pinterest resp-sharing-button--large"
@@ -149,7 +156,9 @@
                     />
                   </svg>
                 </div>
-                Share on Pinterest
+                {{
+                  $t("share.button.on", { name: $t("share.sites.pinterest") })
+                }}
               </div>
             </a>
 
@@ -159,7 +168,9 @@
               href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3A%2F%2Fwww.vaccinespotter.org&amp;title=COVID-19%20Vaccine%20Spotter.%20A%20tool%20to%20help%20you%20track%20down%20COVID-19%20vaccine%20appointment%20openings%20at%20USA%20pharmacies.%20Updated%20every%20minute.&amp;summary=COVID-19%20Vaccine%20Spotter.%20A%20tool%20to%20help%20you%20track%20down%20COVID-19%20vaccine%20appointment%20openings%20at%20USA%20pharmacies.%20Updated%20every%20minute.&amp;source=https%3A%2F%2Fwww.vaccinespotter.org"
               target="_blank"
               rel="noopener"
-              aria-label="Share on LinkedIn"
+              :aria-label="
+                $t('share.button.on', { name: $t('share.sites.linkedIn') })
+              "
             >
               <div
                 class="resp-sharing-button resp-sharing-button--linkedin resp-sharing-button--large"
@@ -174,7 +185,9 @@
                     />
                   </svg>
                 </div>
-                Share on LinkedIn
+                {{
+                  $t("share.button.on", { name: $t("share.sites.linkedIn") })
+                }}
               </div>
             </a>
 
@@ -184,7 +197,9 @@
               href="https://reddit.com/submit/?url=https%3A%2F%2Fwww.vaccinespotter.org&amp;resubmit=true&amp;title=COVID-19%20Vaccine%20Spotter.%20A%20tool%20to%20help%20you%20track%20down%20COVID-19%20vaccine%20appointment%20openings%20at%20USA%20pharmacies.%20Updated%20every%20minute."
               target="_blank"
               rel="noopener"
-              aria-label="Share on Reddit"
+              :aria-label="
+                $t('share.button.on', { name: $t('share.sites.reddit') })
+              "
             >
               <div
                 class="resp-sharing-button resp-sharing-button--reddit resp-sharing-button--large"
@@ -199,7 +214,7 @@
                     />
                   </svg>
                 </div>
-                Share on Reddit
+                {{ $t("share.button.on", { name: $t("share.sites.reddit") }) }}
               </div>
             </a>
 
@@ -209,7 +224,9 @@
               href="whatsapp://send?text=COVID-19%20Vaccine%20Spotter.%20A%20tool%20to%20help%20you%20track%20down%20COVID-19%20vaccine%20appointment%20openings%20at%20USA%20pharmacies.%20Updated%20every%20minute.%20https%3A%2F%2Fwww.vaccinespotter.org"
               target="_blank"
               rel="noopener"
-              aria-label="Share on WhatsApp"
+              :aria-label="
+                $t('share.button.on', { name: $t('share.sites.whatsApp') })
+              "
             >
               <div
                 class="resp-sharing-button resp-sharing-button--whatsapp resp-sharing-button--large"
@@ -224,7 +241,9 @@
                     />
                   </svg>
                 </div>
-                Share on WhatsApp
+                {{
+                  $t("share.button.on", { name: $t("share.sites.whatsApp") })
+                }}
               </div>
             </a>
 
@@ -234,7 +253,9 @@
               href="https://news.ycombinator.com/submitlink?u=https%3A%2F%2Fwww.vaccinespotter.org&amp;t=COVID-19%20Vaccine%20Spotter.%20A%20tool%20to%20help%20you%20track%20down%20COVID-19%20vaccine%20appointment%20openings%20at%20USA%20pharmacies.%20Updated%20every%20minute."
               target="_blank"
               rel="noopener"
-              aria-label="Share on Hacker News"
+              :aria-label="
+                $t('share.button.on', { name: $t('share.sites.hackerNews') })
+              "
             >
               <div
                 class="resp-sharing-button resp-sharing-button--hackernews resp-sharing-button--large"
@@ -250,15 +271,20 @@
                     ></path>
                   </svg>
                 </div>
-                Share on Hacker News
+                {{
+                  $t("share.button.on", { name: $t("share.sites.hackerNews") })
+                }}
               </div>
             </a>
           </span>
         </div>
 
         <p class="text-center mx-3">
-          For Developers: <a href="/api/">Very Beta API</a> |
-          <a href="https://github.com/GUI/covid-vaccine-finder">GitHub</a>
+          {{ $t("defaultVue.forDevs") }}
+          <a href="/api/">{{ $t("defaultVue.api") }}</a> |
+          <a href="https://github.com/GUI/covid-vaccine-finder">{{
+            $t("defaultVue.github")
+          }}</a>
         </p>
       </div>
     </footer>

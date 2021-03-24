@@ -8,7 +8,7 @@
         </li>
       </template>
       <li v-else>
-        {{ $t("appointmentTimes.viewOnWebsite") }}
+        {{ $t("appointments.viewOnWebsite") }}
       </li>
     </ul>
 
@@ -19,7 +19,7 @@
           href="#"
           :onclick="`document.getElementById('location-${store.properties.id}-more-appointments').style.display = 'block'; document.getElementById('location-${store.properties.id}-more-appointments-toggle').style.display = 'none'; return false;`"
           >{{
-            $t("appointmentTimes.moreAppointments", {
+            $t("appointments.moreAppointments", {
               count: moreAppointments.length,
             })
           }}
