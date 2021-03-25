@@ -37,6 +37,16 @@ module.exports = (patch) => {
     }
   }
 
+  if (patch.appointments_available) {
+    if (Object.keys(appointmentTypes).length === 0) {
+      appointmentTypes.unknown = true;
+    }
+
+    if (Object.keys(appointmentVaccineTypes).length === 0) {
+      appointmentVaccineTypes.unknown = true;
+    }
+  }
+
   patch.appointment_types = appointmentTypes;
   patch.appointment_vaccine_types = appointmentVaccineTypes;
 
