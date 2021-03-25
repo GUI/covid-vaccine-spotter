@@ -8,7 +8,6 @@
         year="numeric"
         hour="numeric"
         minute="numeric"
-        :locale="this.$root.$i18n.localeProperties.iso"
         >{{ timeLocale }}</local-time
       >
     </template>
