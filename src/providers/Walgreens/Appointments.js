@@ -28,7 +28,7 @@ class Appointments {
 
     Appointments.locationStores = {};
 
-    const queue = new PQueue({ concurrency: 50 });
+    const queue = new PQueue({ concurrency: 20 });
 
     const gridCells = await Store.query()
       .select(
