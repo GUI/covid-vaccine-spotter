@@ -65,14 +65,13 @@
               <h2 class="display-6 text-center mb-4">
                 {{ $t("steps.1.header") }}
               </h2>
-              <p
-                v-for="text in $t('steps.1.text', {
-                  name: state.metadata.name,
-                })"
-                :key="text"
-                class="lead"
-              >
-                {{ text }}
+              <p v-for="text in $t('steps.1.text')" :key="text" class="lead">
+                {{
+                  text.replace(
+                    "{name}",
+                    $store.state.regions.region.metadata.name
+                  )
+                }}
               </p>
             </div>
           </div>

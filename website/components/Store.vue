@@ -31,7 +31,11 @@
         <p v-show="store.properties.provider === 'kroger'" class="text-warning">
           <small
             ><font-awesome-icon icon="exclamation-triangle" />
-            {{ $t("store.krogerWarning") }}</small
+            {{
+              $t("store.krogerWarning", {
+                name: store.properties.provider_brand_name,
+              })
+            }}</small
           >
         </p>
 
