@@ -39,6 +39,7 @@
                 }}
               </h2>
               <template v-if="state.metadata.code === 'CO'">
+                <!-- eslint-disable-next-line vue/no-v-html -->
                 <p class="lead" v-html="$t('steps.0.colorado')" />
                 <p class="lead">
                   {{ $t("steps.0.localProvider") }}

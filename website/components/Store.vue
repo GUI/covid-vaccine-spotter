@@ -47,6 +47,7 @@
               {{ $t("store.inPhiladelphia") }}</span
             >:</strong
           >
+          <!-- eslint-disable-next-line vue/no-v-html -->
           <span v-html="$t('store.riteAid')" />
         </p>
 
@@ -81,10 +82,12 @@
           <p v-else-if="store.properties.appointments_last_fetched === null">
             {{ $t("appointments.notCollected") }}
           </p>
+          <!-- eslint-disable vue/no-v-html -->
           <p
             v-else
             v-html="$t('appointments.oldData', { link: store.properties.url })"
-          ></p>
+          />
+          <!-- eslint-enable vue/no-v-html -->
         </div>
         <p>
           <a :href="store.properties.url" target="_blank" rel="noopener"

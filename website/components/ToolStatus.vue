@@ -58,11 +58,13 @@
               </div>
 
               <div v-if="providerBrand.status === 'inactive'">
+                <!-- eslint-disable vue/no-v-html -->
                 <span
                   v-html="
                     $t('appointments.oldData', { link: providerBrand.url })
                   "
                 />
+                <!-- eslint-enable vue/no-v-html -->
               </div>
 
               <div v-if="providerBrand.status === 'unknown'">
