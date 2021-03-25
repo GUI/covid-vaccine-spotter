@@ -19,6 +19,7 @@
           }}</a
           >.
         </p>
+        <!-- eslint-disable-next-line vue/no-v-html -->
         <p v-html="$t('defaultVue.about.text.1')" />
 
         <div class="text-center mb-3">
