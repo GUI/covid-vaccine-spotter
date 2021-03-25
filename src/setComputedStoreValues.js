@@ -9,8 +9,8 @@ module.exports = (patch) => {
     patch.brand_id = patch.provider_location_id;
   }
 
-  if (patch.appointments_available === undefined) {
-    patch.appointments_available = patch.appointments.length > 0;
+  if (patch.appointments.length > 0) {
+    patch.appointments_available = true;
   }
 
   const appointmentTypes = {};
