@@ -80,101 +80,118 @@ class Appointments {
       appointments: [],
       appointments_last_fetched: DateTime.utc().toISO(),
       appointments_available: false,
-      appointments_raw: {
-        second_doses: {},
-        second_dose_only: {},
-      },
+      appointments_raw: {},
     };
+    const updatedStoreIds = [];
 
-    const firstDoseRespPromise = await retry(
-      async () => Appointments.fetchTimeslots(gridCell, radiusMiles, ""),
+    const availabilityResp = await retry(
+      async () => Appointments.fetchAvailability(gridCell, radiusMiles, ""),
       {
         retries: 4,
         onFailedAttempt: Appointments.onFailedAttempt,
       }
     );
 
-    const secondDoseOnlyModernaRespPromise = retry(
-      async () =>
-        Appointments.fetchTimeslots(
-          gridCell,
-          radiusMiles,
-          "5fd42921195d89e656c0b028"
-        ),
-      {
-        retries: 4,
-        onFailedAttempt: Appointments.onFailedAttempt,
-      }
-    );
+    patch.appointments_raw.availability = availabilityResp.data;
+    if (availabilityResp.data.appointmentsAvailable !== true) {
+      logger.debug(
+        `No availability within ${radiusMiles} miles of ${gridCell.centroid_postal_code}`
+      );
+    } else {
+      patch.appointments_raw.second_doses = {};
+      patch.appointments_raw.second_dose_only = {};
 
-    const secondDoseOnlyPfizerRespPromise = await retry(
-      async () =>
-        Appointments.fetchTimeslots(
-          gridCell,
-          radiusMiles,
-          "5fd1ab9f5fa47e056c076ff2"
-        ),
-      {
-        retries: 4,
-        onFailedAttempt: Appointments.onFailedAttempt,
-      }
-    );
-
-    const firstDoseResp = await firstDoseRespPromise;
-    const secondDoseOnlyModernaResp = await secondDoseOnlyModernaRespPromise;
-    const secondDoseOnlyPfizerResp = await secondDoseOnlyPfizerRespPromise;
-    patch.appointments_raw.first_dose = firstDoseResp.data;
-    patch.appointments_raw.second_dose_only.moderna =
-      secondDoseOnlyModernaResp.data;
-    patch.appointments_raw.second_dose_only.pfizer =
-      secondDoseOnlyPfizerResp.data;
-
-    let firstDoseDates = [];
-    if (firstDoseResp.data?.locations) {
-      for (const location of firstDoseResp.data.locations) {
-        for (const availability of location.appointmentAvailability) {
-          firstDoseDates.push(availability.date);
+      const firstDoseRespPromise = retry(
+        async () => Appointments.fetchTimeslots(gridCell, radiusMiles, ""),
+        {
+          retries: 4,
+          onFailedAttempt: Appointments.onFailedAttempt,
         }
-      }
-    }
-    firstDoseDates = _.uniq(firstDoseDates, gridCell);
-    logger.debug(`First dose dates: ${JSON.stringify(firstDoseDates)}`);
+      );
 
-    const secondDoseFetchDates = Appointments.getSecondDoseFetchDates(
-      firstDoseDates,
-      gridCell
-    );
-    logger.debug(
-      `Potential second dose dates to query: ${JSON.stringify(
-        secondDoseFetchDates
-      )}`
-    );
-    for (const secondDoseFetchDate of secondDoseFetchDates) {
-      const secondDoseResp = await retry(
+      const secondDoseOnlyModernaRespPromise = retry(
         async () =>
           Appointments.fetchTimeslots(
             gridCell,
             radiusMiles,
-            "",
-            secondDoseFetchDate
+            "5fd42921195d89e656c0b028"
           ),
         {
           retries: 4,
           onFailedAttempt: Appointments.onFailedAttempt,
         }
       );
-      patch.appointments_raw.second_doses[secondDoseFetchDate] =
-        secondDoseResp.data;
-    }
 
-    const storePatches = await Appointments.buildStoreSpecificPatches(patch);
-    for (const [storeId, storePatch] of Object.entries(storePatches)) {
-      await Store.query().findById(storeId).patch(storePatch);
+      const secondDoseOnlyPfizerRespPromise = retry(
+        async () =>
+          Appointments.fetchTimeslots(
+            gridCell,
+            radiusMiles,
+            "5fd1ab9f5fa47e056c076ff2"
+          ),
+        {
+          retries: 4,
+          onFailedAttempt: Appointments.onFailedAttempt,
+        }
+      );
+
+      const firstDoseResp = await firstDoseRespPromise;
+      const secondDoseOnlyModernaResp = await secondDoseOnlyModernaRespPromise;
+      const secondDoseOnlyPfizerResp = await secondDoseOnlyPfizerRespPromise;
+      patch.appointments_raw.first_dose = firstDoseResp.data;
+      patch.appointments_raw.second_dose_only.moderna =
+        secondDoseOnlyModernaResp.data;
+      patch.appointments_raw.second_dose_only.pfizer =
+        secondDoseOnlyPfizerResp.data;
+
+      let firstDoseDates = [];
+      if (firstDoseResp.data?.locations) {
+        for (const location of firstDoseResp.data.locations) {
+          for (const availability of location.appointmentAvailability) {
+            firstDoseDates.push(availability.date);
+          }
+        }
+      }
+      firstDoseDates = _.uniq(firstDoseDates, gridCell);
+      logger.debug(`First dose dates: ${JSON.stringify(firstDoseDates)}`);
+
+      const secondDoseFetchDates = Appointments.getSecondDoseFetchDates(
+        firstDoseDates,
+        gridCell
+      );
+      logger.debug(
+        `Potential second dose dates to query: ${JSON.stringify(
+          secondDoseFetchDates
+        )}`
+      );
+      for (const secondDoseFetchDate of secondDoseFetchDates) {
+        const secondDoseResp = await retry(
+          async () =>
+            Appointments.fetchTimeslots(
+              gridCell,
+              radiusMiles,
+              "",
+              secondDoseFetchDate
+            ),
+          {
+            retries: 4,
+            onFailedAttempt: Appointments.onFailedAttempt,
+          }
+        );
+        patch.appointments_raw.second_doses[secondDoseFetchDate] =
+          secondDoseResp.data;
+      }
+
+      const storePatches = await Appointments.buildStoreSpecificPatches(patch);
+      for (const [storeId, storePatch] of Object.entries(storePatches)) {
+        await Store.query().findById(storeId).patch(storePatch);
+        updatedStoreIds.push(storeId);
+      }
     }
 
     await Store.query()
       .where("provider_id", "walgreens")
-      .where("id", "NOT IN", Object.keys(storePatches))
+      .where("id", "NOT IN", updatedStoreIds)
       .whereRaw(
         "st_within(location::geometry, (SELECT geom FROM walgreens_grid WHERE id = ?))",
         gridCell.id
@@ -453,6 +470,71 @@ class Appointments {
     return storePatches;
   }
 
+  static async fetchAvailability(gridCell, radiusMiles, date) {
+    await sleep(_.random(1, 5));
+
+    const auth = await authMutex.runExclusive(Auth.get);
+
+    let startDateTime = date;
+    if (!startDateTime) {
+      const tomorrow = DateTime.now()
+        .setZone(gridCell.time_zone)
+        .plus({ days: 1 });
+      startDateTime = tomorrow.toISODate();
+    }
+
+    logger.debug(
+      `Fetching availability for grid cell: ${gridCell.id}, startDateTime: ${startDateTime}`
+    );
+    const url =
+      "https://www.walgreens.com/hcschedulersvc/svc/v1/immunizationLocations/availability";
+    const resp = await curly.post(url, {
+      httpHeader: [
+        "Accept-Language: en-US,en;q=0.9",
+        "Accept: application/json, text/plain, */*",
+        "Authority: www.walgreens.com",
+        "Cache-Control: no-cache",
+        "Content-Type: application/json; charset=UTF-8",
+        "Origin: https://www.walgreens.com",
+        "Pragma: no-cache",
+        "Referer: https://www.walgreens.com/findcare/vaccination/covid-19/location-screening",
+        "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:85.0) Gecko/20100101 Firefox/85.0",
+        `Cookie: ${await auth.cookieJar.getCookieString(url)}`,
+        `X-XSRF-TOKEN: ${auth.csrfToken}`,
+      ],
+      postFields: JSON.stringify({
+        serviceId: "99",
+        position: {
+          latitude: gridCell.latitude,
+          longitude: gridCell.longitude,
+        },
+        appointmentAvailability: {
+          startDateTime,
+        },
+        radius: radiusMiles,
+      }),
+      timeoutMs: 15000,
+      proxy: process.env.WALGREENS_AVAILABILITY_PROXY_SERVER,
+      proxyUsername: process.env.WALGREENS_AVAILABILITY_PROXY_USERNAME,
+      proxyPassword: process.env.WALGREENS_AVAILABILITY_PROXY_PASSWORD,
+      sslVerifyPeer: false,
+      acceptEncoding: "gzip",
+    });
+    // console.info('resp: ', resp);
+    // console.info('resp.data: ', resp.data);
+
+    // await sleep(10000);
+    if (!resp.statusCode || resp.statusCode < 200 || resp.statusCode >= 300) {
+      const err = new Error(
+        `Request failed with status code ${resp.statusCode}`
+      );
+      err.response = resp;
+      throw err;
+    }
+
+    return resp;
+  }
+
   static async fetchTimeslots(gridCell, radiusMiles, productId, date) {
     await sleep(_.random(1, 5));
 
@@ -507,6 +589,9 @@ class Appointments {
       sslVerifyPeer: false,
       acceptEncoding: "gzip",
     });
+    //console.info('resp: ', resp);
+    //console.info('resp.data: ', resp.data);
+    //await sleep(10000);
 
     if (
       resp.statusCode === 404 &&

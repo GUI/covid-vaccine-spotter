@@ -25,10 +25,12 @@ class Auth {
       return Auth.auth;
     }
     try {
-      const cookieJarJson = await fs.readFile("tmp/WalgreensCookieJar.json");
-      const cookieJar = CookieJar.fromJSON(JSON.parse(cookieJarJson));
+      const authJson = await fs.readFile("tmp/WalgreensAuth.json");
+      const authData = JSON.parse(authJson);
+      const cookieJar = CookieJar.fromJSON(authData.cookieJar);
 
       const auth = {
+        csrfToken: authData.csrfToken,
         cookieJar,
       };
       Auth.set(auth);
@@ -44,6 +46,7 @@ class Auth {
     logger.info("Refreshing Walgreens auth");
 
     const cookieJar = new CookieJar();
+    let csrfToken;
 
     const browser = await firefox.launch({
       headless: true,
@@ -159,6 +162,11 @@ class Auth {
       logger.info("Waiting for successful login page.");
       await page.waitForSelector(".ApptScreens");
 
+      const csrfElement = await page.$("meta[name=_csrf]");
+      if (csrfElement) {
+        csrfToken = await csrfElement.getAttribute("content");
+      }
+
       // await sleep(100000);
 
       // await page.screenshot({ path: "screenshot.png" });
@@ -193,11 +201,15 @@ class Auth {
     }
 
     await fs.writeFile(
-      "tmp/WalgreensCookieJar.json",
-      JSON.stringify(cookieJar.toJSON())
+      "tmp/WalgreensAuth.json",
+      JSON.stringify({
+        csrfToken,
+        cookieJar: cookieJar.toJSON(),
+      })
     );
 
     const auth = {
+      csrfToken,
       cookieJar,
     };
     // console.info('AUTH: ', auth);
