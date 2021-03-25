@@ -157,6 +157,7 @@ class Appointments {
         carries_vaccine: true,
         appointments,
         appointments_last_fetched: lastFetched,
+        appointments_available: false,
         appointments_raw: raw,
         active: true,
       };
