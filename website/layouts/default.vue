@@ -298,6 +298,14 @@
   </div>
 </template>
 
+<script>
+export default {
+  head() {
+    return this.$nuxtI18nHead({ addSeoAttributes: true });
+  },
+};
+</script>
+
 <style>
 .resp-sharing-button__link,
 .resp-sharing-button__icon {
