@@ -144,6 +144,9 @@ export default {
             store,
             appointments: {
               ...this.$t("appointments"),
+              oldData: this.$t("appointments.oldData", {
+                link: store.properties.url,
+              }),
               visitWebsite: this.$t("appointments.visitWebsite", {
                 name: store.properties.provider_brand_name,
               }),

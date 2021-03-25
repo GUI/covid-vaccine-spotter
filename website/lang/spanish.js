@@ -62,7 +62,7 @@ export default {
     unknown: "Unknown Time",
   },
   appointments: {
-    available: "Appointments available as of {date_time}",
+    available: "Appointments available as of",
     viewDetails: "View Appointment Details",
     noneAvailable: "No appointments available as of last check",
     unknown: "Unknown Status",
@@ -70,7 +70,7 @@ export default {
       "At last check, this location does not carry the vaccine at all, so we have not fetched any appointments.",
     notCollected: "We haven't collected any data for this pharmacy yet.",
     oldData:
-      '<strong>Uh oh!</strong> The data for this pharmacy is old. Please visit the <a href="{link} target="_blank" rel="noopener">pharmacy\'s website</a> directly for appointment availability. this likely means that the pharmacy is blocking our tool from accessing their website.',
+      '<strong>Uh oh!</strong> The data for this pharmacy is old. Please visit the <a href="{link}" target="_blank" rel="noopener">pharmacy\'s website</a> directly for appointment availability. this likely means that the pharmacy is blocking our tool from accessing their website.',
     visitWebsite: "Visit {name} Website",
     lastChecked: "Last Checked",
     never: "Never",

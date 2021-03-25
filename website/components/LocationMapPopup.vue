@@ -10,7 +10,7 @@
       <div v-if="store.properties.appointments_available === true">
         <p class="text-success">
           <font-awesome-icon icon="check-circle" />
-          {{ $t("appointmentStatus.available") }}
+          {{ appointments.available }}
           <display-local-time
             :time="appointmentsLastFetchedDate"
             :time-zone="store.properties.time_zone"
@@ -18,7 +18,7 @@
         </p>
         <p>
           <a :href="`#location-${store.properties.id}`">{{
-            $t("appointments.viewDetails")
+            appointments.viewDetails
           }}</a>
         </p>
       </div>
@@ -47,6 +47,7 @@
             <p v-else-if="store.properties.appointments_last_fetched === null">
               {{ appointments.notCollected }}
             </p>
+            <!-- eslint-disable-next-line vue/no-v-html -->
             <p v-else v-html="appointments.oldData" />
           </div>
 
@@ -61,13 +62,13 @@
 
       <p class="mb-0">
         <small
-          >{{ $t("appointments.lastChecked") }}
+          >{{ appointments.lastChecked }}
           <display-local-time
             v-if="store.properties.appointments_last_fetched"
             :time="appointmentsLastFetchedDate"
           />
           <span v-if="!store.properties.appointments_last_fetched">{{
-            $t("appointments.never")
+            appointments.never
           }}</span></small
         >
       </p>
