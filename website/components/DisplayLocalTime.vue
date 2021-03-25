@@ -2,13 +2,13 @@
   <span>
     <template v-if="time">
       <local-time
-        :datetime="timeISO"
         time-zone-name="short"
         month="long"
         day="numeric"
         year="numeric"
         hour="numeric"
         minute="numeric"
+        :locale="this.$root.$i18n.localeProperties.iso"
         >{{ timeLocale }}</local-time
       >
     </template>
@@ -35,7 +35,7 @@ export default {
     },
 
     timeLocale() {
-      return this.time.toLocaleString("en-US", {
+      return this.time.toLocaleString(this.$root.$i18n.localeProperties.iso, {
         month: "long",
         day: "numeric",
         year: "numeric",

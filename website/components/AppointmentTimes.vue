@@ -83,15 +83,15 @@ export default {
 
   methods: {
     formatTime(time) {
-      return DateTime.fromISO(time, { setZone: true }).toLocaleString(
-        DateTime.DATETIME_SHORT
-      );
+      return DateTime.fromISO(time, { setZone: true })
+        .setLocale(this.$i18n.localeProperties.iso)
+        .toLocaleString(DateTime.DATETIME_SHORT);
     },
 
     formatDate(date) {
-      return DateTime.fromISO(date, { setZone: true }).toLocaleString(
-        DateTime.DATE_SHORT
-      );
+      return DateTime.fromISO(date, { setZone: true })
+        .setLocale(this.$i18n.localeProperties.iso)
+        .toLocaleString(DateTime.DATE_SHORT);
     },
 
     normalizeAppointments(appointments) {
