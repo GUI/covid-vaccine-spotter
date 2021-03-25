@@ -15,10 +15,7 @@
         <p class="text-success">
           <font-awesome-icon icon="check-circle" />
           Appointments available as of
-          <display-local-time
-            :time="appointmentsLastFetchedDate"
-            :time-zone="store.properties.time_zone"
-          />
+          <display-local-time :time="appointmentsLastFetchedDate" />
         </p>
         <p>
           <a :href="`#location-${store.properties.id}`"

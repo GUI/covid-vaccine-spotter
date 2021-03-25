@@ -196,6 +196,8 @@ module.exports.refreshWebsite = async () => {
                 'carries_vaccine', carries_vaccine,
                 'appointments', appointments,
                 'appointments_available', appointments_available,
+                'appointments_available_all_doses', CASE WHEN appointments_available AND (appointment_types->>'all_doses' = 'true' OR appointment_types->>'unknown' = 'true') THEN true ELSE false END,
+                'appointments_available_2nd_dose_only', CASE WHEN appointments_available AND appointment_types->>'2nd_dose_only' = 'true' THEN true ELSE false END,
                 'appointments_last_fetched', appointments_last_fetched,
                 'appointment_types', appointment_types,
                 'appointment_vaccine_types', appointment_vaccine_types

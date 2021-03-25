@@ -4,13 +4,9 @@
     <div class="card-header">
       <div class="row">
         <h5 class="col-sm mb-0">
-          {{ store.properties.provider_brand_name }} -
-          {{ store.properties.address }}, {{ store.properties.city }},
-          {{ store.properties.state }}
-          {{ store.properties.postal_code }}
+          {{ title }}
         </h5>
-        {{ /* Use v-show, not v-if for conditions without "else". Otherwise, strange things happen in production that cause rendering to fail (if the page is reloaded with a zip code pre-filled): https://github.com/nuxt/nuxt.js/issues/5800 */ }}
-        <div v-show="store.distance" class="col-sm-auto">
+        <div v-if="store.distance" class="col-sm-auto">
           {{ store.distance }} miles
         </div>
       </div>
@@ -21,14 +17,11 @@
           <font-awesome-icon icon="check-circle" class="align-middle" />
           <span class="fs-5"
             >Appointments available as of
-            <display-local-time
-              :time="appointmentsLastFetchedDate"
-              :time-zone="store.properties.time_zone"
+            <display-local-time :time="appointmentsLastFetchedDate"
           /></span>
         </div>
         <appointment-times :store="store" />
-        {{ /* Use v-show, not v-if for conditions without "else". Otherwise, strange things happen in production that cause rendering to fail (if the page is reloaded with a zip code pre-filled): https://github.com/nuxt/nuxt.js/issues/5800 */ }}
-        <p v-show="store.properties.provider === 'kroger'" class="text-warning">
+        <p v-if="store.properties.provider === 'kroger'" class="text-warning">
           <small
             ><font-awesome-icon icon="exclamation-triangle" />
             <strong>Warning:</strong> Many users are reporting issues booking
@@ -40,11 +33,11 @@
           >
         </p>
 
-        <p v-show="riteAidEducationOnly" class="text-warning">
+        <p v-if="riteAidEducationOnly" class="text-warning">
           <font-awesome-icon icon="exclamation-triangle" />
           <strong
             >Education Staff and Childcare Providers Only<span
-              v-show="store.properties.state === 'PA'"
+              v-if="store.properties.state === 'PA'"
             >
               in Philadelphia</span
             >:</strong
@@ -57,7 +50,7 @@
             >only bookable by teachers, school staff and childcare providers</a
           >
           on Friday, March 19, Saturday, March 20, Friday, March 26, and
-          Saturday, March 27<span v-show="store.properties.state === 'PA'">
+          Saturday, March 27<span v-if="store.properties.state === 'PA'">
             in Philadelphia (outside of Philadelphia other groups may still be
             eligible)</span
           >. Rite Aid appointments should re-open to other eligible groups again
@@ -148,6 +141,28 @@ export default {
       return new Date(this.store.properties.appointments_last_fetched);
     },
 
+    title() {
+      let title = this.store.properties.provider_brand_name;
+      if (this.store.properties.provider_brand === "centura_driveup_event") {
+        title += ` - ${this.store.properties.name}`;
+      }
+      title += ` - ${this.fullAddress}`;
+
+      return title;
+    },
+
+    fullAddress() {
+      return [
+        this.store.properties.address,
+        this.store.properties.city,
+        [this.store.properties.state, this.store.properties.postal_code]
+          .filter((value) => !!value)
+          .join(", "),
+      ]
+        .filter((value) => !!value)
+        .join(", ");
+    },
+
     riteAidEducationOnly() {
       const { provider, state } = this.store.properties;
       const today = DateTime.now()
@@ -195,5 +210,6 @@ export default {
 .location-anchor {
   padding-top: 56px;
   margin-top: -56px;
+  z-index: -9999;
 }
 </style>

@@ -396,7 +396,7 @@ class Appointments {
         }
 
         allAppointments[storeId].push({
-          appointment_types: [],
+          appointment_types: ["all_doses"],
           vaccine_types: normalizedVaccineTypes(types.join(", ")),
           time: appointment.time,
           type: types.length > 0 ? types.join(", ") : null,
@@ -446,12 +446,6 @@ class Appointments {
       storePatch.appointments = _.orderBy(appointments, ["time", "type"]);
 
       setComputedStoreValues(storePatch);
-
-      if (firstDoseWithSecondDoseAppointments[storeId]) {
-        storePatch.appointments_available = true;
-      } else {
-        storePatch.appointments_available = false;
-      }
 
       storePatches[storeId] = storePatch;
     }

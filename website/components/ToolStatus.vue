@@ -12,7 +12,7 @@
         </thead>
         <tbody>
           <tr
-            v-for="providerBrand in $store.state.regions.region.metadata
+            v-for="providerBrand in $store.state.usStates.usState.metadata
               .provider_brands"
             :key="providerBrand.id"
             :class="[

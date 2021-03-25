@@ -21,11 +21,11 @@ import LocationMapPopup from "./LocationMapPopup.vue";
 export default {
   computed: {
     mapBounds() {
-      return this.$store.getters["regions/getMapBounds"];
+      return this.$store.getters["usStates/getMapBounds"];
     },
 
     zipCoords() {
-      return this.$store.getters["regions/getMapZipCoords"];
+      return this.$store.getters["usStates/getMapZipCoords"];
     },
   },
 
@@ -60,7 +60,7 @@ export default {
     this.map.on("load", () => {
       this.map.addSource("locations", {
         type: "geojson",
-        data: this.$store.state.regions.region,
+        data: this.$store.state.usStates.usState,
       });
 
       this.zipMarker = new Marker();
@@ -80,7 +80,7 @@ export default {
             0,
             [
               "match",
-              ["to-string", ["get", "appointments_available"]],
+              ["to-string", ["get", "appointments_available_all_doses"]],
               "true",
               4,
               "false",
@@ -90,7 +90,7 @@ export default {
             5,
             [
               "match",
-              ["to-string", ["get", "appointments_available"]],
+              ["to-string", ["get", "appointments_available_all_doses"]],
               "true",
               8,
               "false",
@@ -100,7 +100,7 @@ export default {
             16,
             [
               "match",
-              ["to-string", ["get", "appointments_available"]],
+              ["to-string", ["get", "appointments_available_all_doses"]],
               "true",
               16,
               "false",
@@ -114,7 +114,7 @@ export default {
           "circle-opacity": 0.8,
           "circle-color": [
             "match",
-            ["to-string", ["get", "appointments_available"]],
+            ["to-string", ["get", "appointments_available_all_doses"]],
             "true",
             "#2ca25f",
             "false",

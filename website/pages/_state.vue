@@ -15,9 +15,9 @@
             <div class="card card-body h-100 bg-primary text-white shadow-sm">
               <h2 class="display-6 text-center mb-4">
                 Step 1: Review your county's availability and
-                {{ $store.state.regions.region.metadata.code }}'s eligibility
+                {{ usStateCode }}'s eligibility
               </h2>
-              <template v-if="state.metadata.code === 'CO'">
+              <template v-if="usStateCode === 'CO'">
                 <p class="lead">
                   Visit
                   <a
@@ -71,8 +71,8 @@
                 available appointments we can find on one page.
               </p>
               <p class="lead">
-                All supported locations in {{ state.metadata.name }} are scanned
-                on a regular basis and this page is updated with any available
+                All supported locations in {{ usStateName }} are scanned on a
+                regular basis and this page is updated with any available
                 appointments in the state. If you don't see locations near you
                 right now, appointments can come and go quickly so try visiting
                 the page at different times throughout the day.
@@ -92,15 +92,23 @@
           </div>
           <div class="col-lg-6 col-list">
             <div class="results-container">
+              <div v-if="$fetchState.pending">Fetching data...</div>
               <div
-                v-show="filteredLocationsError"
+                v-else-if="$fetchState.error"
+                class="alert alert-danger"
+                role="alert"
+              >
+                Error fetching data: {{ $fetchState.error.message }}
+              </div>
+              <div
+                v-else-if="filteredLocationsError"
                 class="alert alert-danger"
                 role="alert"
               >
                 {{ filteredLocationsError }}
               </div>
               <div
-                v-show="filteredLocations.length === 0"
+                v-else-if="filteredLocations.length === 0"
                 class="alert alert-warning"
                 role="alert"
               >
@@ -127,32 +135,60 @@
 
 <script>
 export default {
-  async asyncData({ params, store, $store, $http }) {
-    const state = Object.freeze(
-      await $http.$get(`/api/v0/states/${params.state}.json`)
+  fetchOnServer: false,
+  fetchDelay: 5,
+
+  async fetch() {
+    if (this?.$nuxt?.$loading?.start) {
+      this.$nuxt.$loading.start();
+    }
+
+    const usState = Object.freeze(
+      await this.$http.$get(`/api/v0/states/${this.$route.params.state}.json`)
     );
     const postalCodes = Object.freeze(
-      await $http.$get(`/api/v0/states/${params.state}/postal_codes.json`)
+      await this.$http.$get(
+        `/api/v0/states/${this.$route.params.state}/postal_codes.json`
+      )
     );
 
-    store.commit("regions/set", state);
-    store.commit("postalCodes/set", postalCodes);
+    this.$store.commit("usStates/set", usState);
+    this.$store.commit("postalCodes/set", postalCodes);
 
-    return {
-      state,
-      postalCodes,
-      title: `${state.metadata.name} COVID-19 Vaccine Spotter`,
-      description: `A tool to help you track down COVID-19 vaccine appointment openings at ${state.metadata.name} pharmacies. Updated every minute.`,
-    };
+    if (this?.$nuxt?.$loading?.finish) {
+      this.$nuxt.$loading.finish();
+    }
   },
 
   computed: {
+    usState() {
+      return this.$store.state.usStates.usState;
+    },
+
+    usStateCode() {
+      return this.usState?.metadata?.code;
+    },
+
+    usStateName() {
+      return this.usState?.metadata?.name;
+    },
+
+    title() {
+      return `${this.usStateName || ""} COVID-19 Vaccine Spotter`;
+    },
+
+    description() {
+      return `A tool to help you track down COVID-19 vaccine appointment openings at ${
+        this.usStateName || ""
+      } pharmacies. Updated every minute.`;
+    },
+
     filteredLocations() {
-      return this.$store.getters["regions/getFilteredLocations"];
+      return this.$store.getters["usStates/getFilteredLocations"];
     },
 
     filteredLocationsError() {
-      return this.$store.state.regions.filterError;
+      return this.$store.getters["usStates/getFilterError"];
     },
   },
 };
