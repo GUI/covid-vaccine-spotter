@@ -142,6 +142,12 @@ export default {
           ...LocationMapPopup,
           propsData: {
             store,
+            appointments: {
+              ...this.$t("appointments"),
+              visitWebsite: this.$t("appointments.visitWebsite", {
+                name: store.properties.provider_brand_name,
+              }),
+            },
           },
         }).$mount();
         const description = app.$el.outerHTML;

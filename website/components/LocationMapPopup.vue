@@ -10,7 +10,7 @@
       <div v-if="store.properties.appointments_available === true">
         <p class="text-success">
           <font-awesome-icon icon="check-circle" />
-          {{ $t("appointmentStatus.available") + " " }}
+          {{ $t("appointmentStatus.available") }}
           <display-local-time
             :time="appointmentsLastFetchedDate"
             :time-zone="store.properties.time_zone"
@@ -26,42 +26,33 @@
         <div v-if="store.properties.appointments_available === false">
           <p class="text-danger">
             <font-awesome-icon icon="times-circle" />
-            {{ $t("appointments.noneAvailable") }}
+            {{ appointments.noneAvailable }}
           </p>
         </div>
         <div v-else>
           <div v-if="store.properties.appointments_available === false">
             <p class="text-danger">
               <font-awesome-icon icon="times-circle" />
-              {{ $t("appointments.noneAvailable") }}
+              {{ appointments.noneAvailable }}
             </p>
           </div>
           <div v-else>
             <p>
               <font-awesome-icon icon="times-circle" />
-              {{ $t("appointments.unknown") }}
+              {{ appointments.unknown }}
             </p>
             <p v-if="store.properties.carries_vaccine === false">
-              {{ $t("appointments.doesNotCarry") }}
+              {{ appointments.doesNotCarry }}
             </p>
             <p v-else-if="store.properties.appointments_last_fetched === null">
-              {{ $t("appointments.notCollected") }}
+              {{ appointments.notCollected }}
             </p>
-            <p
-              v-else
-              v-html="
-                $t('appointments.oldData', { link: store.properties.url })
-              "
-            ></p>
+            <p v-else v-html="appointments.oldData" />
           </div>
 
           <p>
-            <a :href="store.properties.url" target="_blank" rel="noopener"
-              >{{
-                $t("appointments.visitWebsite", {
-                  name: store.properties.provider_brand_name,
-                })
-              }}
+            <a :href="store.properties.url" target="_blank" rel="noopener">
+              {{ appointments.visitWebsite }}
               <font-awesome-icon icon="external-link-alt"
             /></a>
           </p>
@@ -91,8 +82,11 @@ export default {
       type: Object,
       required: true,
     },
+    appointments: {
+      type: Object,
+      required: true,
+    },
   },
-
   computed: {
     appointmentsLastFetchedDate() {
       return new Date(this.store.properties.appointments_last_fetched);
