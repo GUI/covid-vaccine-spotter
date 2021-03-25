@@ -21,7 +21,7 @@
       <div class="row row-cols-1 row-cols-md-3 g-3">
         <div v-for="state in activeStates" :key="state.code" class="col">
           <NuxtLink
-            :to="`/${state.code}/`"
+            :to="localePath(`/${state.code}/`)"
             class="btn btn-light fw-bold fs-5 text-primary d-block"
             style="border: 1px solid #ddd"
             >{{ state.name }} <font-awesome-icon icon="arrow-alt-circle-right"

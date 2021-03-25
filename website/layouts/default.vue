@@ -281,7 +281,7 @@
 
         <p class="text-center mx-3">
           {{ $t("defaultVue.forDevs") }}
-          <a href="/api/">{{ $t("defaultVue.api") }}</a> |
+          <a :href="localePath('/api')">{{ $t("defaultVue.api") }}</a> |
           <a href="https://github.com/GUI/covid-vaccine-finder">{{
             $t("defaultVue.github")
           }}</a>
