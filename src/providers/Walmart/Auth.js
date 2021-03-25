@@ -5,11 +5,10 @@ const _ = require("lodash");
 const { Cookie, CookieJar } = require("tough-cookie");
 const retry = require("p-retry");
 const RecaptchaPlugin = require("@extra/recaptcha");
-const { PlaywrightBlocker } = require("@cliqz/adblocker-playwright");
-const fetch = require("cross-fetch");
 const sleep = require("sleep-promise");
 const { firefox } = require("playwright-extra");
 const logger = require("../../logger");
+const { Cache } = require("../../models/Cache");
 
 const RecaptchaOptions = {
   visualFeedback: true,
@@ -25,6 +24,18 @@ class Auth {
     if (Auth.auth) {
       return Auth.auth;
     }
+
+    const cache = await Cache.query().findById("walmart_auth");
+    if (cache) {
+      const cookieJar = CookieJar.fromJSON(cache.value.cookieJar);
+      const auth = {
+        cookieJar,
+        body: cache.value.body,
+      };
+      Auth.set(auth);
+      return auth;
+    }
+
     return Auth.refresh();
   }
 
@@ -57,9 +68,9 @@ class Auth {
         Auth.browser = await firefox.launch({
           headless: true,
           proxy: {
-            server: process.env.WALMART_PROXY_SERVER,
-            username: process.env.WALMART_PROXY_USERNAME,
-            password: process.env.WALMART_PROXY_PASSWORD,
+            server: process.env.WALMART_AUTH_PROXY_SERVER,
+            username: process.env.WALMART_AUTH_PROXY_USERNAME,
+            password: process.env.WALMART_AUTH_PROXY_PASSWORD,
           },
         });
 
@@ -71,20 +82,23 @@ class Auth {
 
         Auth.page = await Auth.context.newPage();
 
-        const blocker = await PlaywrightBlocker.fromPrebuiltAdsAndTracking(
-          fetch
+        // Manually perform some ad/tracking blocking to reduce proxied
+        // bandwidth. But don't block as much as the "adblocker-playwright"
+        // plugin would, since that seems to cause recaptcha issues on this
+        // site now.
+        Auth.page.route(
+          /^https:\/\/[^/]*(bing.com|px-cloud.net|facebook|myvisualiq.net|yahoo.com|exelator.com|pinterest.com|yimg.com)/,
+          (route) => {
+            logger.debug("Blocking: ", route.request().url());
+            route.abort();
+          }
         );
-        await blocker.enableBlockingInPage(Auth.page);
-
-        blocker.on("request-blocked", (request) => {
-          logger.debug("Blocked:", request.url);
-        });
 
         logger.info("Navigating to login page...");
         await Auth.page.goto(
           "https://www.walmart.com/account/login?returnUrl=/pharmacy/clinical-services/immunization/scheduled?imzType=covid",
           {
-            waitUntil: "domcontentloaded",
+            waitUntil: "networkidle",
           }
         );
 
@@ -184,6 +198,17 @@ class Auth {
     );
 
     await Auth.ensureBrowserClosed();
+
+    await Cache.query()
+      .insert({
+        id: "walmart_auth",
+        value: {
+          cookieJar: auth.cookieJar.toJSON(),
+          body: auth.body,
+        },
+      })
+      .onConflict("id")
+      .merge();
 
     logger.info("Setting auth...");
     Auth.set(auth);
