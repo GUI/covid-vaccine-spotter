@@ -134,6 +134,11 @@ export default {
             time: this.formatDate(appointment.date),
             type: null,
           };
+        } else if (appointment.time) {
+          normalized = {
+            time: this.formatTime(appointment.time),
+            type: null,
+          };
         } else {
           normalized = {
             time: this.formatTime(appointment),
