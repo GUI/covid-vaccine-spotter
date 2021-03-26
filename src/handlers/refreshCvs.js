@@ -4,6 +4,7 @@ const _ = require("lodash");
 const got = require("got");
 const { capitalCase } = require("capital-case");
 const logger = require("../logger");
+const setComputedStoreValues = require("../setComputedStoreValues");
 const { Store } = require("../models/Store");
 const { Provider } = require("../models/Provider");
 const { ProviderBrand } = require("../models/ProviderBrand");
@@ -76,8 +77,8 @@ const Cvs = {
             city.status !== "Fully Booked",
           appointments_raw: raw,
         };
-        patch.brand = patch.provider_id;
-        patch.brand_id = patch.provider_location_id;
+
+        setComputedStoreValues(patch);
 
         queue.add(() =>
           Store.query()

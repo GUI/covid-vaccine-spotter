@@ -4,7 +4,7 @@
       <template v-if="initialAppointments.length > 0">
         <li v-for="appointment in initialAppointments" :key="appointment.id">
           {{ appointment.time }}
-          <span v-show="appointment.type">({{ appointment.type }})</span>
+          <span v-if="appointment.type">({{ appointment.type }})</span>
         </li>
       </template>
       <li v-else>
@@ -12,8 +12,7 @@
       </li>
     </ul>
 
-    {{ /* Use v-show, not v-if for conditions without "else". Otherwise, strange things happen in production that cause rendering to fail (if the page is reloaded with a zip code pre-filled): https://github.com/nuxt/nuxt.js/issues/5800 */ }}
-    <div v-show="moreAppointments.length > 0">
+    <div v-if="moreAppointments.length > 0">
       <div :id="`location-${store.properties.id}-more-appointments-toggle`">
         <a
           href="#"
@@ -33,7 +32,7 @@
       >
         <li v-for="appointment in moreAppointments" :key="appointment.id">
           {{ appointment.time }}
-          <span v-show="appointment.type">({{ appointment.type }})</span>
+          <span v-if="appointment.type">({{ appointment.type }})</span>
         </li>
       </ul>
     </div>

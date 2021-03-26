@@ -1,29 +1,22 @@
 <template>
   <div>
     <social-head
-      :title="
-        $t('_state.title', { state: $store.state.regions.region.metadata.name })
-      "
+      :title="$t('_state.title', { state: usStateName })"
       :description="
         $t('_state.description', {
-          state: $store.state.regions.region.metadata.name,
+          state: usStateName,
         })
       "
     />
 
-    <navbar
-      :title="
-        $t('_state.title', { state: $store.state.regions.region.metadata.name })
-      "
-      with-reload
-    />
+    <navbar :title="$t('_state.title', { state: usStateName })" with-reload />
 
     <main>
       <div class="container-lg">
         <p class="lead text-center text-muted py-2 py-lg-4">
           {{
             $t("_state.description", {
-              state: $store.state.regions.region.metadata.name,
+              state: usStateName,
             })
           }}
         </p>
@@ -34,11 +27,11 @@
               <h2 class="display-6 text-center mb-4">
                 {{
                   $t("steps.0.header", {
-                    state: $store.state.regions.region.metadata.code,
+                    state: usStateCode,
                   })
                 }}
               </h2>
-              <template v-if="state.metadata.code === 'CO'">
+              <template v-if="usStateCode === 'CO'">
                 <!-- eslint-disable-next-line vue/no-v-html -->
                 <p class="lead" v-html="$t('steps.0.colorado')" />
                 <p class="lead">
@@ -67,12 +60,7 @@
                 {{ $t("steps.1.header") }}
               </h2>
               <p v-for="text in $t('steps.1.text')" :key="text" class="lead">
-                {{
-                  text.replace(
-                    "{name}",
-                    $store.state.regions.region.metadata.name
-                  )
-                }}
+                {{ text.replace("{name}", usStateName) }}
               </p>
             </div>
           </div>
@@ -89,15 +77,23 @@
           </div>
           <div class="col-lg-6 col-list">
             <div class="results-container">
+              <div v-if="$fetchState.pending">Fetching data...</div>
               <div
-                v-show="filteredLocationsError"
+                v-else-if="$fetchState.error"
+                class="alert alert-danger"
+                role="alert"
+              >
+                Error fetching data: {{ $fetchState.error.message }}
+              </div>
+              <div
+                v-else-if="filteredLocationsError"
                 class="alert alert-danger"
                 role="alert"
               >
                 {{ filteredLocationsError }}
               </div>
               <div
-                v-show="filteredLocations.length === 0"
+                v-else-if="filteredLocations.length === 0"
                 class="alert alert-warning"
                 role="alert"
               >
@@ -122,30 +118,60 @@
 
 <script>
 export default {
-  async asyncData({ params, store, $store, $http }) {
-    const state = Object.freeze(
-      await $http.$get(`/api/v0/states/${params.state}.json`)
+  fetchOnServer: false,
+  fetchDelay: 5,
+
+  async fetch() {
+    if (this?.$nuxt?.$loading?.start) {
+      this.$nuxt.$loading.start();
+    }
+
+    const usState = Object.freeze(
+      await this.$http.$get(`/api/v0/states/${this.$route.params.state}.json`)
     );
     const postalCodes = Object.freeze(
-      await $http.$get(`/api/v0/states/${params.state}/postal_codes.json`)
+      await this.$http.$get(
+        `/api/v0/states/${this.$route.params.state}/postal_codes.json`
+      )
     );
 
-    store.commit("regions/set", state);
-    store.commit("postalCodes/set", postalCodes);
+    this.$store.commit("usStates/set", usState);
+    this.$store.commit("postalCodes/set", postalCodes);
 
-    return {
-      state,
-      postalCodes,
-    };
+    if (this?.$nuxt?.$loading?.finish) {
+      this.$nuxt.$loading.finish();
+    }
   },
 
   computed: {
+    usState() {
+      return this.$store.state.usStates.usState;
+    },
+
+    usStateCode() {
+      return this.usState?.metadata?.code;
+    },
+
+    usStateName() {
+      return this.usState?.metadata?.name;
+    },
+
+    title() {
+      return `${this.usStateName || ""} COVID-19 Vaccine Spotter`;
+    },
+
+    description() {
+      return `A tool to help you track down COVID-19 vaccine appointment openings at ${
+        this.usStateName || ""
+      } pharmacies. Updated every minute.`;
+    },
+
     filteredLocations() {
-      return this.$store.getters["regions/getFilteredLocations"];
+      return this.$store.getters["usStates/getFilteredLocations"];
     },
 
     filteredLocationsError() {
-      return this.$store.state.regions.filterError;
+      return this.$store.getters["usStates/getFilterError"];
     },
   },
 };

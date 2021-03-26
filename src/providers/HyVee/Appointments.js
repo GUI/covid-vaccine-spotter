@@ -3,6 +3,7 @@ const { DateTime } = require("luxon");
 const _ = require("lodash");
 const got = require("got");
 const logger = require("../../logger");
+const setComputedStoreValues = require("../../setComputedStoreValues");
 const { Store } = require("../../models/Store");
 
 class HyVeeAppointments {
@@ -11,7 +12,7 @@ class HyVeeAppointments {
 
     const queue = new PQueue({ concurrency: 5 });
 
-    const updatedBrandIds = [];
+    const updatedProviderLocationIds = [];
     const lastFetched = DateTime.utc().toISO();
     const resp = await got.post(
       "https://www.hy-vee.com/my-pharmacy/api/graphql",
@@ -51,11 +52,11 @@ class HyVeeAppointments {
       const raw = _.cloneDeep(resp.body);
       raw.data.searchPharmaciesNearPoint = [store];
 
-      updatedBrandIds.push(store.location.locationId);
+      updatedProviderLocationIds.push(store.location.locationId);
 
       const patch = {
-        brand: "hyvee",
-        brand_id: store.location.locationId,
+        provider_id: "hyvee",
+        provider_location_id: store.location.locationId,
         name: store.location.name,
         address: store.location.address.line1,
         city: store.location.address.city,
@@ -76,16 +77,21 @@ class HyVeeAppointments {
         patch.postal_code = "51035";
       }
 
+      setComputedStoreValues(patch);
+
       queue.add(() =>
-        Store.query().insert(patch).onConflict(["brand", "brand_id"]).merge()
+        Store.query()
+          .insert(patch)
+          .onConflict(["provider_id", "provider_location_id"])
+          .merge()
       );
     }
 
     await queue.onIdle();
 
     await Store.query()
-      .where("brand", "hyvee")
-      .whereNotIn("brand_id", updatedBrandIds)
+      .where("provider_id", "hyvee")
+      .whereNotIn("provider_location_id", updatedProviderLocationIds)
       .patch({ appointments_available: false, appointments: [] });
 
     await Store.knex().raw(`

@@ -5,6 +5,8 @@ const got = require("got");
 const sleep = require("sleep-promise");
 const cheerio = require("cheerio");
 const logger = require("../../logger");
+const normalizedVaccineTypes = require("../../normalizedVaccineTypes");
+const setComputedStoreValues = require("../../setComputedStoreValues");
 const { Store } = require("../../models/Store");
 
 const PharmacaAppointments = {
@@ -89,6 +91,8 @@ const PharmacaAppointments = {
         for (const timeInput of timeInputs) {
           const time = $appointmentSchedule(timeInput).attr("value");
           patch.appointments.push({
+            appointment_types: [],
+            vaccine_types: normalizedVaccineTypes(appointmentLabelText),
             type: appointmentLabelText,
             time: DateTime.fromFormat(time, "yyyy-LL-dd HH:mm", {
               zone: store.time_zone,
@@ -102,9 +106,7 @@ const PharmacaAppointments = {
 
     patch.appointments = _.orderBy(patch.appointments, ["time", "type"]);
 
-    if (patch.appointments.length > 0) {
-      patch.appointments_available = true;
-    }
+    setComputedStoreValues(patch);
 
     await Store.query().findById(store.id).patch(patch);
 

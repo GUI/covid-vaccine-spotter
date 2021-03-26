@@ -2,19 +2,20 @@
   <div>
     <h6>{{ store.properties.provider_brand_name }}</h6>
     <p>
-      {{ store.properties.address }}<br />
+      <template v-if="store.properties.address">
+        {{ store.properties.address }}<br />
+      </template>
       {{ store.properties.city }}, {{ store.properties.state }}
-      {{ store.properties.postal_code }}
+      <template v-if="store.properties.postal_code">
+        {{ store.properties.postal_code }}
+      </template>
     </p>
     <div>
       <div v-if="store.properties.appointments_available === true">
         <p class="text-success">
           <font-awesome-icon icon="check-circle" />
           {{ appointments.available }}
-          <display-local-time
-            :time="appointmentsLastFetchedDate"
-            :time-zone="store.properties.time_zone"
-          />
+          <display-local-time :time="appointmentsLastFetchedDate" />
         </p>
         <p>
           <a :href="`#location-${store.properties.id}`">{{

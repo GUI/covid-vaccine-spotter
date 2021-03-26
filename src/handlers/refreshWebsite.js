@@ -184,6 +184,7 @@ module.exports.refreshWebsite = async () => {
                 'provider', stores.provider_id,
                 'provider_location_id', provider_location_id,
                 'provider_brand', provider_brands.key,
+                'provider_brand_id', provider_brands.id,
                 'provider_brand_name', provider_brands.name,
                 'url', coalesce(stores.url, provider_brands.url),
                 'name', stores.name,
@@ -195,7 +196,11 @@ module.exports.refreshWebsite = async () => {
                 'carries_vaccine', carries_vaccine,
                 'appointments', appointments,
                 'appointments_available', appointments_available,
-                'appointments_last_fetched', appointments_last_fetched
+                'appointments_available_all_doses', CASE WHEN appointments_available AND (appointment_types->>'all_doses' = 'true' OR appointment_types->>'unknown' = 'true') THEN true ELSE false END,
+                'appointments_available_2nd_dose_only', CASE WHEN appointments_available AND appointment_types->>'2nd_dose_only' = 'true' THEN true ELSE false END,
+                'appointments_last_fetched', appointments_last_fetched,
+                'appointment_types', appointment_types,
+                'appointment_vaccine_types', appointment_vaccine_types
               )
             )
             ORDER BY CASE WHEN appointments_available = false THEN 1 WHEN appointments_available IS NULL THEN 2 WHEN appointments_available = true THEN 3 END, appointments_last_fetched DESC, city
@@ -400,7 +405,7 @@ module.exports.refreshWebsite = async () => {
     logger.info(
       `Deleting old _nuxt/static dirs: ${staticDirsDelete}. Keeping: ${staticDirsKeep}`
     );
-    for (dir of staticDirsDelete) {
+    for (const dir of staticDirsDelete) {
       await runShell("rclone", [
         "purge",
         "-v",

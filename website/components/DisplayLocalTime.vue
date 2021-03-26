@@ -41,7 +41,6 @@ export default {
         hour: "numeric",
         minute: "numeric",
         timeZoneName: "short",
-        timeZone: this.timeZone || "America/New_York",
       });
     },
   },

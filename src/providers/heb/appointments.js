@@ -5,6 +5,7 @@ const got = require("got");
 const { capitalCase } = require("capital-case");
 const slugify = require("slugify");
 const logger = require("../../logger");
+const setComputedStoreValues = require("../../setComputedStoreValues");
 const { Store } = require("../../models/Store");
 const { Provider } = require("../../models/Provider");
 const { ProviderBrand } = require("../../models/ProviderBrand");
@@ -92,12 +93,12 @@ const HebAppointments = {
         appointments_available: parseInt(loc.openAppointmentSlots, 10) > 0,
         appointments_raw: raw,
       };
-      patch.brand = patch.provider_id;
-      patch.brand_id = patch.provider_location_id;
 
       if (loc.latitude && loc.longitude) {
         patch.location = `point(${loc.longitude} ${loc.latitude})`;
       }
+
+      setComputedStoreValues(patch);
 
       queue.add(() =>
         Store.query()

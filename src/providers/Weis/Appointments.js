@@ -5,6 +5,8 @@ const { default: PQueue } = require("p-queue");
 const { DateTime } = require("luxon");
 const got = require("got");
 const logger = require("../../logger");
+const normalizedVaccineTypes = require("../../normalizedVaccineTypes");
+const setComputedStoreValues = require("../../setComputedStoreValues");
 const normalizedAddressKey = require("../../normalizedAddressKey");
 const { Store } = require("../../models/Store");
 const Socket = require("../EnlivenHealth/Socket");
@@ -211,6 +213,8 @@ class Appointments {
               storeAppointments[storeId] = [];
             }
             storeAppointments[storeId].push({
+              appointment_types: [],
+              vaccine_types: normalizedVaccineTypes(vaccineType),
               type: vaccineType,
               date: scheduleData.scheduleDate,
             });
@@ -232,9 +236,7 @@ class Appointments {
       const storePatch = _.cloneDeep(basePatch);
       storePatch.appointments = _.orderBy(appointments, ["date", "type"]);
 
-      if (storePatch.appointments.length > 0) {
-        storePatch.appointments_available = true;
-      }
+      setComputedStoreValues(storePatch);
 
       storePatches[storeId] = storePatch;
     }

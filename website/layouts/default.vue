@@ -289,13 +289,6 @@
         </p>
       </div>
     </footer>
-
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/custom-elements/1.4.3/custom-elements.min.js"
-      integrity="sha512-PLDz+cN5TNZKRezSF9Zk+n/TTHG6ISM466kmCQkFcIkp4Mw+1S15qnvEsd5pyMNOlOMp9hGz6YS9eusXqh0rnA=="
-      crossorigin="anonymous"
-    ></script>
-    <script src="https://unpkg.com/@github/time-elements@3.1.1"></script>
   </div>
 </template>
 

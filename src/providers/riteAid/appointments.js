@@ -3,8 +3,8 @@ const _ = require("lodash");
 const { DateTime } = require("luxon");
 const got = require("got");
 const sleep = require("sleep-promise");
-const cheerio = require("cheerio");
 const logger = require("../../logger");
+const setComputedStoreValues = require("../../setComputedStoreValues");
 const { Store } = require("../../models/Store");
 
 const RiteAidAppointments = {
@@ -54,6 +54,8 @@ const RiteAidAppointments = {
     ) {
       patch.appointments_available = true;
     }
+
+    setComputedStoreValues(patch);
 
     await Store.query().findById(store.id).patch(patch);
 
