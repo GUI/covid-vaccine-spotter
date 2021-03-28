@@ -19,6 +19,7 @@
     "@fortawesome/vue-fontawesome": "^2.0.2",
     "@nuxt/http": "^0.6.4",
     "@nuxtjs/google-analytics": "^2.4.0",
+    "@nuxtjs/svg": "^0.1.12",
     "@turf/bbox": "^6.3.0",
     "@turf/circle": "^6.3.0",
     "@turf/helpers": "^6.3.0",
