@@ -8,9 +8,9 @@ export default {
       "En lugar de buscar en el sitio web de cada farmacia, escanearemos automáticamente los sitios web de las farmacias y le mostraremos las citas disponibles que podamos encontrar.",
   },
   news: {
-    date: "2021/23/03",
+    date: "2021/25/03",
     message:
-      "Otra vez <strong>Walgreens</strong> ha comenzado a bloquear el acceso, sino que espero que las últimas soluciones deberían restaurar la disponibilidad de citas de Walgreens (nuevamente). Mientras tanto, yo tambien he agregado citas de <strong>Centura Health</strong> para usuarios de Colorado.",
+      "<strong>¡Nuevas características!</strong> 🌟 Filtrar por tipo de vacuna (Moderna, Pfizer, J&J), tipo de cita (por ejemplo, si solo necesita una segunda dosis) y farmacia. Sé que estas han sido características solicitadas con frecuencia, ¡así que espero que te ayuden en tu búsqueda de vacunas!",
     suffix:
       "Cualquier comentario es bienvenido: <a href='m&#97;ilto&#58;v%&#54;1&#99;&#99;&#105;ne&#64;nic&#107;%6D&#46;org'>vacc&#105;ne&#64;ni&#99;k&#109;&#46;o&#114;&#103;</a > o <a href='https://twitter.com/nickblah'>@nickblah</a>. ¡Y si eres un programador y tienes interés en ayudar en <a href='https://github.com/GUI/covid-vaccine-finder/issues'>GitHub</a>, eso sería estupendo (aunque el código sigue siendo complicado)!",
   },

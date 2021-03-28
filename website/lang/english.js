@@ -8,9 +8,9 @@ export default {
       "Rather than searching around on each pharmacy's website, we'll automatically scan the pharmacy websites and show you any available appointments we can find on one page.",
   },
   news: {
-    date: "03/23/2021",
+    date: "03/25/2021",
     message:
-      "Once again <strong>Walgreens</strong> has started blocking access, but I'm hoping the latest workarounds should restore Walgreens appointment availability (again). In the meantime, I have also added <strong>Centura Health</strong> appointments for Colorado users.",
+      "<strong>New features!</strong> 🌟 Filter by vaccine type (Moderna, Pfizer, J&J), appointment type (eg, if you only need a 2nd dose), and pharmacy. I know these have been frequently requested features, so I hope these help you in your vaccine quest!",
     suffix:
       "Any feedback is welcome: <a href='m&#97;ilto&#58;v%&#54;1&#99;&#99;&#105;ne&#64;nic&#107;%6D&#46;org'>vacc&#105;ne&#64;ni&#99;k&#109;&#46;o&#114;&#103;</a > or <a href='https://twitter.com/nickblah'>@nickblah</a>. And if you're a coder and have interest in helping out on <a href='https://github.com/GUI/covid-vaccine-finder/issues'>GitHub</a>, that would be dandy (although the code's still messy)!",
   },
