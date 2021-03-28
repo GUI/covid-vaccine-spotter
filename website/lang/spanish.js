@@ -16,7 +16,7 @@ export default {
   },
   scanningDetails: {
     scanning:
-      "Escaneando {chain_count} farmacias ({store_count} tiendas diferentes) en {state}",
+      "Escaneando {chain_count} farmacias ({store_count} tiendas diferentes) en tu estado",
   },
   searchBar: {
     zipTextField: {
@@ -87,7 +87,8 @@ export default {
     appointmentsAvailable: "Citas disponibles a partir de",
     krogerWarning:
       "Advertencia: Muchos usuarios informan problemas para reservar citas con {name} (debido a los requisitos de la segunda cita). Sin embargo, algunos usuarios aún han informado de éxito, y por eso todavía quiero compartir los datos que tengo de las farmacias. Estoy tratando de encontrar una mejor manera de detectar estos problemas, pero mientras tanto, ¡lamento la frustración!",
-    educationStaff: "Personal educativo y proveedores de cuidado infantil únicamente",
+    educationStaff:
+      "Personal educativo y proveedores de cuidado infantil únicamente",
     inPhiladelphia: "en Filadelfia",
     riteAid:
       'Citas de Rite Aid solo están <a href="https://www.riteaid.com/corporate/news/-/pressreleases/news-room/2021/rite-aid-extends-covid-19-vaccine-priority-scheduling-period-for-teachers-school-staff-and-childcare-providers" target="_blank" rel="noopener"> disponibles para maestros, personal escolar y proveedores de cuidado infantil</a> en el viernes el 19 de marzo, el sábado el 20 de marzo, el viernes el 26 de marzo y el sábado el 27 de marzo<span v-show="store.properties.state === \'PA\'"> en Filadelfia (fuera de Filadelfia, otros grupos aún pueden ser elegibles)</span>. Las citas de Rite Aid deben volver a abrirse a otros grupos elegibles en otros días.',
@@ -98,7 +99,8 @@ export default {
     scanningCount: "{count} ubicaciones",
   },
   api: {
-    title: "Interfaz de programación de aplicaciones (API) muy preliminar | Observador de vacunas para COVID-19",
+    title:
+      "Interfaz de programación de aplicaciones (API) muy preliminar | Observador de vacunas para COVID-19",
     description:
       "Los datos legibles por máquina detrás del Observador de vacunas para COVID-19. Bien preliminario.",
     blockText:
@@ -118,8 +120,9 @@ export default {
   steps: [
     {
       header:
-        "Paso 1: Revise la disponibilidad de su condado y {state}'s eligibilidad",
+        "Paso 1: Revise la disponibilidad de su condado y la eligibilidad de {state_name}",
       colorado: `Visitar <a href="https://covid19.colorado.gov/for-coloradans/vaccine/where-can-i-get-vaccinated" class="text-white"><strong class="fw-bold">Colorado.gov</strong></a > para obtener información detallada sobre las opciones de vacunas de su condado y revisar si es elegible todavía.`,
+      visitColorado: "Visite Colorado.gov",
       localProvider:
         "Es posible que pueda inscribirse para recibir vacunas con un proveedor de atención médica o puede haber otras opciones en su área, en cuyo caso es posible que no necesite esta herramienta.",
       eligibility:
@@ -131,7 +134,7 @@ export default {
       text: [
         "Si decide que desea obtener una cita en una farmacia local (y actualmente es elegible para la vacuna), esta herramienta podría ayudarlo.",
         "En lugar de buscar en el sitio web de cada farmacia, escanearemos automáticamente los sitios web de las farmacias y le mostraremos las citas disponibles que podamos encontrar en una página.",
-        "Todas las ubicaciones admitidas en {name} se escanean de forma regular y esta página se actualiza con las citas disponibles en el estado. Si no ve ubicaciones cercanas a usted en este momento, las citas pueden aparecer y desaparecer rápidamente, así que intente visitar la página en diferentes momentos durante el día.",
+        "Todas las ubicaciones admitidas en {state_name} se escanean de forma regular y esta página se actualiza con las citas disponibles en el estado. Si no ve ubicaciones cercanas a usted en este momento, las citas pueden aparecer y desaparecer rápidamente, así que intente visitar la página en diferentes momentos durante el día.",
       ],
     },
   ],
@@ -151,5 +154,5 @@ export default {
         'Me gustaría agregar funcionalidad adicional, (escanear farmacias adicionales y enviar notificaciones por correo electrónico o mensajes de texto cuando se abren citas) si esto resulta útil y si el tiempo lo permite. Si eres un programador de computadoras y te gustaría contribuir, el proyecto es <a href="https://github.com/GUI/covid-vaccine-finder"> fuente abierta en GitHub</a > (aunque actualmente es muy desordenado e indocumentado).',
       ],
     },
-  }
-}
+  },
+};

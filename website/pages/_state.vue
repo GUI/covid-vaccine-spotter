@@ -28,6 +28,7 @@
                 {{
                   $t("steps.0.header", {
                     state: usStateCode,
+                    state_name: usStateName,
                   })
                 }}
               </h2>
@@ -40,7 +41,7 @@
                 <a
                   href="https://covid19.colorado.gov/for-coloradans/vaccine/where-can-i-get-vaccinated"
                   class="btn btn-light fw-bold fs-5 text-primary"
-                  >Visit Colorado.gov
+                  >{{ $t("steps.0.visitColorado") }}
                   <font-awesome-icon icon="arrow-alt-circle-right"
                 /></a>
               </template>
@@ -60,7 +61,7 @@
                 {{ $t("steps.1.header") }}
               </h2>
               <p v-for="text in $t('steps.1.text')" :key="text" class="lead">
-                {{ text.replace("{name}", usStateName) }}
+                {{ text.replace("{state_name}", usStateName) }}
               </p>
             </div>
           </div>

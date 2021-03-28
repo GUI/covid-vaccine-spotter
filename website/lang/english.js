@@ -119,6 +119,7 @@ export default {
       header:
         "Step 1: Review your county's availability and {state}'s eligibility",
       colorado: `Visit <a href="https://covid19.colorado.gov/for-coloradans/vaccine/where-can-i-get-vaccinated" class="text-white"><strong class="fw-bold">Colorado.gov</strong></a > for detailed information about your county's vaccine options and review whether or not you are eligible yet.`,
+      visitColorado: "Visit Colorado.gov",
       localProvider:
         "You may be able to signup for vaccines with a health care provider or there may be other options in your area, in which case you may not need this tool.",
       eligibility:
@@ -129,7 +130,7 @@ export default {
       text: [
         "If you decide you want to find an appointment at a local pharmacy (and are currently eligible for the vaccine), this tool might be able to help.",
         "Rather than searching around on each pharmacy's website, we'll automatically scan the pharmacy websites and show you any available appointments we can find on one page.",
-        "All supported locations in {name} are scanned on a regular basis and this page is updated with any available appointments in the state. If you don't see locations near you right now, appointments can come and go quickly so try visiting the page at different times throughout the day.",
+        "All supported locations in {state_name} are scanned on a regular basis and this page is updated with any available appointments in the state. If you don't see locations near you right now, appointments can come and go quickly so try visiting the page at different times throughout the day.",
       ],
     },
   ],
