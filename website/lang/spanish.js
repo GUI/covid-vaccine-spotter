@@ -35,11 +35,17 @@ export default {
       },
       vaccineType: {
         title: "Tipo de vacuna",
-        options: ["Todos", "Johnson and Johnson", "Moderna", "Pfizer", "Unknown"],
+        options: [
+          "Todos",
+          "Johnson and Johnson",
+          "Moderna",
+          "Pfizer",
+          "Unknown",
+        ],
       },
       pharmacy: {
         title: "Farmacia",
-        all: "All",
+        all: "Todas",
       },
     },
     withoutAppointments: "Mostrar ubicaciones sin citas actuales",

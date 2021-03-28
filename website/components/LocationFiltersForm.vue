@@ -105,7 +105,7 @@
             class="form-select form-select-sm mb-3"
             @change="submitForm"
           >
-            <option value="">All</option>
+            <option value="">{{ $t("searchBar.filter.pharmacy.all") }}</option>
             <option
               v-for="providerBrand in $store.state.usStates.usState.metadata
                 .provider_brands"
