@@ -47,6 +47,16 @@ class Auth {
 
     const browser = await firefox.launch({
       headless: true,
+      firefoxUserPrefs: {
+        "general.appversion.override":
+          "5.0 (Macintosh; Intel Mac OS X 10.15; rv:85.0) Gecko/20100101 Firefox/85.0",
+        "general.oscpu.override": "Intel Mac OS X 10.15",
+        "general.platform.override": "MacIntel",
+        "general.useragent.override":
+          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:85.0) Gecko/20100101 Firefox/85.0",
+        "intl.accept_languages": "en-US, en",
+        "intl.locale.requested": "en-US",
+      },
       proxy: {
         server: process.env.WALGREENS_PROXY_SERVER,
         username: process.env.WALGREENS_PROXY_USERNAME,
