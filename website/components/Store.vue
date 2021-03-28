@@ -17,7 +17,9 @@
           <font-awesome-icon icon="check-circle" class="align-middle" />
           <span class="fs-5">
             {{ $t("store.appointmentsAvailable") }}
-            <display-local-time :time="appointmentsLastFetchedDate"
+            <display-local-time
+              :time="appointmentsLastFetchedDate"
+              :iso="$i18n.localeProperties.iso"
           /></span>
         </div>
         <appointment-times :store="store" />
@@ -100,6 +102,7 @@
           <display-local-time
             v-if="store.properties.appointments_last_fetched"
             :time="appointmentsLastFetchedDate"
+            :iso="$i18n.localeProperties.iso"
           />
           <span v-if="!store.properties.appointments_last_fetched">{{
             $t("appointments.never")

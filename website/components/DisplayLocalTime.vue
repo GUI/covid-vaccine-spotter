@@ -26,6 +26,10 @@ export default {
       type: String,
       default: null,
     },
+    iso: {
+      type: String,
+      default: "en-US",
+    },
   },
 
   computed: {
@@ -34,7 +38,8 @@ export default {
     },
 
     timeLocale() {
-      return this.time.toLocaleString(this.$root.$i18n.localeProperties.iso, {
+      // console.log(this.$i18n);
+      return this.time.toLocaleString(this.iso, {
         month: "long",
         day: "numeric",
         year: "numeric",

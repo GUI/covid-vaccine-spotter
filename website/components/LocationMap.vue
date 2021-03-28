@@ -142,6 +142,7 @@ export default {
           ...LocationMapPopup,
           propsData: {
             store,
+            iso: this.$i18n.localeProperties.iso,
             appointments: {
               ...this.$t("appointments"),
               oldData: this.$t("appointments.oldData", {
@@ -202,7 +203,7 @@ export default {
   padding: 8px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   line-height: 16px;
-  height: 64px;
+  display: table;
   width: 210px;
   font-size: 0.75rem;
   top: 0px;

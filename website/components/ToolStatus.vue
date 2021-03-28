@@ -51,6 +51,7 @@
                 <display-local-time
                   v-if="providerBrand.appointments_last_fetched"
                   :time="new Date(providerBrand.appointments_last_fetched)"
+                  :iso="$i18n.localeProperties.iso"
                 />
                 <span v-if="!providerBrand.appointments_last_fetched">{{
                   $t("appointments.never")

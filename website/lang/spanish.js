@@ -82,7 +82,7 @@ export default {
     unknown: "Hora desconocida",
   },
   appointments: {
-    available: "Citas disponibles a partir de {date_time}",
+    available: "Citas disponibles a partir de",
     viewDetails: "Ver detalles de la cita",
     noneAvailable: "No hay citas disponibles desde la última verificación",
     unknown: "Estado desconocido",

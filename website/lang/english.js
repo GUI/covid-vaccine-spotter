@@ -76,7 +76,7 @@ export default {
     unknown: "Unknown Time",
   },
   appointments: {
-    available: "Appointments available as of {date_time}",
+    available: "Appointments available as of",
     viewDetails: "View Appointment Details",
     noneAvailable: "No appointments available as of last check",
     unknown: "Unknown Status",

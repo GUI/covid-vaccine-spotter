@@ -15,7 +15,7 @@
         <p class="text-success">
           <font-awesome-icon icon="check-circle" />
           {{ appointments.available }}
-          <display-local-time :time="appointmentsLastFetchedDate" />
+          <display-local-time :time="appointmentsLastFetchedDate" :iso="iso" />
         </p>
         <p>
           <a :href="`#location-${store.properties.id}`">{{
@@ -67,6 +67,7 @@
           <display-local-time
             v-if="store.properties.appointments_last_fetched"
             :time="appointmentsLastFetchedDate"
+            :iso="iso"
           />
           <span v-if="!store.properties.appointments_last_fetched">{{
             appointments.never
@@ -80,6 +81,10 @@
 <script>
 export default {
   props: {
+    iso: {
+      type: String,
+      required: true,
+    },
     store: {
       type: Object,
       required: true,
