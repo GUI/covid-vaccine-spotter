@@ -28,6 +28,20 @@ export default {
       anyDistance: "Cualquier distancia",
       xDistance: "{distance} millas",
     },
+    filter: {
+      appointmentType: {
+        title: "Tipo de cita",
+        options: ["Todas las dosis", "Segunda dosis solamente"],
+      },
+      vaccineType: {
+        title: "Tipo de vacuna",
+        options: ["Todos", "Johnson and Johnson", "Moderna", "Pfizer", "Unknown"],
+      },
+      pharmacy: {
+        title: "Farmacia",
+        all: "All",
+      },
+    },
     withoutAppointments: "Mostrar ubicaciones sin citas actuales",
     button: "Buscar",
     noResults:

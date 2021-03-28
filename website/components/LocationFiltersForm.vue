@@ -48,9 +48,9 @@
       </div>
       <div class="row align-items-center">
         <div class="col-sm">
-          <label for="appointment_type" class="form-label form-label-sm"
-            >Appointment type</label
-          >
+          <label for="appointment_type" class="form-label form-label-sm">{{
+            $t("searchBar.filter.appointmentType.title")
+          }}</label>
           <select
             id="appointment_type"
             v-model="queryAppointmentType"
@@ -58,14 +58,18 @@
             class="form-select form-select-sm mb-3"
             @change="submitForm"
           >
-            <option value="">All doses</option>
-            <option value="2nd_dose_only">Second dose only</option>
+            <option value="">
+              {{ $t("searchBar.filter.appointmentType.options.0") }}
+            </option>
+            <option value="2nd_dose_only">
+              {{ $t("searchBar.filter.appointmentType.options.1") }}
+            </option>
           </select>
         </div>
         <div class="col-sm">
-          <label for="vaccine_type" class="form-label form-label-sm"
-            >Vaccine type</label
-          >
+          <label for="vaccine_type" class="form-label form-label-sm">{{
+            $t("searchBar.filter.vaccineType.title")
+          }}</label>
           <select
             id="vaccine_type"
             v-model="queryVaccineType"
@@ -73,17 +77,27 @@
             class="form-select form-select-sm mb-3"
             @change="submitForm"
           >
-            <option value="">All</option>
-            <option value="jj">Johnson &amp; Johnson</option>
-            <option value="moderna">Moderna</option>
-            <option value="pfizer">Pfizer</option>
-            <option value="unknown">Unknown</option>
+            <option value="">
+              {{ $t("searchBar.filter.vaccineType.options.0") }}
+            </option>
+            <option value="jj">
+              {{ $t("searchBar.filter.vaccineType.options.1") }}
+            </option>
+            <option value="moderna">
+              {{ $t("searchBar.filter.vaccineType.options.2") }}
+            </option>
+            <option value="pfizer">
+              {{ $t("searchBar.filter.vaccineType.options.3") }}
+            </option>
+            <option value="unknown">
+              {{ $t("searchBar.filter.vaccineType.options.4") }}
+            </option>
           </select>
         </div>
         <div class="col-sm">
-          <label for="provider" class="form-label form-label-sm"
-            >Pharmacy</label
-          >
+          <label for="provider" class="form-label form-label-sm">{{
+            $t("searchBar.filter.pharmacy.title")
+          }}</label>
           <select
             id="provider"
             v-model="queryProvider"
