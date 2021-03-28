@@ -67,6 +67,16 @@ class Auth {
         await Auth.ensureBrowserClosed();
         Auth.browser = await firefox.launch({
           headless: true,
+          firefoxUserPrefs: {
+            "general.appversion.override":
+              "5.0 (Macintosh; Intel Mac OS X 10.15; rv:85.0) Gecko/20100101 Firefox/85.0",
+            "general.oscpu.override": "Intel Mac OS X 10.15",
+            "general.platform.override": "MacIntel",
+            "general.useragent.override":
+              "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:85.0) Gecko/20100101 Firefox/85.0",
+            "intl.accept_languages": "en-US, en",
+            "intl.locale.requested": "en-US",
+          },
           proxy: {
             server: process.env.WALMART_AUTH_PROXY_SERVER,
             username: process.env.WALMART_AUTH_PROXY_USERNAME,
@@ -132,6 +142,7 @@ class Auth {
             )}`
           );
 
+          await Auth.page.waitForTimeout(5000);
           await Auth.page.waitForLoadState("networkidle");
 
           const responsePromiseRetry = Auth.page.waitForResponse(
@@ -144,6 +155,7 @@ class Auth {
             { timeout: 180000 }
           );
 
+          logger.info("Pre-solve recaptcha attempt");
           await Auth.page.solveRecaptchas();
           logger.info("Finished recaptcha");
 
