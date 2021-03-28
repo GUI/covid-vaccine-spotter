@@ -156,12 +156,33 @@ export default {
     forDevs: "For Developers:",
     api: "Very Beta API",
     github: "GitHub",
-
     about: {
       header: "About",
       text: [
         "Finding vaccines seems tough! Hopefully things will become easier soon, but in the meantime, maybe this can help. If you find this useful, feel free to share it around. Get in touch with any questions:",
         "I'd like to add additional functionality (scanning additional pharmacies and sending e-mail or text notifications when appointments open up) if this proves useful and as time permits. If you're a computer programmer and would like to contribute, the project is <a href=\"https://github.com/GUI/covid-vaccine-finder\"   >open source on GitHub</a > (it's currently very messy and undocumented, though).",
+      ],
+    },
+    donate: {
+      title: "Donate",
+      text:
+        "I've received a lot of requests to donate to this project, which I really appreciate. Hearing of people's success stories of finding vaccines is reward enough, but if you would like to donate, please consider the following options:",
+      options: [
+        {
+          title: "UNICEF",
+          description:
+            "Donate to UNICEF's efforts to help the global vaccination rollout.",
+        },
+        {
+          title: "DirectRelief",
+          description:
+            "Donate to DirectRelief's efforts to help with the pandemic.",
+        },
+        {
+          title: "Vaccine Spotter",
+          description:
+            "While I encourage donating to other charities directly, if you'd like to support Vaccine Spotter, thank you! I will <a href='https://givebutter.com/vaccinespotter' target='_blank' rel='noopener'>accept contributions</a> (<em>not</em> tax deductible) to cover website hosting costs. Any surplus contributions I will donate to these other charities.",
+        },
       ],
     },
   },

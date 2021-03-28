@@ -166,12 +166,33 @@ export default {
     forDevs: "Para desarrolladores:",
     api: "API muy preliminario",
     github: "GitHub",
-
     about: {
       header: "Acerca de",
       text: [
         "¡Encontrar vacunas parece difícil! Con suerte, las cosas se volverán más fáciles pronto, pero mientras tanto, tal vez esto pueda ayudar. Si encuentra esto útil, no dude en compartirlo. Ponte en contacto con cualquieras preguntas:",
         'Me gustaría agregar funcionalidad adicional, (escanear farmacias adicionales y enviar notificaciones por correo electrónico o mensajes de texto cuando se abren citas) si esto resulta útil y si el tiempo lo permite. Si eres un programador de computadoras y te gustaría contribuir, el proyecto es <a href="https://github.com/GUI/covid-vaccine-finder"> fuente abierta en GitHub</a > (aunque actualmente es muy desordenado e indocumentado).',
+      ],
+    },
+    donate: {
+      title: "Donar",
+      text:
+        "He recibido muchas solicitudes para donar a este proyecto, lo cual agradezco mucho. Escuchar las historias de éxito de las personas al encontrar vacunas es una recompensa suficiente, pero si desea donar, considere las siguientes opciones:",
+      options: [
+        {
+          title: "UNICEF",
+          description:
+            "Haga una donación a los esfuerzos de UNICEF para ayudar al lanzamiento mundial de la vacunación.",
+        },
+        {
+          title: "DirectRelief",
+          description:
+            "Done a los esfuerzos de DirectRelief para ayudar con la pandemia.",
+        },
+        {
+          title: "Vaccine Spotter",
+          description:
+            "Si bien recomiendo donar directamente a otras organizaciones benéficas, si desea apoyar a Vaccine Spotter, ¡gracias! <a href='https://givebutter.com/vaccinespotter' target='_blank' rel='noopener'>Aceptaré contribuciones</a> (<em> no </em> deducibles de impuestos) para cubrir los costos de alojamiento del sitio web. Las contribuciones excedentes las donaré a estas otras organizaciones benéficas.",
+        },
       ],
     },
   },

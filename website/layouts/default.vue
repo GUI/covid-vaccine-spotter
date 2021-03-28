@@ -22,13 +22,10 @@
         <!-- eslint-disable-next-line vue/no-v-html -->
         <p v-html="$t('defaultVue.about.text.1')" />
 
-        <h3 id="donate">Donate</h3>
+        <h3 id="donate">{{ $t("defaultVue.donate.title") }}</h3>
 
         <p>
-          I've received a lot of requests to donate to this project, which I
-          really appreciate. Hearing of people's success stories of finding
-          vaccines is reward enough, but if you would like to donate, please
-          consider the following options:
+          {{ $t("defaultVue.donate.text") }}
         </p>
 
         <ul>
@@ -38,10 +35,10 @@
                 href="https://www.unicefusa.org/mission/covid-19/vaccine"
                 target="_blank"
                 rel="noopener"
-                >UNICEF</a
+                >{{ $t("defaultVue.donate.options.0.title") }}</a
               >:</strong
             >
-            Donate to UNICEF's efforts to help the global vaccination rollout.
+            {{ $t("defaultVue.donate.options.0.description") }}
           </li>
           <li>
             <strong
@@ -49,27 +46,22 @@
                 href="https://www.directrelief.org/emergency/coronavirus-outbreak/"
                 target="_blank"
                 rel="noopener"
-                >DirectRelief</a
+                >{{ $t("defaultVue.donate.options.1.title") }}</a
               >:</strong
             >
-            Donate to DirectRelief's efforts to help with the pandemic.
+            {{ $t("defaultVue.donate.options.1.description") }}
           </li>
           <li>
-            <a
-              href="https://givebutter.com/vaccinespotter"
-              target="_blank"
-              rel="noopener"
-              >Vaccine Spotter</a
-            >: While I encourage donating to other charities directly, if you'd
-            like to support Vaccine Spotter, thank you! I will
-            <a
-              href="https://givebutter.com/vaccinespotter"
-              target="_blank"
-              rel="noopener"
-              >accept contributions</a
+            <span>
+              <a
+                href="https://givebutter.com/vaccinespotter"
+                target="_blank"
+                rel="noopener"
+                >{{ $t("defaultVue.donate.options.2.title") }}</a
+              >:</span
             >
-            (<em>not</em> tax deductible) to cover website hosting costs. Any
-            surplus contributions I will donate to these other charities.
+            <!-- eslint-disable-next-line vue/no-v-html -->
+            <span v-html="$t('defaultVue.donate.options.2.description')" />
           </li>
         </ul>
 
