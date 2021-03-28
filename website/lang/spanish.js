@@ -104,7 +104,7 @@ export default {
   },
   store: {
     miles: "millas",
-    appointmentsAvailable: "Citas disponibles a partir de",
+    appointmentsAvailable: "Citas disponibles a partir del",
     krogerWarning:
       "Advertencia: Muchos usuarios informan problemas para reservar citas con {name} (debido a los requisitos de la segunda cita). Sin embargo, algunos usuarios aún han informado de éxito, y por eso todavía quiero compartir los datos que tengo de las farmacias. Estoy tratando de encontrar una mejor manera de detectar estos problemas, pero mientras tanto, ¡lamento la frustración!",
     educationStaff:
