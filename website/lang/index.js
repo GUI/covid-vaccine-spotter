@@ -1,5 +1,5 @@
-import en from "./english";
-import es from "./spanish";
+import en from "./en";
+import es from "./es";
 
 export default {
   seo: false,
