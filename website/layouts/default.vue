@@ -3,7 +3,7 @@
     <Nuxt />
     <footer class="mt-3">
       <div class="container-lg">
-        <h3>About</h3>
+        <h3 id="about">About</h3>
         <p>
           Finding vaccines seems tough! Hopefully things will become easier
           soon, but in the meantime, maybe this can help. If you find this
@@ -25,6 +25,57 @@
           >
           (it's currently very messy and undocumented, though).
         </p>
+
+        <h3 id="donate">Donate</h3>
+
+        <p>
+          I've received a lot of requests to donate to this project, which I
+          really appreciate. Hearing of people's success stories of finding
+          vaccines is reward enough, but if you would like to donate, please
+          consider the following options:
+        </p>
+
+        <ul>
+          <li>
+            <strong
+              ><a
+                href="https://www.unicefusa.org/mission/covid-19/vaccine"
+                target="_blank"
+                rel="noopener"
+                >UNICEF</a
+              >:</strong
+            >
+            Donate to UNICEF's efforts to help the global vaccination rollout.
+          </li>
+          <li>
+            <strong
+              ><a
+                href="https://www.directrelief.org/emergency/coronavirus-outbreak/"
+                target="_blank"
+                rel="noopener"
+                >DirectRelief</a
+              >:</strong
+            >
+            Donate to DirectRelief's efforts to help with the pandemic.
+          </li>
+          <li>
+            <a
+              href="https://givebutter.com/vaccinespotter"
+              target="_blank"
+              rel="noopener"
+              >Vaccine Spotter</a
+            >: While I encourage donating to other charities directly, if you'd
+            like to support Vaccine Spotter, thank you! I will
+            <a
+              href="https://givebutter.com/vaccinespotter"
+              target="_blank"
+              rel="noopener"
+              >accept contributions</a
+            >
+            (<em>not</em> tax deductible) to cover website hosting costs. Any
+            surplus contributions I will donate to these other charities.
+          </li>
+        </ul>
 
         <div class="text-center mb-3">
           <span style="display: inline-block; max-width: 620px">
