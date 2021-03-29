@@ -40,7 +40,7 @@ export default {
           "Johnson and Johnson",
           "Moderna",
           "Pfizer",
-          "Unknown",
+          "Desconocida",
         ],
       },
       pharmacy: {
