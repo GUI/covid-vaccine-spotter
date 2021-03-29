@@ -40,7 +40,7 @@ export default {
           "Johnson and Johnson",
           "Moderna",
           "Pfizer",
-          "Unknown",
+          "Desconocida",
         ],
       },
       pharmacy: {
@@ -160,7 +160,7 @@ export default {
   ],
   _state: {
     title: "Observador de vacunas para COVID-19 para {state}",
-    description: `Una herramienta para ayudarlo a rastrear las vacantes de citas para la vacuna COVID-19 en farmacias de {state}. Actualizado cada minuto.`,
+    description: `Una herramienta para ayudarlo a rastrear las vacantes de citas para la vacuna COVID-19 en farmacias en su estado. Actualizado cada minuto.`,
   },
   defaultVue: {
     forDevs: "Para desarrolladores:",
