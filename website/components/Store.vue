@@ -63,7 +63,7 @@
         <div v-if="store.properties.appointments_available === false">
           <p class="text-danger">
             <font-awesome-icon icon="times-circle" />
-            {{ $t("appointment.noteAvailable") }}
+            {{ $t("appointments.noneAvailable") }}
           </p>
         </div>
         <div v-else>
