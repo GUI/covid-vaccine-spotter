@@ -16,7 +16,7 @@ This process is clunky right now, so my apologies.
 3. Fetch data from the [API](https://www.vaccinespotter.org/api/) for the website to run: `yarn setup`
 4. `yarn build`
 5. `yarn generate`
-4. To run the development server for the website: `yarn dev`. The development site should then be available at http://localhost:3000/.
+6. To run the development server for the website: `yarn dev`. The development site should then be available at http://localhost:3000/.
 
 TODO: While this should cover running the website with existing, this doesn't cover running the database and other pieces necessary for working on the scanners or other backend pieces. Still need to document that part.
 
