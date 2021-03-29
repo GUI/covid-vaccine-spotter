@@ -82,7 +82,13 @@ export default {
 
     this.map.on("load", () => {
       const stateData = this.$store.state.usStates.usState;
-      stateData.features.splice(0, stateData.features.length, ...stateData.features.filter(feature => feature.geometry.coordinates[0] != null));
+      stateData.features.splice(
+        0,
+        stateData.features.length,
+        ...stateData.features.filter(
+          (feature) => feature.geometry.coordinates[0] != null
+        )
+      );
       stateData.metadata.store_count = stateData.features.length;
       this.map.addSource("locations", {
         type: "geojson",
