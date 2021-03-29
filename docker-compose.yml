@@ -1,0 +1,62 @@
+version: '3'
+services:
+  postgres:
+    image: postgis/postgis
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=vaccinespotter
+      - POSTGRES_USER=vaccinespotter_user
+    ports:
+      - 5432
+    networks:
+      - default
+
+  bootstrap_db:
+    build: .
+    image: baseimage:1
+    command: "echo 'Bootstrap complete!'"
+    depends_on:
+      - postgres
+    volumes:
+      # Task output will be saved in website/static/
+      - ./website/static/:/app/dist
+      # Mapping some common directories for less rebuilding and easy
+      # inter-container communication
+      - ./src:/app/src
+      - ./bin:/app/bin
+      - ./tmp:/app/tmp
+    environment:
+      - DB_HOST=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=vaccinespotter
+      - DB_USERNAME=vaccinespotter_user
+      - LOG_LEVEL=notice
+      - PUBLISH_SITE=false
+    networks:
+      - default
+    entrypoint: /app/bin/bootstrap-entrypoint.sh
+
+  task_runner:
+    image: baseimage:1
+    command: "bin/refresh-website"
+    depends_on:
+      - bootstrap_db
+    volumes:
+      # Task output will be saved in website/static/
+      - ./website/static/:/app/dist
+      # Mapping some common directories for less rebuilding and easy
+      # inter-container communication
+      - ./src:/app/src
+      - ./bin:/app/bin
+      - ./tmp:/app/tmp
+    environment:
+      - DB_HOST=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=vaccinespotter
+      - DB_USERNAME=vaccinespotter_user
+      - LOG_LEVEL=debug
+      - PUBLISH_SITE=false
+      - RUN_ONCE=true
+    networks:
+      - default
+    entrypoint: /app/bin/entrypoint.sh

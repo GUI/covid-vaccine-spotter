@@ -1,0 +1,4 @@
+#!/usr/bin/env node
+
+const { downloadGeonames } = require("../src/tasks/downloadGeonames");
+downloadGeonames();

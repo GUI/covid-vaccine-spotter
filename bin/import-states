@@ -1,0 +1,4 @@
+#!/usr/bin/env node
+
+const { importStates } = require("../src/handlers/importStates");
+importStates();
