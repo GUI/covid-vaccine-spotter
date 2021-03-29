@@ -19,5 +19,5 @@ module.exports.downloadGeonames = async () => {
     `${tmpPath}/VI`,
     { extract: true }
   );
-  logger.info(`Downloaded geonames data to ${tmpPath}`)
+  logger.info(`Downloaded geonames data to ${tmpPath}`);
 };
