@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "setup": "node scripts/setupDev.js",
     "dev": "nuxt",
     "build": "nuxt build",
     "start": "nuxt start",

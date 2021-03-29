@@ -13,12 +13,10 @@ This process is clunky right now, so my apologies.
 
 1. Clone the repo: `git clone https://github.com/GUI/covid-vaccine-spotter.git`
 2. Install dependencies (inside the repo): `yarn install`
-3. Download data from the [API](https://www.vaccinespotter.org/api/) for the website to run. Note these example steps just download a few files to get things running, but it's not an entire dataset. You can download other states data, but I know this is currently a bit cumbersome.
-   - `mkdir -p website/static/api/v0/states/CO`
-   - `curl -o website/static/api/v0/states.json https://www.vaccinespotter.org/api/v0/states.json`
-   - `curl -o website/static/api/v0/states/CO.json https://www.vaccinespotter.org/api/v0/states/CO.json`
-   - `curl -o website/static/api/v0/states/CO/postal_codes.json https://www.vaccinespotter.org/api/v0/states/CO/postal_codes.json`
-4. To run the development server for the website: `yarn run dev`. The development site should then be available at http://localhost:3000/.
+3. Fetch data from the [API](https://www.vaccinespotter.org/api/) for the website to run: `yarn setup`
+4. `yarn build`
+5. `yarn generate`
+4. To run the development server for the website: `yarn dev`. The development site should then be available at http://localhost:3000/.
 
 TODO: While this should cover running the website with existing, this doesn't cover running the database and other pieces necessary for working on the scanners or other backend pieces. Still need to document that part.
 
