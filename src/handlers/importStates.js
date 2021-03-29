@@ -24,7 +24,7 @@ module.exports.importStates = async () => {
   const states = {};
 
   const parser = fs
-    .createReadStream(path.resolve(__dirname, "../../US/US.txt"))
+    .createReadStream(path.resolve(__dirname, "../../tmp/US/US.txt"))
     .pipe(
       csvParse({
         delimiter: "\t",

@@ -2,7 +2,7 @@
 
 A tool to help you track down COVID-19 vaccine appointment openings at your state's pharmacies. The code behind https://www.vaccinespotter.org.
 
-## Development Setup
+## UI Development Setup
 
 Requirements:
 
@@ -16,7 +16,20 @@ This process is clunky right now, so my apologies.
 3. Fetch data from the [API](https://www.vaccinespotter.org/api/) for the website to run: `yarn setup`
 4. To run the development server for the website: `yarn dev`. The development site should then be available at http://localhost:3000/.
 
-TODO: While this should cover running the website with existing, this doesn't cover running the database and other pieces necessary for working on the scanners or other backend pieces. Still need to document that part.
+## DB and Backend Development Setup
+
+docker-compose is used to bring up a local postgres DB. Then an image runs to bootstrap the database with states and postal codes. Finally, as an example of a backend task running, a container runs the `refresh-website` task.
+
+```
+docker-compose build
+docker-compose up
+```
+
+To run additional tasks, you can use `docker-compose run`:
+
+```
+docker-compose run --rm --no-deps task_runner bin/refresh-cvs
+```
 
 ## Very Beta API
 
