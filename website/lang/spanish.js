@@ -1,34 +1,3 @@
-Skip to content
-Search or jump to…
-
-Pull requests
-Issues
-Marketplace
-Explore
- 
-@lawrencek1992 
-patrickdemers6
-/
-covid-vaccine-spotter
-forked from GUI/covid-vaccine-spotter
-0
-060
-Code
-Pull requests
-1
-Actions
-Projects
-Wiki
-Security
-Insights
-covid-vaccine-spotter/website/lang/es.js /
-@patrickdemers6
-patrickdemers6 update lang files to be named by iso 639-1 standard
-Latest commit 17f2b2a 4 hours ago
- History
- 1 contributor
-199 lines (199 sloc)  10.6 KB
-  
 export default {
   metadata: {
     title: "Observador de vacunas para COVID-19",
@@ -191,7 +160,7 @@ export default {
   ],
   _state: {
     title: "Observador de vacunas para COVID-19 para {state}",
-    description: `Una herramienta para ayudarlo a rastrear las vacantes de citas para la vacuna COVID-19 en farmacias de {state}. Actualizado cada minuto.`,
+    description: `Una herramienta para ayudarlo a rastrear las vacantes de citas para la vacuna COVID-19 en farmacias en su estado. Actualizado cada minuto.`,
   },
   defaultVue: {
     forDevs: "Para desarrolladores:",
@@ -228,15 +197,3 @@ export default {
     },
   },
 };
-© 2021 GitHub, Inc.
-Terms
-Privacy
-Security
-Status
-Docs
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About
