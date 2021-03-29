@@ -16,7 +16,7 @@ export default {
   },
   scanningDetails: {
     scanning:
-      "Escaneando {chain_count} farmacias ({store_count} tiendas diferentes) en tu estado",
+      "Escaneando {chain_count} farmacias ({store_count} tiendas diferentes) en {state_name}",
   },
   searchBar: {
     zipTextField: {

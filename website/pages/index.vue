@@ -32,6 +32,7 @@
                 chain_count: state.provider_brand_count,
                 store_count: state.store_count,
                 state: state.code,
+                state_name: state.name,
               })
             }}</small>
           </p>
