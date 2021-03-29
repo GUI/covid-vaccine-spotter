@@ -28,7 +28,7 @@ docker-compose up
 To run additional tasks, you can use `docker-compose run`:
 
 ```
-docker-compose run --no-deps task_runner bin/refresh-cvs
+docker-compose run --rm --no-deps task_runner bin/refresh-cvs
 ```
 
 ## Very Beta API

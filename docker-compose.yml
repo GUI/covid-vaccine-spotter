@@ -1,62 +1,51 @@
 version: "3"
 services:
-  postgres:
-    image: postgis/postgis
+  db:
+    image: postgis/postgis:13-3.0-alpine
     environment:
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=vaccinespotter
-      - POSTGRES_USER=vaccinespotter_user
+      POSTGRES_PASSWORD: dev_password
+      POSTGRES_DB: vaccinespotter_development
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     ports:
-      - 5432
-    networks:
-      - default
+      - "15432:5432"
 
   bootstrap_db:
     build: .
-    image: baseimage:1
+    image: covid-vaccine-spotter:1
     command: "echo 'Bootstrap complete!'"
     depends_on:
-      - postgres
+      - db
     volumes:
-      # Task output will be saved in website/static/
-      - ./website/static/:/app/dist
-      # Mapping some common directories for less rebuilding and easy
-      # inter-container communication
-      - ./src:/app/src
-      - ./bin:/app/bin
-      - ./tmp:/app/tmp
+      - .:/app
+      - node_modules:/app/node_modules
     environment:
-      - DB_HOST=postgres
-      - DB_PASSWORD=postgres
-      - DB_NAME=vaccinespotter
-      - DB_USERNAME=vaccinespotter_user
+      - DB_HOST=db
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=dev_password
+      - DB_NAME=vaccinespotter_development
       - LOG_LEVEL=notice
       - PUBLISH_SITE=false
-    networks:
-      - default
-    entrypoint: /app/bin/bootstrap-entrypoint.sh
+    entrypoint: /app/bin/docker/bootstrap-entrypoint
 
   task_runner:
-    image: baseimage:1
+    image: covid-vaccine-spotter:1
     command: "bin/refresh-website"
     depends_on:
       - bootstrap_db
     volumes:
-      # Task output will be saved in website/static/
-      - ./website/static/:/app/dist
-      # Mapping some common directories for less rebuilding and easy
-      # inter-container communication
-      - ./src:/app/src
-      - ./bin:/app/bin
-      - ./tmp:/app/tmp
+      - .:/app
+      - node_modules:/app/node_modules
     environment:
-      - DB_HOST=postgres
-      - DB_PASSWORD=postgres
-      - DB_NAME=vaccinespotter
-      - DB_USERNAME=vaccinespotter_user
+      - DB_HOST=db
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=dev_password
+      - DB_NAME=vaccinespotter_development
       - LOG_LEVEL=debug
       - PUBLISH_SITE=false
       - RUN_ONCE=true
-    networks:
-      - default
-    entrypoint: /app/bin/entrypoint.sh
+    entrypoint: /app/bin/docker/entrypoint
+
+volumes:
+  node_modules:
+  postgres_data:
