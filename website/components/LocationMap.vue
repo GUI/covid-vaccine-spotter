@@ -215,7 +215,7 @@ export default {
   padding: 8px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   line-height: 16px;
-  height: 64px;
+  height: 67px;
   width: 210px;
   font-size: 0.75rem;
   top: 0px;
