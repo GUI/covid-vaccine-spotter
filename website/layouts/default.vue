@@ -1,5 +1,13 @@
 <template>
   <div>
+    <!--[if IE]>
+      <div class="alert alert-danger rounded-0">
+        Unfortunately, this website is not compatible with Internet Explorer.
+        Sorry! Please <a
+        href="https://browser-update.org/update-browser.html">upgrade your
+        browser</a> to use this website.
+      </div>
+    <![endif]-->
     <Nuxt />
     <footer class="mt-3">
       <div class="container-lg">
