@@ -49,7 +49,6 @@ class Appointments {
           s.provider_id = 'walgreens'
           AND g.state_code = s.state
           AND st_intersects(s.location, g.geom)
-          AND (s.appointments_last_fetched IS NULL OR s.appointments_last_fetched <= (now() - INTERVAL '2 minutes'))
         ORDER BY g.id, s.appointments_last_fetched NULLS FIRST
       )
       SELECT * FROM grid_rows
@@ -104,30 +103,6 @@ class Appointments {
         )
         .patch(basePatch);
     }
-
-    const stores = await Store.query()
-      .joinRaw(
-        "INNER JOIN state_grid_500k_55km AS g ON stores.state = g.state_code AND st_intersects(stores.location, g.geom)"
-      )
-      .where("stores.provider_id", "walgreens")
-      .where("g.id", gridCell.id);
-    const anyAvailable = stores.some((s) => s.appointments_available);
-    if (anyAvailable !== availabilityResp.data.appointmentsAvailable) {
-      logger.error(
-        `APPOINTMENTS AVAILALBE FROM CHECK, BUT NOT IN DATABASE: ${gridCell.state_code}`
-      );
-    }
-    for (const [i, store] of stores.entries()) {
-      const msg = `Store ${store.id} (${i}/${stores.length}): appointments_available: ${store.appointments_available}, availability: ${availabilityResp.data.appointmentsAvailable}, appointments_last_fetched: ${store.appointments_last_fetched}`;
-      if (
-        store.appointments_available !==
-        availabilityResp.data.appointmentsAvailable
-      ) {
-        logger.warn(msg);
-      } else {
-        logger.info(msg);
-      }
-    }
   }
 
   static async refreshGridCellTimeslots(gridCell, basePatch) {
@@ -135,7 +110,7 @@ class Appointments {
       `Begin refreshing appointment timeslots for grid cell ${gridCell.id} (${gridCell.state_code} ${gridCell.centroid_postal_code})...`
     );
 
-    const queue = new PQueue({ concurrency: 2 });
+    const queue = new PQueue({ concurrency: 5 });
 
     // The Walgreens timeslots API will only return 10 stores, and not in a
     // specific order. So in order to find timeslots for each store, we've
@@ -747,7 +722,7 @@ class Appointments {
       `${resp?.data?.locations?.length} locations found for productId: ${productId}, startDateTime: ${startDateTime}`
     );
     if (resp?.data?.locations && resp.data.locations.length >= 10) {
-      logger.warn(
+      logger.info(
         `There may be more stores within the ${radiusMiles} mile radius than returned, since the maximum of 10 stores was returned: ${gridCell.centroid_postal_code}. Locations returned: ${resp.data.locations.length}`
       );
     }
@@ -759,7 +734,7 @@ class Appointments {
     logger.info(err);
     logger.info(err?.response?.statusCode);
     logger.info(err?.response?.data);
-    logger.warn(`Retrying due to error: ${err}`);
+    logger.warn(`Retrying timeslots due to error: ${err}`);
     await sleep(_.random(250, 750));
     if (
       err?.response?.statusCode === 401 ||
@@ -779,7 +754,7 @@ class Appointments {
     logger.info(err);
     logger.info(err?.response?.statusCode);
     logger.info(err?.response?.data);
-    logger.warn(`Retrying due to error: ${err}`);
+    logger.warn(`Retrying availability due to error: ${err}`);
     await sleep(_.random(250, 750));
     if (
       err?.response?.statusCode === 401 ||
