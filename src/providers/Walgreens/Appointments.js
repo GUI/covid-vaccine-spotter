@@ -184,7 +184,7 @@ class Appointments {
       async () => Appointments.fetchTimeslots(gridCell, radiusMiles, ""),
       {
         retries: 4,
-        onFailedAttempt: Appointments.onFailedAttempt,
+        onFailedAttempt: Appointments.onFailedTimeslotsAttempt,
       }
     );
 
@@ -197,7 +197,7 @@ class Appointments {
         ),
       {
         retries: 4,
-        onFailedAttempt: Appointments.onFailedAttempt,
+        onFailedAttempt: Appointments.onFailedTimeslotsAttempt,
       }
     );
 
@@ -210,7 +210,7 @@ class Appointments {
         ),
       {
         retries: 4,
-        onFailedAttempt: Appointments.onFailedAttempt,
+        onFailedAttempt: Appointments.onFailedTimeslotsAttempt,
       }
     );
 
@@ -254,7 +254,7 @@ class Appointments {
           ),
         {
           retries: 4,
-          onFailedAttempt: Appointments.onFailedAttempt,
+          onFailedAttempt: Appointments.onFailedTimeslotsAttempt,
         }
       );
       patch.appointments_raw.second_doses[secondDoseFetchDate] =
@@ -730,7 +730,7 @@ class Appointments {
     return resp;
   }
 
-  static async onFailedAttempt(err) {
+  static async onFailedTimeslotsAttempt(err) {
     logger.info(err);
     logger.info(err?.response?.statusCode);
     logger.info(err?.response?.data);
@@ -741,6 +741,7 @@ class Appointments {
       (err?.response?.statusCode === 403 && err.retriesLeft <= 1)
     ) {
       if (!authMutex.isLocked()) {
+        logger.warn("Invalid timeslots session detected, refreshing auth.");
         await authMutex.runExclusive(Auth.refresh);
       } else {
         await authMutex.runExclusive(() => {
@@ -761,7 +762,8 @@ class Appointments {
       (err?.response?.statusCode === 403 && err.retriesLeft <= 1)
     ) {
       if (!authMutex.isLocked()) {
-        await authMutex.runExclusive(Auth.refresh);
+        logger.warn("Invalid availability session detected, refreshing auth.");
+        await authMutex.runExclusive(AvailabilityAuth.refresh);
       } else {
         await authMutex.runExclusive(() => {
           logger.info("Waiting on other task to refresh auth.");
