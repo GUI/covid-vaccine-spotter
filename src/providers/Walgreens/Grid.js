@@ -6,7 +6,7 @@ class Grid {
 
     await trx.raw("DELETE FROM walgreens_grid");
     await trx.raw(
-      "INSERT INTO walgreens_grid (state_code, geom, centroid_location, centroid_postal_code, centroid_postal_code_state_code, centroid_postal_code_city, centroid_postal_code_county, centroid_postal_code_location, centroid_land_location, grid_side_length) SELECT state_code, st_multi(geom), centroid_location, centroid_postal_code, centroid_postal_code_state_code, centroid_postal_code_city, centroid_postal_code_county, centroid_postal_code_location, centroid_land_location, round(st_perimeter(st_transform(state_grid_55km.geom, 2163)) / 4) FROM state_grid_55km"
+      "INSERT INTO walgreens_grid (state_code, geom, centroid_location, centroid_postal_code, centroid_postal_code_state_code, centroid_postal_code_city, centroid_postal_code_county, centroid_postal_code_location, centroid_land_location, grid_side_length) SELECT state_code, st_multi(geom), centroid_location, centroid_postal_code, centroid_postal_code_state_code, centroid_postal_code_city, centroid_postal_code_county, centroid_postal_code_location, centroid_land_location, round(st_perimeter(st_transform(state_grid_500k_55km.geom, 2163)) / 4) FROM state_grid_500k_55km"
     );
 
     // eslint-disable-next-line no-constant-condition

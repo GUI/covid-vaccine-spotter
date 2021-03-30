@@ -10,6 +10,7 @@ const logger = require("../../logger");
 const normalizedVaccineTypes = require("../../normalizedVaccineTypes");
 const setComputedStoreValues = require("../../setComputedStoreValues");
 const Auth = require("./Auth");
+const AvailabilityAuth = require("./AvailabilityAuth");
 const { Store } = require("../../models/Store");
 
 const authMutex = new Mutex();
@@ -27,34 +28,36 @@ class Appointments {
     logger.notice("Begin refreshing appointments for all stores...");
 
     Appointments.locationStores = {};
+    Appointments.storeIdStoreNumbers = {};
 
     const queue = new PQueue({ concurrency: 20 });
 
-    const gridCells = await Store.query()
-      .select(
-        "walgreens_grid.id",
-        "centroid_postal_code",
-        Store.raw(
-          "st_y(walgreens_grid.centroid_land_location::geometry) AS latitude"
-        ),
-        Store.raw(
-          "st_x(walgreens_grid.centroid_land_location::geometry) AS longitude"
-        ),
-        "walgreens_grid.state_code",
-        "walgreens_grid.furthest_point",
-        Store.raw("MIN(stores.time_zone) AS time_zone")
+    // Check each 55km wide grid cell (suitable for a 25 mile radius search)
+    // for appointment availability.
+    const gridCells = await Store.knex().raw(`
+      WITH grid_rows AS (
+        SELECT DISTINCT ON (g.id)
+          g.id,
+          g.centroid_postal_code,
+          st_y(g.centroid_land_location::geometry) AS latitude,
+          st_x(g.centroid_land_location::geometry) AS longitude,
+          g.state_code,
+          s.time_zone,
+          s.appointments_last_fetched
+        FROM state_grid_500k_55km g
+        INNER JOIN stores s ON
+          s.provider_id = 'walgreens'
+          AND g.state_code = s.state
+          AND st_intersects(s.location, g.geom)
+          AND (s.appointments_last_fetched IS NULL OR s.appointments_last_fetched <= (now() - INTERVAL '2 minutes'))
+        ORDER BY g.id, s.appointments_last_fetched NULLS FIRST
       )
-      .where("stores.provider_id", "walgreens")
-      .from(Store.raw("stores, walgreens_grid"))
-      .whereRaw("st_intersects(stores.location, walgreens_grid.geom)")
-      .whereRaw(
-        "(appointments_last_fetched IS NULL OR appointments_last_fetched <= (now() - interval '2 minutes'))"
-      )
-      .groupBy("walgreens_grid.id")
-      .orderByRaw("MIN(appointments_last_fetched) NULLS FIRST");
-    for (const [index, gridCell] of gridCells.entries()) {
+      SELECT * FROM grid_rows
+      ORDER BY appointments_last_fetched NULLS FIRST
+    `);
+    for (const [index, gridCell] of gridCells.rows.entries()) {
       queue.add(() =>
-        Appointments.refreshGridCell(gridCell, index, gridCells.length)
+        Appointments.refreshGridCell(gridCell, index, gridCells.rows.length)
       );
     }
     await queue.onIdle();
@@ -63,12 +66,129 @@ class Appointments {
   }
 
   static async refreshGridCell(gridCell, index, count) {
+    const radiusMiles = 25;
+    logger.info(
+      `Refreshing stores within ${radiusMiles} miles of ${
+        gridCell.centroid_postal_code
+      } (${index + 1} of ${count})...`
+    );
+
+    const basePatch = {
+      appointments: [],
+      appointments_last_fetched: DateTime.utc().toISO(),
+      appointments_available: false,
+      appointments_raw: {},
+    };
+
+    const availabilityResp = await retry(
+      async () => Appointments.fetchAvailability(gridCell, radiusMiles),
+      {
+        retries: 4,
+        onFailedAttempt: Appointments.onFailedAvailabilityAttempt,
+      }
+    );
+
+    basePatch.appointments_raw.availability = availabilityResp.data;
+
+    // For any grid cells with appointments in the 25 mile radius, look for
+    // timeslots inside those grid cells at specific stores.
+    if (availabilityResp.data.appointmentsAvailable) {
+      await Appointments.refreshGridCellTimeslots(gridCell, basePatch);
+    } else {
+      setComputedStoreValues(basePatch);
+      await Store.query()
+        .where("provider_id", "walgreens")
+        .whereRaw(
+          "st_intersects(stores.location, (SELECT geom FROM state_grid_500k_55km WHERE id = ?))",
+          gridCell.id
+        )
+        .patch(basePatch);
+    }
+
+    const stores = await Store.query()
+      .joinRaw(
+        "INNER JOIN state_grid_500k_55km AS g ON stores.state = g.state_code AND st_intersects(stores.location, g.geom)"
+      )
+      .where("stores.provider_id", "walgreens")
+      .where("g.id", gridCell.id);
+    const anyAvailable = stores.some((s) => s.appointments_available);
+    if (anyAvailable !== availabilityResp.data.appointmentsAvailable) {
+      logger.error(
+        `APPOINTMENTS AVAILALBE FROM CHECK, BUT NOT IN DATABASE: ${gridCell.state_code}`
+      );
+    }
+    for (const [i, store] of stores.entries()) {
+      const msg = `Store ${store.id} (${i}/${stores.length}): appointments_available: ${store.appointments_available}, availability: ${availabilityResp.data.appointmentsAvailable}, appointments_last_fetched: ${store.appointments_last_fetched}`;
+      if (
+        store.appointments_available !==
+        availabilityResp.data.appointmentsAvailable
+      ) {
+        logger.warn(msg);
+      } else {
+        logger.info(msg);
+      }
+    }
+  }
+
+  static async refreshGridCellTimeslots(gridCell, basePatch) {
+    logger.info(
+      `Begin refreshing appointment timeslots for grid cell ${gridCell.id} (${gridCell.state_code} ${gridCell.centroid_postal_code})...`
+    );
+
+    const queue = new PQueue({ concurrency: 2 });
+
+    // The Walgreens timeslots API will only return 10 stores, and not in a
+    // specific order. So in order to find timeslots for each store, we've
+    // pre-computed a grid where each cell should not have more than 9 stores
+    // in it. By searching for timeslots with this smaller grid, it should
+    // ensure we get timeslots for any available stores.
+    const subGridCells = await Store.knex().raw(
+      `
+      WITH grid_rows AS (
+        SELECT DISTINCT ON (g.id)
+          g.id,
+          g.centroid_postal_code,
+          st_y(g.centroid_land_location::geometry) AS latitude,
+          st_x(g.centroid_land_location::geometry) AS longitude,
+          g.state_code,
+          g.furthest_point,
+          s.time_zone,
+          s.appointments_last_fetched
+        FROM walgreens_grid g
+        INNER JOIN stores s ON
+          s.provider_id = 'walgreens'
+          AND g.state_code = s.state
+          AND st_intersects(s.location, g.geom)
+          AND (s.appointments_last_fetched IS NULL OR s.appointments_last_fetched <= (now() - INTERVAL '2 minutes'))
+        WHERE st_intersects(g.geom, (SELECT geom FROM state_grid_500k_55km WHERE id = ?))
+        ORDER BY g.id, s.appointments_last_fetched NULLS FIRST
+      )
+      SELECT * FROM grid_rows
+      ORDER BY appointments_last_fetched NULLS FIRST
+    `,
+      gridCell.id
+    );
+    for (const [index, subGridCell] of subGridCells.rows.entries()) {
+      queue.add(() =>
+        Appointments.refreshSubGridCellTimeslots(
+          subGridCell,
+          index,
+          subGridCells.rows.length,
+          basePatch
+        )
+      );
+    }
+    await queue.onIdle();
+
+    logger.info(
+      `Finished refreshing appointment timeslots for grid cell ${gridCell.id} (${gridCell.state_code} ${gridCell.centroid_postal_code}).`
+    );
+  }
+
+  static async refreshSubGridCellTimeslots(gridCell, index, count, basePatch) {
     const radiusMiles = Math.ceil(
       convertLength(gridCell.furthest_point, "meters", "miles") + 0.1
     );
-    if (radiusMiles > 25) {
-      // radiusMiles = 25;
-    }
 
     logger.info(
       `Refreshing stores within ${radiusMiles} miles of ${
@@ -76,17 +196,16 @@ class Appointments {
       } (${index + 1} of ${count})...`
     );
 
-    const patch = {
-      appointments: [],
-      appointments_last_fetched: DateTime.utc().toISO(),
-      appointments_available: false,
-      appointments_raw: {
-        second_doses: {},
-        second_dose_only: {},
-      },
-    };
+    const patch = _.cloneDeep(basePatch);
+    if (!patch.appointments_raw.second_doses) {
+      patch.appointments_raw.second_doses = {};
+    }
 
-    const firstDoseRespPromise = await retry(
+    if (!patch.appointments_raw.second_dose_only) {
+      patch.appointments_raw.second_dose_only = {};
+    }
+
+    const firstDoseRespPromise = retry(
       async () => Appointments.fetchTimeslots(gridCell, radiusMiles, ""),
       {
         retries: 4,
@@ -107,7 +226,7 @@ class Appointments {
       }
     );
 
-    const secondDoseOnlyPfizerRespPromise = await retry(
+    const secondDoseOnlyPfizerRespPromise = retry(
       async () =>
         Appointments.fetchTimeslots(
           gridCell,
@@ -172,11 +291,12 @@ class Appointments {
       await Store.query().findById(storeId).patch(storePatch);
     }
 
+    setComputedStoreValues(patch);
     await Store.query()
       .where("provider_id", "walgreens")
       .where("id", "NOT IN", Object.keys(storePatches))
       .whereRaw(
-        "st_within(location::geometry, (SELECT geom FROM walgreens_grid WHERE id = ?))",
+        "st_intersects(location::geometry, (SELECT geom FROM walgreens_grid WHERE id = ?))",
         gridCell.id
       )
       .patch(patch);
@@ -252,6 +372,8 @@ class Appointments {
           );
           continue;
         }
+
+        Appointments.storeIdStoreNumbers[store.id] = location.storenumber;
 
         appointments[store.id] = location.appointmentAvailability.reduce(
           (appts, day) =>
@@ -445,12 +567,108 @@ class Appointments {
       const storePatch = _.cloneDeep(basePatch);
       storePatch.appointments = _.orderBy(appointments, ["time", "type"]);
 
+      if (storePatch.appointments_raw.first_dose) {
+        Appointments.filterRawForStoreId(
+          storePatch.appointments_raw.first_dose,
+          storeId
+        );
+      }
+
+      if (storePatch.appointments_raw.second_doses) {
+        for (const data of Object.values(
+          storePatch.appointments_raw.second_doses
+        )) {
+          Appointments.filterRawForStoreId(data, storeId);
+        }
+      }
+
+      if (storePatch.appointments_raw.second_dose_only) {
+        for (const data of Object.values(
+          storePatch.appointments_raw.second_dose_only
+        )) {
+          Appointments.filterRawForStoreId(data, storeId);
+        }
+      }
+
       setComputedStoreValues(storePatch);
 
       storePatches[storeId] = storePatch;
     }
 
     return storePatches;
+  }
+
+  static filterRawForStoreId(data, storeId) {
+    const storeNumber = Appointments.storeIdStoreNumbers[storeId];
+    if (data && data.locations) {
+      // eslint-disable-next-line no-param-reassign
+      data.locations = data.locations.filter(
+        (l) => l.storenumber === storeNumber
+      );
+    }
+  }
+
+  static async fetchAvailability(gridCell, radiusMiles) {
+    await sleep(_.random(1, 5));
+
+    const auth = await authMutex.runExclusive(AvailabilityAuth.get);
+
+    const tomorrow = DateTime.now()
+      .setZone(gridCell.time_zone)
+      .plus({ days: 1 });
+    const startDateTime = tomorrow.toISODate();
+
+    logger.debug(
+      `Fetching availability for grid cell: ${gridCell.centroid_postal_code}, startDateTime: ${startDateTime}`
+    );
+    const url =
+      "https://www.walgreens.com/hcschedulersvc/svc/v1/immunizationLocations/availability";
+    const resp = await curly.post(url, {
+      httpHeader: [
+        "Accept-Language: en-US,en;q=0.9",
+        "Accept: application/json, text/plain, */*",
+        "Authority: www.walgreens.com",
+        "Cache-Control: no-cache",
+        "Content-Type: application/json; charset=UTF-8",
+        "Origin: https://www.walgreens.com",
+        "Pragma: no-cache",
+        "Referer: https://www.walgreens.com/findcare/vaccination/covid-19/location-screening",
+        "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:85.0) Gecko/20100101 Firefox/85.0",
+        `Cookie: ${await auth.cookieJar.getCookieString(url)}`,
+        `X-XSRF-TOKEN: ${auth.csrfToken}`,
+      ],
+      postFields: JSON.stringify({
+        serviceId: "99",
+        position: {
+          latitude: gridCell.latitude,
+          longitude: gridCell.longitude,
+        },
+        appointmentAvailability: {
+          startDateTime,
+        },
+        radius: radiusMiles,
+      }),
+      timeoutMs: 15000,
+      proxy: process.env.WALGREENS_AVAILABILITY_PROXY_SERVER,
+      proxyUsername: process.env.WALGREENS_AVAILABILITY_PROXY_USERNAME,
+      proxyPassword: process.env.WALGREENS_AVAILABILITY_PROXY_PASSWORD,
+      sslVerifyPeer: false,
+      acceptEncoding: "gzip",
+    });
+
+    if (!resp.statusCode || resp.statusCode < 200 || resp.statusCode >= 300) {
+      const err = new Error(
+        `Request failed with status code ${resp.statusCode}`
+      );
+      err.response = resp;
+      throw err;
+    }
+
+    logger.debug(
+      `Appointments available: ${resp?.data?.appointmentsAvailable} for grid cell: ${gridCell.centroid_postal_code} (${gridCell.latitude},${gridCell.longitude}), startDateTime: ${startDateTime}`
+    );
+
+    return resp;
   }
 
   static async fetchTimeslots(gridCell, radiusMiles, productId, date) {
@@ -538,6 +756,26 @@ class Appointments {
   }
 
   static async onFailedAttempt(err) {
+    logger.info(err);
+    logger.info(err?.response?.statusCode);
+    logger.info(err?.response?.data);
+    logger.warn(`Retrying due to error: ${err}`);
+    await sleep(_.random(250, 750));
+    if (
+      err?.response?.statusCode === 401 ||
+      (err?.response?.statusCode === 403 && err.retriesLeft <= 1)
+    ) {
+      if (!authMutex.isLocked()) {
+        await authMutex.runExclusive(Auth.refresh);
+      } else {
+        await authMutex.runExclusive(() => {
+          logger.info("Waiting on other task to refresh auth.");
+        });
+      }
+    }
+  }
+
+  static async onFailedAvailabilityAttempt(err) {
     logger.info(err);
     logger.info(err?.response?.statusCode);
     logger.info(err?.response?.data);
