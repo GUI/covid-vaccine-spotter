@@ -3,9 +3,14 @@ const fs = require("fs");
 const path = require("path");
 const statesTopojson = require("us-atlas/states-10m");
 const topojson = require("topojson-client");
-const states500kTopojson = require("../../tmp/cb_2018_us_state_500k");
-const states5mTopojson = require("../../tmp/cb_2018_us_state_5m");
 const { State } = require("../models/State");
+
+const states500kTopojson = JSON.parse(
+  fs.readFileSync("../../tmp/cb_2018_us_state_500k.topojson")
+);
+const states5mTopojson = JSON.parse(
+  fs.readFileSync("../../tmp/cb_2018_us_state_5m.topojson")
+);
 
 const statesGeojson = topojson.feature(
   statesTopojson,
