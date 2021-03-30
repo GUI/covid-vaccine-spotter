@@ -8,6 +8,7 @@ const MILE_TO_KM = 1.60934;
 
 export const state = () => ({
   usState: {
+    type: "FeatureCollection",
     metadata: {
       code: null,
       name: null,

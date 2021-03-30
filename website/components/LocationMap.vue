@@ -27,9 +27,19 @@ import mapIconDiamond from "~/assets/map-icon-diamond.svg?data";
 import mapIconSquare from "~/assets/map-icon-square.svg?data";
 
 export default {
+  data() {
+    return {
+      mapLoaded: false,
+    };
+  },
+
   computed: {
     mapBounds() {
       return this.$store.getters["usStates/getMapBounds"];
+    },
+
+    locationData() {
+      return this.$store.state.usStates.usState;
     },
 
     zipCoords() {
@@ -39,9 +49,18 @@ export default {
 
   watch: {
     mapBounds() {
-      if (this.map && this.mapBounds) {
-        this.map.fitBounds(this.mapBounds, { padding: 10 });
-      }
+      this.mapBoundsUpdated = false;
+      this.setMapBounds();
+    },
+
+    locationData() {
+      this.mapDataUpdated = false;
+      this.setMapData();
+    },
+
+    mapLoaded() {
+      this.setMapData();
+      this.setMapBounds();
     },
 
     zipCoords() {
@@ -83,13 +102,14 @@ export default {
     this.map.on("load", () => {
       this.map.addSource("locations", {
         type: "geojson",
-        data: this.$store.state.usStates.usState,
+        data: {
+          type: "FeatureCollection",
+          features: [],
+        },
       });
+      this.mapSource = this.map.getSource("locations");
 
       this.zipMarker = new Marker();
-      if (this.zipCoords) {
-        this.zipMarker.setLngLat(this.zipCoords).addTo(this.map);
-      }
 
       this.map.addLayer({
         id: "locations",
@@ -180,7 +200,39 @@ export default {
           .setHTML(description)
           .addTo(this.map);
       });
+
+      this.mapLoaded = true;
     });
+  },
+
+  methods: {
+    setMapData() {
+      if (
+        this.mapLoaded &&
+        this.mapSource &&
+        this.locationData &&
+        !this.mapDataUpdated
+      ) {
+        this.mapSource.setData(this.locationData);
+        this.mapDataUpdated = true;
+      }
+    },
+
+    setMapBounds() {
+      if (
+        this.mapLoaded &&
+        this.map &&
+        this.mapBounds &&
+        !this.mapBoundsUpdated
+      ) {
+        this.map.fitBounds(this.mapBounds, {
+          padding: 10,
+          animate: !!this.mapBoundsAnimate,
+        });
+        this.mapBoundsUpdated = true;
+        this.mapBoundsAnimate = true;
+      }
+    },
   },
 };
 </script>
