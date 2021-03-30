@@ -734,7 +734,9 @@ class Appointments {
     logger.info(err);
     logger.info(err?.response?.statusCode);
     logger.info(err?.response?.data);
-    logger.warn(`Retrying timeslots due to error: ${err}`);
+    logger.warn(
+      `Retrying timeslots due to error (attempt ${err.attemptNumber}): ${err}`
+    );
     await sleep(_.random(250, 750));
     if (
       err?.response?.statusCode === 401 ||
@@ -755,7 +757,9 @@ class Appointments {
     logger.info(err);
     logger.info(err?.response?.statusCode);
     logger.info(err?.response?.data);
-    logger.warn(`Retrying availability due to error: ${err}`);
+    logger.warn(
+      `Retrying availability due to error (attempt ${err.attemptNumber}): ${err}`
+    );
     await sleep(_.random(250, 750));
     if (
       err?.response?.statusCode === 401 ||
