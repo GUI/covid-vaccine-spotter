@@ -34,7 +34,7 @@ class AvailabilityAuth {
     const auth = {};
 
     const browser = await firefox.launch({
-      headless: false,
+      headless: true,
       firefoxUserPrefs: {
         "general.appversion.override":
           "5.0 (Macintosh; Intel Mac OS X 10.15; rv:85.0) Gecko/20100101 Firefox/85.0",
