@@ -5,8 +5,6 @@ const { DateTime } = require("luxon");
 const logger = require("../../logger");
 const setComputedStoreValues = require("../../setComputedStoreValues");
 const { Store } = require("../../models/Store");
-const { Provider } = require("../../models/Provider");
-const { ProviderBrand } = require("../../models/ProviderBrand");
 
 class Appointments {
   static async fetchAvailability() {
@@ -31,10 +29,8 @@ class Appointments {
 
     const queue = new PQueue({ concurrency: 10 });
 
+    const lastFetched = DateTime.utc().toISO();
     const resp = await Appointments.fetchAvailability();
-    const lastFetched = DateTime.fromHTTP(
-      resp.headers["last-modified"]
-    ).toISO();
     for (const store of resp.body) {
       const patch = {
         provider_id: "albertsons",
@@ -42,7 +38,10 @@ class Appointments {
         appointments: [],
         appointments_last_fetched: lastFetched,
         appointments_available: store.availability === "yes",
-        appointments_raw: store,
+        appointments_raw: {
+          aailability: store,
+          headers: resp.headers,
+        },
       };
       setComputedStoreValues(patch);
 
