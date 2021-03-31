@@ -7,8 +7,8 @@ const logger = require("../../logger");
 const setComputedStoreValues = require("../../setComputedStoreValues");
 const { Store } = require("../../models/Store");
 
-const RiteAidAppointments = {
-  refreshStores: async () => {
+class Appointments {
+  static async refreshStores() {
     logger.notice("Begin refreshing appointments for all stores...");
 
     const queue = new PQueue({ concurrency: 5 });
@@ -20,16 +20,14 @@ const RiteAidAppointments = {
       )
       .orderByRaw("appointments_last_fetched NULLS FIRST");
     for (const [index, store] of stores.entries()) {
-      queue.add(() =>
-        RiteAidAppointments.refreshStore(store, index, stores.length)
-      );
+      queue.add(() => Appointments.refreshStore(store, index, stores.length));
     }
     await queue.onIdle();
 
     logger.notice("Finished refreshing appointments for all stores.");
-  },
+  }
 
-  refreshStore: async (store, index, count) => {
+  static async refreshStore(store, index, count) {
     logger.info(
       `Processing ${store.name} #${store.brand_id} (${
         index + 1
@@ -45,7 +43,7 @@ const RiteAidAppointments = {
       appointments_raw: {},
     };
 
-    const slotsResp = await RiteAidAppointments.fetchSlots(store);
+    const slotsResp = await Appointments.fetchSlots(store);
     patch.appointments_raw = slotsResp.body;
 
     if (
@@ -60,10 +58,10 @@ const RiteAidAppointments = {
     await Store.query().findById(store.id).patch(patch);
 
     await sleep(_.random(250, 750));
-  },
+  }
 
-  fetchSlots: async (store) =>
-    got("https://www.riteaid.com/services/ext/v2/vaccine/checkSlots", {
+  static async fetchSlots(store) {
+    return got("https://www.riteaid.com/services/ext/v2/vaccine/checkSlots", {
       searchParams: {
         storeNumber: store.brand_id,
       },
@@ -74,7 +72,8 @@ const RiteAidAppointments = {
       responseType: "json",
       timeout: 30000,
       retry: 0,
-    }),
-};
+    });
+  }
+}
 
-module.exports = RiteAidAppointments;
+module.exports = Appointments;

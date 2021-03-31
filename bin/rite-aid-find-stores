@@ -1,4 +1,4 @@
 #!/usr/bin/env node
 
-const { findStores } = require("../src/providers/riteAid/stores");
+const { findStores } = require("../src/providers/RiteAid/Stores");
 findStores();
