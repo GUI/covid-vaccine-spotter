@@ -1,6 +1,0 @@
-#!/usr/bin/env node
-
-const { refreshAlbertsons } = require("../src/handlers/refreshAlbertsons");
-const runTask = require("../src/runTask");
-
-runTask(refreshAlbertsons, 5000);

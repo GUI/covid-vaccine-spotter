@@ -21,6 +21,21 @@
           /></span>
         </div>
         <appointment-times :store="store" />
+        <p
+          v-if="store.properties.provider === 'albertsons'"
+          class="text-warning"
+        >
+          <small
+            ><font-awesome-icon icon="exclamation-triangle" />
+            <strong>Warning:</strong>
+            {{ store.properties.provider_brand_name }} appears to only be
+            updating their data every 30-60 minutes, so this status may become
+            outdated more quickly than other providers. But if they increase
+            their frequency of updates, Vaccine Spotter will start showing
+            updates sooner too.</small
+          >
+        </p>
+
         <p v-if="store.properties.provider === 'kroger'" class="text-warning">
           <small
             ><font-awesome-icon icon="exclamation-triangle" />
