@@ -1,18 +1,18 @@
 export default {
   metadata: {
     title: "Observador de vacunas para COVID-19",
-    welcome: "Bienvenidos",
+    welcome: "Bienvenid@",
     description:
-      "Una herramienta para ayudarlo de rastrear citas para la vacuna COVID-19 en las farmacias de su estado. Actualizado cada minuto.",
+      "Una herramienta para ayudarte a rastrear citas para la vacuna COVID-19 en las farmacias de tu estado. Actualizado cada minuto.",
     longDescription:
-      "En lugar de buscar en el sitio web de cada farmacia, escanearemos automáticamente los sitios web de las farmacias y le mostraremos las citas disponibles que podamos encontrar.",
+      "En lugar de buscar en el sitio web de cada farmacia, escanearemos automáticamente los sitios web de las farmacias y te mostraremos las citas disponibles que podamos encontrar.",
   },
   news: {
     date: "2021/25/03",
     message:
-      "<strong>¡Nuevas características!</strong> 🌟 Filtrar por tipo de vacuna (Moderna, Pfizer, J&J), tipo de cita (por ejemplo, si solo necesita una segunda dosis) y farmacia. Sé que estas han sido características solicitadas con frecuencia, ¡así que espero que te ayuden en tu búsqueda de vacunas!",
+      "<strong>¡Nuevas características!</strong> 🌟 Filtrar por tipo de vacuna (Moderna, Pfizer, J&J), tipo de cita (por ejemplo, si solo necesitas una segunda dosis) y farmacia. Sé que estas han sido características solicitadas con frecuencia, ¡así que espero que te ayuden en tu búsqueda de vacunas!",
     suffix:
-      "Cualquier comentario es bienvenido: <a href='m&#97;ilto&#58;v%&#54;1&#99;&#99;&#105;ne&#64;nic&#107;%6D&#46;org'>vacc&#105;ne&#64;ni&#99;k&#109;&#46;o&#114;&#103;</a > o <a href='https://twitter.com/nickblah'>@nickblah</a>. ¡Y si eres un programador y tienes interés en ayudar en <a href='https://github.com/GUI/covid-vaccine-finder/issues'>GitHub</a>, eso sería estupendo (aunque el código sigue siendo complicado)!",
+      "Cualquier comentario es bienvenido: <a href='m&#97;ilto&#58;v%&#54;1&#99;&#99;&#105;ne&#64;nic&#107;%6D&#46;org'>vacc&#105;ne&#64;ni&#99;k&#109;&#46;o&#114;&#103;</a > o <a href='https://twitter.com/nickblah'>@nickblah</a>. ¡Y si eres programador(a) y tienes interés en ayudar en <a href='https://github.com/GUI/covid-vaccine-finder/issues'>GitHub</a>, eso sería estupendo (aunque el código sigue siendo complicado)!",
   },
   scanningDetails: {
     scanning:
@@ -51,7 +51,7 @@ export default {
     withoutAppointments: "Mostrar ubicaciones sin citas actuales",
     button: "Buscar",
     noResults:
-      "Ahora no podemos encontrar citas abiertas para su búsqueda. Intente expandir su búsqueda o verifique nuevamente más tarde (las citas pueden aparecer y desaparecer rápidamente).",
+      "Ahora no podemos encontrar citas abiertas para tu búsqueda. Intenta expandir tu búsqueda o verifica nuevamente más tarde (las citas pueden aparecer y desaparecer rápidamente).",
   },
   buttons: {
     newAppointments: "Consultar nuevas citas",
@@ -124,7 +124,7 @@ export default {
     description:
       "Los datos legibles por máquina detrás del Observador de vacunas para COVID-19. Bien preliminario.",
     blockText:
-      "Aquí están todos los datos subyacentes en formato JSON utilizados para esta herramienta. Las cosas avanzan rápido, por lo que esto está sujeto a cambios. Entonces, aunque dudo en llamar a esto cualquier tipo de API estable, quería al menos compartir lo que tengo. Si usa estos datos, tenga en cuenta que las cosas pueden cambiar. No dudes en comunicarte con nosotros para hacerme saber que estás usando esto, para que pueda avisarte sobre los cambios importantes:",
+      "Aquí están todos los datos subyacentes en formato JSON utilizados para esta herramienta. Las cosas avanzan rápido, por lo que esto está sujeto a cambios. Entonces, aunque dudo en llamar a esto cualquier tipo de API estable, quería al menos compartir lo que tengo. Si usas estos datos, ten en cuenta que las cosas pueden cambiar. No dudes en comunicarte con nosotros para hacerme saber que estás usando esto, para que pueda avisarte sobre los cambios importantes:",
     or: "o",
     changelog: {
       beforeLink: "Suscríbete a la",
@@ -144,54 +144,54 @@ export default {
       colorado: `Visitar <a href="https://covid19.colorado.gov/for-coloradans/vaccine/where-can-i-get-vaccinated" class="text-white"><strong class="fw-bold">Colorado.gov</strong></a > para obtener información detallada sobre las opciones de vacunas de su condado y revisar si es elegible todavía.`,
       visitColorado: "Visite Colorado.gov",
       localProvider:
-        "Es posible que pueda inscribirse para recibir vacunas con un proveedor de atención médica o puede haber otras opciones en su área, en cuyo caso es posible que no necesite esta herramienta.",
+        "Es posible que puedas inscribirte para recibir vacunas con un proveedor de atención médica o puede haber otras opciones en tu área, en cuyo caso es posible que no necesites esta herramienta.",
       eligibility:
-        "Asegúrese de visitar el sitio web oficial de vacunación de su propio estado para obtener información detallada sobre las opciones de vacunas de su condado y revisar si es o no elegible todavía.",
+        "Asegúrate de visitar el sitio web oficial de vacunación de tu propio estado para obtener información detallada sobre las opciones de vacunas de tu condado y revisar si eres o no elegible todavía.",
     },
     {
       header:
-        "Paso 2: Utilice esta herramienta para intentar encontrar una cita en la farmacia",
+        "Paso 2: Utiliza esta herramienta para intentar encontrar una cita en la farmacia",
       text: [
-        "Si decide que desea obtener una cita en una farmacia local (y actualmente es elegible para la vacuna), esta herramienta podría ayudarlo.",
-        "En lugar de buscar en el sitio web de cada farmacia, escanearemos automáticamente los sitios web de las farmacias y le mostraremos las citas disponibles que podamos encontrar en una página.",
-        "Todas las ubicaciones admitidas en {state_name} se escanean de forma regular y esta página se actualiza con las citas disponibles en el estado. Si no ve ubicaciones cercanas a usted en este momento, las citas pueden aparecer y desaparecer rápidamente, así que intente visitar la página en diferentes momentos durante el día.",
+        "Si deseas obtener una cita en una farmacia local (y actualmente eres elegible para la vacuna), esta herramienta podría ayudarte.",
+        "En lugar de buscar en el sitio web de cada farmacia, escanearemos automáticamente los sitios web de las farmacias y te mostraremos las citas disponibles que podamos encontrar en una página.",
+        "Todas las ubicaciones admitidas en {state_name} se escanean de forma regular y esta página se actualiza con las citas disponibles en el estado. Si no ves ubicaciones cercanas a ti en este momento, las citas pueden aparecer y desaparecer rápidamente, así que intenta visitar la página en diferentes momentos durante el día.",
       ],
     },
   ],
   _state: {
     title: "Observador de vacunas para COVID-19 para {state}",
-    description: `Una herramienta para ayudarlo a rastrear las vacantes de citas para la vacuna COVID-19 en farmacias en su estado. Actualizado cada minuto.`,
+    description: `Una herramienta para ayudarte a rastrear las vacantes de citas para la vacuna COVID-19 en farmacias en su estado. Actualizado cada minuto.`,
   },
   defaultVue: {
-    forDevs: "Para desarrolladores:",
+    forDevs: "Para desarrollador@s:",
     api: "API muy preliminario",
     github: "GitHub",
     about: {
       header: "Acerca de",
       text: [
-        "¡Encontrar vacunas parece difícil! Con suerte, las cosas se volverán más fáciles pronto, pero mientras tanto, tal vez esto pueda ayudar. Si encuentra esto útil, no dude en compartirlo. Ponte en contacto con cualquieras preguntas:",
-        'Me gustaría agregar funcionalidad adicional, (escanear farmacias adicionales y enviar notificaciones por correo electrónico o mensajes de texto cuando se abren citas) si esto resulta útil y si el tiempo lo permite. Si eres un programador de computadoras y te gustaría contribuir, el proyecto es <a href="https://github.com/GUI/covid-vaccine-finder"> fuente abierta en GitHub</a > (aunque actualmente es muy desordenado e indocumentado).',
+        "¡Encontrar vacunas parece difícil! Con suerte, las cosas se volverán más fáciles pronto, pero mientras tanto, tal vez esto pueda ayudar. Si encuentras esto útil, no dudes en compartirlo. Ponte en contacto con cualquier preguntas:",
+        'Me gustaría agregar funcionalidad adicional, (escanear farmacias adicionales y enviar notificaciones por correo electrónico o mensajes de texto cuando se abren citas) si esto resulta útil y si el tiempo lo permite. Si eres programador@ de computadoras y te gustaría contribuir, el proyecto es <a href="https://github.com/GUI/covid-vaccine-finder"> fuente abierta en GitHub</a > (aunque actualmente es muy desordenado e indocumentado).',
       ],
     },
     donate: {
       title: "Donar",
       text:
-        "He recibido muchas solicitudes para donar a este proyecto, lo cual agradezco mucho. Escuchar las historias de éxito de las personas al encontrar vacunas es una recompensa suficiente, pero si desea donar, considere las siguientes opciones:",
+        "He recibido muchas solicitudes para donar a este proyecto, lo cual agradezco mucho. Escuchar las historias de éxito de las personas al encontrar vacunas es una recompensa suficiente, pero si deseas donar, considera las siguientes opciones:",
       options: [
         {
           title: "UNICEF",
           description:
-            "Haga una donación a los esfuerzos de UNICEF para ayudar al lanzamiento mundial de la vacunación.",
+            "Haz una donación a los esfuerzos de UNICEF para ayudar al lanzamiento mundial de la vacunación.",
         },
         {
           title: "DirectRelief",
           description:
-            "Done a los esfuerzos de DirectRelief para ayudar con la pandemia.",
+            "Dona a los esfuerzos de DirectRelief para ayudar con la pandemia.",
         },
         {
           title: "Vaccine Spotter",
           description:
-            "Si bien recomiendo donar directamente a otras organizaciones benéficas, si desea apoyar a Vaccine Spotter, ¡gracias! <a href='https://givebutter.com/vaccinespotter' target='_blank' rel='noopener'>Aceptaré contribuciones</a> (<em> no </em> deducibles de impuestos) para cubrir los costos de alojamiento del sitio web. Las contribuciones excedentes las donaré a estas otras organizaciones benéficas.",
+            "Si bien recomiendo donar directamente a otras organizaciones benéficas, si deseas apoyar a Vaccine Spotter, ¡gracias! <a href='https://givebutter.com/vaccinespotter' target='_blank' rel='noopener'>Aceptaré contribuciones</a> (<em> no </em> deducibles de impuestos) para cubrir los costos de alojamiento del sitio web. Las contribuciones excedentes las donaré a estas otras organizaciones benéficas.",
         },
       ],
     },
