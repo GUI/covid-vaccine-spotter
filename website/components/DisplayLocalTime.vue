@@ -1,16 +1,7 @@
 <template>
   <span>
     <template v-if="time">
-      <local-time
-        :datetime="timeISO"
-        time-zone-name="short"
-        month="long"
-        day="numeric"
-        year="numeric"
-        hour="numeric"
-        minute="numeric"
-        >{{ timeLocale }}</local-time
-      >
+      {{ timeLocale }}
     </template>
     <template v-else> Unknown Time </template>
   </span>
@@ -42,7 +33,6 @@ export default {
         hour: "numeric",
         minute: "numeric",
         timeZoneName: "short",
-        timeZone: this.timeZone || "America/New_York",
       });
     },
   },

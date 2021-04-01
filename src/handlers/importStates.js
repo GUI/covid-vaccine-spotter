@@ -5,14 +5,49 @@ const statesTopojson = require("us-atlas/states-10m");
 const topojson = require("topojson-client");
 const { State } = require("../models/State");
 
+const states500kTopojson = JSON.parse(
+  fs.readFileSync("../../tmp/cb_2018_us_state_500k.topojson")
+);
+const states5mTopojson = JSON.parse(
+  fs.readFileSync("../../tmp/cb_2018_us_state_5m.topojson")
+);
+
 const statesGeojson = topojson.feature(
   statesTopojson,
   statesTopojson.objects.states
 );
 
+const states500kGeojson = topojson.feature(
+  states500kTopojson,
+  states500kTopojson.objects.cb_2018_us_state_500k
+);
+
+const states5mGeojson = topojson.feature(
+  states5mTopojson,
+  states5mTopojson.objects.cb_2018_us_state_5m
+);
+
 function geojsonForState(name) {
   const geojson = statesGeojson.features.find((f) => f.properties.name === name)
     ?.geometry;
+  return geojson
+    ? State.raw("ST_Multi(ST_GeomFromGeoJSON(?))", JSON.stringify(geojson))
+    : null;
+}
+
+function geojson500kForState(name) {
+  const geojson = states500kGeojson.features.find(
+    (f) => f.properties.NAME === name
+  )?.geometry;
+  return geojson
+    ? State.raw("ST_Multi(ST_GeomFromGeoJSON(?))", JSON.stringify(geojson))
+    : null;
+}
+
+function geojson5mForState(name) {
+  const geojson = states5mGeojson.features.find(
+    (f) => f.properties.NAME === name
+  )?.geometry;
   return geojson
     ? State.raw("ST_Multi(ST_GeomFromGeoJSON(?))", JSON.stringify(geojson))
     : null;
@@ -24,7 +59,7 @@ module.exports.importStates = async () => {
   const states = {};
 
   const parser = fs
-    .createReadStream(path.resolve(__dirname, "../../US/US.txt"))
+    .createReadStream(path.resolve(__dirname, "../../tmp/US/US.txt"))
     .pipe(
       csvParse({
         delimiter: "\t",
@@ -53,6 +88,8 @@ module.exports.importStates = async () => {
           code,
           name,
           boundaries: geojsonForState(name),
+          boundaries_500k: geojson500kForState(name),
+          boundaries_5m: geojson5mForState(name),
         })
         .onConflict("code")
         .merge();
@@ -67,6 +104,8 @@ module.exports.importStates = async () => {
       code: "PR",
       name: "Puerto Rico",
       boundaries: geojsonForState("Puerto Rico"),
+      boundaries_500k: geojson500kForState("Puerto Rico"),
+      boundaries_5m: geojson5mForState("Puerto Rico"),
     })
     .onConflict("code")
     .merge();
@@ -77,6 +116,8 @@ module.exports.importStates = async () => {
       code: "VI",
       name: "United States Virgin Islands",
       boundaries: geojsonForState("United States Virgin Islands"),
+      boundaries_500k: geojson500kForState("United States Virgin Islands"),
+      boundaries_5m: geojson5mForState("United States Virgin Islands"),
     })
     .onConflict("code")
     .merge();

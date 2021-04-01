@@ -6,6 +6,8 @@ const { DateTime } = require("luxon");
 const got = require("got");
 const sleep = require("sleep-promise");
 const logger = require("../../logger");
+const normalizedVaccineTypes = require("../../normalizedVaccineTypes");
+const setComputedStoreValues = require("../../setComputedStoreValues");
 const Auth = require("./Auth");
 const { Store } = require("../../models/Store");
 
@@ -73,6 +75,9 @@ class Appointments {
               case 181948:
                 name = "Moderna";
                 break;
+              case 182366:
+                name = "Johnson & Johnson";
+                break;
               default:
                 name = inventory.shortName;
                 break;
@@ -101,6 +106,8 @@ class Appointments {
           (appointments, day) =>
             appointments.concat(
               day.slots.map((slot) => ({
+                appointment_types: [],
+                vaccine_types: normalizedVaccineTypes(vaccineTypes.join(", ")),
                 type: vaccineTypes.join(", "),
                 time: DateTime.fromFormat(
                   `${day.slotDate} ${slot.startTime}`,
@@ -115,9 +122,7 @@ class Appointments {
       }
     }
 
-    if (patch.appointments.length > 0) {
-      patch.appointments_available = true;
-    }
+    setComputedStoreValues(patch);
 
     await Store.query().findById(store.id).patch(patch);
 

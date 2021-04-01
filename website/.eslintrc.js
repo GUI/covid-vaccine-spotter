@@ -17,4 +17,19 @@ module.exports = {
   plugins: ["prettier"],
   // add your custom rules here
   rules: {},
+  overrides: [
+    {
+      files: ["store/**/*.js"],
+      rules: {
+        "no-shadow": ["error", { allow: ["state", "getters"] }],
+        "no-param-reassign": [
+          "error",
+          {
+            props: true,
+            ignorePropertyModificationsFor: ["state"],
+          },
+        ],
+      },
+    },
+  ],
 };

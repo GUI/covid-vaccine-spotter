@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const { refreshStores } = require("../src/providers/riteAid/appointments");
+const { refreshStores } = require("../src/providers/RiteAid/Appointments");
 const runTask = require("../src/runTask");
 
 runTask(refreshStores, 5000);

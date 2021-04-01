@@ -6,3 +6,4 @@
 /.serverless
 /tmp/
 /.nuxt
+/.helm

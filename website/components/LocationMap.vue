@@ -3,12 +3,17 @@
     <div id="map" style="width: 100%"></div>
     <div id="legend" class="map-overlay">
       <div>
-        <span class="available-marker"></span> Appointments recently available
+        <img src="~/assets/map-icon-circle.svg?data" alt="" /> Appointments
+        recently available
       </div>
       <div>
-        <span class="unavailable-marker"></span> Appointments not available
+        <img src="~/assets/map-icon-diamond.svg?data" alt="" /> Appointments not
+        available
       </div>
-      <div><span class="unknown-marker"></span> Appointment status unknown</div>
+      <div>
+        <img src="~/assets/map-icon-square.svg?data" alt="" /> Appointment
+        status unknown
+      </div>
     </div>
   </div>
 </template>
@@ -17,23 +22,45 @@
 import { Map, Marker, Popup } from "maplibre-gl";
 import Vue from "vue";
 import LocationMapPopup from "./LocationMapPopup.vue";
+import mapIconCircle from "~/assets/map-icon-circle.svg?data";
+import mapIconDiamond from "~/assets/map-icon-diamond.svg?data";
+import mapIconSquare from "~/assets/map-icon-square.svg?data";
 
 export default {
+  data() {
+    return {
+      mapLoaded: false,
+    };
+  },
+
   computed: {
     mapBounds() {
-      return this.$store.getters["regions/getMapBounds"];
+      return this.$store.getters["usStates/getMapBounds"];
+    },
+
+    locationData() {
+      return this.$store.state.usStates.usState;
     },
 
     zipCoords() {
-      return this.$store.getters["regions/getMapZipCoords"];
+      return this.$store.getters["usStates/getMapZipCoords"];
     },
   },
 
   watch: {
     mapBounds() {
-      if (this.map && this.mapBounds) {
-        this.map.fitBounds(this.mapBounds, { padding: 10 });
-      }
+      this.mapBoundsUpdated = false;
+      this.setMapBounds();
+    },
+
+    locationData() {
+      this.mapDataUpdated = false;
+      this.setMapData();
+    },
+
+    mapLoaded() {
+      this.setMapData();
+      this.setMapBounds();
     },
 
     zipCoords() {
@@ -57,70 +84,88 @@ export default {
       },
     });
 
+    const mapIconCircleImg = new Image(36, 36);
+    mapIconCircleImg.onload = () =>
+      this.map.addImage("icon-circle", mapIconCircleImg);
+    mapIconCircleImg.src = mapIconCircle;
+
+    const mapIconDiamondImg = new Image(36, 36);
+    mapIconDiamondImg.onload = () =>
+      this.map.addImage("icon-diamond", mapIconDiamondImg);
+    mapIconDiamondImg.src = mapIconDiamond;
+
+    const mapIconSquareImg = new Image(36, 36);
+    mapIconSquareImg.onload = () =>
+      this.map.addImage("icon-square", mapIconSquareImg);
+    mapIconSquareImg.src = mapIconSquare;
+
     this.map.on("load", () => {
       this.map.addSource("locations", {
         type: "geojson",
-        data: this.$store.state.regions.region,
+        data: {
+          type: "FeatureCollection",
+          features: [],
+        },
       });
+      this.mapSource = this.map.getSource("locations");
 
       this.zipMarker = new Marker();
-      if (this.zipCoords) {
-        this.zipMarker.setLngLat(this.zipCoords).addTo(this.map);
-      }
 
       this.map.addLayer({
         id: "locations",
-        type: "circle",
         source: "locations",
-        paint: {
-          "circle-radius": [
+        type: "symbol",
+        layout: {
+          "icon-image": [
+            "match",
+            ["to-string", ["get", "appointments_available_all_doses"]],
+            "true",
+            "icon-circle",
+            "false",
+            "icon-diamond",
+            "icon-square",
+          ],
+          "icon-ignore-placement": true,
+          "icon-allow-overlap": true,
+          "icon-size": [
             "interpolate",
             ["exponential", 1.5],
             ["zoom"],
             0,
             [
               "match",
-              ["to-string", ["get", "appointments_available"]],
+              ["to-string", ["get", "appointments_available_all_doses"]],
               "true",
-              4,
+              0.25,
               "false",
-              2,
-              2,
+              0.125,
+              0.125,
             ],
             5,
             [
               "match",
-              ["to-string", ["get", "appointments_available"]],
+              ["to-string", ["get", "appointments_available_all_doses"]],
               "true",
-              8,
+              0.5,
               "false",
-              5,
-              5,
+              0.3125,
+              0.3125,
             ],
             16,
             [
               "match",
-              ["to-string", ["get", "appointments_available"]],
+              ["to-string", ["get", "appointments_available_all_doses"]],
               "true",
-              16,
+              1.0,
               "false",
-              10,
-              10,
+              0.625,
+              0.625,
             ],
           ],
-          "circle-stroke-color": "#ffffff",
-          "circle-stroke-width": 1.5,
-          "circle-stroke-opacity": 0.8,
-          "circle-opacity": 0.8,
-          "circle-color": [
-            "match",
-            ["to-string", ["get", "appointments_available"]],
-            "true",
-            "#2ca25f",
-            "false",
-            "#e34a33",
-            "#636363",
-          ],
+          "symbol-z-order": "source",
+        },
+        paint: {
+          "icon-opacity": 0.8,
         },
       });
 
@@ -155,7 +200,39 @@ export default {
           .setHTML(description)
           .addTo(this.map);
       });
+
+      this.mapLoaded = true;
     });
+  },
+
+  methods: {
+    setMapData() {
+      if (
+        this.mapLoaded &&
+        this.mapSource &&
+        this.locationData &&
+        !this.mapDataUpdated
+      ) {
+        this.mapSource.setData(this.locationData);
+        this.mapDataUpdated = true;
+      }
+    },
+
+    setMapBounds() {
+      if (
+        this.mapLoaded &&
+        this.map &&
+        this.mapBounds &&
+        !this.mapBoundsUpdated
+      ) {
+        this.map.fitBounds(this.mapBounds, {
+          padding: 10,
+          animate: !!this.mapBoundsAnimate,
+        });
+        this.mapBoundsUpdated = true;
+        this.mapBoundsAnimate = true;
+      }
+    },
   },
 };
 </script>
@@ -190,35 +267,15 @@ export default {
   padding: 8px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   line-height: 16px;
-  height: 64px;
+  height: 67px;
   width: 210px;
   font-size: 0.75rem;
   top: 0px;
   margin-top: 5px;
 }
 
-#legend span {
-  height: 14px;
-  width: 14px;
-  vertical-align: middle;
-  margin-top: -2px;
-  background-color: #bbb;
-  border-radius: 50%;
-  display: inline-block;
-  border: 1px solid #fff;
+#legend img {
   opacity: 0.8;
-}
-
-#legend span.available-marker {
-  background-color: #2ca25f;
-}
-
-#legend span.unavailable-marker {
-  background-color: #e34a33;
-}
-
-#legend span.unknown-marker {
-  background-color: #636363;
 }
 
 @media (min-width: 992px) {

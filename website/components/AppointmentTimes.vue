@@ -4,7 +4,7 @@
       <template v-if="initialAppointments.length > 0">
         <li v-for="appointment in initialAppointments" :key="appointment.id">
           {{ appointment.time }}
-          <span v-show="appointment.type">({{ appointment.type }})</span>
+          <span v-if="appointment.type">({{ appointment.type }})</span>
         </li>
       </template>
       <li v-else>
@@ -13,8 +13,7 @@
       </li>
     </ul>
 
-    {{ /* Use v-show, not v-if for conditions without "else". Otherwise, strange things happen in production that cause rendering to fail (if the page is reloaded with a zip code pre-filled): https://github.com/nuxt/nuxt.js/issues/5800 */ }}
-    <div v-show="moreAppointments.length > 0">
+    <div v-if="moreAppointments.length > 0">
       <div :id="`location-${store.properties.id}-more-appointments-toggle`">
         <a
           href="#"
@@ -30,7 +29,7 @@
       >
         <li v-for="appointment in moreAppointments" :key="appointment.id">
           {{ appointment.time }}
-          <span v-show="appointment.type">({{ appointment.type }})</span>
+          <span v-if="appointment.type">({{ appointment.type }})</span>
         </li>
       </ul>
     </div>
@@ -80,15 +79,24 @@ export default {
 
   methods: {
     formatTime(time) {
-      return DateTime.fromISO(time, { setZone: true }).toLocaleString(
-        DateTime.DATETIME_SHORT
-      );
+      return DateTime.fromISO(time).toLocaleString({
+        month: "numeric",
+        day: "numeric",
+        year: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        timeZoneName: "short",
+        timeZone: this.store.properties.time_zone,
+      });
     },
 
     formatDate(date) {
-      return DateTime.fromISO(date, { setZone: true }).toLocaleString(
-        DateTime.DATE_SHORT
-      );
+      return DateTime.fromISO(date).toLocaleString({
+        month: "numeric",
+        day: "numeric",
+        year: "numeric",
+        timeZone: this.store.properties.time_zone,
+      });
     },
 
     normalizeAppointments(appointments) {
@@ -124,6 +132,11 @@ export default {
         } else if (appointment.date) {
           normalized = {
             time: this.formatDate(appointment.date),
+            type: null,
+          };
+        } else if (appointment.time) {
+          normalized = {
+            time: this.formatTime(appointment.time),
             type: null,
           };
         } else {

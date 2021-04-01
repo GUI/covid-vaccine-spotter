@@ -32,12 +32,19 @@ process.on("uncaughtException", (err) => {
 });
 
 module.exports = async (task, sleepTime) => {
+  const runOnce = process.env.RUN_ONCE === "true";
+  // eslint-disable-next-line no-constant-condition
   while (true) {
     logger.info("Begin task run...");
     try {
       await task();
     } catch (err) {
       logError("Task error: ", err);
+    }
+
+    if (runOnce) {
+      logger.notice("Exiting task");
+      process.exit();
     }
 
     logger.info(`End task run, sleeping for ${sleepTime}ms...`);

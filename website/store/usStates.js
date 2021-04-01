@@ -7,8 +7,15 @@ const KM_TO_MILE = 0.621371;
 const MILE_TO_KM = 1.60934;
 
 export const state = () => ({
-  region: {},
-  filterError: null,
+  usState: {
+    type: "FeatureCollection",
+    metadata: {
+      code: null,
+      name: null,
+      bounding_box: null,
+    },
+    features: [],
+  },
 });
 
 export const getters = {
@@ -41,31 +48,80 @@ export const getters = {
       }
     }
 
-    if (!bounds) {
-      bounds = bbox(state.region.metadata.bounding_box);
+    if (!bounds && state.usState.metadata.bounding_box) {
+      bounds = bbox(state.usState.metadata.bounding_box);
     }
 
     return bounds;
   },
 
-  getFilteredLocations(state, getters, rootState) {
-    state.filterError = null;
-    let locations = state.region.features;
-
-    const queryIncludeAll = rootState.route.query.include_all;
-    if (queryIncludeAll !== "true") {
-      locations = locations.filter(
-        (location) => location.properties.appointments_available
-      );
+  getFilterError(state, getters, rootState) {
+    const queryZip = rootState.route.query.zip;
+    if (queryZip) {
+      const queryZipCoords = rootState.postalCodes.postalCodes[queryZip];
+      if (!queryZipCoords) {
+        return "Oops! We couldn't find that ZIP code in this state. Please double check it or try a different ZIP code.";
+      }
     }
+
+    return null;
+  },
+
+  getFilteredLocations(state, getters, rootState) {
+    let locations = state.usState.features;
+
+    const queryAppointmentType = rootState.route.query.appointment_type;
+    const queryVaccineType = rootState.route.query.vaccine_type;
+    const queryProvider = rootState.route.query.provider;
+    const queryIncludeAll = rootState.route.query.include_all;
+    locations = locations.filter((location) => {
+      let include = true;
+
+      if (
+        queryAppointmentType &&
+        !location.properties.appointment_types?.[queryAppointmentType]
+      ) {
+        include = false;
+      }
+
+      if (
+        !queryAppointmentType &&
+        queryIncludeAll !== "true" &&
+        !location.properties.appointment_types?.all_doses &&
+        !location.properties.appointment_types?.unknown
+      ) {
+        include = false;
+      }
+
+      if (
+        queryVaccineType &&
+        !location.properties.appointment_vaccine_types?.[queryVaccineType]
+      ) {
+        include = false;
+      }
+
+      if (
+        queryProvider &&
+        location.properties.provider_brand_id !== parseInt(queryProvider, 10)
+      ) {
+        include = false;
+      }
+
+      if (
+        queryIncludeAll !== "true" &&
+        !location.properties.appointments_available
+      ) {
+        include = false;
+      }
+
+      return include;
+    });
 
     const queryZip = rootState.route.query.zip;
     if (queryZip) {
       const queryZipCoords = rootState.postalCodes.postalCodes[queryZip];
       if (!queryZipCoords) {
         locations = [];
-        state.filterError =
-          "Oops! We couldn't find that ZIP code in this state. Please double check it or try a different ZIP code.";
       } else {
         let radius;
         const queryRadius = rootState.route.query.radius;
@@ -116,7 +172,7 @@ export const getters = {
 };
 
 export const mutations = {
-  set(state, region) {
-    state.region = Object.freeze(region);
+  set(state, usState) {
+    state.usState = Object.freeze(usState);
   },
 };

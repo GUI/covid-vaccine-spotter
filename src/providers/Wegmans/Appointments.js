@@ -1,8 +1,11 @@
+/* eslint no-underscore-dangle: ["error", { "allow": ["_plugin"] }] */
+
 const _ = require("lodash");
 const { default: PQueue } = require("p-queue");
 const { DateTime } = require("luxon");
 const got = require("got");
 const logger = require("../../logger");
+const setComputedStoreValues = require("../../setComputedStoreValues");
 const normalizedAddressKey = require("../../normalizedAddressKey");
 const { Store } = require("../../models/Store");
 const Socket = require("../EnlivenHealth/Socket");
@@ -64,6 +67,8 @@ class Appointments {
         break;
       case "VA":
         urlId = "a0cdfb37d60d4a85ab01641d82efc1dc";
+        break;
+      default:
         break;
     }
 
@@ -243,9 +248,7 @@ class Appointments {
       const storePatch = _.cloneDeep(basePatch);
       storePatch.appointments = _.orderBy(appointments, ["date", "type"]);
 
-      if (storePatch.appointments.length > 0) {
-        storePatch.appointments_available = true;
-      }
+      setComputedStoreValues(storePatch);
 
       storePatches[storeId] = storePatch;
     }

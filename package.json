@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "setup": "node src/tasks/setupDev.js",
     "dev": "nuxt",
     "build": "nuxt build",
     "start": "nuxt start",
@@ -19,6 +20,7 @@
     "@fortawesome/vue-fontawesome": "^2.0.2",
     "@nuxt/http": "^0.6.4",
     "@nuxtjs/google-analytics": "^2.4.0",
+    "@nuxtjs/svg": "^0.1.12",
     "@turf/bbox": "^6.3.0",
     "@turf/circle": "^6.3.0",
     "@turf/helpers": "^6.3.0",
@@ -43,7 +45,7 @@
     "lodash": "^4.17.20",
     "log4js": "^6.3.0",
     "luxon": "^1.26.0",
-    "maplibre-gl": "^1.13.0-rc.5",
+    "maplibre-gl": "^1.14.0",
     "mkdirp": "^1.0.4",
     "node-libcurl": "^2.3.1",
     "nuxt": "^2.14.12",
@@ -53,7 +55,7 @@
     "p-timeout": "^4.1.0",
     "parse-address": "^1.1.2",
     "pg": "^8.5.1",
-    "playwright-core": "~1.8.1",
+    "playwright-core": "^1.10.0",
     "playwright-extra": "^4.2.1-next.616",
     "random-http-useragent": "^1.1.32",
     "rollbar": "^2.21.1",
@@ -69,7 +71,7 @@
     "vuex-router-sync": "^5.0.0"
   },
   "devDependencies": {
-    "@nuxtjs/eslint-config": "^5.0.0",
+    "@nuxtjs/eslint-config": "^6.0.0",
     "@nuxtjs/eslint-module": "^3.0.2",
     "babel-eslint": "^10.1.0",
     "download": "^8.0.0",
@@ -82,8 +84,11 @@
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-vue": "^7.5.0",
     "geo-tz": "^6.0.1",
-    "playwright": "~1.8.1",
+    "playwright": "^1.10.0",
     "prettier": "^2.2.1",
     "serverless-offline": "^6.8.0"
+  },
+  "resolutions": {
+    "playwright-extra/**/playwright-core": "^1.10.0"
   }
 }
