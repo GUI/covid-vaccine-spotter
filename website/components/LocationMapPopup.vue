@@ -15,7 +15,7 @@
         <p class="text-success">
           <font-awesome-icon icon="check-circle" />
           Appointments available as of
-          <display-local-time :time="appointmentsLastFetchedDate" />
+          <display-local-time :time="appointmentsLastModifiedDate" />
         </p>
         <p>
           <a :href="`#location-${store.properties.id}`"
@@ -97,6 +97,10 @@ export default {
   computed: {
     appointmentsLastFetchedDate() {
       return new Date(this.store.properties.appointments_last_fetched);
+    },
+
+    appointmentsLastModifiedDate() {
+      return new Date(this.store.properties.appointments_last_modified);
     },
   },
 };
