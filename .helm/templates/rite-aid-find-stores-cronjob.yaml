@@ -1,0 +1,32 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ .Chart.Name }}-rite-aid-find-stores-cronjob
+  labels:
+    app: {{ .Chart.Name }}-rite-aid-find-stores
+spec:
+  schedule: "48 0 * * *"
+  concurrencyPolicy: Forbid
+  suspend: false
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        metadata:
+          labels:
+            app: {{ .Chart.Name }}-rite-aid-find-stores
+        spec:
+          restartPolicy: Never
+          imagePullSecrets:
+            - name: {{ .Chart.Name }}-container-registry-secret
+          containers:
+            - name: {{ .Chart.Name }}-rite-aid-find-stores
+{{ tuple "covid-vaccine-spotter" . | werf_container_image | indent 14 }}
+              args: ["bin/rite-aid-find-stores"]
+              env:
+{{ tuple "covid-vaccine-spotter" . | werf_container_env | indent 16 }}
+                - name: LOG_LEVEL
+                  value: notice
+              envFrom:
+                - secretRef:
+                    name: {{ .Chart.Name }}-secrets

@@ -27,6 +27,8 @@ class Stores {
   }
 
   static async findStores() {
+    logger.notice("Begin finding all stores...");
+
     await Stores.setup();
 
     const stateListResp = await got(
@@ -83,84 +85,118 @@ class Stores {
           index + 1
         } of ${cities.length})...`
       );
-      await sleep(_.random(25, 75));
-      const cityResp = await got(
-        `https://www.riteaid.com/locations/${city.state.toLowerCase()}/${
-          city.cityKey
-        }.html`,
-        {
-          headers: {
-            "User-Agent": "VaccineSpotter.org",
-          },
-          retry: 2,
+      try {
+        await sleep(_.random(25, 75));
+        const cityResp = await got(
+          `https://www.riteaid.com/locations/${city.state.toLowerCase()}/${
+            city.cityKey
+          }.html`,
+          {
+            headers: {
+              "User-Agent": "VaccineSpotter.org",
+            },
+            retry: 2,
+          }
+        );
+        const $city = cheerio.load(cityResp.body);
+        const locationContainers = $city(".c-location-grid-item");
+        for (const locationContainer of locationContainers) {
+          const $locationContainer = $city(locationContainer);
+          const expectedLocation = {
+            locationId: parseInt(
+              $locationContainer
+                .find(".c-location-grid-item-title")
+                .text()
+                .match(/#(\d+)/)[1],
+              10
+            ).toString(),
+            postalCode: _.trim(
+              $locationContainer.find(".c-address-postal-code").text()
+            ),
+          };
+          Stores.expectedLocations.push(expectedLocation);
+          Stores.expectedLocationIds.push(expectedLocation.locationId);
+          Stores.expectedPostalCodes.push(expectedLocation.postalCode);
         }
-      );
-      const $city = cheerio.load(cityResp.body);
-      const locationContainers = $city(".c-location-grid-item");
-      for (const locationContainer of locationContainers) {
-        const $locationContainer = $city(locationContainer);
-        const expectedLocation = {
-          locationId: parseInt(
-            $locationContainer
-              .find(".c-location-grid-item-title")
-              .text()
-              .match(/#(\d+)/)[1],
-            10
-          ).toString(),
-          cityKey: city.cityKey,
-          city: _.trim(
-            $locationContainer.find(".c-address-city span:first").text()
-          ),
-          state: city.state,
-          postalCode: _.trim(
-            $locationContainer.find(".c-address-postal-code").text()
-          ),
-        };
-        Stores.expectedLocations.push(expectedLocation);
-        Stores.expectedLocationIds.push(expectedLocation.locationId);
-        Stores.expectedPostalCodes.push(expectedLocation.postalCode);
+      } catch (err) {
+        // Philedelphia page currently returns an error, so manually deal with
+        // those based on our existing data:
+        // https://www.riteaid.com/locations/pa/philadelphia.html
+        if (city.state === "PA" && city.cityKey === "philadelphia") {
+          logger.warn(
+            "Error fetching Philadelphia, PA store list, falling back to any existing in database"
+          );
+          const stores = await Store.query()
+            .where("provider_id", "rite_aid")
+            .where("state", "PA")
+            .where("city", "Philadelphia");
+          for (const store of stores) {
+            const expectedLocation = {
+              locationId: store.provider_location_id,
+              postalCode: store.postal_code,
+            };
+            Stores.expectedLocations.push(expectedLocation);
+            Stores.expectedLocationIds.push(expectedLocation.locationId);
+            Stores.expectedPostalCodes.push(expectedLocation.postalCode);
+          }
+        } else {
+          throw err;
+        }
       }
     }
 
     Stores.expectedPostalCodes = _.uniq(Stores.expectedPostalCodes);
 
-    let { missingPostalCodes } = await Stores.processGrid(
+    let status = await Stores.processGrid(
       "state_grid_110km",
       Stores.expectedPostalCodes
     );
 
-    if (missingPostalCodes.length > 0) {
-      ({ missingPostalCodes } = await Stores.processGrid(
+    if (status.missingPostalCodes.length > 0) {
+      status = await Stores.processGrid(
         "state_grid_55km",
-        missingPostalCodes
-      ));
+        status.missingPostalCodes
+      );
     }
 
-    if (missingPostalCodes.length > 0) {
-      ({ missingPostalCodes } = await Stores.processGrid(
+    if (status.missingPostalCodes.length > 0) {
+      status = await Stores.processGrid(
         "state_grid_22km",
-        missingPostalCodes
-      ));
+        status.missingPostalCodes
+      );
     }
 
-    if (missingPostalCodes.length > 0) {
-      ({ missingPostalCodes } = await Stores.processGrid(
+    if (status.missingPostalCodes.length > 0) {
+      status = await Stores.processGrid(
         "state_grid_11km",
-        missingPostalCodes
-      ));
+        status.missingPostalCodes
+      );
     }
 
-    if (missingPostalCodes.length > 0) {
-      ({ missingPostalCodes } = await Stores.processGrid(
+    if (status.missingPostalCodes.length > 0) {
+      status = await Stores.processGrid(
         "postal_codes",
-        missingPostalCodes
-      ));
+        status.missingPostalCodes
+      );
+    }
+
+    if (status.missingPostalCodes.length > 0) {
+      logger.error(
+        `Missing locations still remain. Missing locations: ${JSON.stringify(
+          status.missingLocationIds
+        )}. Missing postal codes: ${JSON.stringify(status.missingPostalCodes)}`
+      );
+      process.exit(1);
     }
 
     await Store.knex().destroy();
+
+    logger.notice("Finished finding all stores...");
   }
 
   static async refreshStores() {
+    logger.notice("Begin refreshing all stores...");
+
     await Stores.setup();
 
     Stores.expectedLocations = [];
@@ -179,43 +215,58 @@ class Stores {
 
     Stores.expectedPostalCodes = _.uniq(Stores.expectedPostalCodes);
 
-    let { missingPostalCodes } = await Stores.processGrid(
+    let status = await Stores.processGrid(
       "state_grid_110km",
       Stores.expectedPostalCodes
     );
 
-    if (missingPostalCodes.length > 0) {
-      ({ missingPostalCodes } = await Stores.processGrid(
+    if (status.missingPostalCodes.length > 0) {
+      status = await Stores.processGrid(
         "state_grid_55km",
-        missingPostalCodes
-      ));
+        status.missingPostalCodes
+      );
     }
 
-    if (missingPostalCodes.length > 0) {
-      ({ missingPostalCodes } = await Stores.processGrid(
+    if (status.missingPostalCodes.length > 0) {
+      status = await Stores.processGrid(
         "state_grid_22km",
-        missingPostalCodes
-      ));
+        status.missingPostalCodes
+      );
     }
 
-    if (missingPostalCodes.length > 0) {
-      ({ missingPostalCodes } = await Stores.processGrid(
+    if (status.missingPostalCodes.length > 0) {
+      status = await Stores.processGrid(
         "state_grid_11km",
-        missingPostalCodes
-      ));
+        status.missingPostalCodes
+      );
     }
 
-    if (missingPostalCodes.length > 0) {
-      ({ missingPostalCodes } = await Stores.processGrid(
+    if (status.missingPostalCodes.length > 0) {
+      status = await Stores.processGrid(
         "postal_codes",
-        missingPostalCodes
-      ));
+        status.missingPostalCodes
+      );
+    }
+
+    if (status.missingPostalCodes.length > 0) {
+      status = await Stores.processGrid("stores", status.missingLocationIds);
+    }
+
+    if (status.missingPostalCodes.length > 0) {
+      logger.error(
+        `Missing locations still remain. Missing locations: ${JSON.stringify(
+          status.missingLocationIds
+        )}. Missing postal codes: ${JSON.stringify(status.missingPostalCodes)}`
+      );
+      process.exit(1);
     }
 
     await Store.knex().destroy();
+
+    logger.notice("Finished refreshing all stores...");
   }
 
-  static async processGrid(tableName, postalCodes) {
+  static async processGrid(tableName, lookupValues) {
     let gridCells;
     if (tableName === "postal_codes") {
       gridCells = await Store.knex().raw(
@@ -225,9 +276,22 @@ class Stores {
           st_y(location::geometry) AS latitude,
           st_x(location::geometry) AS longitude
         FROM postal_codes
-        WHERE postal_code IN (${postalCodes.map(() => "?").join(",")})
+        WHERE postal_code IN (${lookupValues.map(() => "?").join(",")})
         ORDER BY postal_code`,
-        postalCodes
+        lookupValues
+      );
+    } else if (tableName === "stores") {
+      gridCells = await Store.knex().raw(
+        `
+        SELECT
+          postal_code,
+          st_y(location::geometry) AS latitude,
+          st_x(location::geometry) AS longitude
+        FROM stores
+        WHERE provider_id = 'rite_aid'
+          AND provider_location_id IN (${lookupValues.map(() => "?").join(",")})
+        ORDER BY postal_code`,
+        lookupValues
       );
     } else {
       gridCells = await Store.knex().raw(
@@ -238,18 +302,21 @@ class Stores {
           st_x(g.centroid_land_location::geometry) AS longitude
         FROM postal_codes AS p
         INNER JOIN ?? AS g ON g.state_code = p.state_code AND st_intersects(p.location, g.geom)
-        WHERE p.postal_code IN (${postalCodes.map(() => "?").join(",")})
+        WHERE p.postal_code IN (${lookupValues.map(() => "?").join(",")})
         ORDER BY g.id`,
-        [tableName, ...postalCodes]
+        [tableName, ...lookupValues]
       );
     }
 
     const count = gridCells.rows.length;
+    logger.notice(`Importing using ${tableName} grid (${count} grid cells)...`);
     for (const [index, gridCell] of gridCells.rows.entries()) {
       logger.info(
-        `Importing stores for ${gridCell.centroid_postal_code} (${tableName} ${
-          gridCell.latitude
-        },${gridCell.longitude}) (${index + 1} of ${count})...`
+        `Importing stores for ${
+          gridCell.centroid_postal_code || gridCell.postal_code
+        } (${tableName} ${gridCell.latitude},${gridCell.longitude}) (${
+          index + 1
+        } of ${count})...`
       );
 
       await Stores.importStoresInGridCell(gridCell, 50);
@@ -266,11 +333,17 @@ class Stores {
       )
     );
 
-    console.info("importedStores: ", Object.keys(Stores.importedStores));
-    console.info("Stores.expectedLocationIds: ", Stores.expectedLocationIds);
-    console.info("Stores.expectedPostalCodes: ", Stores.expectedPostalCodes);
-    console.info("missingLocationIds: ", missingLocationIds);
-    console.info("missingPostalCodes: ", missingPostalCodes);
+    logger.notice(
+      `Imported using ${tableName} grid. Total imported: ${
+        Object.keys(Stores.importedStores).length
+      }. Expected locations: ${
+        Stores.expectedLocationIds.length
+      }. Expected postal codes: ${
+        Stores.expectedPostalCodes.length
+      }. Missing locations: ${
+        missingLocationIds.length
+      }. Missing postal codes: ${missingPostalCodes.length}`
+    );
 
     return {
       missingLocationIds,
