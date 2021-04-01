@@ -11,7 +11,9 @@
     "lint:js": "eslint --ext \".js,.vue\" --ignore-path .gitignore .",
     "lint": "yarn lint:js"
   },
-  "engines" : { "node" : ">=14" },
+  "engines": {
+    "node": ">=14"
+  },
   "dependencies": {
     "@cliqz/adblocker-playwright": "^1.20.3",
     "@extra/humanize": "^4.2.2-next.616",
