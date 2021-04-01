@@ -109,7 +109,13 @@
       </div>
     </div>
     <div class="col-auto">
-      <button type="submit" class="btn btn-primary btn-lg">Search</button>
+      <button
+        type="button"
+        class="btn btn-primary btn-lg"
+        onclick="window.location.reload();"
+      >
+        Search
+      </button>
     </div>
   </form>
 </template>
