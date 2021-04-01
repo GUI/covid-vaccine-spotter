@@ -21,7 +21,7 @@ export default {
   searchBar: {
     zipTextField: {
       header: "Buscar citas cerca de",
-      placeholder: "Ingrese un código postal de 5 dígitos",
+      placeholder: "Ingresa un código postal de 5 dígitos",
     },
     radius: {
       header: "Dentro de",
@@ -36,7 +36,7 @@ export default {
       vaccineType: {
         title: "Tipo de vacuna",
         options: [
-          "Todos",
+          "Todas",
           "Johnson and Johnson",
           "Moderna",
           "Pfizer",
@@ -51,7 +51,7 @@ export default {
     withoutAppointments: "Mostrar ubicaciones sin citas actuales",
     button: "Buscar",
     noResults:
-      "Ahora no podemos encontrar citas abiertas para tu búsqueda. Intenta expandir tu búsqueda o verifica nuevamente más tarde (las citas pueden aparecer y desaparecer rápidamente).",
+      "Ahora no podemos encontrar citas disponibles para tu búsqueda. Intenta expandir tu búsqueda o verifica nuevamente más tarde (las citas pueden aparecer y desaparecer rápidamente).",
   },
   buttons: {
     newAppointments: "Consultar nuevas citas",
@@ -75,7 +75,7 @@ export default {
     legend: {
       available: "Citas disponibles recientemente",
       notAvailable: "Citas no disponibles",
-      unknown: "Se desconoce el estado de la cita",
+      unknown: "Se desconoce el estado de las citas",
     },
   },
   time: {
@@ -90,8 +90,8 @@ export default {
       "En la última verificación, esta ubicación no lleva la vacuna en absoluto, y debido a esto no hemos obtenido ninguna cita.",
     notCollected: "Todavía no hemos recopilado ningún dato para esta farmacia.",
     oldData:
-      '<strong>¡Ay, no!</strong> Los datos de esta farmacia son antiguos. Por favor, visita al <a href="{link} target="_blank" rel="noopener">sitio de web</a> de la farmacia directly para la disponibilidad de citas. Esto probablemente significa que la farmacia está bloqueando el acceso de nuestra herramienta a su sitio web.',
-    visitWebsite: "Visitar el sito de web de {name}",
+      '<strong>¡Ay, no!</strong> Los datos de esta farmacia son antiguos. Por favor, visita el <a href="{link} target="_blank" rel="noopener">sitio de web</a> de la farmacia directamente para la disponibilidad de citas. Esto probablemente significa que la farmacia está bloqueando el acceso de nuestra herramienta a su sitio web.',
+    visitWebsite: "Visitar el sito web de {name}",
     lastChecked: "Última comprobación",
     never: "Nunca",
     viewOnWebsite:
@@ -170,7 +170,7 @@ export default {
       header: "Acerca de",
       text: [
         "¡Encontrar vacunas parece difícil! Con suerte, las cosas se volverán más fáciles pronto, pero mientras tanto, tal vez esto pueda ayudar. Si encuentras esto útil, no dudes en compartirlo. Ponte en contacto con cualquier preguntas:",
-        'Me gustaría agregar funcionalidad adicional, (escanear farmacias adicionales y enviar notificaciones por correo electrónico o mensajes de texto cuando se abren citas) si esto resulta útil y si el tiempo lo permite. Si eres programador@ de computadoras y te gustaría contribuir, el proyecto es <a href="https://github.com/GUI/covid-vaccine-finder"> fuente abierta en GitHub</a > (aunque actualmente es muy desordenado e indocumentado).',
+        'Me gustaría agregar funcionalidad adicional, (escanear farmacias adicionales y enviar notificaciones por correo electrónico o mensajes de texto cuando se abren citas) si esto resulta útil y si el tiempo lo permite. Si eres programador@ de computadoras y te gustaría contribuir, el proyecto es <a href="https://github.com/GUI/covid-vaccine-finder"> código abierto (open source) en GitHub</a > (aunque actualmente es muy desordenado e indocumentado).',
       ],
     },
     donate: {
