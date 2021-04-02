@@ -15,9 +15,9 @@ const { Store } = require("../../models/Store");
 
 const authMutex = new Mutex();
 
-// The Walgreens timeslot API always fetches the next 3 days of availability
+// The Walgreens timeslot API always fetches the next 5 days of availability
 // from the date specified.
-const timeslotsFetchDuration = Duration.fromObject({ days: 3 });
+const timeslotsFetchDuration = Duration.fromObject({ days: 5 });
 
 // Walgreens always seems to check 28 days in the future for 2nd dose
 // scheduling, regardless of vaccine type (Pfizer or Moderna).
@@ -281,7 +281,7 @@ class Appointments {
     // Based on the days when 1st appointments are available, determine what
     // date ranges in the future we need to check for 2nd doses on. Walgreens
     // currently always checks 28 days from the initially selected 1st dose
-    // date (and the API always returns 3 days of potential availability).
+    // date (and the API always returns 5 days of potential availability).
     const secondDoseDateIntervals = firstDoseDates.map((date) => {
       const start = DateTime.fromFormat(date, "yyyy-LL-dd", {
         zone: gridCell.time_zone,
@@ -292,23 +292,23 @@ class Appointments {
 
     // Based on the future date ranges we need for 2nd doses, determine the
     // minimal dates we need to query, accounting for potential overlap in
-    // dates. For example, if we need to check the 3 day ranges on 4/8, 4/9,
+    // dates. For example, if we need to check the 5 day ranges on 4/8, 4/9,
     // and 4/10, we only actually need to query on the 4/8 and 4/10 dates,
     // since the 4/9 data would be captured by the other queries (since each
-    // query includes 3 days of potential data).
+    // query includes 5 days of potential data).
     //
     // Start by merging all of the date ranges we need to query into a single
     // range.
     const secondDoseFetchDates = [];
     const secondDoseMergedIntervals = Interval.merge(secondDoseDateIntervals);
     for (const mergedInterval of secondDoseMergedIntervals) {
-      // Split the merged date range by the 3 day duration each query would
+      // Split the merged date range by the 5 day duration each query would
       // fetch.
       const splitIntervals = mergedInterval.splitBy(timeslotsFetchDuration);
       for (const splitInterval of splitIntervals) {
         const fetchEndDate = splitInterval.end;
 
-        // For the query start date used in the fetch, always use 3 days prior
+        // For the query start date used in the fetch, always use 5 days prior
         // to the end this may not match splitInterval.start if the
         // spitInterval is a shorter 1 or 2 day period). This ensures that we
         // don't accidentally query dates outside of the range than what
@@ -323,6 +323,8 @@ class Appointments {
         secondDoseFetchDates.push(fetchStartDate.toISODate());
       }
     }
+
+    logger.debug(`First dose dates: ${JSON.stringify(firstDoseDates)}, second dose date interval: ${secondDoseDateIntervals.toString()}, second dose fetch dates: ${JSON.stringify(secondDoseFetchDates)}`);
 
     return secondDoseFetchDates;
   }
