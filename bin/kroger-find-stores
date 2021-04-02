@@ -1,4 +1,4 @@
 #!/usr/bin/env node
 
-const { findStores } = require("../src/providers/kroger/stores");
+const { findStores } = require("../src/providers/Kroger/Stores");
 findStores();
