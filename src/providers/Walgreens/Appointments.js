@@ -29,6 +29,8 @@ class Appointments {
 
     Appointments.locationStores = {};
     Appointments.storeIdStoreNumbers = {};
+    Appointments.availabilityRequestsMade = 0;
+    Appointments.timeslotsRequestsMade = 0;
 
     const queue = new PQueue({ concurrency: 20 });
 
@@ -71,6 +73,16 @@ class Appointments {
         gridCell.centroid_postal_code
       } (${index + 1} of ${count})...`
     );
+
+    if ((index + 1) % 50 === 0) {
+      logger.notice(
+        `Refreshing grid cell ${gridCell.id} (${
+          index + 1
+        } of ${count}), Availability requests made: ${
+          Appointments.availabilityRequestsMade
+        }, Timeslot requests made: ${Appointments.timeslotsRequestsMade}`
+      );
+    }
 
     const basePatch = {
       appointments: [],
@@ -606,6 +618,7 @@ class Appointments {
     );
     const url =
       "https://www.walgreens.com/hcschedulersvc/svc/v1/immunizationLocations/availability";
+    Appointments.availabilityRequestsMade += 1;
     const resp = await curly.post(url, {
       httpHeader: [
         "Accept-Language: en-US,en;q=0.9",
@@ -631,7 +644,7 @@ class Appointments {
         },
         radius: radiusMiles,
       }),
-      timeoutMs: 15000,
+      timeoutMs: 5000,
       proxy: process.env.WALGREENS_AVAILABILITY_PROXY_SERVER,
       proxyUsername: process.env.WALGREENS_AVAILABILITY_PROXY_USERNAME,
       proxyPassword: process.env.WALGREENS_AVAILABILITY_PROXY_PASSWORD,
@@ -672,6 +685,7 @@ class Appointments {
     );
     const url =
       "https://www.walgreens.com/hcschedulersvc/svc/v2/immunizationLocations/timeslots";
+    Appointments.timeslotsRequestsMade += 1;
     const resp = await curly.post(url, {
       httpHeader: [
         "Accept-Language: en-US,en;q=0.9",
@@ -701,7 +715,7 @@ class Appointments {
         radius: radiusMiles,
         size: radiusMiles,
       }),
-      timeoutMs: 15000,
+      timeoutMs: 5000,
       proxy: process.env.WALGREENS_TIMESLOTS_PROXY_SERVER,
       proxyUsername: process.env.WALGREENS_TIMESLOTS_PROXY_USERNAME,
       proxyPassword: process.env.WALGREENS_TIMESLOTS_PROXY_PASSWORD,
