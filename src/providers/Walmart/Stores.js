@@ -88,7 +88,7 @@ class Stores {
           // https://en.wikipedia.org/wiki/Phenix_City,_Alabama#Time_zone
           if (
             patch.state === "AL" &&
-            patch.city === "Phenix City" &&
+            patch.city === "Phoenix City" &&
             patch.time_zone === "America/Chicago"
           ) {
             patch.time_zone = "America/New_York";
