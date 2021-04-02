@@ -1,13 +1,13 @@
-<template>
+<template comment>
   <div>
-    <!--[if IE]>
-      <div class="alert alert-danger rounded-0">
-        Unfortunately, this website is not compatible with Internet Explorer.
-        Sorry! Please <a
-        href="https://browser-update.org/update-browser.html">upgrade your
-        browser</a> to use this website.
-      </div>
-    <![endif]-->
+    <div class="alert alert-danger rounded-0 ie-warning" style="display: none">
+      Unfortunately, this website is not compatible with outdated versions of
+      Internet Explorer. Sorry!<br />Please
+      <a href="https://browser-update.org/update-browser.html"
+        >upgrade your browser</a
+      >
+      to use this website.
+    </div>
     <Nuxt />
     <footer class="mt-3">
       <div class="container-lg">
@@ -573,5 +573,13 @@ h2.brand {
 
 .brand-link a svg {
   margin-left: 4px;
+}
+
+html.ie .ie-warning {
+  display: block !important;
+  font-size: 24px;
+  line-height: 28px;
+  text-align: center;
+  font-weight: bold;
 }
 </style>
