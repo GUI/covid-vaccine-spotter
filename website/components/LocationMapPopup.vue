@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h6>{{ store.properties.provider_brand_name }}</h6>
+    <h6>{{ title }}</h6>
     <p>
       <template v-if="store.properties.address">
         {{ store.properties.address }}<br />
@@ -95,6 +95,19 @@ export default {
   },
 
   computed: {
+    title() {
+      let title = this.store.properties.provider_brand_name;
+      if (
+        this.store.properties.provider_brand === "centura_driveup_event" ||
+        this.store.properties.provider_brand === "comassvax"
+      ) {
+        title += ` - ${this.store.properties.name}`;
+      }
+      title += ` - ${this.fullAddress}`;
+
+      return title;
+    },
+
     appointmentsLastFetchedDate() {
       return new Date(this.store.properties.appointments_last_fetched);
     },
