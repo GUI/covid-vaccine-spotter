@@ -1,8 +1,11 @@
 <template comment>
   <div>
-    <div class="alert alert-danger rounded-0 ie-warning" style="display: none">
-      Unfortunately, this website is not compatible with outdated versions of
-      Internet Explorer. Sorry!<br />Please
+    <div
+      class="alert alert-danger rounded-0 unsupported-browser-warning"
+      style="display: none"
+    >
+      Unfortunately, this website is not compatible with your web browser.
+      Sorry!<br />Please
       <a href="https://browser-update.org/update-browser.html"
         >upgrade your browser</a
       >
@@ -575,7 +578,7 @@ h2.brand {
   margin-left: 4px;
 }
 
-html.ie .ie-warning {
+html.no-arrow .unsupported-browser-warning {
   display: block !important;
   font-size: 24px;
   line-height: 28px;
