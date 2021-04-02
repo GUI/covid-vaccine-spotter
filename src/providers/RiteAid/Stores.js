@@ -102,12 +102,30 @@ class Stores {
         const locationContainers = $city(".c-location-grid-item");
         for (const locationContainer of locationContainers) {
           const $locationContainer = $city(locationContainer);
+          const locationTitle = $locationContainer
+            .find(".c-location-grid-item-title")
+            .text();
+
+          if (locationTitle.includes("Closed #")) {
+            logger.info(`Skipping closed location ${locationTitle}`);
+            continue;
+          }
+
+          const hours = $locationContainer.find(".js-location-hours");
+          if (hours && hours[1]) {
+            const hourDays = JSON.parse($city(hours[1]).attr("data-days"));
+            const allPharmacyDaysClosed = hourDays.every(
+              (d) => d.intervals.length === 0
+            );
+            if (allPharmacyDaysClosed) {
+              logger.info(`Skipping non-pharmacy location ${locationTitle}`);
+              continue;
+            }
+          }
+
           const expectedLocation = {
             locationId: parseInt(
-              $locationContainer
-                .find(".c-location-grid-item-title")
-                .text()
-                .match(/#(\d+)/)[1],
+              locationTitle.match(/#(\d+)/)[1],
               10
             ).toString(),
             postalCode: _.trim(
@@ -152,35 +170,46 @@ class Stores {
       Stores.expectedPostalCodes
     );
 
-    if (status.missingPostalCodes.length > 0) {
+    if (status.missingLocationIds.length > 0) {
       status = await Stores.processGrid(
         "state_grid_55km",
         status.missingPostalCodes
       );
     }
 
-    if (status.missingPostalCodes.length > 0) {
+    if (status.missingLocationIds.length > 0) {
       status = await Stores.processGrid(
         "state_grid_22km",
         status.missingPostalCodes
       );
     }
 
-    if (status.missingPostalCodes.length > 0) {
+    if (status.missingLocationIds.length > 0) {
       status = await Stores.processGrid(
         "state_grid_11km",
         status.missingPostalCodes
       );
     }
 
-    if (status.missingPostalCodes.length > 0) {
+    if (status.missingLocationIds.length > 0) {
       status = await Stores.processGrid(
         "postal_codes",
         status.missingPostalCodes
       );
     }
 
-    if (status.missingPostalCodes.length > 0) {
+    if (status.missingLocationIds.length > 0) {
+      status = await Stores.processGrid("custom", [
+        // Store #00172, New Castle, DE
+        {
+          postal_code: "19720",
+          latitude: 39.688938793492646,
+          longitude: -75.55718926716509,
+        },
+      ]);
+    }
+
+    if (status.missingLocationIds.length > 0) {
       logger.error(
         `Missing locations still remain. Missing locations: ${JSON.stringify(
           status.missingLocationIds
@@ -220,39 +249,39 @@ class Stores {
       Stores.expectedPostalCodes
     );
 
-    if (status.missingPostalCodes.length > 0) {
+    if (status.missingLocationIds.length > 0) {
       status = await Stores.processGrid(
         "state_grid_55km",
         status.missingPostalCodes
       );
     }
 
-    if (status.missingPostalCodes.length > 0) {
+    if (status.missingLocationIds.length > 0) {
       status = await Stores.processGrid(
         "state_grid_22km",
         status.missingPostalCodes
       );
     }
 
-    if (status.missingPostalCodes.length > 0) {
+    if (status.missingLocationIds.length > 0) {
       status = await Stores.processGrid(
         "state_grid_11km",
         status.missingPostalCodes
       );
     }
 
-    if (status.missingPostalCodes.length > 0) {
+    if (status.missingLocationIds.length > 0) {
       status = await Stores.processGrid(
         "postal_codes",
         status.missingPostalCodes
       );
     }
 
-    if (status.missingPostalCodes.length > 0) {
+    if (status.missingLocationIds.length > 0) {
       status = await Stores.processGrid("stores", status.missingLocationIds);
     }
 
-    if (status.missingPostalCodes.length > 0) {
+    if (status.missingLocationIds.length > 0) {
       logger.error(
         `Missing locations still remain. Missing locations: ${JSON.stringify(
           status.missingLocationIds
@@ -293,6 +322,10 @@ class Stores {
         ORDER BY postal_code`,
         lookupValues
       );
+    } else if (tableName === "custom") {
+      gridCells = {
+        rows: lookupValues,
+      };
     } else {
       gridCells = await Store.knex().raw(
         `
@@ -374,7 +407,9 @@ class Stores {
 
     if (!resp.body.Data) {
       logger.info(
-        `No results found for ${gridCell.centroid_postal_code}, skipping`
+        `No results found for ${
+          gridCell.centroid_postal_code || gridCell.postal_code
+        }, skipping`
       );
       return resp;
     }
@@ -413,6 +448,7 @@ class Stores {
           state: store.state,
           postal_code: store.zipcode,
           location: `point(${store.longitude} ${store.latitude})`,
+          location_source: "provider",
           time_zone: timeZone,
           metadata_raw: store,
           carries_vaccine: store.specialServiceKeys.includes("PREF-112"),

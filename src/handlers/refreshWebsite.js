@@ -78,6 +78,7 @@ module.exports.refreshWebsite = async () => {
       COUNT(stores.id) AS store_count,
       COUNT(DISTINCT stores.provider_brand_id) AS provider_brand_count,
       MAX(stores.appointments_last_fetched) AS appointments_last_fetched,
+      MAX(COALESCE(stores.appointments_last_modified, stores.appointments_last_fetched)) AS appointments_last_modified,
       (
         SELECT
         jsonb_agg(
@@ -89,6 +90,7 @@ module.exports.refreshWebsite = async () => {
             'url', p.url,
             'location_count', p.location_count,
             'appointments_last_fetched', p.appointments_last_fetched,
+            'appointments_last_modified', p.appointments_last_modified,
             'status', p.status
           )
         )
@@ -97,6 +99,7 @@ module.exports.refreshWebsite = async () => {
             provider_brands.*,
             COUNT(stores.id) AS location_count,
             MAX(appointments_last_fetched) AS appointments_last_fetched,
+            MAX(COALESCE(appointments_last_modified, appointments_last_fetched)) AS appointments_last_modified,
             CASE WHEN MAX(appointments_last_fetched) > (now() - interval '1 hour') THEN 'active' WHEN MAX(appointments_last_fetched) IS NULL THEN 'unknown' ELSE 'inactive' END AS status
           FROM stores
           LEFT JOIN provider_brands ON stores.provider_brand_id = provider_brands.id
@@ -140,6 +143,7 @@ module.exports.refreshWebsite = async () => {
           'store_count', COUNT(stores.id),
           'provider_brand_count', COUNT(DISTINCT stores.provider_brand_id),
           'appointments_last_fetched', MAX(stores.appointments_last_fetched),
+          'appointments_last_modified', MAX(COALESCE(stores.appointments_last_modified, stores.appointments_last_fetched)),
           'provider_brands', (
             SELECT
             jsonb_agg(
@@ -151,6 +155,7 @@ module.exports.refreshWebsite = async () => {
                 'url', p.url,
                 'location_count', p.location_count,
                 'appointments_last_fetched', p.appointments_last_fetched,
+                'appointments_last_modified', p.appointments_last_modified,
                 'status', p.status
               )
             )
@@ -159,6 +164,7 @@ module.exports.refreshWebsite = async () => {
                 provider_brands.*,
                 COUNT(stores.id) AS location_count,
                 MAX(appointments_last_fetched) AS appointments_last_fetched,
+                MAX(COALESCE(appointments_last_modified, appointments_last_fetched)) AS appointments_last_modified,
                 CASE WHEN MAX(appointments_last_fetched) > (now() - interval '1 hour') THEN 'active' WHEN MAX(appointments_last_fetched) IS NULL THEN 'unknown' ELSE 'inactive' END AS status
               FROM stores
               LEFT JOIN provider_brands ON stores.provider_brand_id = provider_brands.id
@@ -199,11 +205,12 @@ module.exports.refreshWebsite = async () => {
                 'appointments_available_all_doses', CASE WHEN appointments_available IS NULL THEN NULL WHEN appointments_available AND (appointment_types->>'all_doses' = 'true' OR appointment_types->>'unknown' = 'true') THEN true ELSE false END,
                 'appointments_available_2nd_dose_only', CASE WHEN appointments_available IS NULL THEN NULL WHEN appointments_available AND appointment_types->>'2nd_dose_only' = 'true' THEN true ELSE false END,
                 'appointments_last_fetched', appointments_last_fetched,
+                'appointments_last_modified', COALESCE(appointments_last_modified, appointments_last_fetched),
                 'appointment_types', appointment_types,
                 'appointment_vaccine_types', appointment_vaccine_types
               )
             )
-            ORDER BY CASE WHEN appointments_available = false THEN 1 WHEN appointments_available IS NULL THEN 2 WHEN appointments_available = true THEN 3 END, appointments_last_fetched DESC, city
+            ORDER BY CASE WHEN appointments_available = false THEN 1 WHEN appointments_available IS NULL THEN 2 WHEN appointments_available = true THEN 3 END, COALESCE(appointments_last_modified, appointments_last_fetched) DESC, city
           )
           FROM stores
           LEFT JOIN provider_brands ON provider_brands.id = stores.provider_brand_id

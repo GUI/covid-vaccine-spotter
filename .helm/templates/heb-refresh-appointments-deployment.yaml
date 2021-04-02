@@ -18,10 +18,9 @@ spec:
         - name: {{ .Chart.Name }}-container-registry-secret
       containers:
         - name: {{ .Chart.Name }}-heb-refresh-appointments
-{{ tuple "covid-vaccine-spotter" . | werf_container_image | indent 10 }}
+          image: {{ index .Values.werf.image "covid-vaccine-spotter" }}
           args: ["bin/heb-refresh-appointments"]
           env:
-{{ tuple "covid-vaccine-spotter" . | werf_container_env | indent 12 }}
             - name: LOG_LEVEL
               value: notice
           envFrom:

@@ -36,12 +36,12 @@ class Stores {
             distance: "50",
           },
           headers: {
-            "User-Agent":
-              "covid-vaccine-finder (https://github.com/GUI/covid-vaccine-finder)",
+            "User-Agent": "VaccineSpotter.org",
           },
           responseType: "json",
           timeout: 30000,
-          retry: 0,
+          retry: 2,
+          throwHttpErrors: false,
           agent: {
             https: new HttpsProxyAgent({
               keepAlive: true,
@@ -57,6 +57,16 @@ class Stores {
           },
         }
       );
+
+      if (resp.statusCode !== 200) {
+        logger.warn(
+          `Unsuccessful response, skipping: ${resp.statusCode}: ${resp.body}`
+        );
+        continue;
+      } else if (!resp?.body?.payload?.storesData?.stores) {
+        logger.warn(`Unexpected response body, skipping: ${resp.body}`);
+        continue;
+      }
 
       for (const store of resp.body.payload.storesData.stores) {
         if (importedStores[store.id]) {

@@ -15,8 +15,7 @@ class Appointments {
       "https://www.thriftywhite.com/covid19vaccine",
       {
         headers: {
-          "User-Agent":
-            "covid-vaccine-finder (https://github.com/GUI/covid-vaccine-finder)",
+          "User-Agent": "VaccineSpotter.org",
         },
         timeout: 30000,
         retry: 0,
@@ -33,7 +32,7 @@ class Appointments {
     for (const [stateCode, cities] of Object.entries(stateSlots)) {
       for (const [cityKey, city] of Object.entries(cities)) {
         for (const [cityDataKey, cityDataValue] of Object.entries(city)) {
-          if (cityDataKey.match(/^d\d+$/)) {
+          if (cityDataKey.match(/^d\d+/)) {
             logger.info(`Processing ${city.name} ${cityDataValue.dateF}...`);
 
             const lastFetched = DateTime.utc().toISO();
@@ -41,8 +40,7 @@ class Appointments {
               "https://www.thriftywhite.com/covid19vaccine",
               {
                 headers: {
-                  "User-Agent":
-                    "covid-vaccine-finder/1.0 (https://github.com/GUI/covid-vaccine-finder)",
+                  "User-Agent": "VaccineSpotter.org",
                 },
                 form: {
                   ajaxGetOpenSlots: "1",
@@ -53,13 +51,23 @@ class Appointments {
                 responseType: "json",
               }
             );
+
+            const data = resp.body.oSlt?.[stateCode]?.[cityKey]?.[cityDataKey];
+            if (!data) {
+              logger.info(
+                `Slot data has disappeared for city by the time slot request was made: ${city.name}, ${stateCode}`
+              );
+              continue;
+            }
+
+            let slotsFound = false;
             for (const [
               appointmentsDataKey,
               appointmentsDataValue,
             ] of Object.entries(
               resp.body.oSlt[stateCode][cityKey][cityDataKey]
             )) {
-              if (appointmentsDataKey.match(/^s\d+$/)) {
+              if (appointmentsDataKey.match(/^s\d+/)) {
                 if (!storeResponses[appointmentsDataValue.storeNumber]) {
                   storeResponses[appointmentsDataValue.storeNumber] = {
                     lastFetched,
@@ -78,8 +86,17 @@ class Appointments {
                       resp.body.oSlt[stateCode][cityKey][cityDataKey].dateF,
                   }
                 );
+
+                slotsFound = true;
               }
             }
+
+            if (!slotsFound) {
+              logger.error(
+                `Expected to find slot data, but still missing: ${city.name}, ${stateCode}`
+              );
+            }
+
             await sleep(1000);
           }
         }
@@ -104,7 +121,7 @@ class Appointments {
 
       for (const dateData of data.dateData) {
         for (const [key, value] of Object.entries(dateData)) {
-          if (key.match(/^t\d+\w+$/)) {
+          if (key.match(/^t\d+\w+/)) {
             patch.appointments.push({
               appointment_types: [],
               vaccine_types: normalizedVaccineTypes(value.manuf),

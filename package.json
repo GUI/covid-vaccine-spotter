@@ -11,6 +11,9 @@
     "lint:js": "eslint --ext \".js,.vue\" --ignore-path .gitignore .",
     "lint": "yarn lint:js"
   },
+  "engines": {
+    "node": ">=14"
+  },
   "dependencies": {
     "@cliqz/adblocker-playwright": "^1.20.3",
     "@extra/humanize": "^4.2.2-next.616",
@@ -61,7 +64,6 @@
     "rollbar": "^2.21.1",
     "sleep-promise": "^9.1.0",
     "slug": "^4.0.3",
-    "slugify": "^1.4.7",
     "socket.io-client": "^2.0.0",
     "topojson-client": "^3.1.0",
     "tough-cookie": "^4.0.0",

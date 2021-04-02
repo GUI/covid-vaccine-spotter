@@ -1,25 +1,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Chart.Name }}-southeastern-grocers-refresh-appointments-deployment
+  name: {{ .Chart.Name }}-kroger-refresh-appointments-deployment
   labels:
-    app: {{ .Chart.Name }}-southeastern-grocers-refresh-appointments
+    app: {{ .Chart.Name }}-kroger-refresh-appointments
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .Chart.Name }}-southeastern-grocers-refresh-appointments
+      app: {{ .Chart.Name }}-kroger-refresh-appointments
   template:
     metadata:
       labels:
-        app: {{ .Chart.Name }}-southeastern-grocers-refresh-appointments
+        app: {{ .Chart.Name }}-kroger-refresh-appointments
     spec:
       imagePullSecrets:
         - name: {{ .Chart.Name }}-container-registry-secret
       containers:
-        - name: {{ .Chart.Name }}-southeastern-grocers-refresh-appointments
+        - name: {{ .Chart.Name }}-kroger-refresh-appointments
           image: {{ index .Values.werf.image "covid-vaccine-spotter" }}
-          args: ["bin/southeastern-grocers-refresh-appointments"]
+          args: ["bin/kroger-refresh-appointments"]
           env:
             - name: LOG_LEVEL
               value: notice

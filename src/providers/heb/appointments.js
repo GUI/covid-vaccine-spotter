@@ -3,7 +3,7 @@ const { DateTime } = require("luxon");
 const _ = require("lodash");
 const got = require("got");
 const { capitalCase } = require("capital-case");
-const slugify = require("slugify");
+const slug = require("slug");
 const logger = require("../../logger");
 const setComputedStoreValues = require("../../setComputedStoreValues");
 const { Store } = require("../../models/Store");
@@ -68,13 +68,7 @@ const HebAppointments = {
 
       let providerLocationId = loc.storeNumber;
       if (!providerLocationId) {
-        providerLocationId = slugify(
-          `${loc.type}-${postalCode}-${loc.street}`,
-          {
-            strict: true,
-            lower: true,
-          }
-        );
+        providerLocationId = slug(`${loc.type}-${postalCode}-${loc.street}`);
       }
       updatedProviderLocationIds.push(providerLocationId);
 

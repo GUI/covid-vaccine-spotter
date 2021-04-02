@@ -17,7 +17,7 @@
           <font-awesome-icon icon="check-circle" class="align-middle" />
           <span class="fs-5"
             >Appointments available as of
-            <display-local-time :time="appointmentsLastFetchedDate"
+            <display-local-time :time="appointmentsLastModifiedDate"
           /></span>
         </div>
         <appointment-times :store="store" />
@@ -156,9 +156,16 @@ export default {
       return new Date(this.store.properties.appointments_last_fetched);
     },
 
+    appointmentsLastModifiedDate() {
+      return new Date(this.store.properties.appointments_last_modified);
+    },
+
     title() {
       let title = this.store.properties.provider_brand_name;
-      if (this.store.properties.provider_brand === "centura_driveup_event") {
+      if (
+        this.store.properties.provider_brand === "centura_driveup_event" ||
+        this.store.properties.provider_brand === "comassvax"
+      ) {
         title += ` - ${this.store.properties.name}`;
       }
       title += ` - ${this.fullAddress}`;

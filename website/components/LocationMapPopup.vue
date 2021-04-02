@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h6>{{ store.properties.provider_brand_name }}</h6>
+    <h6>{{ title }}</h6>
     <p>
       <template v-if="store.properties.address">
         {{ store.properties.address }}<br />
@@ -15,7 +15,7 @@
         <p class="text-success">
           <font-awesome-icon icon="check-circle" />
           Appointments available as of
-          <display-local-time :time="appointmentsLastFetchedDate" />
+          <display-local-time :time="appointmentsLastModifiedDate" />
         </p>
         <p>
           <a :href="`#location-${store.properties.id}`"
@@ -95,8 +95,24 @@ export default {
   },
 
   computed: {
+    title() {
+      let title = this.store.properties.provider_brand_name;
+      if (
+        this.store.properties.provider_brand === "centura_driveup_event" ||
+        this.store.properties.provider_brand === "comassvax"
+      ) {
+        title += ` - ${this.store.properties.name}`;
+      }
+
+      return title;
+    },
+
     appointmentsLastFetchedDate() {
       return new Date(this.store.properties.appointments_last_fetched);
+    },
+
+    appointmentsLastModifiedDate() {
+      return new Date(this.store.properties.appointments_last_modified);
     },
   },
 };

@@ -21,10 +21,9 @@ spec:
             - name: {{ .Chart.Name }}-container-registry-secret
           containers:
             - name: {{ .Chart.Name }}-rite-aid-find-stores
-{{ tuple "covid-vaccine-spotter" . | werf_container_image | indent 14 }}
+              image: {{ index .Values.werf.image "covid-vaccine-spotter" }}
               args: ["bin/rite-aid-find-stores"]
               env:
-{{ tuple "covid-vaccine-spotter" . | werf_container_env | indent 16 }}
                 - name: LOG_LEVEL
                   value: notice
               envFrom:

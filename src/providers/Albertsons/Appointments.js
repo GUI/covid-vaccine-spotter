@@ -31,12 +31,16 @@ class Appointments {
 
     const lastFetched = DateTime.utc().toISO();
     const resp = await Appointments.fetchAvailability();
+    const lastModified = DateTime.fromHTTP(
+      resp.headers["last-modified"]
+    ).toISO();
     for (const store of resp.body) {
       const patch = {
         provider_id: "albertsons",
         provider_location_id: store.id,
         appointments: [],
         appointments_last_fetched: lastFetched,
+        appointments_last_modified: lastModified,
         appointments_available: store.availability === "yes",
         appointments_raw: {
           aailability: store,
