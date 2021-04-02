@@ -103,7 +103,6 @@ export default {
       ) {
         title += ` - ${this.store.properties.name}`;
       }
-      title += ` - ${this.fullAddress}`;
 
       return title;
     },
