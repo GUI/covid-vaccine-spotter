@@ -3,29 +3,30 @@ const { DateTime } = require("luxon");
 const _ = require("lodash");
 const got = require("got");
 const { capitalCase } = require("capital-case");
-const logger = require("../logger");
-const setComputedStoreValues = require("../setComputedStoreValues");
-const { Store } = require("../models/Store");
-const { Provider } = require("../models/Provider");
-const { ProviderBrand } = require("../models/ProviderBrand");
+const logger = require("../../logger");
+const setComputedStoreValues = require("../../setComputedStoreValues");
+const { Store } = require("../../models/Store");
+const { Provider } = require("../../models/Provider");
+const { ProviderBrand } = require("../../models/ProviderBrand");
+const Geocode = require("../../Geocode");
 
-const Cvs = {
-  fetchStatus: async () =>
-    got(
+class Appointments {
+  static async fetchStatus() {
+    return got(
       "https://www.cvs.com/immunizations/covid-19-vaccine.vaccine-status.json?vaccineinfo",
       {
         headers: {
-          "User-Agent":
-            "covid-vaccine-finder (https://github.com/GUI/covid-vaccine-finder)",
+          "User-Agent": "VaccineSpotter.org",
           Referer: "https://www.cvs.com/immunizations/covid-19-vaccine",
         },
         responseType: "json",
         timeout: 30000,
         retry: 0,
       }
-    ),
+    );
+  }
 
-  refreshStores: async () => {
+  static async refreshStores() {
     logger.notice("Begin refreshing appointments for all stores...");
 
     await Provider.query()
@@ -54,7 +55,7 @@ const Cvs = {
 
     const lastFetched = DateTime.utc().toISO();
 
-    const resp = await Cvs.fetchStatus();
+    const resp = await Appointments.fetchStatus();
     for (const [stateCode, cities] of Object.entries(
       resp.body.responsePayloadData.data
     )) {
@@ -78,23 +79,21 @@ const Cvs = {
           appointments_raw: raw,
         };
 
-        setComputedStoreValues(patch);
-
-        queue.add(() =>
-          Store.query()
+        queue.add(async () => {
+          setComputedStoreValues(patch);
+          await Geocode.fillInMissingForStore(patch);
+          await Store.query()
             .insert(patch)
             .onConflict(["provider_id", "provider_location_id"])
-            .merge()
-        );
+            .merge();
+        });
       }
     }
 
     await queue.onIdle();
 
     logger.notice("Finished refreshing appointments for all stores.");
-  },
-};
+  }
+}
 
-module.exports.refreshCvs = async () => {
-  await Cvs.refreshStores();
-};
+module.exports = Appointments;
