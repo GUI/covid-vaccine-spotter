@@ -324,7 +324,13 @@ class Appointments {
       }
     }
 
-    logger.debug(`First dose dates: ${JSON.stringify(firstDoseDates)}, second dose date interval: ${secondDoseDateIntervals.toString()}, second dose fetch dates: ${JSON.stringify(secondDoseFetchDates)}`);
+    logger.debug(
+      `First dose dates: ${JSON.stringify(
+        firstDoseDates
+      )}, second dose date interval: ${secondDoseDateIntervals.toString()}, second dose fetch dates: ${JSON.stringify(
+        secondDoseFetchDates
+      )}`
+    );
 
     return secondDoseFetchDates;
   }
