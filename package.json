@@ -52,7 +52,6 @@
     "mkdirp": "^1.0.4",
     "node-libcurl": "^2.3.1",
     "nuxt": "^2.14.12",
-    "nuxt-modernizr": "^1.0.12",
     "objection": "^2.2.14",
     "p-queue": "^6.6.2",
     "p-retry": "^4.4.0",

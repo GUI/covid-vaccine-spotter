@@ -47,16 +47,7 @@ export default {
   buildModules,
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: [
-    "@nuxt/http",
-    [
-      "nuxt-modernizr",
-      {
-        "feature-detects": ["es6/arrow"],
-        options: ["setClasses"],
-      },
-    ],
-  ],
+  modules: ["@nuxt/http"],
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
