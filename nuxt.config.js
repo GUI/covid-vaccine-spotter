@@ -101,4 +101,10 @@ export default {
   googleAnalytics: {
     id: "UA-49484378-1",
   },
+
+  http: {
+    // Try to prevent some random browsers from apparently requesting
+    // localhost:3000 requests in production for API calls.
+    browserBaseURL: "/",
+  },
 };
