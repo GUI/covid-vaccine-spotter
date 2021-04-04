@@ -358,7 +358,7 @@ module.exports.refreshWebsite = async () => {
       "copy",
       "-v",
       "--header-upload",
-      "Cache-Control: public, max-age=15, s-maxage=40",
+      "Cache-Control: public, max-age=600, s-maxage=600",
       "--header-upload",
       "Content-Encoding: gzip",
       "./tmp/dist-sync/_nuxt/",
@@ -374,6 +374,23 @@ module.exports.refreshWebsite = async () => {
       "Cache-Control: public, max-age=15, s-maxage=40",
       "--header-upload",
       "Content-Encoding: gzip",
+      "--exclude",
+      "v0/states/*/postal_codes.json",
+      "./tmp/dist-sync/api/",
+      `:gcs:${process.env.WEBSITE_BUCKET}/api/`,
+    ]);
+
+    // Sync postal code files that are more static and can have longer cache
+    // durations.
+    await runShell("rclone", [
+      "copy",
+      "-v",
+      "--header-upload",
+      "Cache-Control: public, max-age=600, s-maxage=600",
+      "--header-upload",
+      "Content-Encoding: gzip",
+      "--include",
+      "v0/states/*/postal_codes.json",
       "./tmp/dist-sync/api/",
       `:gcs:${process.env.WEBSITE_BUCKET}/api/`,
     ]);
