@@ -150,11 +150,10 @@ export default {
         this.$nuxt.$loading.start();
       }
 
-      const usStatePromise = this.$http.$get(
-        `/api/v0/states/${this.$route.params.state}.json`
-      );
+      const state = this.$route.params.state.toUpperCase();
+      const usStatePromise = this.$http.$get(`/api/v0/states/${state}.json`);
       const postalCodesPromise = this.$http.$get(
-        `/api/v0/states/${this.$route.params.state}/postal_codes.json`
+        `/api/v0/states/${state}/postal_codes.json`
       );
 
       const usState = Object.freeze(await usStatePromise);
