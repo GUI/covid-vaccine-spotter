@@ -38,7 +38,11 @@ export default {
   css: ["@fortawesome/fontawesome-svg-core/styles.css"],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: ["~/plugins/vuex-router-sync", "~/plugins/fontawesome.js"],
+  plugins: [
+    "~/plugins/vuex-router-sync",
+    "~/plugins/fontawesome.js",
+    "~/plugins/http",
+  ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -47,7 +51,20 @@ export default {
   buildModules,
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: ["@nuxt/http"],
+  modules: [
+    "@nuxt/http",
+    [
+      "nuxt-rollbar-module",
+      {
+        serverAccessToken: process.env.ROLLBAR_ACCESS_TOKEN,
+        clientAccessToken: process.env.ROLLBAR_CLIENT_ACCESS_TOKEN,
+        config: {
+          captureUncaught: true,
+          captureUnhandledRejections: true,
+        },
+      },
+    ],
+  ],
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
