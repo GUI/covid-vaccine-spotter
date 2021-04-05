@@ -9,7 +9,7 @@
           <input
             id="zip"
             v-model="queryZip"
-            type="text"
+            type="number"
             name="zip"
             class="form-control form-control-lg"
             placeholder="Enter a 5 digit ZIP code"
