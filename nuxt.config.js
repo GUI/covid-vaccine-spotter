@@ -59,6 +59,8 @@ export default {
         serverAccessToken: process.env.ROLLBAR_ACCESS_TOKEN,
         clientAccessToken: process.env.ROLLBAR_CLIENT_ACCESS_TOKEN,
         config: {
+          addErrorContext: true,
+          autoInstrument: true,
           captureUncaught: true,
           captureUnhandledRejections: true,
         },
