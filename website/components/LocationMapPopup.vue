@@ -99,7 +99,8 @@ export default {
       let title = this.store.properties.provider_brand_name;
       if (
         this.store.properties.provider_brand === "centura_driveup_event" ||
-        this.store.properties.provider_brand === "comassvax"
+        this.store.properties.provider_brand === "comassvax" ||
+        this.store.properties.provider_brand === "health_mart"
       ) {
         title += ` - ${this.store.properties.name}`;
       }
