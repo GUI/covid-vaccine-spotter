@@ -40,6 +40,7 @@
     "geokdbush": "^1.1.0",
     "got": "^11.8.1",
     "hpagent": "^0.1.1",
+    "html-entities": "^2.3.2",
     "json-stable-stringify": "^1.0.1",
     "kdbush": "^3.0.0",
     "knex": "^0.21.17",

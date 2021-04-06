@@ -23,12 +23,40 @@ const keys = [
 ];
 
 module.exports = (address) => {
-  const parsed = parser.parseLocation(address);
-  let normalized = "";
-  for (const key of keys) {
-    if (parsed[key]) {
-      normalized += ` ${parsed[key]}`;
+  let addressString = address;
+  if (_.isObjectLike(address)) {
+    const addressParts = [];
+    if (address.address) {
+      addressParts.push(address.address.replace(/,/g, ""));
     }
+
+    if (address.city) {
+      addressParts.push(address.city.replace(/,/g, ""));
+    }
+
+    if (address.state) {
+      addressParts.push(address.state.replace(/,/g, ""));
+    }
+
+    if (address.postal_code) {
+      addressParts.push(
+        _.trim(address.postal_code).replace(/,/g, "").substr(0, 5)
+      );
+    }
+
+    addressString = addressParts.join(", ");
+  }
+
+  const parsed = parser.parseLocation(addressString);
+  let normalized = "";
+  if (parsed) {
+    for (const key of keys) {
+      if (parsed[key]) {
+        normalized += ` ${parsed[key]}`;
+      }
+    }
+  } else {
+    normalized = addressString;
   }
 
   normalized = _.trim(normalized.toLowerCase().replace(/[^A-Za-z0-9\-\s]/g, ""))
