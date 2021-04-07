@@ -66,7 +66,7 @@ resource "cloudflare_worker_route" "state-redirect-no-slash-no-params" {
   for_each = local.states
 
   zone_id = cloudflare_zone.vaccinespotter-org.id
-  pattern = "www.vaccinespotter.org/${each.key}"
+  pattern = "*.vaccinespotter.org/${each.key}"
   script_name = cloudflare_worker_script.state-redirect.name
 }
 
@@ -74,6 +74,6 @@ resource "cloudflare_worker_route" "state-redirect-slash" {
   for_each = local.states
 
   zone_id = cloudflare_zone.vaccinespotter-org.id
-  pattern = "www.vaccinespotter.org/${each.key}/*"
+  pattern = "*.vaccinespotter.org/${each.key}/*"
   script_name = cloudflare_worker_script.state-redirect.name
 }
