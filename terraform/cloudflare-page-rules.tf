@@ -1,7 +1,7 @@
 resource "cloudflare_page_rule" "no-index-html" {
   zone_id = cloudflare_zone.vaccinespotter-org.id
   target = "*.vaccinespotter.org/*index.html*"
-  priority = 5
+  priority = 4
   status = "active"
   actions {
     forwarding_url {
@@ -14,7 +14,7 @@ resource "cloudflare_page_rule" "no-index-html" {
 resource "cloudflare_page_rule" "legacy-all" {
   zone_id = cloudflare_zone.vaccinespotter-org.id
   target = "*.vaccinespotter.org/*/all/"
-  priority = 4
+  priority = 3
   status = "active"
   actions {
     forwarding_url {
@@ -27,7 +27,7 @@ resource "cloudflare_page_rule" "legacy-all" {
 resource "cloudflare_page_rule" "www-settings" {
   zone_id = cloudflare_zone.vaccinespotter-org.id
   target = "*.vaccinespotter.org/*"
-  priority = 3
+  priority = 2
   status = "active"
   actions {
     cache_level = "cache_everything"
@@ -37,7 +37,7 @@ resource "cloudflare_page_rule" "www-settings" {
 resource "cloudflare_page_rule" "redirect-to-www" {
   zone_id = cloudflare_zone.vaccinespotter-org.id
   target = "vaccinespotter.org/*"
-  priority = 2
+  priority = 1
   status = "active"
   actions {
     forwarding_url {

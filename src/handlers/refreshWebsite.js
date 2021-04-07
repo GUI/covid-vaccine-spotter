@@ -321,6 +321,10 @@ module.exports.refreshWebsite = async () => {
   if (process.env.PUBLISH_SITE === "true") {
     logger.notice("Begin publishing website...");
 
+    // Unset variable if it's set in local development, since it conflicts with
+    // rclone: https://forum.rclone.org/t/mounting-an-amazon-s3-bucket/15106/2
+    delete process.env.AWS_CA_BUNDLE;
+
     // Pre-compress all files.
     await runShell("find", [
       "./dist",
@@ -378,6 +382,8 @@ module.exports.refreshWebsite = async () => {
       "Cache-Control: public, max-age=15, s-maxage=40",
       "--header-upload",
       "Content-Encoding: gzip",
+      "--header-upload",
+      "Access-Control-Allow-Origin: *",
       "--exclude",
       "v0/states/*/postal_codes.json",
       "./tmp/dist-sync/api/",
