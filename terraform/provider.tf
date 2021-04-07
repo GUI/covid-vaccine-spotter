@@ -1,52 +1,35 @@
-provider "google" {
-  project = "vaccine-spotter-307400"
-  region = "us-central1"
-}
-
-variable "alicloud_access_key" {
-  type = string
-  sensitive = true
-}
-
-variable "alicloud_secret_key" {
-  type = string
-  sensitive = true
-}
-
-variable "alicloud_region" {
-  type = string
-}
-
-variable "alicloud_account_id" {
-  type = string
-}
-
-provider "alicloud" {
-  access_key = var.alicloud_access_key
-  secret_key = var.alicloud_secret_key
-  region = var.alicloud_region
-}
-
 terraform {
   required_providers {
     cloudflare = {
       source = "cloudflare/cloudflare"
       version = "~> 2.0"
     }
+
+    sops = {
+      source = "carlpett/sops"
+      version = "~> 0.5"
+    }
   }
 }
 
-variable "cloudflare_email" {
-  type = string
-  sensitive = true
+provider "sops" {}
+
+data "sops_file" "secrets" {
+  source_file = "secrets.enc.yaml"
 }
 
-variable "cloudflare_api_key" {
-  type = string
-  sensitive = true
+provider "google" {
+  project = data.sops_file.secrets.data.google_project
+  region = data.sops_file.secrets.data.google_region
+}
+
+provider "alicloud" {
+  access_key = data.sops_file.secrets.data.alicloud_access_key
+  secret_key = data.sops_file.secrets.data.alicloud_secret_key
+  region = data.sops_file.secrets.data.alicloud_region
 }
 
 provider "cloudflare" {
-  email = var.cloudflare_email
-  api_key = var.cloudflare_api_key
+  api_token = data.sops_file.secrets.data.cloudflare_api_token
+  account_id = data.sops_file.secrets.data.cloudflare_account_id
 }

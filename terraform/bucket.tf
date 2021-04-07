@@ -60,14 +60,6 @@ resource "google_storage_bucket_iam_policy" "stage-website-bucket-policy" {
   policy_data = data.google_iam_policy.all-users-object-viewer.policy_data
 }
 
-variable "stage_website_bucket_name" {
-  type = string
-}
-
-variable "prod_website_bucket_name" {
-  type = string
-}
-
 resource "alicloud_ram_user" "website-deployer" {
   name = "website-deployer"
   display_name = "Website Deployer"
@@ -100,7 +92,7 @@ locals {
 }
 
 resource "alicloud_oss_bucket" "stage-website-bucket" {
-  bucket = var.stage_website_bucket_name
+  bucket = data.sops_file.secrets.data.stage_website_bucket_name
   acl = "private"
 
   policy = jsonencode({
@@ -115,8 +107,8 @@ resource "alicloud_oss_bucket" "stage-website-bucket" {
           alicloud_ram_user.website-deployer.id,
         ]
         Resource = [
-          "acs:oss:*:${var.alicloud_account_id}:${var.stage_website_bucket_name}",
-          "acs:oss:*:${var.alicloud_account_id}:${var.stage_website_bucket_name}/*",
+          "acs:oss:*:${data.sops_file.secrets.data.alicloud_account_id}:${data.sops_file.secrets.data.stage_website_bucket_name}",
+          "acs:oss:*:${data.sops_file.secrets.data.alicloud_account_id}:${data.sops_file.secrets.data.stage_website_bucket_name}/*",
         ]
       },
       {
@@ -133,7 +125,7 @@ resource "alicloud_oss_bucket" "stage-website-bucket" {
           "*",
         ]
         Resource = [
-          "acs:oss:*:${var.alicloud_account_id}:${var.stage_website_bucket_name}/*",
+          "acs:oss:*:${data.sops_file.secrets.data.alicloud_account_id}:${data.sops_file.secrets.data.stage_website_bucket_name}/*",
         ]
       },
       {
@@ -150,7 +142,7 @@ resource "alicloud_oss_bucket" "stage-website-bucket" {
           "*",
         ]
         Resource = [
-          "acs:oss:*:${var.alicloud_account_id}:${var.stage_website_bucket_name}",
+          "acs:oss:*:${data.sops_file.secrets.data.alicloud_account_id}:${data.sops_file.secrets.data.stage_website_bucket_name}",
         ]
       },
     ]
