@@ -438,6 +438,22 @@ class Stores {
             throw new Error(`Unknown timezone: ${store.timeZone}`);
         }
 
+        // Set the vaccine type available at the store based on
+        // https://www.riteaid.com/etc.clientlibs/riteaid-web/clientlibs/clientlib-base.js
+        const appointmentVaccineTypes = {};
+        if (store.specialServiceKeys.includes("PREF-113")) {
+          appointmentVaccineTypes.moderna = true;
+        }
+        if (store.specialServiceKeys.includes("PREF-114")) {
+          appointmentVaccineTypes.pfizer = true;
+        }
+        if (store.specialServiceKeys.includes("PREF-115")) {
+          appointmentVaccineTypes.jj = true;
+        }
+        if (Object.keys(appointmentVaccineTypes).length === 0) {
+          appointmentVaccineTypes.unknown = true;
+        }
+
         const patch = {
           provider_id: "rite_aid",
           provider_location_id: storeNumber,
@@ -452,6 +468,7 @@ class Stores {
           time_zone: timeZone,
           metadata_raw: store,
           carries_vaccine: store.specialServiceKeys.includes("PREF-112"),
+          appointment_vaccine_types: appointmentVaccineTypes,
         };
         patch.brand = patch.provider_id;
         patch.brand_id = patch.provider_location_id;

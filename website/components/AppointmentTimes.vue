@@ -7,10 +7,13 @@
           <span v-if="appointment.type">({{ appointment.type }})</span>
         </li>
       </template>
-      <li v-else>
-        View available appointment times on the
-        {{ store.properties.provider_brand_name }} website.
-      </li>
+      <template v-else>
+        <li v-if="storeVaccineTypes">Vaccine Type: {{ storeVaccineTypes }}</li>
+        <li>
+          View available appointment times on the
+          {{ store.properties.provider_brand_name }} website.
+        </li>
+      </template>
     </ul>
 
     <div v-if="moreAppointments.length > 0">
@@ -74,6 +77,29 @@ export default {
       return this.normalizeAppointments(
         this.store.properties.appointments.slice(5)
       );
+    },
+
+    storeVaccineTypes() {
+      let storeVaccineTypes;
+
+      if (this.store.properties.appointment_vaccine_types) {
+        const types = [];
+        if (this.store.properties.appointment_vaccine_types.jj) {
+          types.push("Johnson & Johnson");
+        }
+        if (this.store.properties.appointment_vaccine_types.moderna) {
+          types.push("Moderna");
+        }
+        if (this.store.properties.appointment_vaccine_types.pfizer) {
+          types.push("Pfizer");
+        }
+
+        if (types.length > 0) {
+          storeVaccineTypes = types.join(", ");
+        }
+      }
+
+      return storeVaccineTypes;
     },
   },
 
