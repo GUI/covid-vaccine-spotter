@@ -325,24 +325,6 @@ module.exports.refreshWebsite = async () => {
     // rclone: https://forum.rclone.org/t/mounting-an-amazon-s3-bucket/15106/2
     delete process.env.AWS_CA_BUNDLE;
 
-    // Pre-compress all files.
-    await runShell("find", [
-      "./dist",
-      "-type",
-      "f",
-      "-print",
-      "-exec",
-      "gzip",
-      "-n",
-      "{}",
-      ";",
-      "-exec",
-      "mv",
-      "{}.gz",
-      "{}",
-      ";",
-    ]);
-
     // Sync to a temporary local dir to preserve timestamps.
     await runShell("rsync", [
       "-a",
@@ -365,8 +347,6 @@ module.exports.refreshWebsite = async () => {
       "--use-server-modtime",
       "--header-upload",
       "Cache-Control: public, max-age=600, s-maxage=86400",
-      "--header-upload",
-      "Content-Encoding: gzip",
       "./tmp/dist-sync/_nuxt/",
       `:s3:${process.env.WEBSITE_BUCKET}/_nuxt/`,
     ]);
@@ -380,10 +360,6 @@ module.exports.refreshWebsite = async () => {
       "--use-server-modtime",
       "--header-upload",
       "Cache-Control: public, max-age=15, s-maxage=40",
-      "--header-upload",
-      "Content-Encoding: gzip",
-      "--header-upload",
-      "Access-Control-Allow-Origin: *",
       "--exclude",
       "v0/states/*/postal_codes.json",
       "./tmp/dist-sync/api/",
@@ -399,8 +375,6 @@ module.exports.refreshWebsite = async () => {
       "--use-server-modtime",
       "--header-upload",
       "Cache-Control: public, max-age=600, s-maxage=3600",
-      "--header-upload",
-      "Content-Encoding: gzip",
       "--include",
       "v0/states/*/postal_codes.json",
       "./tmp/dist-sync/api/",
@@ -415,8 +389,6 @@ module.exports.refreshWebsite = async () => {
       "--use-server-modtime",
       "--header-upload",
       "Cache-Control: public, max-age=15, s-maxage=40",
-      "--header-upload",
-      "Content-Encoding: gzip",
       "--exclude",
       "api/**",
       "--exclude",
