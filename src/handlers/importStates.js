@@ -7,7 +7,6 @@ const { State } = require("../models/State");
 
 const tmpPath = path.resolve(__dirname, "../../tmp");
 
-
 const states500kTopojson = JSON.parse(
   fs.readFileSync(`${tmpPath}/cb_2018_us_state_500k.topojson`)
 );
