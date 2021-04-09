@@ -398,317 +398,105 @@ CREATE TABLE public.cache (
 
 
 --
--- Name: postal_codes; Type: TABLE; Schema: public; Owner: -
+-- Name: country_grid_110km; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.postal_codes (
-    id integer NOT NULL,
-    state_code character varying(2) NOT NULL,
-    postal_code character varying(5) NOT NULL,
-    city character varying(255) NOT NULL,
-    county_name character varying(255) NOT NULL,
-    county_code character varying(255),
-    location public.geography(Point,4326) NOT NULL,
-    created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    time_zone character varying(255)
+CREATE TABLE public.country_grid_110km (
+    id bigint NOT NULL,
+    geom public.geometry,
+    centroid_location public.geography,
+    centroid_postal_code character varying(5),
+    centroid_postal_code_state_code character varying(2),
+    centroid_postal_code_city character varying(255),
+    centroid_postal_code_county character varying(255),
+    centroid_postal_code_location public.geography(Point,4326),
+    centroid_land_location public.geography
 );
 
 
 --
--- Name: states; Type: TABLE; Schema: public; Owner: -
+-- Name: country_grid_11km; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.states (
-    id integer NOT NULL,
-    country_code character varying(2) NOT NULL,
-    code character varying(2) NOT NULL,
-    name character varying(255) NOT NULL,
-    created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    boundaries public.geography(MultiPolygon,4326),
-    boundaries_500k public.geography(MultiPolygon,4326),
-    boundaries_5m public.geography(MultiPolygon,4326)
+CREATE TABLE public.country_grid_11km (
+    id bigint NOT NULL,
+    geom public.geometry,
+    centroid_location public.geography,
+    centroid_postal_code character varying(5),
+    centroid_postal_code_state_code character varying(2),
+    centroid_postal_code_city character varying(255),
+    centroid_postal_code_county character varying(255),
+    centroid_postal_code_location public.geography(Point,4326),
+    centroid_land_location public.geography
 );
 
 
 --
--- Name: country_grid_110km; Type: MATERIALIZED VIEW; Schema: public; Owner: -
+-- Name: country_grid_220km; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE MATERIALIZED VIEW public.country_grid_110km AS
- WITH country_boundary AS (
-         SELECT public.st_union((states.boundaries)::public.geometry) AS geom
-           FROM public.states
-        ), country_grid AS (
-         SELECT public.make_rect_grid(country_boundary_1.geom, (110000)::double precision, (110000)::double precision) AS geom
-           FROM country_boundary country_boundary_1
-        ), country_grid_rows AS (
-         SELECT (public.st_dump(country_grid.geom)).geom AS geom
-           FROM country_grid
-        )
- SELECT row_number() OVER () AS id,
-    country_grid_rows.geom,
-    (centroid_geom.centroid_geom)::public.geography AS centroid_location,
-    nearest_postal_code.postal_code AS centroid_postal_code,
-    nearest_postal_code.state_code AS centroid_postal_code_state_code,
-    nearest_postal_code.city AS centroid_postal_code_city,
-    nearest_postal_code.county_name AS centroid_postal_code_county,
-    nearest_postal_code.location AS centroid_postal_code_location,
-        CASE
-            WHEN public.st_intersects(centroid_geom.centroid_geom, country_boundary.geom) THEN (centroid_geom.centroid_geom)::public.geography
-            ELSE nearest_postal_code.location
-        END AS centroid_land_location
-   FROM country_grid_rows,
-    country_boundary,
-    (LATERAL public.st_centroid(country_grid_rows.geom) centroid_geom(centroid_geom)
-     CROSS JOIN LATERAL ( SELECT postal_codes.id,
-            postal_codes.state_code,
-            postal_codes.postal_code,
-            postal_codes.city,
-            postal_codes.county_name,
-            postal_codes.county_code,
-            postal_codes.location,
-            postal_codes.created_at,
-            postal_codes.updated_at
-           FROM public.postal_codes
-          ORDER BY (postal_codes.location OPERATOR(public.<->) (centroid_geom.centroid_geom)::public.geography)
-         LIMIT 1) nearest_postal_code)
-  WHERE (public.st_area(country_grid_rows.geom) < (5)::double precision)
-  WITH NO DATA;
+CREATE TABLE public.country_grid_220km (
+    id bigint NOT NULL,
+    geom public.geometry,
+    centroid_location public.geography,
+    centroid_postal_code character varying(5),
+    centroid_postal_code_state_code character varying(2),
+    centroid_postal_code_city character varying(255),
+    centroid_postal_code_county character varying(255),
+    centroid_postal_code_location public.geography(Point,4326),
+    centroid_land_location public.geography
+);
 
 
 --
--- Name: country_grid_11km; Type: MATERIALIZED VIEW; Schema: public; Owner: -
+-- Name: country_grid_22km; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE MATERIALIZED VIEW public.country_grid_11km AS
- WITH country_boundary AS (
-         SELECT public.st_union((states.boundaries)::public.geometry) AS geom
-           FROM public.states
-        ), country_grid AS (
-         SELECT public.make_rect_grid(country_boundary_1.geom, (11000)::double precision, (11000)::double precision) AS geom
-           FROM country_boundary country_boundary_1
-        ), country_grid_rows AS (
-         SELECT (public.st_dump(country_grid.geom)).geom AS geom
-           FROM country_grid
-        )
- SELECT row_number() OVER () AS id,
-    country_grid_rows.geom,
-    (centroid_geom.centroid_geom)::public.geography AS centroid_location,
-    nearest_postal_code.postal_code AS centroid_postal_code,
-    nearest_postal_code.state_code AS centroid_postal_code_state_code,
-    nearest_postal_code.city AS centroid_postal_code_city,
-    nearest_postal_code.county_name AS centroid_postal_code_county,
-    nearest_postal_code.location AS centroid_postal_code_location,
-        CASE
-            WHEN public.st_intersects(centroid_geom.centroid_geom, country_boundary.geom) THEN (centroid_geom.centroid_geom)::public.geography
-            ELSE nearest_postal_code.location
-        END AS centroid_land_location
-   FROM country_grid_rows,
-    country_boundary,
-    (LATERAL public.st_centroid(country_grid_rows.geom) centroid_geom(centroid_geom)
-     CROSS JOIN LATERAL ( SELECT postal_codes.id,
-            postal_codes.state_code,
-            postal_codes.postal_code,
-            postal_codes.city,
-            postal_codes.county_name,
-            postal_codes.county_code,
-            postal_codes.location,
-            postal_codes.created_at,
-            postal_codes.updated_at,
-            postal_codes.time_zone
-           FROM public.postal_codes
-          ORDER BY (postal_codes.location OPERATOR(public.<->) (centroid_geom.centroid_geom)::public.geography)
-         LIMIT 1) nearest_postal_code)
-  WHERE (public.st_area(country_grid_rows.geom) < (5)::double precision)
-  WITH NO DATA;
+CREATE TABLE public.country_grid_22km (
+    id bigint NOT NULL,
+    geom public.geometry,
+    centroid_location public.geography,
+    centroid_postal_code character varying(5),
+    centroid_postal_code_state_code character varying(2),
+    centroid_postal_code_city character varying(255),
+    centroid_postal_code_county character varying(255),
+    centroid_postal_code_location public.geography(Point,4326),
+    centroid_land_location public.geography
+);
 
 
 --
--- Name: country_grid_220km; Type: MATERIALIZED VIEW; Schema: public; Owner: -
+-- Name: country_grid_25km; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE MATERIALIZED VIEW public.country_grid_220km AS
- WITH country_boundary AS (
-         SELECT public.st_union((states.boundaries)::public.geometry) AS geom
-           FROM public.states
-        ), country_grid AS (
-         SELECT public.make_rect_grid(country_boundary_1.geom, (220000)::double precision, (220000)::double precision) AS geom
-           FROM country_boundary country_boundary_1
-        ), country_grid_rows AS (
-         SELECT (public.st_dump(country_grid.geom)).geom AS geom
-           FROM country_grid
-        )
- SELECT row_number() OVER () AS id,
-    country_grid_rows.geom,
-    (centroid_geom.centroid_geom)::public.geography AS centroid_location,
-    nearest_postal_code.postal_code AS centroid_postal_code,
-    nearest_postal_code.state_code AS centroid_postal_code_state_code,
-    nearest_postal_code.city AS centroid_postal_code_city,
-    nearest_postal_code.county_name AS centroid_postal_code_county,
-    nearest_postal_code.location AS centroid_postal_code_location,
-        CASE
-            WHEN public.st_intersects(centroid_geom.centroid_geom, country_boundary.geom) THEN (centroid_geom.centroid_geom)::public.geography
-            ELSE nearest_postal_code.location
-        END AS centroid_land_location
-   FROM country_grid_rows,
-    country_boundary,
-    (LATERAL public.st_centroid(country_grid_rows.geom) centroid_geom(centroid_geom)
-     CROSS JOIN LATERAL ( SELECT postal_codes.id,
-            postal_codes.state_code,
-            postal_codes.postal_code,
-            postal_codes.city,
-            postal_codes.county_name,
-            postal_codes.county_code,
-            postal_codes.location,
-            postal_codes.created_at,
-            postal_codes.updated_at,
-            postal_codes.time_zone
-           FROM public.postal_codes
-          ORDER BY (postal_codes.location OPERATOR(public.<->) (centroid_geom.centroid_geom)::public.geography)
-         LIMIT 1) nearest_postal_code)
-  WHERE (public.st_area(country_grid_rows.geom) < (15)::double precision)
-  WITH NO DATA;
+CREATE TABLE public.country_grid_25km (
+    id bigint NOT NULL,
+    geom public.geometry,
+    centroid_location public.geography,
+    centroid_postal_code character varying(5),
+    centroid_postal_code_state character varying(2),
+    centroid_postal_code_city character varying(255),
+    centroid_postal_code_county character varying(255),
+    centroid_postal_code_location public.geography(Point,4326),
+    centroid_land_location public.geography
+);
 
 
 --
--- Name: country_grid_22km; Type: MATERIALIZED VIEW; Schema: public; Owner: -
+-- Name: country_grid_55km; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE MATERIALIZED VIEW public.country_grid_22km AS
- WITH country_boundary AS (
-         SELECT public.st_union((states.boundaries)::public.geometry) AS geom
-           FROM public.states
-        ), country_grid AS (
-         SELECT public.make_rect_grid(country_boundary_1.geom, (22000)::double precision, (22000)::double precision) AS geom
-           FROM country_boundary country_boundary_1
-        ), country_grid_rows AS (
-         SELECT (public.st_dump(country_grid.geom)).geom AS geom
-           FROM country_grid
-        )
- SELECT row_number() OVER () AS id,
-    country_grid_rows.geom,
-    (centroid_geom.centroid_geom)::public.geography AS centroid_location,
-    nearest_postal_code.postal_code AS centroid_postal_code,
-    nearest_postal_code.state_code AS centroid_postal_code_state_code,
-    nearest_postal_code.city AS centroid_postal_code_city,
-    nearest_postal_code.county_name AS centroid_postal_code_county,
-    nearest_postal_code.location AS centroid_postal_code_location,
-        CASE
-            WHEN public.st_intersects(centroid_geom.centroid_geom, country_boundary.geom) THEN (centroid_geom.centroid_geom)::public.geography
-            ELSE nearest_postal_code.location
-        END AS centroid_land_location
-   FROM country_grid_rows,
-    country_boundary,
-    (LATERAL public.st_centroid(country_grid_rows.geom) centroid_geom(centroid_geom)
-     CROSS JOIN LATERAL ( SELECT postal_codes.id,
-            postal_codes.state_code,
-            postal_codes.postal_code,
-            postal_codes.city,
-            postal_codes.county_name,
-            postal_codes.county_code,
-            postal_codes.location,
-            postal_codes.created_at,
-            postal_codes.updated_at,
-            postal_codes.time_zone
-           FROM public.postal_codes
-          ORDER BY (postal_codes.location OPERATOR(public.<->) (centroid_geom.centroid_geom)::public.geography)
-         LIMIT 1) nearest_postal_code)
-  WHERE (public.st_area(country_grid_rows.geom) < (5)::double precision)
-  WITH NO DATA;
-
-
---
--- Name: country_grid_25km; Type: MATERIALIZED VIEW; Schema: public; Owner: -
---
-
-CREATE MATERIALIZED VIEW public.country_grid_25km AS
- WITH country_boundary AS (
-         SELECT public.st_union((states.boundaries)::public.geometry) AS geom
-           FROM public.states
-        ), country_grid AS (
-         SELECT public.make_rect_grid(country_boundary_1.geom, (25000)::double precision, (25000)::double precision) AS geom
-           FROM country_boundary country_boundary_1
-        ), country_grid_rows AS (
-         SELECT (public.st_dump(country_grid.geom)).geom AS geom
-           FROM country_grid
-        )
- SELECT row_number() OVER () AS id,
-    country_grid_rows.geom,
-    (centroid_geom.centroid_geom)::public.geography AS centroid_location,
-    nearest_postal_code.postal_code AS centroid_postal_code,
-    nearest_postal_code.state_code AS centroid_postal_code_state,
-    nearest_postal_code.city AS centroid_postal_code_city,
-    nearest_postal_code.county_name AS centroid_postal_code_county,
-    nearest_postal_code.location AS centroid_postal_code_location,
-        CASE
-            WHEN public.st_intersects(centroid_geom.centroid_geom, country_boundary.geom) THEN (centroid_geom.centroid_geom)::public.geography
-            ELSE nearest_postal_code.location
-        END AS centroid_land_location
-   FROM country_grid_rows,
-    country_boundary,
-    (LATERAL public.st_centroid(country_grid_rows.geom) centroid_geom(centroid_geom)
-     CROSS JOIN LATERAL ( SELECT postal_codes.id,
-            postal_codes.state_code,
-            postal_codes.postal_code,
-            postal_codes.city,
-            postal_codes.county_name,
-            postal_codes.county_code,
-            postal_codes.location,
-            postal_codes.created_at,
-            postal_codes.updated_at
-           FROM public.postal_codes
-          ORDER BY (postal_codes.location OPERATOR(public.<->) (centroid_geom.centroid_geom)::public.geography)
-         LIMIT 1) nearest_postal_code)
-  WHERE (public.st_area(country_grid_rows.geom) < (5)::double precision)
-  WITH NO DATA;
-
-
---
--- Name: country_grid_55km; Type: MATERIALIZED VIEW; Schema: public; Owner: -
---
-
-CREATE MATERIALIZED VIEW public.country_grid_55km AS
- WITH country_boundary AS (
-         SELECT public.st_union((states.boundaries)::public.geometry) AS geom
-           FROM public.states
-        ), country_grid AS (
-         SELECT public.make_rect_grid(country_boundary_1.geom, (55000)::double precision, (55000)::double precision) AS geom
-           FROM country_boundary country_boundary_1
-        ), country_grid_rows AS (
-         SELECT (public.st_dump(country_grid.geom)).geom AS geom
-           FROM country_grid
-        )
- SELECT row_number() OVER () AS id,
-    country_grid_rows.geom,
-    (centroid_geom.centroid_geom)::public.geography AS centroid_location,
-    nearest_postal_code.postal_code AS centroid_postal_code,
-    nearest_postal_code.state_code AS centroid_postal_code_state_code,
-    nearest_postal_code.city AS centroid_postal_code_city,
-    nearest_postal_code.county_name AS centroid_postal_code_county,
-    nearest_postal_code.location AS centroid_postal_code_location,
-        CASE
-            WHEN public.st_intersects(centroid_geom.centroid_geom, country_boundary.geom) THEN (centroid_geom.centroid_geom)::public.geography
-            ELSE nearest_postal_code.location
-        END AS centroid_land_location
-   FROM country_grid_rows,
-    country_boundary,
-    (LATERAL public.st_centroid(country_grid_rows.geom) centroid_geom(centroid_geom)
-     CROSS JOIN LATERAL ( SELECT postal_codes.id,
-            postal_codes.state_code,
-            postal_codes.postal_code,
-            postal_codes.city,
-            postal_codes.county_name,
-            postal_codes.county_code,
-            postal_codes.location,
-            postal_codes.created_at,
-            postal_codes.updated_at
-           FROM public.postal_codes
-          ORDER BY (postal_codes.location OPERATOR(public.<->) (centroid_geom.centroid_geom)::public.geography)
-         LIMIT 1) nearest_postal_code)
-  WHERE (public.st_area(country_grid_rows.geom) < (5)::double precision)
-  WITH NO DATA;
+CREATE TABLE public.country_grid_55km (
+    id bigint NOT NULL,
+    geom public.geometry,
+    centroid_location public.geography,
+    centroid_postal_code character varying(5),
+    centroid_postal_code_state_code character varying(2),
+    centroid_postal_code_city character varying(255),
+    centroid_postal_code_county character varying(255),
+    centroid_postal_code_location public.geography(Point,4326),
+    centroid_land_location public.geography
+);
 
 
 --
@@ -774,6 +562,24 @@ ALTER SEQUENCE public.knex_migrations_lock_index_seq OWNED BY public.knex_migrat
 
 
 --
+-- Name: postal_codes; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.postal_codes (
+    id integer NOT NULL,
+    state_code character varying(2) NOT NULL,
+    postal_code character varying(5) NOT NULL,
+    city character varying(255) NOT NULL,
+    county_name character varying(255) NOT NULL,
+    county_code character varying(255),
+    location public.geography(Point,4326) NOT NULL,
+    created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    time_zone character varying(255)
+);
+
+
+--
 -- Name: postal_codes_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -836,319 +642,128 @@ CREATE TABLE public.providers (
 
 
 --
--- Name: state_grid_110km; Type: MATERIALIZED VIEW; Schema: public; Owner: -
+-- Name: state_grid_110km; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE MATERIALIZED VIEW public.state_grid_110km AS
- WITH country_boundary AS (
-         SELECT public.st_union((states.boundaries)::public.geometry) AS geom
-           FROM public.states
-        ), country_grid AS (
-         SELECT public.make_rect_grid(country_boundary_1.geom, (110000)::double precision, (110000)::double precision) AS geom
-           FROM country_boundary country_boundary_1
-        ), country_grid_rows AS (
-         SELECT (public.st_dump(country_grid.geom)).geom AS geom
-           FROM country_grid
-        ), state_grid_rows AS (
-         SELECT public.st_intersection(country_grid_rows.geom, (states.boundaries)::public.geometry) AS geom,
-            states.code AS state_code
-           FROM (country_grid_rows
-             JOIN public.states ON (public.st_intersects(country_grid_rows.geom, (states.boundaries)::public.geometry)))
-        )
- SELECT row_number() OVER () AS id,
-    state_grid_rows.state_code,
-    state_grid_rows.geom,
-    (centroid_geom.centroid_geom)::public.geography AS centroid_location,
-    nearest_postal_code.postal_code AS centroid_postal_code,
-    nearest_postal_code.state_code AS centroid_postal_code_state_code,
-    nearest_postal_code.city AS centroid_postal_code_city,
-    nearest_postal_code.county_name AS centroid_postal_code_county,
-    nearest_postal_code.location AS centroid_postal_code_location,
-        CASE
-            WHEN public.st_intersects(centroid_geom.centroid_geom, country_boundary.geom) THEN (centroid_geom.centroid_geom)::public.geography
-            ELSE nearest_postal_code.location
-        END AS centroid_land_location
-   FROM state_grid_rows,
-    country_boundary,
-    (LATERAL public.st_centroid(state_grid_rows.geom) centroid_geom(centroid_geom)
-     CROSS JOIN LATERAL ( SELECT postal_codes.id,
-            postal_codes.state_code,
-            postal_codes.postal_code,
-            postal_codes.city,
-            postal_codes.county_name,
-            postal_codes.county_code,
-            postal_codes.location,
-            postal_codes.created_at,
-            postal_codes.updated_at
-           FROM public.postal_codes
-          ORDER BY (postal_codes.location OPERATOR(public.<->) (centroid_geom.centroid_geom)::public.geography)
-         LIMIT 1) nearest_postal_code)
-  WHERE (public.st_area(state_grid_rows.geom) < (5)::double precision)
-  WITH NO DATA;
+CREATE TABLE public.state_grid_110km (
+    id bigint NOT NULL,
+    state_code character varying(2),
+    geom public.geometry,
+    centroid_location public.geography,
+    centroid_postal_code character varying(5),
+    centroid_postal_code_state_code character varying(2),
+    centroid_postal_code_city character varying(255),
+    centroid_postal_code_county character varying(255),
+    centroid_postal_code_location public.geography(Point,4326),
+    centroid_land_location public.geography
+);
 
 
 --
--- Name: state_grid_11km; Type: MATERIALIZED VIEW; Schema: public; Owner: -
+-- Name: state_grid_11km; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE MATERIALIZED VIEW public.state_grid_11km AS
- WITH country_boundary AS (
-         SELECT public.st_union((states.boundaries)::public.geometry) AS geom
-           FROM public.states
-        ), country_grid AS (
-         SELECT public.make_rect_grid(country_boundary_1.geom, (11000)::double precision, (11000)::double precision) AS geom
-           FROM country_boundary country_boundary_1
-        ), country_grid_rows AS (
-         SELECT (public.st_dump(country_grid.geom)).geom AS geom
-           FROM country_grid
-        ), state_grid_rows AS (
-         SELECT public.st_intersection(country_grid_rows.geom, (states.boundaries)::public.geometry) AS geom,
-            states.code AS state_code
-           FROM (country_grid_rows
-             JOIN public.states ON (public.st_intersects(country_grid_rows.geom, (states.boundaries)::public.geometry)))
-        )
- SELECT row_number() OVER () AS id,
-    state_grid_rows.state_code,
-    state_grid_rows.geom,
-    (centroid_geom.centroid_geom)::public.geography AS centroid_location,
-    nearest_postal_code.postal_code AS centroid_postal_code,
-    nearest_postal_code.state_code AS centroid_postal_code_state_code,
-    nearest_postal_code.city AS centroid_postal_code_city,
-    nearest_postal_code.county_name AS centroid_postal_code_county,
-    nearest_postal_code.location AS centroid_postal_code_location,
-        CASE
-            WHEN public.st_intersects(centroid_geom.centroid_geom, country_boundary.geom) THEN (centroid_geom.centroid_geom)::public.geography
-            ELSE nearest_postal_code.location
-        END AS centroid_land_location
-   FROM state_grid_rows,
-    country_boundary,
-    (LATERAL public.st_centroid(state_grid_rows.geom) centroid_geom(centroid_geom)
-     CROSS JOIN LATERAL ( SELECT postal_codes.id,
-            postal_codes.state_code,
-            postal_codes.postal_code,
-            postal_codes.city,
-            postal_codes.county_name,
-            postal_codes.county_code,
-            postal_codes.location,
-            postal_codes.created_at,
-            postal_codes.updated_at,
-            postal_codes.time_zone
-           FROM public.postal_codes
-          ORDER BY (postal_codes.location OPERATOR(public.<->) (centroid_geom.centroid_geom)::public.geography)
-         LIMIT 1) nearest_postal_code)
-  WHERE (public.st_area(state_grid_rows.geom) < (5)::double precision)
-  WITH NO DATA;
+CREATE TABLE public.state_grid_11km (
+    id bigint NOT NULL,
+    state_code character varying(2),
+    geom public.geometry,
+    centroid_location public.geography,
+    centroid_postal_code character varying(5),
+    centroid_postal_code_state_code character varying(2),
+    centroid_postal_code_city character varying(255),
+    centroid_postal_code_county character varying(255),
+    centroid_postal_code_location public.geography(Point,4326),
+    centroid_land_location public.geography
+);
 
 
 --
--- Name: state_grid_220km; Type: MATERIALIZED VIEW; Schema: public; Owner: -
+-- Name: state_grid_220km; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE MATERIALIZED VIEW public.state_grid_220km AS
- WITH country_boundary AS (
-         SELECT public.st_union((states.boundaries)::public.geometry) AS geom
-           FROM public.states
-        ), country_grid AS (
-         SELECT public.make_rect_grid(country_boundary_1.geom, (220000)::double precision, (220000)::double precision) AS geom
-           FROM country_boundary country_boundary_1
-        ), country_grid_rows AS (
-         SELECT (public.st_dump(country_grid.geom)).geom AS geom
-           FROM country_grid
-        ), state_grid_rows AS (
-         SELECT public.st_intersection(country_grid_rows.geom, (states.boundaries)::public.geometry) AS geom,
-            states.code AS state_code
-           FROM (country_grid_rows
-             JOIN public.states ON (public.st_intersects(country_grid_rows.geom, (states.boundaries)::public.geometry)))
-        )
- SELECT row_number() OVER () AS id,
-    state_grid_rows.state_code,
-    state_grid_rows.geom,
-    (centroid_geom.centroid_geom)::public.geography AS centroid_location,
-    nearest_postal_code.postal_code AS centroid_postal_code,
-    nearest_postal_code.state_code AS centroid_postal_code_state_code,
-    nearest_postal_code.city AS centroid_postal_code_city,
-    nearest_postal_code.county_name AS centroid_postal_code_county,
-    nearest_postal_code.location AS centroid_postal_code_location,
-        CASE
-            WHEN public.st_intersects(centroid_geom.centroid_geom, country_boundary.geom) THEN (centroid_geom.centroid_geom)::public.geography
-            ELSE nearest_postal_code.location
-        END AS centroid_land_location
-   FROM state_grid_rows,
-    country_boundary,
-    (LATERAL public.st_centroid(state_grid_rows.geom) centroid_geom(centroid_geom)
-     CROSS JOIN LATERAL ( SELECT postal_codes.id,
-            postal_codes.state_code,
-            postal_codes.postal_code,
-            postal_codes.city,
-            postal_codes.county_name,
-            postal_codes.county_code,
-            postal_codes.location,
-            postal_codes.created_at,
-            postal_codes.updated_at,
-            postal_codes.time_zone
-           FROM public.postal_codes
-          ORDER BY (postal_codes.location OPERATOR(public.<->) (centroid_geom.centroid_geom)::public.geography)
-         LIMIT 1) nearest_postal_code)
-  WHERE (public.st_area(state_grid_rows.geom) < (15)::double precision)
-  WITH NO DATA;
+CREATE TABLE public.state_grid_220km (
+    id bigint NOT NULL,
+    state_code character varying(2),
+    geom public.geometry,
+    centroid_location public.geography,
+    centroid_postal_code character varying(5),
+    centroid_postal_code_state_code character varying(2),
+    centroid_postal_code_city character varying(255),
+    centroid_postal_code_county character varying(255),
+    centroid_postal_code_location public.geography(Point,4326),
+    centroid_land_location public.geography
+);
 
 
 --
--- Name: state_grid_22km; Type: MATERIALIZED VIEW; Schema: public; Owner: -
+-- Name: state_grid_22km; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE MATERIALIZED VIEW public.state_grid_22km AS
- WITH country_boundary AS (
-         SELECT public.st_union((states.boundaries)::public.geometry) AS geom
-           FROM public.states
-        ), country_grid AS (
-         SELECT public.make_rect_grid(country_boundary_1.geom, (22000)::double precision, (22000)::double precision) AS geom
-           FROM country_boundary country_boundary_1
-        ), country_grid_rows AS (
-         SELECT (public.st_dump(country_grid.geom)).geom AS geom
-           FROM country_grid
-        ), state_grid_rows AS (
-         SELECT public.st_intersection(country_grid_rows.geom, (states.boundaries)::public.geometry) AS geom,
-            states.code AS state_code
-           FROM (country_grid_rows
-             JOIN public.states ON (public.st_intersects(country_grid_rows.geom, (states.boundaries)::public.geometry)))
-        )
- SELECT row_number() OVER () AS id,
-    state_grid_rows.state_code,
-    state_grid_rows.geom,
-    (centroid_geom.centroid_geom)::public.geography AS centroid_location,
-    nearest_postal_code.postal_code AS centroid_postal_code,
-    nearest_postal_code.state_code AS centroid_postal_code_state_code,
-    nearest_postal_code.city AS centroid_postal_code_city,
-    nearest_postal_code.county_name AS centroid_postal_code_county,
-    nearest_postal_code.location AS centroid_postal_code_location,
-        CASE
-            WHEN public.st_intersects(centroid_geom.centroid_geom, country_boundary.geom) THEN (centroid_geom.centroid_geom)::public.geography
-            ELSE nearest_postal_code.location
-        END AS centroid_land_location
-   FROM state_grid_rows,
-    country_boundary,
-    (LATERAL public.st_centroid(state_grid_rows.geom) centroid_geom(centroid_geom)
-     CROSS JOIN LATERAL ( SELECT postal_codes.id,
-            postal_codes.state_code,
-            postal_codes.postal_code,
-            postal_codes.city,
-            postal_codes.county_name,
-            postal_codes.county_code,
-            postal_codes.location,
-            postal_codes.created_at,
-            postal_codes.updated_at,
-            postal_codes.time_zone
-           FROM public.postal_codes
-          ORDER BY (postal_codes.location OPERATOR(public.<->) (centroid_geom.centroid_geom)::public.geography)
-         LIMIT 1) nearest_postal_code)
-  WHERE (public.st_area(state_grid_rows.geom) < (5)::double precision)
-  WITH NO DATA;
+CREATE TABLE public.state_grid_22km (
+    id bigint NOT NULL,
+    state_code character varying(2),
+    geom public.geometry,
+    centroid_location public.geography,
+    centroid_postal_code character varying(5),
+    centroid_postal_code_state_code character varying(2),
+    centroid_postal_code_city character varying(255),
+    centroid_postal_code_county character varying(255),
+    centroid_postal_code_location public.geography(Point,4326),
+    centroid_land_location public.geography
+);
 
 
 --
--- Name: state_grid_500k_55km; Type: MATERIALIZED VIEW; Schema: public; Owner: -
+-- Name: state_grid_500k_55km; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE MATERIALIZED VIEW public.state_grid_500k_55km AS
- WITH country_boundary AS (
-         SELECT public.st_union((states.boundaries_500k)::public.geometry) AS geom
-           FROM public.states
-        ), country_grid AS (
-         SELECT public.make_rect_grid(country_boundary_1.geom, (55000)::double precision, (55000)::double precision) AS geom
-           FROM country_boundary country_boundary_1
-        ), country_grid_rows AS (
-         SELECT (public.st_dump(country_grid.geom)).geom AS geom
-           FROM country_grid
-        ), state_grid_rows AS (
-         SELECT public.st_intersection(country_grid_rows.geom, (states.boundaries_500k)::public.geometry) AS geom,
-            states.code AS state_code
-           FROM (country_grid_rows
-             JOIN public.states ON (public.st_intersects(country_grid_rows.geom, (states.boundaries_500k)::public.geometry)))
-        )
- SELECT row_number() OVER () AS id,
-    state_grid_rows.state_code,
-    state_grid_rows.geom,
-    (centroid_geom.centroid_geom)::public.geography AS centroid_location,
-    nearest_postal_code.postal_code AS centroid_postal_code,
-    nearest_postal_code.state_code AS centroid_postal_code_state_code,
-    nearest_postal_code.city AS centroid_postal_code_city,
-    nearest_postal_code.county_name AS centroid_postal_code_county,
-    nearest_postal_code.location AS centroid_postal_code_location,
-        CASE
-            WHEN public.st_intersects(centroid_geom.centroid_geom, country_boundary.geom) THEN (centroid_geom.centroid_geom)::public.geography
-            ELSE nearest_postal_code.location
-        END AS centroid_land_location
-   FROM state_grid_rows,
-    country_boundary,
-    (LATERAL public.st_centroid(state_grid_rows.geom) centroid_geom(centroid_geom)
-     CROSS JOIN LATERAL ( SELECT postal_codes.id,
-            postal_codes.state_code,
-            postal_codes.postal_code,
-            postal_codes.city,
-            postal_codes.county_name,
-            postal_codes.county_code,
-            postal_codes.location,
-            postal_codes.created_at,
-            postal_codes.updated_at,
-            postal_codes.time_zone
-           FROM public.postal_codes
-          ORDER BY (postal_codes.location OPERATOR(public.<->) (centroid_geom.centroid_geom)::public.geography)
-         LIMIT 1) nearest_postal_code)
-  WHERE (public.st_area(state_grid_rows.geom) < (5)::double precision)
-  WITH NO DATA;
+CREATE TABLE public.state_grid_500k_55km (
+    id bigint NOT NULL,
+    state_code character varying(2),
+    geom public.geometry,
+    centroid_location public.geography,
+    centroid_postal_code character varying(5),
+    centroid_postal_code_state_code character varying(2),
+    centroid_postal_code_city character varying(255),
+    centroid_postal_code_county character varying(255),
+    centroid_postal_code_location public.geography(Point,4326),
+    centroid_land_location public.geography
+);
 
 
 --
--- Name: state_grid_55km; Type: MATERIALIZED VIEW; Schema: public; Owner: -
+-- Name: state_grid_55km; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE MATERIALIZED VIEW public.state_grid_55km AS
- WITH country_boundary AS (
-         SELECT public.st_union((states.boundaries)::public.geometry) AS geom
-           FROM public.states
-        ), country_grid AS (
-         SELECT public.make_rect_grid(country_boundary_1.geom, (55000)::double precision, (55000)::double precision) AS geom
-           FROM country_boundary country_boundary_1
-        ), country_grid_rows AS (
-         SELECT (public.st_dump(country_grid.geom)).geom AS geom
-           FROM country_grid
-        ), state_grid_rows AS (
-         SELECT public.st_intersection(country_grid_rows.geom, (states.boundaries)::public.geometry) AS geom,
-            states.code AS state_code
-           FROM (country_grid_rows
-             JOIN public.states ON (public.st_intersects(country_grid_rows.geom, (states.boundaries)::public.geometry)))
-        )
- SELECT row_number() OVER () AS id,
-    state_grid_rows.state_code,
-    state_grid_rows.geom,
-    (centroid_geom.centroid_geom)::public.geography AS centroid_location,
-    nearest_postal_code.postal_code AS centroid_postal_code,
-    nearest_postal_code.state_code AS centroid_postal_code_state_code,
-    nearest_postal_code.city AS centroid_postal_code_city,
-    nearest_postal_code.county_name AS centroid_postal_code_county,
-    nearest_postal_code.location AS centroid_postal_code_location,
-        CASE
-            WHEN public.st_intersects(centroid_geom.centroid_geom, country_boundary.geom) THEN (centroid_geom.centroid_geom)::public.geography
-            ELSE nearest_postal_code.location
-        END AS centroid_land_location
-   FROM state_grid_rows,
-    country_boundary,
-    (LATERAL public.st_centroid(state_grid_rows.geom) centroid_geom(centroid_geom)
-     CROSS JOIN LATERAL ( SELECT postal_codes.id,
-            postal_codes.state_code,
-            postal_codes.postal_code,
-            postal_codes.city,
-            postal_codes.county_name,
-            postal_codes.county_code,
-            postal_codes.location,
-            postal_codes.created_at,
-            postal_codes.updated_at
-           FROM public.postal_codes
-          ORDER BY (postal_codes.location OPERATOR(public.<->) (centroid_geom.centroid_geom)::public.geography)
-         LIMIT 1) nearest_postal_code)
-  WHERE (public.st_area(state_grid_rows.geom) < (5)::double precision)
-  WITH NO DATA;
+CREATE TABLE public.state_grid_55km (
+    id bigint NOT NULL,
+    state_code character varying(2),
+    geom public.geometry,
+    centroid_location public.geography,
+    centroid_postal_code character varying(5),
+    centroid_postal_code_state_code character varying(2),
+    centroid_postal_code_city character varying(255),
+    centroid_postal_code_county character varying(255),
+    centroid_postal_code_location public.geography(Point,4326),
+    centroid_land_location public.geography
+);
+
+
+--
+-- Name: states; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.states (
+    id integer NOT NULL,
+    country_code character varying(2) NOT NULL,
+    code character varying(2) NOT NULL,
+    name character varying(255) NOT NULL,
+    created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    boundaries public.geography(MultiPolygon,4326),
+    boundaries_500k public.geography(MultiPolygon,4326),
+    boundaries_5m public.geography(MultiPolygon,4326)
+);
 
 
 --
@@ -1341,6 +956,54 @@ ALTER TABLE ONLY public.cache
 
 
 --
+-- Name: country_grid_110km country_grid_110km_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.country_grid_110km
+    ADD CONSTRAINT country_grid_110km_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: country_grid_11km country_grid_11km_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.country_grid_11km
+    ADD CONSTRAINT country_grid_11km_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: country_grid_220km country_grid_220km_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.country_grid_220km
+    ADD CONSTRAINT country_grid_220km_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: country_grid_22km country_grid_22km_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.country_grid_22km
+    ADD CONSTRAINT country_grid_22km_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: country_grid_25km country_grid_25km_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.country_grid_25km
+    ADD CONSTRAINT country_grid_25km_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: country_grid_55km country_grid_55km_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.country_grid_55km
+    ADD CONSTRAINT country_grid_55km_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: knex_migrations_lock knex_migrations_lock_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1394,6 +1057,54 @@ ALTER TABLE ONLY public.provider_brands
 
 ALTER TABLE ONLY public.providers
     ADD CONSTRAINT providers_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: state_grid_110km state_grid_110km_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.state_grid_110km
+    ADD CONSTRAINT state_grid_110km_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: state_grid_11km state_grid_11km_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.state_grid_11km
+    ADD CONSTRAINT state_grid_11km_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: state_grid_220km state_grid_220km_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.state_grid_220km
+    ADD CONSTRAINT state_grid_220km_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: state_grid_22km state_grid_22km_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.state_grid_22km
+    ADD CONSTRAINT state_grid_22km_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: state_grid_500k_55km state_grid_500k_55km_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.state_grid_500k_55km
+    ADD CONSTRAINT state_grid_500k_55km_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: state_grid_55km state_grid_55km_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.state_grid_55km
+    ADD CONSTRAINT state_grid_55km_pkey PRIMARY KEY (id);
 
 
 --
@@ -1625,13 +1336,6 @@ CREATE INDEX state_grid_500k_55km_centroid_location_index ON public.state_grid_5
 --
 
 CREATE INDEX state_grid_500k_55km_geom_index ON public.state_grid_500k_55km USING gist (geom);
-
-
---
--- Name: state_grid_500k_55km_id_idx; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX state_grid_500k_55km_id_idx ON public.state_grid_500k_55km USING btree (id);
 
 
 --
@@ -1873,6 +1577,7 @@ COPY public.knex_migrations (id, name, batch, migration_time) FROM stdin;
 67	20210329150722_states_boundaries_500k.js	18	2021-03-29 21:51:36.984+00
 69	20210329160409_create_state_grid_55km_500k.js	19	2021-03-29 22:57:20.879+00
 70	20210401101728_appointments_last_modified.js	20	2021-04-01 16:19:52.884+00
+73	20210408224048_convert_materialized_views.js	21	2021-04-09 05:07:41.373+00
 \.
 
 
@@ -1880,7 +1585,7 @@ COPY public.knex_migrations (id, name, batch, migration_time) FROM stdin;
 -- Name: knex_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.knex_migrations_id_seq', 70, true);
+SELECT pg_catalog.setval('public.knex_migrations_id_seq', 73, true);
 
 
 --
