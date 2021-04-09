@@ -4,7 +4,6 @@ const logger = require("../logger");
 
 module.exports.downloadGeonames = async () => {
   const tmpPath = path.resolve(__dirname, "../../tmp");
-  logger.info(`Downloading geonames to ${tmpPath}`)
 
   await download(
     "https://download.geonames.org/export/zip/US.zip",
