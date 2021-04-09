@@ -13,6 +13,8 @@ spec:
     metadata:
       labels:
         app: {{ .Chart.Name }}-southeastern-grocers-refresh-appointments
+      annotations:
+        checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
     spec:
       imagePullSecrets:
         - name: {{ .Chart.Name }}-container-registry-secret

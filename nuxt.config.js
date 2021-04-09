@@ -38,7 +38,11 @@ export default {
   css: ["@fortawesome/fontawesome-svg-core/styles.css"],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: ["~/plugins/vuex-router-sync", "~/plugins/fontawesome.js"],
+  plugins: [
+    "~/plugins/vuex-router-sync",
+    "~/plugins/fontawesome.js",
+    "~/plugins/http",
+  ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -47,7 +51,22 @@ export default {
   buildModules,
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: ["@nuxt/http"],
+  modules: [
+    "@nuxt/http",
+    [
+      "nuxt-rollbar-module",
+      {
+        serverAccessToken: process.env.ROLLBAR_ACCESS_TOKEN,
+        clientAccessToken: process.env.ROLLBAR_CLIENT_ACCESS_TOKEN,
+        config: {
+          addErrorContext: true,
+          autoInstrument: true,
+          captureUncaught: true,
+          captureUnhandledRejections: true,
+        },
+      },
+    ],
+  ],
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
@@ -83,5 +102,11 @@ export default {
 
   googleAnalytics: {
     id: "UA-49484378-1",
+  },
+
+  http: {
+    // Try to prevent some random browsers from apparently requesting
+    // localhost:3000 requests in production for API calls.
+    browserBaseURL: "/",
   },
 };

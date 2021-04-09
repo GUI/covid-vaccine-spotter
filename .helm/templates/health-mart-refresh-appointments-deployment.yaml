@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}-health-mart-refresh-appointments-deployment
+  labels:
+    app: {{ .Chart.Name }}-health-mart-refresh-appointments
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}-health-mart-refresh-appointments
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}-health-mart-refresh-appointments
+      annotations:
+        checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+    spec:
+      imagePullSecrets:
+        - name: {{ .Chart.Name }}-container-registry-secret
+      containers:
+        - name: {{ .Chart.Name }}-health-mart-refresh-appointments
+          image: {{ index .Values.werf.image "covid-vaccine-spotter" }}
+          args: ["bin/health-mart-refresh-appointments"]
+          env:
+            - name: LOG_LEVEL
+              value: notice
+          envFrom:
+            - secretRef:
+                name: {{ .Chart.Name }}-secrets

@@ -1,10 +1,257 @@
+/* eslint no-param-reassign: ["error", { ignorePropertyModificationsFor: ["patch"] }] */
+
 require("dotenv").config();
 
 const got = require("got");
 const { Store } = require("./models/Store");
+const { PostalCode } = require("./models/PostalCode");
 const logger = require("./logger");
 
 class Geocode {
+  static async fillInMissingForStore(patch) {
+    if (!patch.location || !patch.time_zone) {
+      const store = await Store.query().findOne({
+        provider_id: patch.provider_id,
+        provider_location_id: patch.provider_location_id,
+      });
+
+      const address = patch.address || store?.address;
+      const state = patch.state || store?.state;
+      const city = patch.city || store?.city;
+      const postalCode = patch.postal_code || store?.postal_code;
+
+      if (store?.location && !store?.time_zone) {
+        if (postalCode) {
+          const postalCodeRecord = await PostalCode.query().findOne({
+            postal_code: postalCode,
+          });
+
+          if (postalCodeRecord) {
+            logger.info(
+              `Setting time zone from postal code (${address}, ${city}, ${state} ${postalCode})`
+            );
+            patch.time_zone = postalCodeRecord.time_zone;
+          }
+        } else {
+          const postalCodeResult = await PostalCode.knex().raw(
+            `
+            SELECT *
+            FROM postal_codes
+            ORDER BY postal_codes.location <-> (
+              SELECT location
+              FROM stores
+              WHERE id = ?
+            )
+            LIMIT 1
+          `,
+            store.id
+          );
+
+          if (postalCodeResult?.rows?.[0]) {
+            logger.info(
+              `Setting time zone from nearest postal code (${address}, ${city}, ${state} ${postalCode})`
+            );
+            patch.time_zone = postalCodeResult.rows[0].time_zone;
+          }
+        }
+
+        if (!patch.time_zone) {
+          logger.error(
+            `Could not find time zone for location: ${patch.provider_id} ${patch.provider_location_id}`
+          );
+        }
+      }
+
+      if (!store?.location) {
+        if (!address) {
+          logger.info(
+            `Looking up ${city}, ${state} ${postalCode} in postal codes table...`
+          );
+          let postalCodeRecord;
+          if (postalCode) {
+            postalCodeRecord = await PostalCode.query().findOne({
+              postal_code: postalCode,
+            });
+          } else if (city && state) {
+            postalCodeRecord = await PostalCode.query()
+              .where("state_code", patch.state)
+              .whereRaw(
+                "regexp_replace(lower(city), '\\s+', '') = regexp_replace(lower(?), '\\s+', '')",
+                patch.city
+              )
+              .first();
+          }
+
+          if (postalCodeRecord) {
+            logger.info(
+              `Setting location and time zone from postal code (${address}, ${city}, ${state} ${postalCode})`
+            );
+
+            if (!store?.location) {
+              patch.location = postalCodeRecord.location;
+              patch.location_source = "postal_codes";
+            }
+
+            if (!store?.time_zone) {
+              patch.time_zone = postalCodeRecord.time_zone;
+            }
+          }
+        }
+
+        if (!patch.location) {
+          logger.info(
+            `Geocoding ${address}, ${city}, ${state} ${postalCode} with geocod.io...`
+          );
+          const geocodeResp = await got("https://api.geocod.io/v1.6/geocode", {
+            searchParams: {
+              api_key: process.env.GEOCODIO_API_KEY,
+              country: "US",
+              street: address,
+              city,
+              state,
+              postal_code: postalCode,
+              limit: 1,
+            },
+            responseType: "json",
+            timeout: 90000,
+            retry: 0,
+          });
+
+          const result = geocodeResp?.body?.results?.[0];
+          if (!result) {
+            logger.info(
+              `No geocoding results, ignoring (${address}, ${city}, ${state} ${postalCode}): ${JSON.stringify(
+                geocodeResp.body
+              )}`
+            );
+          } else if (result.accuracy_type === "state") {
+            logger.info(
+              `Geocoding result for an entire state, ignoring (${address}, ${city}, ${state} ${postalCode}): ${JSON.stringify(
+                geocodeResp.body
+              )}`
+            );
+          } else if (result.accuracy_score < 0.8) {
+            logger.info(
+              `Geocoding result does not have a high enough accuracy score, ignoring (${address}, ${city}, ${state} ${postalCode}): ${JSON.stringify(
+                geocodeResp.body
+              )}`
+            );
+          } else if (state !== result.address_components.state) {
+            logger.info(
+              `States did not match for geocoding result, ignoring (${address}, ${city}, ${state} ${postalCode}): ${JSON.stringify(
+                geocodeResp.body
+              )}`
+            );
+          } else {
+            logger.info(
+              `Setting location and time zone from geocod.io (${address}, ${city}, ${state} ${postalCode}): ${JSON.stringify(
+                geocodeResp.body
+              )}`
+            );
+
+            if (city !== result.address_components.city) {
+              logger.warn(
+                `Cities did not match for geocoding result, but still using (${address}, ${city}, ${state} ${postalCode}): ${JSON.stringify(
+                  geocodeResp.body
+                )}`
+              );
+            }
+
+            if (!store?.location) {
+              patch.location = `point(${result.location.lng} ${result.location.lat})`;
+              patch.location_source = "geocodio";
+            }
+
+            if (!store?.time_zone) {
+              if (result.address_components.zip) {
+                const postalCodeRecord = await PostalCode.query().findOne({
+                  postal_code: result.address_components.zip,
+                });
+                logger.info(
+                  `Setting time zone from nearest postal code (${address}, ${city}, ${state} ${postalCode})`
+                );
+                patch.time_zone = postalCodeRecord.time_zone;
+              } else {
+                const postalCodeResult = await PostalCode.knex().raw(
+                  `
+                  SELECT *
+                  FROM postal_codes
+                  ORDER BY postal_codes.location <-> ?
+                  LIMIT 1
+                `,
+                  patch.location
+                );
+                console.info(postalCodeResult);
+                if (postalCodeResult?.rows?.[0]) {
+                  logger.info(
+                    `Setting time zone from nearest postal code (${address}, ${city}, ${state} ${postalCode})`
+                  );
+                  patch.time_zone = postalCodeResult.rows[0].time_zone;
+                }
+              }
+            }
+          }
+        }
+
+        if (!patch.location) {
+          logger.info(
+            `Geocoding ${city}, ${state} ${postalCode} with geonames...`
+          );
+          const geonamesResp = await got("http://api.geonames.org/searchJSON", {
+            searchParams: {
+              q: store.city,
+              country: "US",
+              adminCode1: store.state,
+              featureClass: "P",
+              maxRows: 5,
+              username: process.env.GEONAMES_USERNAME,
+            },
+            responseType: "json",
+            timeout: 30000,
+            retry: 0,
+          });
+
+          const result = geonamesResp.body?.geonames?.[0];
+          if (result) {
+            logger.info(
+              `Setting location and time zone from geonames (${address}, ${city}, ${state} ${postalCode})`
+            );
+            patch.location = `point(${result.lng} ${result.lat})`;
+            patch.location_source = "geonames";
+
+            const postalCodeResult = await PostalCode.knex().raw(
+              `
+              SELECT *
+              FROM postal_codes
+              ORDER BY postal_codes.location <-> ?
+              LIMIT 1
+            `,
+              patch.location
+            );
+            if (postalCodeResult?.rows?.[0]) {
+              logger.info(
+                `Setting time zone from nearest postal code (${address}, ${city}, ${state} ${postalCode})`
+              );
+              patch.time_zone = postalCodeResult.rows[0].time_zone;
+            }
+          }
+        }
+
+        if (!patch.location) {
+          logger.error(
+            `Could not geocode location: ${patch.provider_id} ${patch.provider_location_id} (${address}, ${city}, ${state} ${postalCode})`
+          );
+        }
+
+        if (!store?.time_zone && !patch.time_zone) {
+          logger.error(
+            `Could not find time zone for location: ${patch.provider_id} ${patch.provider_location_id} (${address}, ${city}, ${state} ${postalCode})`
+          );
+        }
+      }
+    }
+  }
+
   static async fix() {
     logger.notice("Looking for any geocoding issues to fix...");
 
@@ -141,7 +388,6 @@ class Geocode {
 
       const result = resp.body?.geonames?.[0];
       if (result) {
-        console.info(result);
         await Store.query()
           .findById(store.id)
           .patch({

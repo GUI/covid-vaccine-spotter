@@ -55,6 +55,10 @@ class Appointments {
 
     setComputedStoreValues(patch);
 
+    // Since vaccine types are only set at the store level, don't use the
+    // normally computed value by setComputedStoreValues.
+    delete patch.appointment_vaccine_types;
+
     await Store.query().findById(store.id).patch(patch);
 
     await sleep(_.random(250, 750));

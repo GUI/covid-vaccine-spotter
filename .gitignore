@@ -12,4 +12,5 @@
 /yarn-error.log
 /terraform/.terraform*
 /terraform/*.tfstate*
+/terraform/terraform.tfvars
 /.werf_secret_key

@@ -1,25 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Chart.Name }}-refresh-cvs-deployment
+  name: {{ .Chart.Name }}-cvs-refresh-appointments-deployment
   labels:
-    app: {{ .Chart.Name }}-refresh-cvs
+    app: {{ .Chart.Name }}-cvs-refresh-appointments
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .Chart.Name }}-refresh-cvs
+      app: {{ .Chart.Name }}-cvs-refresh-appointments
   template:
     metadata:
       labels:
-        app: {{ .Chart.Name }}-refresh-cvs
+        app: {{ .Chart.Name }}-cvs-refresh-appointments
+      annotations:
+        checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
     spec:
       imagePullSecrets:
         - name: {{ .Chart.Name }}-container-registry-secret
       containers:
-        - name: {{ .Chart.Name }}-refresh-cvs
+        - name: {{ .Chart.Name }}-cvs-refresh-appointments
           image: {{ index .Values.werf.image "covid-vaccine-spotter" }}
-          args: ["bin/refresh-cvs"]
+          args: ["bin/cvs-refresh-appointments"]
           env:
             - name: LOG_LEVEL
               value: notice

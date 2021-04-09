@@ -1,6 +1,0 @@
-#!/usr/bin/env node
-
-const { refreshCvs } = require("../src/handlers/refreshCvs");
-const runTask = require("../src/runTask");
-
-runTask(refreshCvs, 40000);

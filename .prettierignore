@@ -7,3 +7,6 @@
 /tmp/
 /.nuxt
 /.helm
+/terraform/.terraform
+/terraform/terraform.tfstate*
+/terraform/secrets.enc.yaml

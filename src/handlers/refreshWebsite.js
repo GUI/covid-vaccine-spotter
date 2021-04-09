@@ -321,23 +321,9 @@ module.exports.refreshWebsite = async () => {
   if (process.env.PUBLISH_SITE === "true") {
     logger.notice("Begin publishing website...");
 
-    // Pre-compress all files.
-    await runShell("find", [
-      "./dist",
-      "-type",
-      "f",
-      "-print",
-      "-exec",
-      "gzip",
-      "-n",
-      "{}",
-      ";",
-      "-exec",
-      "mv",
-      "{}.gz",
-      "{}",
-      ";",
-    ]);
+    // Unset variable if it's set in local development, since it conflicts with
+    // rclone: https://forum.rclone.org/t/mounting-an-amazon-s3-bucket/15106/2
+    delete process.env.AWS_CA_BUNDLE;
 
     // Sync to a temporary local dir to preserve timestamps.
     await runShell("rsync", [
@@ -357,12 +343,12 @@ module.exports.refreshWebsite = async () => {
     await runShell("rclone", [
       "copy",
       "-v",
+      "--update",
+      "--use-server-modtime",
       "--header-upload",
-      "Cache-Control: public, max-age=15, s-maxage=40",
-      "--header-upload",
-      "Content-Encoding: gzip",
+      "Cache-Control: public, max-age=600, s-maxage=86400",
       "./tmp/dist-sync/_nuxt/",
-      `:gcs:${process.env.WEBSITE_BUCKET}/_nuxt/`,
+      `:s3:${process.env.WEBSITE_BUCKET}/_nuxt/`,
     ]);
 
     // Sync the API files first to ensure they're live before other files that
@@ -370,28 +356,45 @@ module.exports.refreshWebsite = async () => {
     await runShell("rclone", [
       "copy",
       "-v",
+      "--update",
+      "--use-server-modtime",
       "--header-upload",
       "Cache-Control: public, max-age=15, s-maxage=40",
-      "--header-upload",
-      "Content-Encoding: gzip",
+      "--exclude",
+      "v0/states/*/postal_codes.json",
       "./tmp/dist-sync/api/",
-      `:gcs:${process.env.WEBSITE_BUCKET}/api/`,
+      `:s3:${process.env.WEBSITE_BUCKET}/api/`,
+    ]);
+
+    // Sync postal code files that are more static and can have longer cache
+    // durations.
+    await runShell("rclone", [
+      "copy",
+      "-v",
+      "--update",
+      "--use-server-modtime",
+      "--header-upload",
+      "Cache-Control: public, max-age=600, s-maxage=3600",
+      "--include",
+      "v0/states/*/postal_codes.json",
+      "./tmp/dist-sync/api/",
+      `:s3:${process.env.WEBSITE_BUCKET}/api/`,
     ]);
 
     // Sync the remaining files.
     await runShell("rclone", [
       "copy",
       "-v",
+      "--update",
+      "--use-server-modtime",
       "--header-upload",
       "Cache-Control: public, max-age=15, s-maxage=40",
-      "--header-upload",
-      "Content-Encoding: gzip",
       "--exclude",
       "api/**",
       "--exclude",
       "_nuxt/**",
       "./tmp/dist-sync/",
-      `:gcs:${process.env.WEBSITE_BUCKET}/`,
+      `:s3:${process.env.WEBSITE_BUCKET}/`,
     ]);
 
     // Each new deployment contains a new timestamped directory of assets in
@@ -402,7 +405,7 @@ module.exports.refreshWebsite = async () => {
     // probably overkill, but just to be safe).
     const staticDirsCmd = await runShell("rclone", [
       "lsjson",
-      `:gcs:${process.env.WEBSITE_BUCKET}/_nuxt/static/`,
+      `:s3:${process.env.WEBSITE_BUCKET}/_nuxt/static/`,
     ]);
     const staticDirs = JSON.parse(staticDirsCmd.stdout).map((d) => d.Path);
     staticDirs.sort();
@@ -416,7 +419,7 @@ module.exports.refreshWebsite = async () => {
       await runShell("rclone", [
         "purge",
         "-v",
-        `:gcs:${process.env.WEBSITE_BUCKET}/_nuxt/static/${dir}`,
+        `:s3:${process.env.WEBSITE_BUCKET}/_nuxt/static/${dir}`,
       ]);
     }
   }

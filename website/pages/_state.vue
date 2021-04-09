@@ -98,7 +98,13 @@
                 class="alert alert-danger"
                 role="alert"
               >
-                Error fetching data: {{ $fetchState.error.message }}
+                Error fetching data: {{ $fetchState.error.message }}<br />If
+                this error persists, this is not expected, so please contact me
+                at
+                <a
+                  href="m&#97;ilto&#58;v%&#54;1&#99;&#99;&#105;ne&#64;nic&#107;%6D&#46;org"
+                  >vacc&#105;ne&#64;ni&#99;k&#109;&#46;o&#114;&#103;</a
+                >.
               </div>
               <div
                 v-else-if="filteredLocationsError"
@@ -139,24 +145,32 @@ export default {
   fetchDelay: 5,
 
   async fetch() {
-    if (this?.$nuxt?.$loading?.start) {
-      this.$nuxt.$loading.start();
-    }
+    try {
+      if (this?.$nuxt?.$loading?.start) {
+        this.$nuxt.$loading.start();
+      }
 
-    const usState = Object.freeze(
-      await this.$http.$get(`/api/v0/states/${this.$route.params.state}.json`)
-    );
-    const postalCodes = Object.freeze(
-      await this.$http.$get(
-        `/api/v0/states/${this.$route.params.state}/postal_codes.json`
-      )
-    );
+      const state = this.$route.params.state.toUpperCase();
+      const usStatePromise = this.$http.$get(`/api/v0/states/${state}.json`);
+      const postalCodesPromise = this.$http.$get(
+        `/api/v0/states/${state}/postal_codes.json`
+      );
 
-    this.$store.commit("usStates/set", usState);
-    this.$store.commit("postalCodes/set", postalCodes);
+      const usState = Object.freeze(await usStatePromise);
+      const postalCodes = Object.freeze(await postalCodesPromise);
 
-    if (this?.$nuxt?.$loading?.finish) {
-      this.$nuxt.$loading.finish();
+      this.$store.commit("usStates/set", usState);
+      this.$store.commit("postalCodes/set", postalCodes);
+
+      if (this?.$nuxt?.$loading?.finish) {
+        this.$nuxt.$loading.finish();
+      }
+    } catch (error) {
+      if (this.$rollbar) {
+        this.$rollbar.error(error);
+      }
+
+      throw error;
     }
   },
 

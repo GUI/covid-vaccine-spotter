@@ -10,6 +10,8 @@
             id="zip"
             v-model="queryZip"
             type="text"
+            inputmode="numeric"
+            pattern="[0-9]*"
             name="zip"
             class="form-control form-control-lg"
             placeholder="Enter a 5 digit ZIP code"
