@@ -1,0 +1,12 @@
+#!/usr/bin/env node
+
+const { program } = require('commander');
+
+(async () => {
+  program.command("db:structure:dump").action(async () => {
+    const Db = require("../src/tasks/Db");
+    return Db.structureDump();
+  });
+
+  await program.parseAsync(process.argv);
+})();
