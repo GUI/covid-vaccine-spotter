@@ -1,7 +1,7 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: {{ .Chart.Name }}-rite-aid-refresh-stores-cjob
+  name: {{ .Chart.Name }}-rite-aid-refresh-stores-cronjob
   labels:
     app: {{ .Chart.Name }}-rite-aid-refresh-stores
 spec:
