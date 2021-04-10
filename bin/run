@@ -3,9 +3,28 @@
 const { program } = require('commander');
 
 (async () => {
+  // Unset variable if it's set in local development, since it conflicts with
+  // rclone: https://forum.rclone.org/t/mounting-an-amazon-s3-bucket/15106/2
+  delete process.env.AWS_CA_BUNDLE;
+
   program.command("db:structure:dump").action(async () => {
     const Db = require("../src/tasks/Db");
     return Db.structureDump();
+  });
+
+  program.command("db:backup:public").action(async () => {
+    const Db = require("../src/tasks/Db");
+    return Db.backupPublic();
+  });
+
+  program.command("db:backup:private").action(async () => {
+    const Db = require("../src/tasks/Db");
+    return Db.backupPrivate();
+  });
+
+  program.command("db:audit:dump").action(async () => {
+    const Db = require("../src/tasks/Db");
+    return Db.auditDump();
   });
 
   await program.parseAsync(process.argv);

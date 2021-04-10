@@ -1,5 +1,11 @@
 FROM node:14-buster
 
+RUN echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
+  wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add - && \
+  apt-get update && \
+  apt-get -y install postgresql-13 && \
+  rm -rf /var/lib/apt/lists/*
+
 RUN apt-get update && \
   apt-get -y install rsync && \
   rm -rf /var/lib/apt/lists/*
