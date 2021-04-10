@@ -405,6 +405,8 @@ module.exports.refreshWebsite = async () => {
     // probably overkill, but just to be safe).
     const staticDirsCmd = await runShell("rclone", [
       "lsjson",
+      "--no-modtime",
+      "--no-mimetype",
       `:s3:${process.env.WEBSITE_BUCKET}/_nuxt/static/`,
     ]);
     const staticDirs = JSON.parse(staticDirsCmd.stdout).map((d) => d.Path);
