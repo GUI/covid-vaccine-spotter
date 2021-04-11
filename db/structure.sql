@@ -3,7 +3,7 @@
 --
 
 -- Dumped from database version 13.1
--- Dumped by pg_dump version 13.2
+-- Dumped by pg_dump version 13.2 (Debian 13.2-1.pgdg100+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -21,6 +21,55 @@ SET row_security = off;
 --
 
 CREATE SCHEMA audit;
+
+
+--
+-- Name: SCHEMA audit; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON SCHEMA audit IS 'Out-of-table audit/history logging tables and trigger functions';
+
+
+--
+-- Name: tiger; Type: SCHEMA; Schema: -; Owner: -
+--
+
+CREATE SCHEMA tiger;
+
+
+--
+-- Name: tiger_data; Type: SCHEMA; Schema: -; Owner: -
+--
+
+CREATE SCHEMA tiger_data;
+
+
+--
+-- Name: topology; Type: SCHEMA; Schema: -; Owner: -
+--
+
+CREATE SCHEMA topology;
+
+
+--
+-- Name: SCHEMA topology; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON SCHEMA topology IS 'PostGIS Topology schema';
+
+
+--
+-- Name: fuzzystrmatch; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS fuzzystrmatch WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION fuzzystrmatch; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION fuzzystrmatch IS 'determine similarities and distance between strings';
 
 
 --
@@ -52,6 +101,34 @@ COMMENT ON EXTENSION postgis IS 'PostGIS geometry, geography, and raster spatial
 
 
 --
+-- Name: postgis_tiger_geocoder; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS postgis_tiger_geocoder WITH SCHEMA tiger;
+
+
+--
+-- Name: EXTENSION postgis_tiger_geocoder; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION postgis_tiger_geocoder IS 'PostGIS tiger geocoder and reverse geocoder';
+
+
+--
+-- Name: postgis_topology; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS postgis_topology WITH SCHEMA topology;
+
+
+--
+-- Name: EXTENSION postgis_topology; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION postgis_topology IS 'PostGIS topology spatial types and functions';
+
+
+--
 -- Name: audit_table(regclass); Type: FUNCTION; Schema: audit; Owner: -
 --
 
@@ -60,6 +137,16 @@ CREATE FUNCTION audit.audit_table(target_table regclass) RETURNS void
     AS $_$
       SELECT audit.audit_table($1, BOOLEAN 't', BOOLEAN 't');
     $_$;
+
+
+--
+-- Name: FUNCTION audit_table(target_table regclass); Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON FUNCTION audit.audit_table(target_table regclass) IS '
+    Add auditing support to the given table. Row-level changes will be logged with
+    full client query text. No cols are ignored.
+    ';
 
 
 --
@@ -112,6 +199,23 @@ CREATE FUNCTION audit.audit_table(target_table regclass, audit_rows boolean, aud
       EXECUTE _q_txt;
     END;
     $$;
+
+
+--
+-- Name: FUNCTION audit_table(target_table regclass, audit_rows boolean, audit_query_text boolean, ignored_cols text[]); Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON FUNCTION audit.audit_table(target_table regclass, audit_rows boolean, audit_query_text boolean, ignored_cols text[]) IS '
+    Add auditing support to a table.
+
+    Arguments:
+       target_table:     Table name, schema qualified if not on search_path
+       audit_rows:       Record each row change, or only audit at a statement level
+       audit_query_text: Record the text of the client query that triggered
+                         the audit event?
+       ignored_cols:     Columns to exclude from update diffs,
+                         ignore updates that change only ignored cols.
+    ';
 
 
 --
@@ -193,6 +297,42 @@ CREATE FUNCTION audit.if_modified_func() RETURNS trigger
 
 
 --
+-- Name: FUNCTION if_modified_func(); Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON FUNCTION audit.if_modified_func() IS '
+    Track changes to a table at the statement and/or row level.
+
+    Optional parameters to trigger in CREATE TRIGGER call:
+
+    param 0: BOOLEAN, whether to log the query text. Default ''t''.
+
+    param 1: TEXT[], columns to ignore in updates. Default [].
+
+             Updates to ignored cols are omitted from changed_fields.
+
+             Updates with only ignored cols changed are not inserted
+             into the audit log.
+
+             Almost all the processing work is still done for updates
+             that ignored. If you need to save the load, you need to use
+             WHEN clause on the trigger instead.
+
+             No warning or error is issued if ignored_cols contains columns
+             that do not exist in the target table. This lets you specify
+             a standard set of ignored columns.
+
+    There is no parameter to disable logging of values. Add this trigger as
+    a ''FOR EACH STATEMENT'' rather than ''FOR EACH ROW'' trigger if you do not
+    want to log row values.
+
+    Note that the user name logged is the login role for the session. The audit
+    trigger cannot obtain the active role because it is reset by
+    the SECURITY DEFINER invocation of the audit trigger its self.
+    ';
+
+
+--
 -- Name: jsonb_minus(jsonb, text[]); Type: FUNCTION; Schema: audit; Owner: -
 --
 
@@ -213,6 +353,13 @@ CREATE FUNCTION audit.jsonb_minus("left" jsonb, keys text[]) RETURNS jsonb
           ELSE "left"
         END
     $$;
+
+
+--
+-- Name: FUNCTION jsonb_minus("left" jsonb, keys text[]); Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON FUNCTION audit.jsonb_minus("left" jsonb, keys text[]) IS 'Delete specificed keys';
 
 
 --
@@ -243,6 +390,13 @@ CREATE FUNCTION audit.jsonb_minus("left" jsonb, "right" jsonb) RETURNS jsonb
 
 
 --
+-- Name: FUNCTION jsonb_minus("left" jsonb, "right" jsonb); Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON FUNCTION audit.jsonb_minus("left" jsonb, "right" jsonb) IS 'Delete matching pairs in the right argument from the left argument';
+
+
+--
 -- Name: make_rect_grid(public.geometry, double precision, double precision, boolean); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -258,37 +412,37 @@ CREATE FUNCTION public.make_rect_grid(geom public.geometry, height_meters double
         x_series DECIMAL;
         y_series DECIMAL;
     BEGIN
-      CASE public.st_srid ( geom ) WHEN 0 THEN
-        geom := public.ST_SetSRID ( geom, srid );
+      CASE st_srid ( geom ) WHEN 0 THEN
+        geom := ST_SetSRID ( geom, srid );
         RAISE NOTICE'SRID Not Found.';
       ELSE
         RAISE NOTICE'SRID Found.';
       END CASE;
-      input_srid := public.st_srid ( geom );
-      geom := public.st_transform ( geom, srid );
+      input_srid := st_srid ( geom );
+      geom := st_transform ( geom, srid );
         CASE use_envelope WHEN true THEN
-          geom := public.st_envelope(geom);
+          geom := st_envelope(geom);
             RAISE NOTICE'Using min/max for ST_Envelope on geom';
         ELSE
             RAISE NOTICE'Using min/max for geom';
         END CASE;
-      x_max := public.ST_XMax ( geom );
-      y_max := public.ST_YMax ( geom );
-      x_min := public.ST_XMin ( geom );
-      y_min := public.ST_YMin ( geom );
+      x_max := ST_XMax ( geom );
+      y_max := ST_YMax ( geom );
+      x_min := ST_XMin ( geom );
+      y_min := ST_YMin ( geom );
       x_series := ceil ( @( x_max - x_min ) / height_meters );
       y_series := ceil ( @( y_max - y_min ) / width_meters );
       RETURN QUERY
             WITH res AS (
                 SELECT
-                    public.st_collect (public.st_setsrid ( public.ST_Translate ( cell, j * $2 + x_min, i * $3 + y_min ), srid )) AS grid
+                    st_collect (st_setsrid ( ST_Translate ( cell, j * $2 + x_min, i * $3 + y_min ), srid )) AS grid
                 FROM
                     generate_series ( 0, x_series ) AS j,
                     generate_series ( 0, y_series ) AS i,
                     (
-                        SELECT ( 'POLYGON((0 0, 0 ' ||$3 || ', ' ||$2 || ' ' ||$3 || ', ' ||$2 || ' 0,0 0))' ) :: public.geometry AS cell
-                    ) AS foo WHERE public.ST_Intersects ( public.st_setsrid ( public.ST_Translate ( cell, j * $2 + x_min, i * $3 + y_min ), srid ), geom )
-        ) SELECT public.st_transform ( grid, input_srid ) FROM res;
+                        SELECT ( 'POLYGON((0 0, 0 ' ||$3 || ', ' ||$2 || ' ' ||$3 || ', ' ||$2 || ' 0,0 0))' ) :: geometry AS cell
+                    ) AS foo WHERE ST_Intersects ( st_setsrid ( ST_Translate ( cell, j * $2 + x_min, i * $3 + y_min ), srid ), geom )
+        ) SELECT st_transform ( grid, input_srid ) FROM res;
     END;
     $_$;
 
@@ -336,6 +490,13 @@ CREATE OPERATOR audit.- (
 );
 
 
+--
+-- Name: OPERATOR - (jsonb, jsonb); Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON OPERATOR audit.- (jsonb, jsonb) IS 'Delete matching pairs in the right argument from the left argument';
+
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -366,6 +527,146 @@ CREATE TABLE audit.log (
     statement_only boolean NOT NULL,
     CONSTRAINT log_action_check CHECK ((action = ANY (ARRAY['I'::text, 'D'::text, 'U'::text, 'T'::text])))
 );
+
+
+--
+-- Name: TABLE log; Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON TABLE audit.log IS 'History of auditable actions on audited tables';
+
+
+--
+-- Name: COLUMN log.id; Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON COLUMN audit.log.id IS 'Unique identifier for each auditable event';
+
+
+--
+-- Name: COLUMN log.schema_name; Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON COLUMN audit.log.schema_name IS 'Database schema audited table for this event is in';
+
+
+--
+-- Name: COLUMN log.table_name; Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON COLUMN audit.log.table_name IS 'Non-schema-qualified table name of table event occured in';
+
+
+--
+-- Name: COLUMN log.relid; Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON COLUMN audit.log.relid IS 'Table OID. Changes with drop/create. Get with ''tablename''::REGCLASS';
+
+
+--
+-- Name: COLUMN log.session_user_name; Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON COLUMN audit.log.session_user_name IS 'Login / session user whose statement caused the audited event';
+
+
+--
+-- Name: COLUMN log.current_user_name; Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON COLUMN audit.log.current_user_name IS 'Effective user that cased audited event (if authorization level changed)';
+
+
+--
+-- Name: COLUMN log.action_tstamp_tx; Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON COLUMN audit.log.action_tstamp_tx IS 'Transaction start timestamp for tx in which audited event occurred';
+
+
+--
+-- Name: COLUMN log.action_tstamp_stm; Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON COLUMN audit.log.action_tstamp_stm IS 'Statement start timestamp for tx in which audited event occurred';
+
+
+--
+-- Name: COLUMN log.action_tstamp_clk; Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON COLUMN audit.log.action_tstamp_clk IS 'Wall clock time at which audited event''s trigger call occurred';
+
+
+--
+-- Name: COLUMN log.transaction_id; Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON COLUMN audit.log.transaction_id IS 'Identifier of transaction that made the change. Unique when paired with action_tstamp_tx.';
+
+
+--
+-- Name: COLUMN log.application_name; Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON COLUMN audit.log.application_name IS 'Client-set session application name when this audit event occurred.';
+
+
+--
+-- Name: COLUMN log.application_user_name; Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON COLUMN audit.log.application_user_name IS 'Client-set session application user when this audit event occurred.';
+
+
+--
+-- Name: COLUMN log.client_addr; Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON COLUMN audit.log.client_addr IS 'IP address of client that issued query. Null for unix domain socket.';
+
+
+--
+-- Name: COLUMN log.client_port; Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON COLUMN audit.log.client_port IS 'Port address of client that issued query. Undefined for unix socket.';
+
+
+--
+-- Name: COLUMN log.client_query; Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON COLUMN audit.log.client_query IS 'Top-level query that caused this auditable event. May be more than one.';
+
+
+--
+-- Name: COLUMN log.action; Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON COLUMN audit.log.action IS 'Action type; I = insert, D = delete, U = update, T = truncate';
+
+
+--
+-- Name: COLUMN log.row_data; Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON COLUMN audit.log.row_data IS 'Record value. Null for statement-level trigger. For INSERT this is null. For DELETE and UPDATE it is the old tuple.';
+
+
+--
+-- Name: COLUMN log.changed_fields; Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON COLUMN audit.log.changed_fields IS 'New values of fields for INSERT or changed by UPDATE. Null for DELETE';
+
+
+--
+-- Name: COLUMN log.statement_only; Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON COLUMN audit.log.statement_only IS '''t'' if audit event is from an FOR EACH STATEMENT trigger, ''f'' for FOR EACH ROW';
 
 
 --
@@ -458,23 +759,6 @@ CREATE TABLE public.country_grid_22km (
     centroid_location public.geography,
     centroid_postal_code character varying(5),
     centroid_postal_code_state_code character varying(2),
-    centroid_postal_code_city character varying(255),
-    centroid_postal_code_county character varying(255),
-    centroid_postal_code_location public.geography(Point,4326),
-    centroid_land_location public.geography
-);
-
-
---
--- Name: country_grid_25km; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.country_grid_25km (
-    id bigint NOT NULL,
-    geom public.geometry,
-    centroid_location public.geography,
-    centroid_postal_code character varying(5),
-    centroid_postal_code_state character varying(2),
     centroid_postal_code_city character varying(255),
     centroid_postal_code_county character varying(255),
     centroid_postal_code_location public.geography(Point,4326),
@@ -988,14 +1272,6 @@ ALTER TABLE ONLY public.country_grid_22km
 
 
 --
--- Name: country_grid_25km country_grid_25km_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.country_grid_25km
-    ADD CONSTRAINT country_grid_25km_pkey PRIMARY KEY (id);
-
-
---
 -- Name: country_grid_55km country_grid_55km_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1161,6 +1437,13 @@ ALTER TABLE ONLY public.stores
 
 ALTER TABLE ONLY public.walgreens_grid
     ADD CONSTRAINT walgreens_grid_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: audit_log_action_tstamp_tx_index; Type: INDEX; Schema: audit; Owner: -
+--
+
+CREATE INDEX audit_log_action_tstamp_tx_index ON audit.log USING btree (action_tstamp_tx);
 
 
 --
@@ -1402,13 +1685,6 @@ CREATE INDEX stores_location_index ON public.stores USING gist (location);
 
 
 --
--- Name: stores_provider_id_carries_vaccine_appointments_last_fetche_idx; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX stores_provider_id_carries_vaccine_appointments_last_fetche_idx ON public.stores USING btree (provider_id, carries_vaccine, appointments_last_fetched);
-
-
---
 -- Name: stores_state_index; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1434,13 +1710,6 @@ CREATE INDEX walgreens_grid_centroid_location_index ON public.walgreens_grid USI
 --
 
 CREATE INDEX walgreens_grid_geom_index ON public.walgreens_grid USING gist (geom);
-
-
---
--- Name: walgreens_grid_state_code_idx; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX walgreens_grid_state_code_idx ON public.walgreens_grid USING btree (state_code);
 
 
 --
@@ -1537,7 +1806,7 @@ ALTER TABLE ONLY public.stores
 --
 
 -- Dumped from database version 13.1
--- Dumped by pg_dump version 13.2
+-- Dumped by pg_dump version 13.2 (Debian 13.2-1.pgdg100+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -1555,29 +1824,30 @@ SET row_security = off;
 --
 
 COPY public.knex_migrations (id, name, batch, migration_time) FROM stdin;
-16	20210221100547_create_states.js	1	2021-02-21 21:25:21.993+00
-17	20210221100553_create_postal_codes.js	1	2021-02-21 21:25:22.33+00
-24	20210221143355_create_stores.js	2	2021-02-22 04:41:43.631+00
-25	20210222161552_optional_store_location.js	3	2021-02-22 23:20:50.858+00
-29	20210223095007_state_boundaries.js	4	2021-02-23 23:58:05.058+00
-30	20210223173502_store_time_zone.js	5	2021-02-24 00:38:23.872+00
-31	20210223232431_optional_store_city_state.js	6	2021-02-24 06:26:37.028+00
-36	20210225081423_country_grids.js	7	2021-02-26 00:19:36.812+00
-40	20210226081756_audit.js	8	2021-02-26 15:42:10.901+00
-41	20210227104231_postal_code_time_zone.js	9	2021-02-27 18:12:56.473+00
-45	20210301091717_smaller_country_grids.js	10	2021-03-03 05:46:46.508+00
-46	20210302161153_bigger_country_grid.js	10	2021-03-03 05:46:50.622+00
-51	20210304151335_provider_brand.js	11	2021-03-05 02:51:44.143+00
-52	20210307114320_geocoding.js	12	2021-03-07 18:46:53.196+00
-53	20210307171239_store_url.js	13	2021-03-08 00:20:37.33+00
-56	20210315165140_store_normalized_address_key.js	14	2021-03-16 03:50:20.785+00
-61	20210322161258_walgreens_grid.js	15	2021-03-23 05:49:27.875+00
-63	20210324142039_store_vaccine_appointment_types.js	16	2021-03-24 20:53:32.342+00
-65	20210325091544_create_cache.js	17	2021-03-25 15:29:23.505+00
-67	20210329150722_states_boundaries_500k.js	18	2021-03-29 21:51:36.984+00
-69	20210329160409_create_state_grid_55km_500k.js	19	2021-03-29 22:57:20.879+00
-70	20210401101728_appointments_last_modified.js	20	2021-04-01 16:19:52.884+00
-73	20210408224048_convert_materialized_views.js	21	2021-04-09 05:07:41.373+00
+1	20210221100547_create_states.js	1	2021-04-11 22:26:45.795+00
+2	20210221100553_create_postal_codes.js	1	2021-04-11 22:26:45.825+00
+3	20210221143355_create_stores.js	1	2021-04-11 22:26:45.87+00
+4	20210222161552_optional_store_location.js	1	2021-04-11 22:26:45.872+00
+5	20210223095007_state_boundaries.js	1	2021-04-11 22:26:46.245+00
+6	20210223173502_store_time_zone.js	1	2021-04-11 22:26:46.246+00
+7	20210223232431_optional_store_city_state.js	1	2021-04-11 22:26:46.249+00
+8	20210225081423_country_grids.js	1	2021-04-11 22:26:47.97+00
+9	20210226081756_audit.js	1	2021-04-11 22:26:48.009+00
+10	20210227104231_postal_code_time_zone.js	1	2021-04-11 22:26:48.01+00
+11	20210301091717_smaller_country_grids.js	1	2021-04-11 22:26:49.709+00
+12	20210302161153_bigger_country_grid.js	1	2021-04-11 22:26:50.563+00
+13	20210304151335_provider_brand.js	1	2021-04-11 22:26:50.606+00
+14	20210307114320_geocoding.js	1	2021-04-11 22:26:50.615+00
+15	20210307171239_store_url.js	1	2021-04-11 22:26:50.615+00
+16	20210315165140_store_normalized_address_key.js	1	2021-04-11 22:26:50.631+00
+17	20210322161258_walgreens_grid.js	1	2021-04-11 22:26:50.647+00
+18	20210324142039_store_vaccine_appointment_types.js	1	2021-04-11 22:26:50.648+00
+19	20210325091544_create_cache.js	1	2021-04-11 22:26:50.662+00
+20	20210329150722_states_boundaries_500k.js	1	2021-04-11 22:26:50.664+00
+21	20210329160409_create_state_grid_55km_500k.js	1	2021-04-11 22:26:51.185+00
+22	20210401101728_appointments_last_modified.js	1	2021-04-11 22:26:51.186+00
+23	20210408224048_convert_materialized_views.js	1	2021-04-11 22:26:51.404+00
+24	20210409102212_audit_index.js	1	2021-04-11 22:26:51.411+00
 \.
 
 
@@ -1585,7 +1855,7 @@ COPY public.knex_migrations (id, name, batch, migration_time) FROM stdin;
 -- Name: knex_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.knex_migrations_id_seq', 73, true);
+SELECT pg_catalog.setval('public.knex_migrations_id_seq', 24, true);
 
 
 --
