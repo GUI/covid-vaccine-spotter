@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}-website-api-data-deployment
+  labels:
+    app: {{ .Chart.Name }}-website-api-data
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}-website-api-data
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}-website-api-data
+      annotations:
+        checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+    spec:
+      imagePullSecrets:
+        - name: {{ .Chart.Name }}-container-registry-secret
+      containers:
+        - name: {{ .Chart.Name }}-website-api-data
+          image: {{ index .Values.werf.image "vaccinespotter" }}
+          args: ["bin/run", "--loop-every", "15000", "website:api-data:build-and-publish"]
+          env:
+            - name: LOG_LEVEL
+              value: notice
+          envFrom:
+            - secretRef:
+                name: {{ .Chart.Name }}-secrets

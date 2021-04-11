@@ -1,4 +1,3 @@
-const execa = require("execa");
 const fsPromises = require("fs").promises;
 const fs = require("fs");
 const { DateTime } = require("luxon");
@@ -9,25 +8,14 @@ const zlib = require("zlib");
 const del = require("del");
 const { Store } = require("../models/Store");
 const logger = require("../logger");
+const runShell = require("../utils/runShell");
 const knexConfig = require("../../knexfile");
 
 const pipeline = util.promisify(stream.pipeline);
 
 class Db {
-  static async runShell(...args) {
-    const cmd = execa(...args);
-    if (logger.level.levelStr === "DEBUG") {
-      cmd.stdout.pipe(process.stdout);
-      cmd.stderr.pipe(process.stderr);
-    }
-    logger.info(cmd.spawnargs.join(" "));
-    await cmd;
-    logger.info(`Shell command complete (${cmd.spawnargs.join(" ")})`);
-    return cmd;
-  }
-
   static async structureDump() {
-    await Db.runShell(
+    await runShell(
       "pg_dump",
       [
         "--host",
@@ -51,7 +39,7 @@ class Db {
       }
     );
 
-    const migrations = await Db.runShell(
+    const migrations = await runShell(
       "pg_dump",
       [
         "--host",
@@ -83,7 +71,7 @@ class Db {
     }_${now.toISO()}.pgdump`;
     const path = `tmp/${filename}`;
     try {
-      await Db.runShell(
+      await runShell(
         "pg_dump",
         [
           "--host",
@@ -107,7 +95,7 @@ class Db {
         }
       );
 
-      await Db.runShell("rclone", [
+      await runShell("rclone", [
         "copyto",
         "-v",
         path,
@@ -121,7 +109,7 @@ class Db {
   static async backupPublic() {
     const path = `tmp/vaccinespotter_public.pgdump`;
     try {
-      await Db.runShell(
+      await runShell(
         "pg_dump",
         [
           "--host",
@@ -149,7 +137,7 @@ class Db {
         }
       );
 
-      await Db.runShell("rclone", [
+      await runShell("rclone", [
         "copyto",
         "-v",
         "--header-upload",
@@ -178,7 +166,7 @@ class Db {
       .startOf("day");
     console.info(maxTime.toISO());
 
-    const existingPublicFilesCmd = await Db.runShell("rclone", [
+    const existingPublicFilesCmd = await runShell("rclone", [
       "lsjson",
       "--no-modtime",
       "--no-mimetype",
@@ -188,7 +176,7 @@ class Db {
       (d) => d.Path
     );
 
-    const existingPrivateFilesCmd = await Db.runShell("rclone", [
+    const existingPrivateFilesCmd = await runShell("rclone", [
       "lsjson",
       "--no-modtime",
       "--no-mimetype",
@@ -292,7 +280,7 @@ class Db {
     try {
       await Db.copyToFile(sql, path);
 
-      await Db.runShell("rclone", [
+      await runShell("rclone", [
         "copyto",
         "-v",
         "--header-upload",
@@ -327,7 +315,7 @@ class Db {
     try {
       await Db.copyToFile(sql, path);
 
-      await Db.runShell("rclone", [
+      await runShell("rclone", [
         "copyto",
         "-v",
         "--header-upload",
@@ -390,7 +378,7 @@ class Db {
     try {
       await Db.copyToFile(sql, path);
 
-      await Db.runShell("rclone", [
+      await runShell("rclone", [
         "copyto",
         "-v",
         "--header-upload",

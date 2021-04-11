@@ -1,31 +1,90 @@
 #!/usr/bin/env node
 
 const { program } = require('commander');
+const { Base: BaseModel } = require("../src/models/Base");
+const runTask = require("../src/runTask");
+
+async function optionalLoopEvery(task) {
+  const options = program.opts();
+  if (options.loopEvery) {
+    return runTask(task, options.loopEvery);
+  }
+
+  return task();
+}
 
 (async () => {
   // Unset variable if it's set in local development, since it conflicts with
   // rclone: https://forum.rclone.org/t/mounting-an-amazon-s3-bucket/15106/2
   delete process.env.AWS_CA_BUNDLE;
 
+  program.option("-l, --loop-every <number>", "Run the task in a loop, pausing this number of milliseconds between runs.", (v) => parseInt(v, 10));
+
   program.command("db:structure:dump").action(async () => {
     const Db = require("../src/tasks/Db");
-    return Db.structureDump();
+    return optionalLoopEvery(Db.structureDump);
   });
 
   program.command("db:backup:public").action(async () => {
     const Db = require("../src/tasks/Db");
-    return Db.backupPublic();
+    return optionalLoopEvery(Db.backupPublic);
   });
 
   program.command("db:backup:private").action(async () => {
     const Db = require("../src/tasks/Db");
-    return Db.backupPrivate();
+    return optionalLoopEvery(Db.backupPrivate);
   });
 
   program.command("db:audit:dump").action(async () => {
     const Db = require("../src/tasks/Db");
-    return Db.auditDump();
+    return optionalLoopEvery(Db.auditDump);
+  });
+
+  program.command("website:api-data:build").action(async () => {
+    const Website = require("../src/tasks/Website");
+    return optionalLoopEvery(Website.apiDataBuild);
+  });
+
+  program.command("website:api-data:publish").action(async () => {
+    const Website = require("../src/tasks/Website");
+    return optionalLoopEvery(Website.apiDataPublish);
+  });
+
+  program.command("website:api-data:build-and-publish").action(async () => {
+    const Website = require("../src/tasks/Website");
+    return optionalLoopEvery(Website.apiDataBuildAndPublish);
+  });
+
+  program.command("website:legacy-api-data:build").action(async () => {
+    const Website = require("../src/tasks/Website");
+    return optionalLoopEvery(Website.legacyApiDataBuild);
+  });
+
+  program.command("website:legacy-api-data:publish").action(async () => {
+    const Website = require("../src/tasks/Website");
+    return optionalLoopEvery(Website.legacyApiDataPublish);
+  });
+
+  program.command("website:legacy-api-data:build-and-publish").action(async () => {
+    const Website = require("../src/tasks/Website");
+    return optionalLoopEvery(Website.legacyApiDataBuildAndPublish);
+  });
+
+  program.command("website:static-site:build").action(async () => {
+    const Website = require("../src/tasks/Website");
+    return optionalLoopEvery(Website.staticSiteBuild);
+  });
+
+  program.command("website:static-site:publish").action(async () => {
+    const Website = require("../src/tasks/Website");
+    return optionalLoopEvery(Website.staticSitePublish);
+  });
+
+  program.command("website:static-site:build-and-publish").action(async () => {
+    const Website = require("../src/tasks/Website");
+    return optionalLoopEvery(Website.staticSiteBuildAndPublish);
   });
 
   await program.parseAsync(process.argv);
+  await BaseModel.knex().destroy();
 })();
