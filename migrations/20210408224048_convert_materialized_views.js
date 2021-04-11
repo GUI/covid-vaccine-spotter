@@ -72,18 +72,6 @@ exports.up = async function (knex) {
   );
 
   await knex.raw(
-    "CREATE TABLE country_grid_25km_real (LIKE country_grid_25km INCLUDING ALL)"
-  );
-  await knex.raw(
-    "INSERT INTO country_grid_25km_real SELECT * FROM country_grid_25km"
-  );
-  await knex.raw("DROP MATERIALIZED VIEW country_grid_25km");
-  await knex.raw(
-    "ALTER TABLE country_grid_25km_real RENAME TO country_grid_25km"
-  );
-  await knex.raw("ALTER TABLE country_grid_25km ADD PRIMARY KEY (id)");
-
-  await knex.raw(
     "CREATE TABLE country_grid_55km_real (LIKE country_grid_55km INCLUDING ALL)"
   );
   await knex.raw(
