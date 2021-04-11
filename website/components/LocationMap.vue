@@ -38,8 +38,8 @@ export default {
       return this.$store.getters["usStates/getMapBounds"];
     },
 
-    locationData() {
-      return this.$store.state.usStates.usState;
+    filteredLocationData() {
+      return this.$store.getters["usStates/getFilteredLocations"];
     },
 
     zipCoords() {
@@ -53,7 +53,7 @@ export default {
       this.setMapBounds();
     },
 
-    locationData() {
+    filteredLocationData() {
       this.mapDataUpdated = false;
       this.setMapData();
     },
@@ -210,10 +210,13 @@ export default {
       if (
         this.mapLoaded &&
         this.mapSource &&
-        this.locationData &&
+        this.filteredLocationData &&
         !this.mapDataUpdated
       ) {
-        this.mapSource.setData(this.locationData);
+        this.mapSource.setData({
+          type: "FeatureCollection",
+          features: this.filteredLocationData,
+        });
         this.mapDataUpdated = true;
       }
     },
