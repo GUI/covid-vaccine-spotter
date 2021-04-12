@@ -38,6 +38,10 @@ export default {
       return this.$store.getters["usStates/getMapBounds"];
     },
 
+    locationData() {
+      return this.$store.state.usStates.usState;
+    },
+
     filteredLocationData() {
       return this.$store.getters["usStates/getFilteredLocations"];
     },
@@ -45,12 +49,21 @@ export default {
     zipCoords() {
       return this.$store.getters["usStates/getMapZipCoords"];
     },
+
+    searchFilters() {
+      return this.$store.getters["usStates/getSearchFilters"];
+    },
   },
 
   watch: {
     mapBounds() {
       this.mapBoundsUpdated = false;
       this.setMapBounds();
+    },
+
+    locationData() {
+      this.mapDataUpdated = false;
+      this.setMapData();
     },
 
     filteredLocationData() {
@@ -207,17 +220,24 @@ export default {
 
   methods: {
     setMapData() {
-      if (
-        this.mapLoaded &&
-        this.mapSource &&
-        this.filteredLocationData &&
-        !this.mapDataUpdated
-      ) {
-        this.mapSource.setData({
-          type: "FeatureCollection",
-          features: this.filteredLocationData,
-        });
-        this.mapDataUpdated = true;
+      if (this.mapLoaded && this.mapSource && !this.mapDataUpdated) {
+        // Show filtered map only if any of the filter queries are selected, otherwise show all locations
+        const {
+          queryAppointmentType,
+          queryVaccineType,
+          queryProvider,
+        } = this.searchFilters;
+
+        if (queryAppointmentType || queryVaccineType || queryProvider) {
+          this.mapSource.setData({
+            type: "FeatureCollection",
+            features: this.filteredLocationData,
+          });
+          this.mapDataUpdated = true;
+        } else if (this.locationData) {
+          this.mapSource.setData(this.locationData);
+          this.mapDataUpdated = true;
+        }
       }
     },
 
