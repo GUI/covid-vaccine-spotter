@@ -85,6 +85,21 @@ async function optionalLoopEvery(task) {
     return optionalLoopEvery(Website.staticSiteBuildAndPublish);
   });
 
+  program.command("providers:costco:find-stores").action(async () => {
+    const Stores = require("../src/providers/Costco/Stores");
+    return optionalLoopEvery(Stores.findStores);
+  });
+
+  program.command("providers:costco:refresh-stores").action(async () => {
+    const Stores = require("../src/providers/Costco/Stores");
+    return optionalLoopEvery(Stores.refreshStores);
+  });
+
+  program.command("providers:costco:refresh-appointments").action(async () => {
+    const Appointments = require("../src/providers/Costco/Appointments");
+    return optionalLoopEvery(Appointments.refreshStores);
+  });
+
   await program.parseAsync(process.argv);
   await BaseModel.knex().destroy();
 })();
