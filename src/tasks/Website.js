@@ -199,13 +199,11 @@ class Website {
   static async apiDataPublish() {
     logger.notice("Begin publishing API data...");
 
-    // Sync to a temporary local dir to preserve timestamps.
+    // Pre-compress all files.
     await runShell("rsync", [
       "-a",
       "-v",
       "--delete",
-      "--checksum",
-      "--no-times",
       "--exclude",
       "api/v0/stores",
       "--include",
@@ -213,6 +211,33 @@ class Website {
       "--exclude",
       "*",
       "./website/static/",
+      "./tmp/website-api-data-gzip/",
+    ]);
+    await runShell("find", [
+      "./tmp/website-api-data-gzip",
+      "-type",
+      "f",
+      "-print",
+      "-exec",
+      "gzip",
+      "-n",
+      "{}",
+      ";",
+      "-exec",
+      "mv",
+      "{}.gz",
+      "{}",
+      ";",
+    ]);
+
+    // Sync to a temp dir with checksums to preserve timestamps across runs.
+    await runShell("rsync", [
+      "-a",
+      "-v",
+      "--delete",
+      "--checksum",
+      "--no-times",
+      "./tmp/website-api-data-gzip/",
       "./tmp/website-api-data-sync/",
     ]);
 
@@ -223,6 +248,8 @@ class Website {
       "--use-server-modtime",
       "--header-upload",
       "Cache-Control: public, max-age=15, s-maxage=40",
+      "--header-upload",
+      "Content-Encoding: gzip",
       "--exclude",
       "v0/states/*/postal_codes.json",
       "./tmp/website-api-data-sync/api/",
@@ -238,10 +265,12 @@ class Website {
       "--use-server-modtime",
       "--header-upload",
       "Cache-Control: public, max-age=600, s-maxage=3600",
-      "--exclude",
-      "**",
-      "--include",
-      "v0/states/*/postal_codes.json",
+      "--header-upload",
+      "Content-Encoding: gzip",
+      "--filter",
+      "+ v0/states/*/postal_codes.json",
+      "--filter",
+      "- *",
       "./tmp/website-api-data-sync/api/",
       `:s3:${process.env.WEBSITE_BUCKET}/api/`,
     ]);
@@ -379,13 +408,11 @@ class Website {
   static async legacyApiDataPublish() {
     logger.notice("Begin publishing legacy API data...");
 
-    // Sync to a temporary local dir to preserve timestamps.
+    // Pre-compress all files.
     await runShell("rsync", [
       "-a",
       "-v",
       "--delete",
-      "--checksum",
-      "--no-times",
       "--include",
       "api",
       "--include",
@@ -397,6 +424,33 @@ class Website {
       "--exclude",
       "*",
       "./website/static/",
+      "./tmp/website-legacy-api-data-gzip/",
+    ]);
+    await runShell("find", [
+      "./tmp/website-legacy-api-data-gzip",
+      "-type",
+      "f",
+      "-print",
+      "-exec",
+      "gzip",
+      "-n",
+      "{}",
+      ";",
+      "-exec",
+      "mv",
+      "{}.gz",
+      "{}",
+      ";",
+    ]);
+
+    // Sync to a temp dir with checksums to preserve timestamps across runs.
+    await runShell("rsync", [
+      "-a",
+      "-v",
+      "--delete",
+      "--checksum",
+      "--no-times",
+      "./tmp/website-legacy-api-data-gzip/",
       "./tmp/website-legacy-api-data-sync/",
     ]);
 
@@ -407,6 +461,8 @@ class Website {
       "--use-server-modtime",
       "--header-upload",
       "Cache-Control: public, max-age=15, s-maxage=40",
+      "--header-upload",
+      "Content-Encoding: gzip",
       "./tmp/website-legacy-api-data-sync/api/",
       `:s3:${process.env.WEBSITE_BUCKET}/api/`,
     ]);
@@ -434,14 +490,39 @@ class Website {
   static async staticSitePublish() {
     logger.notice("Begin publishing static site...");
 
-    // Sync to a temporary local dir to preserve timestamps.
+    // Pre-compress all files.
+    await runShell("rsync", [
+      "-a",
+      "-v",
+      "--delete",
+      "./dist/",
+      "./tmp/website-static-site-gzip/",
+    ]);
+    await runShell("find", [
+      "./tmp/website-static-site-gzip",
+      "-type",
+      "f",
+      "-print",
+      "-exec",
+      "gzip",
+      "-n",
+      "{}",
+      ";",
+      "-exec",
+      "mv",
+      "{}.gz",
+      "{}",
+      ";",
+    ]);
+
+    // Sync to a temp dir with checksums to preserve timestamps across runs.
     await runShell("rsync", [
       "-a",
       "-v",
       "--delete",
       "--checksum",
       "--no-times",
-      "./dist/",
+      "./tmp/website-static-site-gzip/",
       "./tmp/website-static-site-sync/",
     ]);
 
@@ -456,6 +537,8 @@ class Website {
       "--use-server-modtime",
       "--header-upload",
       "Cache-Control: public, max-age=600, s-maxage=86400",
+      "--header-upload",
+      "Content-Encoding: gzip",
       "./tmp/website-static-site-sync/_nuxt/",
       `:s3:${process.env.WEBSITE_BUCKET}/_nuxt/`,
     ]);
@@ -468,6 +551,8 @@ class Website {
       "--use-server-modtime",
       "--header-upload",
       "Cache-Control: public, max-age=15, s-maxage=40",
+      "--header-upload",
+      "Content-Encoding: gzip",
       "--exclude",
       "api/**",
       "--exclude",
