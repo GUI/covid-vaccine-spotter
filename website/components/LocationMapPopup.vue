@@ -21,7 +21,8 @@
           <a :href="`#location-${store.properties.id}`"
             >View Appointment Details</a
           >
-          <a :href="`https://www.google.com/maps/search/?api=1&query=${googleMapsParams}`"
+          <a
+            :href="`https://www.google.com/maps/search/?api=1&query=${googleMapsParams}`"
             >View on Google Maps</a
           >
         </p>
@@ -119,9 +120,12 @@ export default {
       return new Date(this.store.properties.appointments_last_modified);
     },
     googleMapsParams() {
-      const encoded = (this.store.properties.address + " " + this.store.properties.city).replaceAll(" ", "+");
+      const encoded = `${this.store.properties.address} ${this.store.properties.city}`.replaceAll(
+        " ",
+        "+"
+      );
       return encoded;
-    }
+    },
   },
 };
 </script>
