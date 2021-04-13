@@ -14,7 +14,7 @@ class Appointments {
   static async refreshStores() {
     logger.notice("Begin refreshing appointments for all stores...");
 
-    const queue = new PQueue({ concurrency: 5 });
+    const queue = new PQueue({ concurrency: 10 });
 
     Appointments.bookingLinkResponses = {};
 
@@ -46,7 +46,6 @@ class Appointments {
     let bookingLinkAvailable = false;
     if (store.metadata_raw?.appointment_plus?.booking_link) {
       const bookingLinkResp = await Appointments.fetchBookingLink(store);
-      patch.appointments_raw.booking_link = bookingLinkResp.data;
       if (
         bookingLinkResp.statusCode === 200 &&
         !bookingLinkResp.data.includes(
@@ -56,6 +55,7 @@ class Appointments {
       ) {
         bookingLinkAvailable = true;
       } else {
+        patch.appointments_raw.booking_link = bookingLinkResp.data;
         logger.info(
           `Skipping further processing for ${store.name} #${store.provider_location_id}, since the booking link is not available.`
         );
