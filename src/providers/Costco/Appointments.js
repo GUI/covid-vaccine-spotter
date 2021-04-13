@@ -31,7 +31,7 @@ class Appointments {
 
   static async refreshStore(store, index, count) {
     logger.info(
-      `Processing ${store.name} #${store.brand_id} (${
+      `Processing ${store.name} #${store.provider_location_id} (${
         index + 1
       } of ${count})...`
     );
@@ -55,11 +55,38 @@ class Appointments {
         !bookingLinkResp.data.includes("Account Error")
       ) {
         bookingLinkAvailable = true;
+      } else {
+        logger.info(
+          `Skipping further processing for ${store.name} #${store.provider_location_id}, since the booking link is not available.`
+        );
+      }
+    }
+
+    let storeInSearchResults = false;
+    if (
+      bookingLinkAvailable &&
+      store.metadata_raw?.appointment_plus?.client_master_id &&
+      store.metadata_raw?.appointment_plus?.client?.latitude &&
+      store.metadata_raw?.appointment_plus?.client?.longitude
+    ) {
+      const clientResp = await Appointments.fetchClient(store);
+      patch.appointments_raw.client = clientResp.client;
+      const client = clientResp.data?.clientObjects?.[0];
+      if (
+        client &&
+        client.id === store.metadata_raw.appointment_plus.client.id
+      ) {
+        storeInSearchResults = true;
+      } else {
+        logger.info(
+          `Skipping further processing for ${store.name} #${store.provider_location_id}, since location is not being returned in search results.`
+        );
       }
     }
 
     if (
       bookingLinkAvailable &&
+      storeInSearchResults &&
       store.metadata_raw?.appointment_plus?.employees?.employeeObjects
     ) {
       for (const employee of store.metadata_raw.appointment_plus.employees
@@ -123,6 +150,41 @@ class Appointments {
     );
 
     return Appointments.bookingLinkResponses[bookingLink];
+  }
+
+  static async fetchClient(store) {
+    await sleep(_.random(250, 750));
+
+    return throwCurlResponseError(
+      await curly.get(
+        `https://book.appointment-plus.com/book-appointment/get-clients?${querystring.stringify(
+          {
+            clientMasterId:
+              store.metadata_raw.appointment_plus.client_master_id,
+            pageNumber: "1",
+            itemsPerPage: "1",
+            keyword: "",
+            clientId: "",
+            employeeId: "",
+            "centerCoordinates[id]": "",
+            "centerCoordinates[latitude]":
+              store.metadata_raw.appointment_plus.client.latitude,
+            "centerCoordinates[longitude]":
+              store.metadata_raw.appointment_plus.client.longitude,
+            "centerCoordinates[accuracy]": "84541",
+            "centerCoordinates[whenAdded]": "",
+            "centerCoordinates[searchQuery]": "",
+            radiusInKilometers: "10",
+            _: _.random(0, 999999999999),
+          }
+        )}`,
+        {
+          httpHeader: ["User-Agent: VaccineSpotter.org"],
+          acceptEncoding: "gzip",
+          timeoutMs: 15000,
+        }
+      )
+    );
   }
 
   static async fetchSlots(store, employeeId, serviceId) {
