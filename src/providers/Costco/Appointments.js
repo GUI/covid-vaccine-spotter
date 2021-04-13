@@ -16,6 +16,8 @@ class Appointments {
 
     const queue = new PQueue({ concurrency: 5 });
 
+    Appointments.bookingLinkResponses = {};
+
     const stores = await Store.query()
       .where("provider_id", "costco")
       .orderByRaw("appointments_last_fetched NULLS FIRST");
@@ -41,7 +43,25 @@ class Appointments {
       appointments_raw: {},
     };
 
-    if (store.metadata_raw?.appointment_plus?.employees?.employeeObjects) {
+    let bookingLinkAvailable = false;
+    if (store.metadata_raw?.appointment_plus?.booking_link) {
+      const bookingLinkResp = await Appointments.fetchBookingLink(store);
+      patch.appointments_raw.booking_link = bookingLinkResp.data;
+      if (
+        bookingLinkResp.statusCode === 200 &&
+        !bookingLinkResp.data.includes(
+          "scheduling is not currently available"
+        ) &&
+        !bookingLinkResp.data.includes("Account Error")
+      ) {
+        bookingLinkAvailable = true;
+      }
+    }
+
+    if (
+      bookingLinkAvailable &&
+      store.metadata_raw?.appointment_plus?.employees?.employeeObjects
+    ) {
       for (const employee of store.metadata_raw.appointment_plus.employees
         .employeeObjects) {
         for (const service of store.metadata_raw.appointment_plus
@@ -82,6 +102,27 @@ class Appointments {
     setComputedStoreValues(patch);
 
     await Store.query().findById(store.id).patch(patch);
+  }
+
+  static async fetchBookingLink(store) {
+    const bookingLink = store.metadata_raw.appointment_plus.booking_link;
+    if (Appointments.bookingLinkResponses[bookingLink]) {
+      return Appointments.bookingLinkResponses[bookingLink];
+    }
+
+    await sleep(_.random(250, 750));
+
+    Appointments.bookingLinkResponses[bookingLink] = await curly.get(
+      store.metadata_raw.appointment_plus.booking_link,
+      {
+        httpHeader: ["User-Agent: VaccineSpotter.org"],
+        acceptEncoding: "gzip",
+        timeoutMs: 15000,
+        followLocation: true,
+      }
+    );
+
+    return Appointments.bookingLinkResponses[bookingLink];
   }
 
   static async fetchSlots(store, employeeId, serviceId) {
