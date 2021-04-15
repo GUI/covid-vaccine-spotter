@@ -203,7 +203,7 @@ class Db {
   }
 
   static async auditDumpPublicDay(startTime, endTime, existingPublicFiles) {
-    const filename = `${startTime.toISODate()}.csv.gz`;
+    const filename = `${startTime.toISODate()}.jsonl.gz`;
     const bucketPath = `:s3:${process.env.WEBSITE_BUCKET}/database/history/${filename}`;
     if (existingPublicFiles.includes(filename)) {
       console.info(`${bucketPath} already exists, skipping`);
@@ -258,23 +258,25 @@ class Db {
           FROM t1
         )
         SELECT
-          id AS audit_id,
-          table_name,
-          action_tstamp_tx AS transaction_timestamp,
-          transaction_id,
-          CASE action
-          WHEN 'I' THEN 'INSERT'
-          WHEN 'D' THEN 'DELETE'
-          WHEN 'U' THEN 'UPDATE'
-          WHEN 'T' THEN 'TRUNCATE'
-          END AS action,
-          row_data AS previous_data,
-          changed_fields AS changed_data,
-          (row_data || changed_fields) AS data
+          json_build_object(
+            'audit_id', id,
+            'table_name', table_name,
+            'transaction_timestamp', action_tstamp_tx,
+            'transaction_id', transaction_id,
+            'action', CASE action
+              WHEN 'I' THEN 'INSERT'
+              WHEN 'D' THEN 'DELETE'
+              WHEN 'U' THEN 'UPDATE'
+              WHEN 'T' THEN 'TRUNCATE'
+              END,
+            'previous_data', row_data,
+            'changed_data', changed_fields,
+            'data', (row_data || changed_fields)
+          )
         FROM t2
       )
       TO STDOUT
-      WITH CSV HEADER`;
+      WITH ENCODING 'UTF-8'`;
 
     const path = `tmp/${filename}`;
     try {
@@ -342,37 +344,42 @@ class Db {
     const sql = `
       COPY (
         SELECT
-          id,
-          provider_id,
-          provider_location_id,
-          provider_brand_id,
-          name,
-          address,
-          city,
-          state,
-          postal_code,
-          st_y(location::geometry) AS latitude,
-          st_x(location::geometry) AS longitude,
-          location_source,
-          normalized_address_key,
-          time_zone,
-          carries_vaccine,
-          appointments,
-          appointments_available,
-          appointment_types,
-          appointment_vaccine_types,
-          appointments_last_fetched,
-          appointments_last_modified,
-          url,
-          active,
-          created_at,
-          updated_at
+          json_build_object(
+            'id', id,
+            'provider_id', provider_id,
+            'provider_location_id', provider_location_id,
+            'provider_brand_id', provider_brand_id,
+            'name', name,
+            'address', address,
+            'city', city,
+            'state', state,
+            'postal_code', postal_code,
+            'location', jsonb_build_object(
+              'latitude', st_y(location::geometry),
+              'longitude', st_x(location::geometry)
+            ),
+            'location_source', location_source,
+            'normalized_address_key', normalized_address_key,
+            'time_zone', time_zone,
+            'carries_vaccine', carries_vaccine,
+            'appointments', appointments,
+            'appointments_available', appointments_available,
+            'appointment_types', appointment_types,
+            'appointment_vaccine_types', appointment_vaccine_types,
+            'appointments_last_fetched', appointments_last_fetched,
+            'appointments_last_modified', appointments_last_modified,
+            'url', url,
+            'active', active,
+            'created_at', created_at,
+            'updated_at', updated_at,
+            'metadata_raw', metadata_raw
+          )
         FROM stores
       )
       TO STDOUT
-      WITH CSV HEADER`;
+      WITH ENCODING 'UTF-8'`;
 
-    const filename = `stores.csv.gz`;
+    const filename = `stores.jsonl.gz`;
     const path = `tmp/${filename}`;
     const bucketPath = `:s3:${process.env.WEBSITE_BUCKET}/database/${filename}`;
     try {
