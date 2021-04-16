@@ -32,9 +32,6 @@
       </div>
 
       <ul>
-        <li>
-          <code><a href="/api/v0/states.json">/api/v0/states.json</a></code>
-        </li>
         <li v-for="state in activeStates" :key="state.code">
           <code
             ><a :href="`/api/v0/states/${state.code}.json`"
@@ -42,9 +39,19 @@
             ></code
           >
         </li>
+        <li>
+          <code><a href="/api/v0/states.json">/api/v0/states.json</a></code
+          >: A summary of all the providers being scanned in each US state.
+        </li>
+        <li>
+          <code><a href="/api/v0/US.json">/api/v0/US.json</a></code
+          >: Same data as in the state-specific files, but combined into a
+          single US-wide file.
+        </li>
       </ul>
 
-      <h3 id="api-fields">API Fields</h3>
+      <a id="api-fields" class="location-anchor" />
+      <h3>API Fields</h3>
 
       <ul>
         <li>
@@ -106,7 +113,8 @@
         </li>
       </ul>
 
-      <h3 id="api-usage">API Usage</h3>
+      <a id="api-usage" class="location-anchor" />
+      <h3>API Usage</h3>
 
       <ul>
         <li>
@@ -122,7 +130,8 @@
         </li>
       </ul>
 
-      <h3 id="historical">Historical Data</h3>
+      <a id="historical" class="location-anchor" />
+      <h3>Historical Data</h3>
 
       <p>
         If you're interested in historical analysis of the appointments data, I

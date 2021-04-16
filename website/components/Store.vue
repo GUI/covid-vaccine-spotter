@@ -182,10 +182,4 @@ export default {
 .text-warning {
   color: #d99011 !important;
 }
-
-.location-anchor {
-  padding-top: 56px;
-  margin-top: -56px;
-  z-index: -9999;
-}
 </style>
