@@ -1,11 +1,11 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: {{ .Chart.Name }}-costco-refresh-stores-cronjob
+  name: {{ .Chart.Name }}-db-audit-dump-cronjob
   labels:
-    app: {{ .Chart.Name }}-costco-refresh-stores
+    app: {{ .Chart.Name }}-db-audit-dump
 spec:
-  schedule: "35 * * * *"
+  schedule: "4 0 * * *"
   concurrencyPolicy: Forbid
   suspend: false
   jobTemplate:
@@ -14,7 +14,7 @@ spec:
       template:
         metadata:
           labels:
-            app: {{ .Chart.Name }}-costco-refresh-stores
+            app: {{ .Chart.Name }}-db-audit-dump
           annotations:
             checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
         spec:
@@ -22,9 +22,9 @@ spec:
           imagePullSecrets:
             - name: {{ .Chart.Name }}-container-registry-secret
           containers:
-            - name: {{ .Chart.Name }}-costco-refresh-stores
+            - name: {{ .Chart.Name }}-db-audit-dump
               image: {{ index .Values.werf.image "vaccinespotter" }}
-              args: ["bin/run", "providers:costco:refresh-stores"]
+              args: ["bin/run", "db:audit:dump"]
               env:
                 - name: LOG_LEVEL
                   value: notice

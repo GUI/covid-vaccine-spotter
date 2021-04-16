@@ -1,5 +1,6 @@
 const fsPromises = require("fs").promises;
 const fs = require("fs");
+const _ = require("lodash");
 const { DateTime } = require("luxon");
 const copyTo = require("pg-copy-streams").to;
 const util = require("util");
@@ -98,6 +99,9 @@ class Db {
       await runShell("rclone", [
         "copyto",
         "-v",
+        "--checksum",
+        "--no-update-modtime",
+        "--s3-no-head",
         path,
         `:s3:${process.env.BACKUPS_BUCKET}/database/${knexConfig.development.connection.host}/${filename}`,
       ]);
@@ -140,6 +144,9 @@ class Db {
       await runShell("rclone", [
         "copyto",
         "-v",
+        "--checksum",
+        "--no-update-modtime",
+        "--s3-no-head",
         "--header-upload",
         "Cache-Control: public, max-age=3600",
         path,
@@ -196,6 +203,36 @@ class Db {
 
       time = endTime;
     }
+
+    const historyFilesCmd = await runShell("rclone", [
+      "lsjson",
+      "--no-modtime",
+      "--no-mimetype",
+      `:s3:${process.env.WEBSITE_BUCKET}/database/history/`,
+    ]);
+    let historyFiles = JSON.parse(historyFilesCmd.stdout)
+      .map((d) => ({ name: d.Name, size: d.Size }))
+      .filter((f) => f.name.endsWith(".jsonl.gz"));
+    historyFiles = _.orderBy(historyFiles, ["name"]);
+
+    await fsPromises.writeFile(
+      "tmp/history-files.json",
+      JSON.stringify({
+        files: historyFiles,
+      })
+    );
+
+    await runShell("rclone", [
+      "copyto",
+      "-v",
+      "--checksum",
+      "--no-update-modtime",
+      "--s3-no-head",
+      "--header-upload",
+      "Cache-Control: public, max-age=300",
+      "tmp/history-files.json",
+      `:s3:${process.env.WEBSITE_BUCKET}/database/history/days.json`,
+    ]);
 
     await Db.dumpPublicStores();
 
@@ -285,6 +322,9 @@ class Db {
       await runShell("rclone", [
         "copyto",
         "-v",
+        "--checksum",
+        "--no-update-modtime",
+        "--s3-no-head",
         "--header-upload",
         "Cache-Control: public, max-age=3600",
         path,
@@ -320,6 +360,9 @@ class Db {
       await runShell("rclone", [
         "copyto",
         "-v",
+        "--checksum",
+        "--no-update-modtime",
+        "--s3-no-head",
         "--header-upload",
         "Cache-Control: public, max-age=3600",
         path,
@@ -388,6 +431,9 @@ class Db {
       await runShell("rclone", [
         "copyto",
         "-v",
+        "--checksum",
+        "--no-update-modtime",
+        "--s3-no-head",
         "--header-upload",
         "Cache-Control: public, max-age=3600",
         path,

@@ -14,6 +14,108 @@ class Website {
     const dataPath = path.resolve("website/static/api/v0");
     await mkdirp(dataPath);
 
+    await Store.knex().raw(`
+      UPDATE stores
+      SET appointments_available = NULL, appointments = NULL
+      WHERE
+        appointments_last_fetched <= (now() - interval '1 hour')
+        AND (
+          appointments_available IS NOT NULL
+          OR appointments IS NOT NULL
+        )
+    `);
+
+    const usData = await State.knex().raw(`
+      SELECT
+        jsonb_build_object(
+          'type', 'FeatureCollection',
+          'metadata', jsonb_build_object(
+            'code', 'US',
+            'name', 'United States',
+            'bounding_box', '{"type":"Polygon","coordinates":[[[-124.848974,24.396308],[-124.848974,49.384358],[-66.885444,49.384358],[-66.885444,24.396308]]]}'::jsonb,
+            'store_count', COUNT(*),
+            'provider_brand_count', COUNT(DISTINCT stores.provider_brand_id),
+            'appointments_last_fetched', MAX(stores.appointments_last_fetched),
+            'appointments_last_modified', MAX(COALESCE(stores.appointments_last_modified, stores.appointments_last_fetched)),
+            'provider_brands', (
+              SELECT
+              jsonb_agg(
+                jsonb_build_object(
+                  'id', p.id,
+                  'key', p.key,
+                  'name', p.name,
+                  'provider_id', p.provider_id,
+                  'url', p.url,
+                  'location_count', p.location_count,
+                  'appointments_last_fetched', p.appointments_last_fetched,
+                  'appointments_last_modified', p.appointments_last_modified,
+                  'status', p.status
+                )
+              )
+              FROM (
+                SELECT
+                  provider_brands.*,
+                  COUNT(stores.id) AS location_count,
+                  MAX(appointments_last_fetched) AS appointments_last_fetched,
+                  MAX(COALESCE(appointments_last_modified, appointments_last_fetched)) AS appointments_last_modified,
+                  CASE WHEN MAX(appointments_last_fetched) > (now() - interval '1 hour') THEN 'active' WHEN MAX(appointments_last_fetched) IS NULL THEN 'unknown' ELSE 'inactive' END AS status
+                FROM stores
+                LEFT JOIN provider_brands ON stores.provider_brand_id = provider_brands.id
+                WHERE stores.active = true
+                GROUP BY provider_brands.id
+                ORDER BY provider_brands.name
+              ) AS p
+            )
+          ),
+          'features', (
+            SELECT
+            jsonb_agg(
+              jsonb_build_object(
+                'type', 'Feature',
+                'geometry', jsonb_build_object(
+                  'type', 'Point',
+                  'coordinates', jsonb_build_array(st_x(location::geometry), st_y(location::geometry))
+                ),
+                'properties', jsonb_build_object(
+                  'id', stores.id,
+                  'provider', stores.provider_id,
+                  'provider_location_id', provider_location_id,
+                  'provider_brand', provider_brands.key,
+                  'provider_brand_id', provider_brands.id,
+                  'provider_brand_name', provider_brands.name,
+                  'url', coalesce(stores.url, provider_brands.url),
+                  'name', stores.name,
+                  'address', address,
+                  'city', city,
+                  'state', state,
+                  'postal_code', postal_code,
+                  'time_zone', time_zone,
+                  'carries_vaccine', carries_vaccine,
+                  'appointments', appointments,
+                  'appointments_available', appointments_available,
+                  'appointments_available_all_doses', CASE WHEN appointments_available IS NULL THEN NULL WHEN appointments_available AND (appointment_types->>'all_doses' = 'true' OR appointment_types->>'unknown' = 'true') THEN true ELSE false END,
+                  'appointments_available_2nd_dose_only', CASE WHEN appointments_available IS NULL THEN NULL WHEN appointments_available AND appointment_types->>'2nd_dose_only' = 'true' THEN true ELSE false END,
+                  'appointments_last_fetched', appointments_last_fetched,
+                  'appointments_last_modified', COALESCE(appointments_last_modified, appointments_last_fetched),
+                  'appointment_types', appointment_types,
+                  'appointment_vaccine_types', appointment_vaccine_types
+                )
+              )
+              ORDER BY CASE WHEN appointments_available = false THEN 1 WHEN appointments_available IS NULL THEN 2 WHEN appointments_available = true THEN 3 END, COALESCE(appointments_last_modified, appointments_last_fetched) DESC, city
+            )
+            FROM stores
+            LEFT JOIN provider_brands ON provider_brands.id = stores.provider_brand_id
+            WHERE stores.active = true
+          )
+        ) AS data
+      FROM stores
+      WHERE stores.active = true
+    `);
+    await fs.writeFile(
+      `${dataPath}/US.json`,
+      JSON.stringify(usData.rows[0].data)
+    );
+
     const states = await State.knex().raw(`
       SELECT
         states.code,
@@ -62,17 +164,6 @@ class Website {
     for (const state of states.rows) {
       await mkdirp(`${dataPath}/stores/${state.code}`);
     }
-
-    await Store.knex().raw(`
-      UPDATE stores
-      SET appointments_available = NULL, appointments = NULL
-      WHERE
-        appointments_last_fetched <= (now() - interval '1 hour')
-        AND (
-          appointments_available IS NOT NULL
-          OR appointments IS NOT NULL
-        )
-    `);
 
     const statesData = await State.knex().raw(`
       SELECT
