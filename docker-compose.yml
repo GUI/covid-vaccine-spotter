@@ -27,7 +27,6 @@ services:
       - DB_PASSWORD=dev_password
       - DB_NAME=vaccinespotter_development
       - LOG_LEVEL=notice
-      - PUBLISH_SITE=false
     entrypoint: /app/bin/docker/bootstrap-entrypoint
 
   task_runner:
@@ -44,7 +43,6 @@ services:
       - DB_PASSWORD=dev_password
       - DB_NAME=vaccinespotter_development
       - LOG_LEVEL=debug
-      - PUBLISH_SITE=false
       - RUN_ONCE=true
     entrypoint: /app/bin/docker/entrypoint
 

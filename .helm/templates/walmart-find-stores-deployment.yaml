@@ -20,7 +20,7 @@ spec:
         - name: {{ .Chart.Name }}-container-registry-secret
       containers:
         - name: {{ .Chart.Name }}-walmart-find-stores
-          image: {{ index .Values.werf.image "covid-vaccine-spotter" }}
+          image: {{ index .Values.werf.image "vaccinespotter" }}
           args: ["bin/walmart-find-stores"]
           env:
             - name: LOG_LEVEL
