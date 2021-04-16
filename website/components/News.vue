@@ -1,11 +1,18 @@
 <template>
   <div class="alert alert-info" role="alert">
     <p class="mb-0">
-      <strong>04/06/2021:</strong> New pharmacies! 😃
-      <strong>Health Mart</strong> locations (which includes 4,900+ independent
-      pharmacies) and <strong>Price Chopper / Market 32</strong> locations are
-      all now being scanned for open appointments. This adds a lot of new stores
-      across the country. I hope this helps! Any feedback is welcome:
+      <template v-if="$route.params.state === 'CO'">
+        <strong>04/14/2021:</strong> 🏀 The
+        <strong>Ball Arena</strong> vaccination site in Denver is now being
+        scanned for open appointments! 🏒
+      </template>
+      <template v-else>
+        <strong>04/11/2021:</strong> 👋 <strong>Costco</strong> locations are
+        now being scanned nationwide! I've also been making some underlying
+        improvements so that any detected appointments will show up on the
+        website even more quickly. Hope these changes help!
+      </template>
+      Any feedback is welcome:
       <a
         href="m&#97;ilto&#58;v%&#54;1&#99;&#99;&#105;ne&#64;nic&#107;%6D&#46;org"
         >vacc&#105;ne&#64;ni&#99;k&#109;&#46;o&#114;&#103;</a

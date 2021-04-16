@@ -1,27 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Chart.Name }}-walmart-refresh-appointments-deployment
+  name: {{ .Chart.Name }}-denver-ball-arena-refresh-appointments-deployment
   labels:
-    app: {{ .Chart.Name }}-walmart-refresh-appointments
+    app: {{ .Chart.Name }}-denver-ball-arena-refresh-appointments
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .Chart.Name }}-walmart-refresh-appointments
+      app: {{ .Chart.Name }}-denver-ball-arena-refresh-appointments
   template:
     metadata:
       labels:
-        app: {{ .Chart.Name }}-walmart-refresh-appointments
+        app: {{ .Chart.Name }}-denver-ball-arena-refresh-appointments
       annotations:
         checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
     spec:
       imagePullSecrets:
         - name: {{ .Chart.Name }}-container-registry-secret
       containers:
-        - name: {{ .Chart.Name }}-walmart-refresh-appointments
-          image: {{ index .Values.werf.image "vaccinespotter-playwright" }}
-          args: ["bin/walmart-refresh-appointments"]
+        - name: {{ .Chart.Name }}-denver-ball-arena-refresh-appointments
+          image: {{ index .Values.werf.image "vaccinespotter" }}
+          args: ["bin/run", "--loop-every", "40000", "providers:denver-ball-arena:refresh-appointments"]
           env:
             - name: LOG_LEVEL
               value: notice

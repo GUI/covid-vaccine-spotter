@@ -585,4 +585,11 @@ html.no-arrow .unsupported-browser-warning {
   text-align: center;
   font-weight: bold;
 }
+
+.location-anchor {
+  display: block;
+  padding-top: 56px;
+  margin-top: -56px;
+  z-index: -9999;
+}
 </style>

@@ -1,27 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Chart.Name }}-walmart-refresh-appointments-deployment
+  name: {{ .Chart.Name }}-costco-refresh-appointments-deployment
   labels:
-    app: {{ .Chart.Name }}-walmart-refresh-appointments
+    app: {{ .Chart.Name }}-costco-refresh-appointments
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .Chart.Name }}-walmart-refresh-appointments
+      app: {{ .Chart.Name }}-costco-refresh-appointments
   template:
     metadata:
       labels:
-        app: {{ .Chart.Name }}-walmart-refresh-appointments
+        app: {{ .Chart.Name }}-costco-refresh-appointments
       annotations:
         checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
     spec:
       imagePullSecrets:
         - name: {{ .Chart.Name }}-container-registry-secret
       containers:
-        - name: {{ .Chart.Name }}-walmart-refresh-appointments
-          image: {{ index .Values.werf.image "vaccinespotter-playwright" }}
-          args: ["bin/walmart-refresh-appointments"]
+        - name: {{ .Chart.Name }}-costco-refresh-appointments
+          image: {{ index .Values.werf.image "vaccinespotter" }}
+          args: ["bin/run", "--loop-every", "5000", "providers:costco:refresh-appointments"]
           env:
             - name: LOG_LEVEL
               value: notice

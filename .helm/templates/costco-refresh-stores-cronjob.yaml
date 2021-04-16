@@ -1,11 +1,11 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: {{ .Chart.Name }}-rite-aid-find-stores-cronjob
+  name: {{ .Chart.Name }}-costco-refresh-stores-cronjob
   labels:
-    app: {{ .Chart.Name }}-rite-aid-find-stores
+    app: {{ .Chart.Name }}-costco-refresh-stores
 spec:
-  schedule: "48 0 * * *"
+  schedule: "35 * * * *"
   concurrencyPolicy: Forbid
   suspend: false
   jobTemplate:
@@ -14,7 +14,7 @@ spec:
       template:
         metadata:
           labels:
-            app: {{ .Chart.Name }}-rite-aid-find-stores
+            app: {{ .Chart.Name }}-costco-refresh-stores
           annotations:
             checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
         spec:
@@ -22,9 +22,9 @@ spec:
           imagePullSecrets:
             - name: {{ .Chart.Name }}-container-registry-secret
           containers:
-            - name: {{ .Chart.Name }}-rite-aid-find-stores
+            - name: {{ .Chart.Name }}-costco-refresh-stores
               image: {{ index .Values.werf.image "vaccinespotter" }}
-              args: ["bin/rite-aid-find-stores"]
+              args: ["bin/run", "providers:costco:refresh-stores"]
               env:
                 - name: LOG_LEVEL
                   value: notice

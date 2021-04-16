@@ -61,6 +61,8 @@
     "p-timeout": "^4.1.0",
     "parse-address": "^1.1.2",
     "pg": "^8.5.1",
+    "pg-copy-streams": "^5.1.1",
+    "pg-query-stream": "^4.0.0",
     "playwright-core": "^1.10.0",
     "playwright-extra": "^4.2.1-next.616",
     "random-http-useragent": "^1.1.32",

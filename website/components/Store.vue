@@ -48,30 +48,6 @@
           >
         </p>
 
-        <p v-if="riteAidEducationOnly" class="text-warning">
-          <font-awesome-icon icon="exclamation-triangle" />
-          <strong
-            >Education Staff and Childcare Providers Only<span
-              v-if="store.properties.state === 'PA'"
-            >
-              in Philadelphia</span
-            >:</strong
-          >
-          Rite Aid appointments are
-          <a
-            href="https://www.riteaid.com/corporate/news/-/pressreleases/news-room/2021/rite-aid-extends-covid-19-vaccine-priority-scheduling-period-for-teachers-school-staff-and-childcare-providers"
-            target="_blank"
-            rel="noopener"
-            >only bookable by teachers, school staff and childcare providers</a
-          >
-          on Friday, March 19, Saturday, March 20, Friday, March 26, and
-          Saturday, March 27<span v-if="store.properties.state === 'PA'">
-            in Philadelphia (outside of Philadelphia other groups may still be
-            eligible)</span
-          >. Rite Aid appointments should re-open to other eligible groups again
-          on other days.
-        </p>
-
         <a
           :href="store.properties.url"
           class="btn btn-primary"
@@ -135,8 +111,6 @@
 </template>
 
 <script>
-import { DateTime } from "luxon";
-
 export default {
   props: {
     store: {
@@ -165,6 +139,7 @@ export default {
       if (
         this.store.properties.provider_brand === "centura_driveup_event" ||
         this.store.properties.provider_brand === "comassvax" ||
+        this.store.properties.provider_brand === "costco" ||
         this.store.properties.provider_brand === "health_mart"
       ) {
         title += ` - ${this.store.properties.name}`;
@@ -184,28 +159,6 @@ export default {
       ]
         .filter((value) => !!value)
         .join(", ");
-    },
-
-    riteAidEducationOnly() {
-      const { provider, state } = this.store.properties;
-      const today = DateTime.now()
-        .setZone(this.store.properties.time_zone)
-        .toISODate();
-      return (
-        provider === "rite_aid" &&
-        (today === "2021-03-19" ||
-          today === "2021-03-20" ||
-          today === "2021-03-26" ||
-          today === "2021-03-27") &&
-        (state === "CA" ||
-          state === "MI" ||
-          state === "PA" ||
-          state === "NJ" ||
-          state === "OH" ||
-          state === "OR" ||
-          state === "VA" ||
-          state === "WA")
-      );
     },
   },
 
@@ -228,11 +181,5 @@ export default {
 
 .text-warning {
   color: #d99011 !important;
-}
-
-.location-anchor {
-  padding-top: 56px;
-  margin-top: -56px;
-  z-index: -9999;
 }
 </style>

@@ -1,8 +1,8 @@
-project: covid-vaccine-spotter
+project: vaccinespotter
 configVersion: 1
 ---
-image: covid-vaccine-spotter
+image: vaccinespotter
 dockerfile: Dockerfile
 ---
-image: covid-vaccine-spotter-playwright
+image: vaccinespotter-playwright
 dockerfile: Dockerfile-playwright

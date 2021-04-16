@@ -199,9 +199,9 @@ class Geocode {
           );
           const geonamesResp = await got("http://api.geonames.org/searchJSON", {
             searchParams: {
-              q: store.city,
+              q: patch.city,
               country: "US",
-              adminCode1: store.state,
+              adminCode1: patch.state,
               featureClass: "P",
               maxRows: 5,
               username: process.env.GEONAMES_USERNAME,
