@@ -1,9 +1,10 @@
 const Rollbar = require("rollbar");
 
 const rollbar = new Rollbar({
+  enabled: process.env.NODE_ENV === "production",
   accessToken: process.env.ROLLBAR_ACCESS_TOKEN,
-  captureUncaught: true,
-  captureUnhandledRejections: true,
+  captureUncaught: process.env.NODE_ENV === "production",
+  captureUnhandledRejections: process.env.NODE_ENV === "production",
 });
 
 module.exports = rollbar;
