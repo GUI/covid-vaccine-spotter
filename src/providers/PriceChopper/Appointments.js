@@ -3,6 +3,7 @@ const { DateTime } = require("luxon");
 const { curly } = require("node-libcurl");
 const logger = require("../../logger");
 const setComputedStoreValues = require("../../setComputedStoreValues");
+const defaultCurlOpts = require("../../utils/defaultCurlOpts");
 const { Store } = require("../../models/Store");
 const { ProviderBrand } = require("../../models/ProviderBrand");
 const normalizedAddressKey = require("../../normalizedAddressKey");
@@ -24,8 +25,7 @@ class Appointments {
     const resp = await curly.get(
       "https://scrcxp.pdhi.com/ScreeningEvent/e047c75c-a431-41a8-8383-81613f39dd55/GetLocations",
       {
-        httpHeader: ["User-Agent: VaccineSpotter.org"],
-        acceptEncoding: "gzip",
+        ...defaultCurlOpts,
         timeoutMs: 60000,
       }
     );

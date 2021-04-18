@@ -10,6 +10,7 @@ const { Store } = require("../../models/Store");
 const { Provider } = require("../../models/Provider");
 const { ProviderBrand } = require("../../models/ProviderBrand");
 const normalizedAddressKey = require("../../normalizedAddressKey");
+const defaultCurlOpts = require("../../utils/defaultCurlOpts");
 
 class Stores {
   static async findStores() {
@@ -141,11 +142,7 @@ class Stores {
             countryCode: "US",
           }
         )}`,
-        {
-          httpHeader: ["User-Agent: VaccineSpotter.org"],
-          acceptEncoding: "gzip",
-          timeoutMs: 15000,
-        }
+        defaultCurlOpts
       )
     );
 
@@ -446,11 +443,10 @@ class Stores {
 
   static async fetchListingPage() {
     return throwCurlResponseError(
-      await curly.get("https://www.costco.com/covid-vaccine.html", {
-        httpHeader: ["User-Agent: VaccineSpotter.org"],
-        acceptEncoding: "gzip",
-        timeoutMs: 15000,
-      })
+      await curly.get(
+        "https://www.costco.com/covid-vaccine.html",
+        defaultCurlOpts
+      )
     );
   }
 
@@ -583,9 +579,7 @@ class Stores {
     const bookingLink = metadataRaw.appointment_plus.booking_link;
     const resp = throwCurlResponseError(
       await curly.get(bookingLink, {
-        httpHeader: ["User-Agent: VaccineSpotter.org"],
-        acceptEncoding: "gzip",
-        timeoutMs: 15000,
+        ...defaultCurlOpts,
         followLocation: true,
       })
     );
@@ -608,11 +602,7 @@ class Stores {
               _: _.random(0, 999999999999),
             }
           )}`,
-          {
-            httpHeader: ["User-Agent: VaccineSpotter.org"],
-            acceptEncoding: "gzip",
-            timeoutMs: 15000,
-          }
+          defaultCurlOpts
         )
       );
 
@@ -654,11 +644,7 @@ class Stores {
             _: _.random(0, 999999999999),
           }
         )}`,
-        {
-          httpHeader: ["User-Agent: VaccineSpotter.org"],
-          acceptEncoding: "gzip",
-          timeoutMs: 15000,
-        }
+        defaultCurlOpts
       )
     );
   }
@@ -682,11 +668,7 @@ class Stores {
             _: _.random(0, 999999999999),
           }
         )}`,
-        {
-          httpHeader: ["User-Agent: VaccineSpotter.org"],
-          acceptEncoding: "gzip",
-          timeoutMs: 15000,
-        }
+        defaultCurlOpts
       )
     );
   }
@@ -709,11 +691,7 @@ class Stores {
           serviceId: "",
           _: _.random(0, 999999999999),
         })}`,
-        {
-          httpHeader: ["User-Agent: VaccineSpotter.org"],
-          acceptEncoding: "gzip",
-          timeoutMs: 15000,
-        }
+        defaultCurlOpts
       )
     );
   }

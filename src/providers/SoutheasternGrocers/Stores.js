@@ -1,6 +1,7 @@
 const { curly } = require("node-libcurl");
 const logger = require("../../logger");
 const normalizedAddressKey = require("../../normalizedAddressKey");
+const defaultCurlOpts = require("../../utils/defaultCurlOpts");
 const { Store } = require("../../models/Store");
 const { Provider } = require("../../models/Provider");
 const { ProviderBrand } = require("../../models/ProviderBrand");
@@ -92,11 +93,7 @@ class Stores {
     // identical headers as curl (including user-agent). Perhaps related to:
     // https://github.com/sindresorhus/got/discussions/1661. So using curl
     // here.
-    const { data } = await curly.get(url, {
-      httpHeader: [
-        "User-Agent: covid-vaccine-finder (https://github.com/GUI/covid-vaccine-finder)",
-      ],
-    });
+    const { data } = await curly.get(url, defaultCurlOpts);
 
     const count = data.length;
     for (const [index, store] of data.entries()) {

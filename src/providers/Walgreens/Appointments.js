@@ -9,6 +9,7 @@ const { convertLength } = require("@turf/helpers");
 const logger = require("../../logger");
 const normalizedVaccineTypes = require("../../normalizedVaccineTypes");
 const setComputedStoreValues = require("../../setComputedStoreValues");
+const defaultCurlOpts = require("../../utils/defaultCurlOpts");
 const Auth = require("./Auth");
 const AvailabilityAuth = require("./AvailabilityAuth");
 const { Store } = require("../../models/Store");
@@ -620,6 +621,7 @@ class Appointments {
       "https://www.walgreens.com/hcschedulersvc/svc/v1/immunizationLocations/availability";
     Appointments.availabilityRequestsMade += 1;
     const resp = await curly.post(url, {
+      ...defaultCurlOpts,
       httpHeader: [
         "Accept-Language: en-US,en;q=0.9",
         "Accept: application/json, text/plain, */*",
@@ -644,12 +646,10 @@ class Appointments {
         },
         radius: radiusMiles,
       }),
-      timeoutMs: 15000,
       proxy: process.env.WALGREENS_AVAILABILITY_PROXY_SERVER,
       proxyUsername: process.env.WALGREENS_AVAILABILITY_PROXY_USERNAME,
       proxyPassword: process.env.WALGREENS_AVAILABILITY_PROXY_PASSWORD,
       sslVerifyPeer: false,
-      acceptEncoding: "gzip",
     });
 
     if (!resp.statusCode || resp.statusCode < 200 || resp.statusCode >= 300) {
@@ -687,6 +687,7 @@ class Appointments {
       "https://www.walgreens.com/hcschedulersvc/svc/v2/immunizationLocations/timeslots";
     Appointments.timeslotsRequestsMade += 1;
     const resp = await curly.post(url, {
+      ...defaultCurlOpts,
       httpHeader: [
         "Accept-Language: en-US,en;q=0.9",
         "Accept: application/json, text/plain, */*",
@@ -715,12 +716,10 @@ class Appointments {
         radius: radiusMiles,
         size: radiusMiles,
       }),
-      timeoutMs: 15000,
       proxy: process.env.WALGREENS_TIMESLOTS_PROXY_SERVER,
       proxyUsername: process.env.WALGREENS_TIMESLOTS_PROXY_USERNAME,
       proxyPassword: process.env.WALGREENS_TIMESLOTS_PROXY_PASSWORD,
       sslVerifyPeer: false,
-      acceptEncoding: "gzip",
     });
 
     if (

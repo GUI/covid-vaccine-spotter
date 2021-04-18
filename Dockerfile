@@ -20,6 +20,9 @@ COPY package.json yarn.lock /app/
 ARG YARN_INSTALL_ARGS="--frozen-lockfile --production"
 RUN set -x && yarn install $YARN_INSTALL_ARGS
 
+RUN curl -fsSL -o /usr/local/share/ca-certificates/gdig2.crt https://certs.godaddy.com/repository/gdig2.crt.pem && \
+  update-ca-certificates
+
 COPY . /app
 
 ENV NODE_OPTIONS="--unhandled-rejections=strict --trace-warnings"

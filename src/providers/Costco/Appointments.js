@@ -7,6 +7,7 @@ const sleep = require("sleep-promise");
 const logger = require("../../logger");
 const throwCurlResponseError = require("../../utils/throwCurlResponseError");
 const setComputedStoreValues = require("../../setComputedStoreValues");
+const defaultCurlOpts = require("../../utils/defaultCurlOpts");
 const normalizedVaccineTypes = require("../../normalizedVaccineTypes");
 const { Store } = require("../../models/Store");
 
@@ -142,9 +143,7 @@ class Appointments {
     Appointments.bookingLinkResponses[bookingLink] = await curly.get(
       store.metadata_raw.appointment_plus.booking_link,
       {
-        httpHeader: ["User-Agent: VaccineSpotter.org"],
-        acceptEncoding: "gzip",
-        timeoutMs: 15000,
+        ...defaultCurlOpts,
         followLocation: true,
       }
     );
@@ -178,11 +177,7 @@ class Appointments {
             _: _.random(0, 999999999999),
           }
         )}`,
-        {
-          httpHeader: ["User-Agent: VaccineSpotter.org"],
-          acceptEncoding: "gzip",
-          timeoutMs: 15000,
-        }
+        defaultCurlOpts
       )
     );
   }
@@ -213,11 +208,7 @@ class Appointments {
             _: _.random(0, 999999999999),
           }
         )}`,
-        {
-          httpHeader: ["User-Agent: VaccineSpotter.org"],
-          acceptEncoding: "gzip",
-          timeoutMs: 15000,
-        }
+        defaultCurlOpts
       )
     );
   }
