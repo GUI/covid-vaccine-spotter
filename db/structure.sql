@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 13.1
+-- Dumped from database version 13.2
 -- Dumped by pg_dump version 13.2
 
 SET statement_timeout = 0;
@@ -818,7 +818,8 @@ CREATE TABLE public.stores (
     normalized_address_key character varying(255),
     appointment_types jsonb,
     appointment_vaccine_types jsonb,
-    appointments_last_modified timestamp with time zone
+    appointments_last_modified timestamp with time zone,
+    location_metadata_last_fetched timestamp with time zone
 );
 
 
@@ -1164,6 +1165,13 @@ ALTER TABLE ONLY public.walgreens_grid
 
 
 --
+-- Name: audit_log_action_tstamp_tx_index; Type: INDEX; Schema: audit; Owner: -
+--
+
+CREATE INDEX audit_log_action_tstamp_tx_index ON audit.log USING btree (action_tstamp_tx);
+
+
+--
 -- Name: log_action_idx; Type: INDEX; Schema: audit; Owner: -
 --
 
@@ -1374,6 +1382,13 @@ CREATE INDEX states_boundaries_index ON public.states USING gist (boundaries);
 
 
 --
+-- Name: states_id_name_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX states_id_name_idx ON public.states USING btree (id, name);
+
+
+--
 -- Name: stores_appointments_available_index; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1406,6 +1421,13 @@ CREATE INDEX stores_location_index ON public.stores USING gist (location);
 --
 
 CREATE INDEX stores_provider_id_carries_vaccine_appointments_last_fetche_idx ON public.stores USING btree (provider_id, carries_vaccine, appointments_last_fetched);
+
+
+--
+-- Name: stores_state_active_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX stores_state_active_idx ON public.stores USING btree (state, active);
 
 
 --
@@ -1447,7 +1469,7 @@ CREATE INDEX walgreens_grid_state_code_idx ON public.walgreens_grid USING btree 
 -- Name: stores audit_trigger_row; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER audit_trigger_row AFTER INSERT OR DELETE OR UPDATE ON public.stores FOR EACH ROW EXECUTE FUNCTION audit.if_modified_func('false', '{created_at,updated_at,metadata_raw,appointments_raw,appointments_last_fetched}');
+CREATE TRIGGER audit_trigger_row AFTER INSERT OR DELETE OR UPDATE ON public.stores FOR EACH ROW EXECUTE FUNCTION audit.if_modified_func('false', '{created_at,updated_at,metadata_raw,appointments_raw,appointments_last_fetched,appointments_last_modified,location_metadata_last_fetched}');
 
 
 --
@@ -1536,7 +1558,7 @@ ALTER TABLE ONLY public.stores
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 13.1
+-- Dumped from database version 13.2
 -- Dumped by pg_dump version 13.2
 
 SET statement_timeout = 0;
@@ -1578,6 +1600,8 @@ COPY public.knex_migrations (id, name, batch, migration_time) FROM stdin;
 69	20210329160409_create_state_grid_55km_500k.js	19	2021-03-29 22:57:20.879+00
 70	20210401101728_appointments_last_modified.js	20	2021-04-01 16:19:52.884+00
 73	20210408224048_convert_materialized_views.js	21	2021-04-09 05:07:41.373+00
+74	20210409102212_audit_index.js	22	2021-04-09 16:24:10.231+00
+77	20210417230632_location_metadata_last_fetched.js	23	2021-04-18 05:37:12.793+00
 \.
 
 
@@ -1585,7 +1609,7 @@ COPY public.knex_migrations (id, name, batch, migration_time) FROM stdin;
 -- Name: knex_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.knex_migrations_id_seq', 73, true);
+SELECT pg_catalog.setval('public.knex_migrations_id_seq', 77, true);
 
 
 --
