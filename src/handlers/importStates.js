@@ -6,10 +6,14 @@ const topojson = require("topojson-client");
 const { State } = require("../models/State");
 
 const states500kTopojson = JSON.parse(
-  fs.readFileSync("../../tmp/cb_2018_us_state_500k.topojson")
+  fs.readFileSync(
+    path.resolve(__dirname, "../../tmp/cb_2018_us_state_500k.topojson")
+  )
 );
 const states5mTopojson = JSON.parse(
-  fs.readFileSync("../../tmp/cb_2018_us_state_5m.topojson")
+  fs.readFileSync(
+    path.resolve(__dirname, "../../tmp/cb_2018_us_state_5m.topojson")
+  )
 );
 
 const statesGeojson = topojson.feature(
