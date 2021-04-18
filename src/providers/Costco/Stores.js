@@ -1,5 +1,6 @@
 const _ = require("lodash");
 const slug = require("slug");
+const { DateTime } = require("luxon");
 const { curly } = require("node-libcurl");
 const sleep = require("sleep-promise");
 const cheerio = require("cheerio");
@@ -11,6 +12,7 @@ const { Provider } = require("../../models/Provider");
 const { ProviderBrand } = require("../../models/ProviderBrand");
 const normalizedAddressKey = require("../../normalizedAddressKey");
 const defaultCurlOpts = require("../../utils/defaultCurlOpts");
+const rollbar = require("../../rollbarInit");
 
 class Stores {
   static async findStores() {
@@ -130,6 +132,7 @@ class Stores {
   ) {
     await sleep(1000);
 
+    const lastFetched = DateTime.utc().toISO();
     const resp = throwCurlResponseError(
       await curly.get(
         `https://www.costco.com/AjaxWarehouseBrowseLookupView?${querystring.stringify(
@@ -171,6 +174,7 @@ class Stores {
         location: `point(${store.longitude} ${store.latitude})`,
         location_source: "provider",
         metadata_raw: { costco: store },
+        location_metadata_last_fetched: lastFetched,
       };
       patch.brand = patch.provider_id;
       patch.brand_id = patch.provider_location_id;
@@ -274,169 +278,183 @@ class Stores {
       .orderBy(["state", "city"]);
     count = stores.length;
     for (const [index, store] of stores.entries()) {
-      if (matchedClientStoreIds[store.id]) {
-        logger.info(
-          `Already updated store with client from another request: ${store.state} - ${store.name}`
-        );
-        continue;
-      }
-
-      if (!store.metadata_raw?.appointment_plus?.client_master_id) {
-        logger.warn(
-          `Skipping over store without client master ID: ${store.state} - ${store.name}`
-        );
-        continue;
-      }
-
-      logger.info(
-        `Final processing of ${store.state} - ${store.name} (${
-          index + 1
-        } of ${count})...`
-      );
-
-      const resp = await Stores.fetchAppointmentPlusClientsResp(store);
-      for (const client of resp.data.clientObjects) {
-        let clientAddressKey = normalizedAddressKey({
-          address: client.address1,
-          city: client.city,
-          state: client.state,
-          postal_code: client.postalCode,
-        });
-        if (clientAddressKey === "1600-el-camino-real-san-francisco-ca-94080") {
-          clientAddressKey = "1600-el-camino-real-south-san-francisco-ca-94080";
-        } else if (
-          clientAddressKey === "999-elmhurst-rd-mt-prospect-il-60056"
-        ) {
-          clientAddressKey = "999-n-elmhurst-rd-mount-prospect-il-60056";
-        } else if (clientAddressKey === "1324-s-route-59-naperville-il-60564") {
-          clientAddressKey = "1320-s-route-59-naperville-il-60564";
-        } else if (
-          clientAddressKey === "3220-northern-pacific-ave-missoula-mt-59802"
-        ) {
-          clientAddressKey = "3220-n-reserve-st-missoula-mt-59808";
-        } else if (clientAddressKey === "392-talbert-rd-moorseville-tn-28117") {
-          clientAddressKey = "392-talbert-rd-mooresville-nc-28117";
-        } else if (
-          clientAddressKey === "851-s-state-highway-121-lewisville-tx-75067"
-        ) {
-          clientAddressKey = "851-state-highway-121-byp-lewisville-tx-75067";
-        } else if (
-          clientAddressKey === "1201-n-fm-1604-e-san-antonio-tx-78232"
-        ) {
-          clientAddressKey = "1201-n-loop-1604-e-san-antonio-tx-78232";
-        }
-
-        let clientStore = await Store.query().findOne({
-          provider_id: "costco",
-          normalized_address_key: clientAddressKey,
-        });
-
-        if (!clientStore) {
-          clientStore = await Store.query()
-            .where("provider_id", "costco")
-            .whereRaw(
-              "metadata_raw->'appointment_plus'->'client'->'id' = ?",
-              client.id
-            )
-            .first();
-        }
-
-        if (!clientStore) {
-          const clientStores = await Store.query()
-            .from(
-              Store.raw(
-                "stores, CAST(ST_SetSRID(ST_MakePoint(?, ?), 4326) AS geography) AS input_point",
-                [client.longitude, client.latitude]
-              )
-            )
-            .select(Store.raw("*"))
-            .select(Store.raw("location <-> input_point AS distance"))
-            .where("provider_id", "costco")
-            .where("state", client.state)
-            .whereRaw("st_dwithin(location, input_point, 2000)")
-            .orderBy("distance");
-          if (clientStores.length > 1) {
-            logger.error(
-              `Client matched to more than 1 store in database: ${JSON.stringify(
-                client
-              )} ${JSON.stringify(
-                clientStores.map((s) =>
-                  _.pick(
-                    s,
-                    "id",
-                    "name",
-                    "city",
-                    "state",
-                    "address",
-                    "postal_code",
-                    "normalized_address_key",
-                    "distance"
-                  )
-                )
-              )}`
-            );
-            continue;
-          }
-
-          // eslint-disable-next-line prefer-destructuring
-          clientStore = clientStores[0];
-        }
-
-        if (!clientStore) {
-          logger.error(
-            `Could not match client to store in database: ${JSON.stringify(
-              client
-            )}`
-          );
-          continue;
-        }
-
-        if (matchedClientStoreIds[clientStore.id]) {
+      try {
+        if (matchedClientStoreIds[store.id]) {
           logger.info(
             `Already updated store with client from another request: ${store.state} - ${store.name}`
           );
           continue;
         }
 
-        const patch = {
-          metadata_raw: clientStore.metadata_raw || {},
-        };
-
-        if (!patch.metadata_raw.appointment_plus) {
-          patch.metadata_raw.appointment_plus = {};
+        if (!store.metadata_raw?.appointment_plus?.client_master_id) {
+          logger.warn(
+            `Skipping over store without client master ID: ${store.state} - ${store.name}`
+          );
+          continue;
         }
 
-        patch.metadata_raw.appointment_plus.client = client;
-
-        const employeesResp = await Stores.fetchAppointmentPlusEmployeesResp(
-          patch.metadata_raw
+        logger.info(
+          `Final processing of ${store.state} - ${store.name} (${
+            index + 1
+          } of ${count})...`
         );
-        if (employeesResp?.data) {
-          patch.metadata_raw.appointment_plus.employees = employeesResp.data;
 
-          const employeeServices = {};
-          for (const employee of employeesResp.data.employeeObjects) {
-            const servicesResp = await Stores.fetchAppointmentPlusServicesResp(
-              patch.metadata_raw,
-              employee
+        const resp = await Stores.fetchAppointmentPlusClientsResp(store);
+        for (const client of resp.data.clientObjects) {
+          let clientAddressKey = normalizedAddressKey({
+            address: client.address1,
+            city: client.city,
+            state: client.state,
+            postal_code: client.postalCode,
+          });
+          if (
+            clientAddressKey === "1600-el-camino-real-san-francisco-ca-94080"
+          ) {
+            clientAddressKey =
+              "1600-el-camino-real-south-san-francisco-ca-94080";
+          } else if (
+            clientAddressKey === "999-elmhurst-rd-mt-prospect-il-60056"
+          ) {
+            clientAddressKey = "999-n-elmhurst-rd-mount-prospect-il-60056";
+          } else if (
+            clientAddressKey === "1324-s-route-59-naperville-il-60564"
+          ) {
+            clientAddressKey = "1320-s-route-59-naperville-il-60564";
+          } else if (
+            clientAddressKey === "3220-northern-pacific-ave-missoula-mt-59802"
+          ) {
+            clientAddressKey = "3220-n-reserve-st-missoula-mt-59808";
+          } else if (
+            clientAddressKey === "392-talbert-rd-moorseville-tn-28117"
+          ) {
+            clientAddressKey = "392-talbert-rd-mooresville-nc-28117";
+          } else if (
+            clientAddressKey === "851-s-state-highway-121-lewisville-tx-75067"
+          ) {
+            clientAddressKey = "851-state-highway-121-byp-lewisville-tx-75067";
+          } else if (
+            clientAddressKey === "1201-n-fm-1604-e-san-antonio-tx-78232"
+          ) {
+            clientAddressKey = "1201-n-loop-1604-e-san-antonio-tx-78232";
+          }
+
+          let clientStore = await Store.query().findOne({
+            provider_id: "costco",
+            normalized_address_key: clientAddressKey,
+          });
+
+          if (!clientStore) {
+            clientStore = await Store.query()
+              .where("provider_id", "costco")
+              .whereRaw(
+                "metadata_raw->'appointment_plus'->'client'->'id' = ?",
+                client.id
+              )
+              .first();
+          }
+
+          if (!clientStore) {
+            const clientStores = await Store.query()
+              .from(
+                Store.raw(
+                  "stores, CAST(ST_SetSRID(ST_MakePoint(?, ?), 4326) AS geography) AS input_point",
+                  [client.longitude, client.latitude]
+                )
+              )
+              .select(Store.raw("*"))
+              .select(Store.raw("location <-> input_point AS distance"))
+              .where("provider_id", "costco")
+              .where("state", client.state)
+              .whereRaw("st_dwithin(location, input_point, 2000)")
+              .orderBy("distance");
+            if (clientStores.length > 1) {
+              logger.error(
+                `Client matched to more than 1 store in database: ${JSON.stringify(
+                  client
+                )} ${JSON.stringify(
+                  clientStores.map((s) =>
+                    _.pick(
+                      s,
+                      "id",
+                      "name",
+                      "city",
+                      "state",
+                      "address",
+                      "postal_code",
+                      "normalized_address_key",
+                      "distance"
+                    )
+                  )
+                )}`
+              );
+              continue;
+            }
+
+            // eslint-disable-next-line prefer-destructuring
+            clientStore = clientStores[0];
+          }
+
+          if (!clientStore) {
+            logger.error(
+              `Could not match client to store in database: ${JSON.stringify(
+                client
+              )}`
             );
-            if (servicesResp?.data) {
-              employeeServices[employee.id] = servicesResp.data;
+            continue;
+          }
+
+          if (matchedClientStoreIds[clientStore.id]) {
+            logger.info(
+              `Already updated store with client from another request: ${store.state} - ${store.name}`
+            );
+            continue;
+          }
+
+          const lastFetched = DateTime.utc().toISO();
+          const patch = {
+            metadata_raw: clientStore.metadata_raw || {},
+            location_metadata_last_fetched: lastFetched,
+          };
+
+          if (!patch.metadata_raw.appointment_plus) {
+            patch.metadata_raw.appointment_plus = {};
+          }
+
+          patch.metadata_raw.appointment_plus.client = client;
+
+          const employeesResp = await Stores.fetchAppointmentPlusEmployeesResp(
+            patch.metadata_raw
+          );
+          if (employeesResp?.data) {
+            patch.metadata_raw.appointment_plus.employees = employeesResp.data;
+
+            const employeeServices = {};
+            for (const employee of employeesResp.data.employeeObjects) {
+              const servicesResp = await Stores.fetchAppointmentPlusServicesResp(
+                patch.metadata_raw,
+                employee
+              );
+              if (servicesResp?.data) {
+                employeeServices[employee.id] = servicesResp.data;
+              }
+            }
+
+            delete patch.metadata_raw.appointment_plus.services;
+            if (
+              !patch.metadata_raw.appointment_plus.employee_services ||
+              Object.keys(employeeServices).length > 0
+            ) {
+              patch.metadata_raw.appointment_plus.employee_services = employeeServices;
             }
           }
 
-          delete patch.metadata_raw.appointment_plus.services;
-          if (
-            !patch.metadata_raw.appointment_plus.employee_services ||
-            Object.keys(employeeServices).length > 0
-          ) {
-            patch.metadata_raw.appointment_plus.employee_services = employeeServices;
-          }
+          await Store.query().findById(clientStore.id).patch(patch);
+
+          matchedClientStoreIds[clientStore.id] = true;
         }
-
-        await Store.query().findById(clientStore.id).patch(patch);
-
-        matchedClientStoreIds[clientStore.id] = true;
+      } catch (err) {
+        logger.error(err);
+        rollbar.error(err);
       }
     }
   }
@@ -457,9 +475,16 @@ class Stores {
     }
 
     if (!Stores.stateLinks[store.state]) {
-      const links = $listingPage(
+      let links = $listingPage(
         `#search-results p > a:contains('${stateName}')`
       );
+
+      if (links.length === 0) {
+        links = $listingPage(
+          "#search-results p:contains('For all states') a[href*='appointment-plus.com']"
+        );
+      }
+
       if (links.length === 0) {
         logger.error(`Could not find link for state ${stateName}`);
       } else if (links.length > 1) {

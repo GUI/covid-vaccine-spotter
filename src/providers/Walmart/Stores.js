@@ -102,7 +102,7 @@ class Stores {
         searchRadiusMiles
       );
       if (data) {
-        const {stores} = data.payload.storesData;
+        const { stores } = data.payload.storesData;
         const lastStore = stores[stores.length - 1];
         if (
           stores.length === 50 &&
