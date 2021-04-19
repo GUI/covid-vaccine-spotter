@@ -15,7 +15,6 @@
             name="zip"
             class="form-control form-control-lg"
             placeholder="Enter a 5 digit ZIP code"
-            @change="submitForm"
           />
         </div>
         <div class="col-sm-auto">
@@ -25,7 +24,6 @@
             v-model="queryRadius"
             name="radius"
             class="form-select form-select-lg mb-3"
-            @change="submitForm"
           >
             <option value="">Any distance</option>
             <option value="5">5 miles</option>
@@ -46,7 +44,6 @@
             v-model="queryAppointmentType"
             name="appointment_type"
             class="form-select form-select-sm mb-3"
-            @change="submitForm"
           >
             <option value="">All doses</option>
             <option value="2nd_dose_only">Second dose only</option>
@@ -61,7 +58,6 @@
             v-model="queryVaccineType"
             name="vaccine_type"
             class="form-select form-select-sm mb-3"
-            @change="submitForm"
           >
             <option value="">All</option>
             <option value="jj">Johnson &amp; Johnson</option>
@@ -79,7 +75,6 @@
             v-model="queryProvider"
             name="provider"
             class="form-select form-select-sm mb-3"
-            @change="submitForm"
           >
             <option value="">All</option>
             <option
@@ -101,7 +96,6 @@
               value="true"
               class="form-check-input"
               type="checkbox"
-              @change="submitForm"
             />
             <label class="form-check-label" for="include_all">
               Show locations without current appointments
