@@ -105,6 +105,16 @@ async function optionalLoopEvery(task) {
     return optionalLoopEvery(Appointments.refreshStores);
   });
 
+  program.command("providers:publix:find-stores").action(async () => {
+    const Stores = require("../src/providers/Publix/Stores");
+    return optionalLoopEvery(Stores.findStores);
+  });
+
+  program.command("providers:publix:refresh-appointments").action(async () => {
+    const Stores = require("../src/providers/Publix/Appointments");
+    return optionalLoopEvery(Stores.refreshStores);
+  });
+
   await program.parseAsync(process.argv);
   await BaseModel.knex().destroy();
 })();

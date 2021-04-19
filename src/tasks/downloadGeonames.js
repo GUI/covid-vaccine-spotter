@@ -29,5 +29,14 @@ module.exports.downloadGeonames = async () => {
     tmpPath
   );
 
+  await download(
+    "https://gist.githubusercontent.com/GUI/2fdc2a4af01b828957a1c14bac5c7e7a/raw/9a29aeed2a2bfb58d3432725cfccfaf3974c8c7b/cb_2019_us_county_500k.topojson",
+    tmpPath
+  );
+  await download(
+    "https://gist.githubusercontent.com/GUI/2fdc2a4af01b828957a1c14bac5c7e7a/raw/9a29aeed2a2bfb58d3432725cfccfaf3974c8c7b/cb_2019_us_state_500k.topojson",
+    tmpPath
+  );
+
   logger.info(`Downloaded geonames data to ${tmpPath}`);
 };
