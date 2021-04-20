@@ -72,11 +72,12 @@
         </div>
         <div class="col-sm">
           <label for="provider" class="form-label form-label-sm"
-            >Pharmacy</label
+            >Pharmacy (multi-select)</label
           >
           <select
             id="provider"
             v-model="queryProvider"
+            multiple
             name="provider"
             class="form-select form-select-sm mb-3"
             @change="submitForm"
@@ -163,10 +164,21 @@ export default {
 
     queryProvider: {
       get() {
-        return this.$route.query.provider || "";
+        const providers = this.$route.query.provider;
+        return providers || [""];
       },
       set(value) {
-        this.pendingQueryParams.provider = value;
+        if (value.includes("")) {
+          const allValues = [];
+          this.$store.state.usStates.usState.metadata.provider_brands.forEach(
+            (providerBrand) => {
+              allValues.push(providerBrand.id);
+            }
+          );
+          this.pendingQueryParams.provider = allValues;
+        } else {
+          this.pendingQueryParams.provider = value;
+        }
       },
     },
 
