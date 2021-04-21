@@ -103,7 +103,7 @@ class Db {
         "--no-update-modtime",
         "--s3-no-head",
         path,
-        `:s3:${process.env.BACKUPS_BUCKET}/database/${knexConfig.development.connection.host}/${filename}`,
+        `:s3:${process.env.BACKUPS_BUCKET_SMART}/database/${knexConfig.development.connection.host}/${filename}`,
       ]);
     } finally {
       // await del(path);
@@ -150,7 +150,7 @@ class Db {
         "--header-upload",
         "Cache-Control: public, max-age=3600",
         path,
-        `:s3:${process.env.WEBSITE_BUCKET}/database/vaccinespotter.pgdump`,
+        `:s3:${process.env.WEBSITE_BUCKET_SMART}/database/vaccinespotter.pgdump`,
       ]);
     } finally {
       await del(path);
@@ -177,7 +177,7 @@ class Db {
       "lsjson",
       "--no-modtime",
       "--no-mimetype",
-      `:s3:${process.env.WEBSITE_BUCKET}/database/history/`,
+      `:s3:${process.env.WEBSITE_BUCKET_SMART}/database/history/`,
     ]);
     const existingPublicFiles = JSON.parse(existingPublicFilesCmd.stdout).map(
       (d) => d.Path
@@ -187,7 +187,7 @@ class Db {
       "lsjson",
       "--no-modtime",
       "--no-mimetype",
-      `:s3:${process.env.BACKUPS_BUCKET}/database/history/`,
+      `:s3:${process.env.BACKUPS_BUCKET_SMART}/database/history/`,
     ]);
     const existingPrivateFiles = JSON.parse(existingPrivateFilesCmd.stdout).map(
       (d) => d.Path
@@ -208,7 +208,7 @@ class Db {
       "lsjson",
       "--no-modtime",
       "--no-mimetype",
-      `:s3:${process.env.WEBSITE_BUCKET}/database/history/`,
+      `:s3:${process.env.WEBSITE_BUCKET_SMART}/database/history/`,
     ]);
     let historyFiles = JSON.parse(historyFilesCmd.stdout)
       .map((d) => ({ name: d.Name, size: d.Size }))
@@ -231,7 +231,7 @@ class Db {
       "--header-upload",
       "Cache-Control: public, max-age=300",
       "tmp/history-files.json",
-      `:s3:${process.env.WEBSITE_BUCKET}/database/history/days.json`,
+      `:s3:${process.env.WEBSITE_BUCKET_SMART}/database/history/days.json`,
     ]);
 
     await Db.dumpPublicStores();
@@ -241,7 +241,7 @@ class Db {
 
   static async auditDumpPublicDay(startTime, endTime, existingPublicFiles) {
     const filename = `${startTime.toISODate()}.jsonl.gz`;
-    const bucketPath = `:s3:${process.env.WEBSITE_BUCKET}/database/history/${filename}`;
+    const bucketPath = `:s3:${process.env.WEBSITE_BUCKET_SMART}/database/history/${filename}`;
     if (existingPublicFiles.includes(filename)) {
       console.info(`${bucketPath} already exists, skipping`);
       return;
@@ -337,7 +337,7 @@ class Db {
 
   static async auditDumpPrivateDay(startTime, endTime, existingPrivateFiles) {
     const filename = `${startTime.toISODate()}.csv.gz`;
-    const bucketPath = `:s3:${process.env.BACKUPS_BUCKET}/database/history/${filename}`;
+    const bucketPath = `:s3:${process.env.BACKUPS_BUCKET_SMART}/database/history/${filename}`;
     if (existingPrivateFiles.includes(filename)) {
       console.info(`${bucketPath} already exists, skipping`);
       return;
@@ -424,7 +424,7 @@ class Db {
 
     const filename = `stores.jsonl.gz`;
     const path = `tmp/${filename}`;
-    const bucketPath = `:s3:${process.env.WEBSITE_BUCKET}/database/${filename}`;
+    const bucketPath = `:s3:${process.env.WEBSITE_BUCKET_SMART}/database/${filename}`;
     try {
       await Db.copyToFile(sql, path);
 

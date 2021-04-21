@@ -14,6 +14,7 @@ class Website {
     const dataPath = path.resolve("website/static/api/v0");
     await mkdirp(dataPath);
 
+    /*
     await Store.knex().raw(`
       UPDATE stores
       SET appointments_available = NULL, appointments = NULL
@@ -24,6 +25,7 @@ class Website {
           OR appointments IS NOT NULL
         )
     `);
+    */
 
     const usData = await State.knex().raw(`
       SELECT
@@ -347,7 +349,7 @@ class Website {
       "--exclude",
       "v0/states/*/",
       "./tmp/website-api-data-sync/api/",
-      `:s3:${process.env.WEBSITE_BUCKET}/api/`,
+      `:s3:${process.env.WEBSITE_BUCKET_SMART}/api/`,
     ]);
 
     // Sync postal code files that are more static and can have longer cache
@@ -367,7 +369,7 @@ class Website {
       "--filter",
       "- *",
       "./tmp/website-api-data-sync/api/",
-      `:s3:${process.env.WEBSITE_BUCKET}/api/`,
+      `:s3:${process.env.WEBSITE_BUCKET_SMART}/api/`,
     ]);
 
     logger.notice("Finished publishing API data.");
@@ -562,7 +564,7 @@ class Website {
       "--header-upload",
       "Content-Encoding: gzip",
       "./tmp/website-legacy-api-data-sync/api/v0/stores/",
-      `:s3:${process.env.WEBSITE_BUCKET}/api/v0/stores/`,
+      `:s3:${process.env.WEBSITE_BUCKET_SMART}/api/v0/stores/`,
     ]);
 
     logger.notice("Finished publishing legacy API data.");
@@ -643,7 +645,7 @@ class Website {
       "--header-upload",
       "Content-Encoding: gzip",
       "./tmp/website-static-site-sync/_nuxt/",
-      `:s3:${process.env.WEBSITE_BUCKET}/_nuxt/`,
+      `:s3:${process.env.WEBSITE_BUCKET_SMART}/_nuxt/`,
     ]);
 
     // Sync the remaining files.
@@ -662,7 +664,7 @@ class Website {
       "--exclude",
       "_nuxt/**",
       "./tmp/website-static-site-sync/",
-      `:s3:${process.env.WEBSITE_BUCKET}/`,
+      `:s3:${process.env.WEBSITE_BUCKET_SMART}/`,
     ]);
 
     // Each new deployment contains a new timestamped directory of assets in
@@ -675,7 +677,7 @@ class Website {
       "lsjson",
       "--no-modtime",
       "--no-mimetype",
-      `:s3:${process.env.WEBSITE_BUCKET}/_nuxt/static/`,
+      `:s3:${process.env.WEBSITE_BUCKET_SMART}/_nuxt/static/`,
     ]);
     const staticDirs = JSON.parse(staticDirsCmd.stdout).map((d) => d.Path);
     staticDirs.sort();
@@ -689,7 +691,7 @@ class Website {
       await runShell("rclone", [
         "purge",
         "-v",
-        `:s3:${process.env.WEBSITE_BUCKET}/_nuxt/static/${dir}`,
+        `:s3:${process.env.WEBSITE_BUCKET_SMART}/_nuxt/static/${dir}`,
       ]);
     }
 

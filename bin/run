@@ -115,6 +115,11 @@ async function optionalLoopEvery(task) {
     return optionalLoopEvery(Stores.refreshStores);
   });
 
+  program.command("providers:smart:refresh-appointments").action(async () => {
+    const Appointments = require("../src/providers/Smart/Appointments");
+    return optionalLoopEvery(Appointments.refreshStores);
+  });
+
   await program.parseAsync(process.argv);
   await BaseModel.knex().destroy();
 })();
