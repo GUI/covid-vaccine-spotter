@@ -87,6 +87,20 @@
             </option>
           </select>
         </div>
+        <div class="col-sm">
+          <label for="datepicker" class="form-label form-label-sm"
+            >Choose Date</label
+          >
+          <input
+            id="datepicker"
+            v-model="queryDate"
+            type="date"
+            name="datepicker"
+            value=""
+            min="`${currentDate}`"
+            max="2022-12-31"
+          />
+        </div>
         <div class="col-xl-auto">
           <div class="form-check">
             <input
@@ -164,6 +178,15 @@ export default {
       },
     },
 
+    queryDate: {
+      get() {
+        return this.$route.query.date || "";
+      },
+      set(value) {
+        this.pendingQueryParams.date = value;
+      },
+    },
+
     queryIncludeAll: {
       get() {
         return this.$route.query.include_all || false;
@@ -171,6 +194,15 @@ export default {
       set(value) {
         this.pendingQueryParams.include_all = value;
       },
+    },
+
+    currentDate() {
+      let today = new Date();
+      const dd = today.getDate();
+      const mm = today.getMonth() + 1;
+      const yyyy = today.getFullYear();
+      today = `${mm}-${dd}-${yyyy}`;
+      return today;
     },
   },
 
@@ -196,6 +228,10 @@ export default {
 
       if (newQuery.provider === "") {
         delete newQuery.provider;
+      }
+
+      if (newQuery.date === "") {
+        delete newQuery.date;
       }
 
       if (newQuery.include_all === false) {
