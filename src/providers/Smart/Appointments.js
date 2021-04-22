@@ -164,6 +164,11 @@ class Appointments {
         (slot) => schedules[slot.schedule.reference]
       );
 
+      // Temporary workaround for unexpected data format in bsmhealth data.
+      if (Array.isArray(location.address)) {
+        location.address = location.address[0];
+      }
+
       const patch = {
         provider_id: providerBrand.provider_id,
         provider_location_id: location.id,
@@ -219,10 +224,12 @@ class Appointments {
       }
 
       if (!patch.county_id && location.address.district) {
-        const countyRecord = await County.query().findOne({
-          state_code: patch.state,
-          name: location.address.district,
-        });
+        const countyRecord = await County.query()
+          .whereRaw("state_code = ? AND lower(name) = ?", [
+            patch.state,
+            location.address.district.toLowerCase(),
+          ])
+          .first();
 
         patch.county_id = countyRecord.id;
       }
