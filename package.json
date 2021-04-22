@@ -71,7 +71,6 @@
     "us-atlas": "^3.0.0",
     "uuid": "^8.3.2",
     "vue": "^2.6.12",
-    "vuejs-datepicker": "^1.6.2",
     "vuex-router-sync": "^5.0.0"
   },
   "devDependencies": {
