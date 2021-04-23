@@ -3,4 +3,4 @@
 const { refreshStores } = require("../src/providers/PrepMod/Appointments");
 const runTask = require("../src/runTask");
 
-runTask(refreshStores('comassvax', 'https://www.comassvax.org'), 15000);
+runTask(refreshStores('maimmunizations', 'https://clinics.maimmunizations.org'), 15000);

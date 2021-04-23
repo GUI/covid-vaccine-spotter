@@ -100,6 +100,7 @@ export default {
       if (
         this.store.properties.provider_brand === "centura_driveup_event" ||
         this.store.properties.provider_brand === "comassvax" ||
+        this.store.properties.provider_brand === "maimmunizations" ||
         this.store.properties.provider_brand === "costco" ||
         this.store.properties.provider_brand === "health_mart"
       ) {
