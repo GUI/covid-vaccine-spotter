@@ -52,7 +52,10 @@
             <p v-else>
               <strong>Uh oh!</strong> The data for this pharmacy is old. Please
               visit the
-              <a :href="store.properties.url" target="_blank" rel="noopener"
+              <a
+                :href="store.properties.url"
+                target="_blank"
+                :rel="providerBrandUrlRel"
                 >pharmacy's website</a
               >
               directly for appointment availability. This likely means that the
@@ -61,7 +64,10 @@
           </div>
 
           <p>
-            <a :href="store.properties.url" target="_blank" rel="noopener"
+            <a
+              :href="store.properties.url"
+              target="_blank"
+              :rel="providerBrandUrlRel"
               >Visit {{ store.properties.provider_brand_name }} Website
               <font-awesome-icon icon="external-link-alt"
             /></a>
@@ -107,6 +113,17 @@ export default {
       }
 
       return title;
+    },
+
+    providerBrandUrlRel() {
+      let rel = "noopener";
+      // Walgreens seems to be blocking links from certain referrers if you
+      // haven't first visited walgreens.com and have cookies.
+      if (this.store.properties.provider === "walgreens") {
+        rel += " noreferrer";
+      }
+
+      return rel;
     },
 
     appointmentsLastFetchedDate() {
