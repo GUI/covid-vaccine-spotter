@@ -75,12 +75,13 @@ class Appointments {
   static async fetchSearchPage(url, pageNum) {
     logger.info(`Fetching page ${pageNum} of search results`);
     await sleep(_.random(250, 750));
+    const searchParams = new URLSearchParams([
+      ["q[services_name_in][]", "covid"],
+      ["q[services_name_in][]", "Vaccination"],
+      ["page", pageNum]
+    ]);
     return got(url, {
-      searchParams: {
-        "q[services_name_in][]": "covid",
-        "q[services_name_in][]": "Vaccination",
-        page: pageNum,
-      },
+      searchParams,
       headers: {
         "User-Agent": "VaccineSpotter.org",
       },
