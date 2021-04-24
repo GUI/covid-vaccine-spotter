@@ -4,6 +4,8 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import {
   faArrowAltCircleRight,
   faCheckCircle,
+  faChevronLeft,
+  faChevronRight,
   faExclamationTriangle,
   faTimesCircle,
   faExternalLinkAlt,
@@ -18,6 +20,8 @@ config.autoAddCss = false;
 library.add(
   faArrowAltCircleRight,
   faCheckCircle,
+  faChevronLeft,
+  faChevronRight,
   faExclamationTriangle,
   faTimesCircle,
   faExternalLinkAlt,

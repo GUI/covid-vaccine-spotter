@@ -40,7 +40,7 @@ export default {
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     "~/plugins/vuex-router-sync",
-    "~/plugins/fontawesome.js",
+    "~/plugins/fontawesome",
     "~/plugins/http",
   ],
 

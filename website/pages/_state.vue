@@ -114,7 +114,7 @@
                 {{ filteredLocationsError }}
               </div>
               <div
-                v-else-if="filteredLocations.length === 0"
+                v-else-if="filteredLocationsCount === 0"
                 class="alert alert-warning"
                 role="alert"
               >
@@ -124,10 +124,16 @@
               </div>
 
               <store
-                v-for="store in filteredLocations"
+                v-for="store in filteredLocationsPage"
                 :key="store.properties.id"
                 :store="store"
               ></store>
+
+              <location-pagination
+                :total-results="filteredLocationsCount"
+                @per-page="paginatePerPageChange"
+                @page="paginatePageChange"
+              ></location-pagination>
             </div>
           </div>
         </div>
@@ -143,6 +149,13 @@
 export default {
   fetchOnServer: false,
   fetchDelay: 5,
+
+  data() {
+    return {
+      page: 1,
+      perPage: 25,
+    };
+  },
 
   async fetch() {
     try {
@@ -197,12 +210,42 @@ export default {
       } pharmacies. Updated every minute.`;
     },
 
-    filteredLocations() {
-      return this.$store.getters["usStates/getFilteredLocations"];
+    filteredLocationsPage() {
+      const startIndex = (this.page - 1) * this.perPage;
+      const endIndex = this.page * this.perPage;
+      return this.$store.getters["usStates/getFilteredLocations"].slice(
+        startIndex,
+        endIndex
+      );
     },
 
     filteredLocationsError() {
       return this.$store.getters["usStates/getFilterError"];
+    },
+
+    filteredLocationsCount() {
+      const locations = this.$store.getters["usStates/getFilteredLocations"];
+      return locations ? locations.length : 0;
+    },
+  },
+
+  methods: {
+    paginatePerPageChange(perPage) {
+      this.perPage = perPage;
+    },
+
+    paginatePageChange(page) {
+      if (page !== this.page) {
+        this.page = page;
+        this.$nextTick(() => {
+          const anchor = document.querySelector(
+            ".results-container .location-anchor"
+          );
+          if (anchor) {
+            anchor.scrollIntoView();
+          }
+        });
+      }
     },
   },
 };
