@@ -99,6 +99,7 @@
             value=""
             min="`${currentDate}`"
             max="2022-12-31"
+            class="mb-3"
           />
         </div>
         <div class="col-xl-auto">

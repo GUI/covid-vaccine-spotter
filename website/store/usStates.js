@@ -115,17 +115,20 @@ export const getters = {
       const appt = datesData.appointments;
       if (queryDate) {
         if (appt === null || appt.length === 0) {
-          if (datesData.appointments_available === false) {
-            include = false;
-          }
+          include = false;
         } else {
           appt.forEach((slot) => {
             let string = JSON.stringify(slot.time);
             string = string.slice(1, 11);
-            if (queryDate !== string) {
-              include = false;
+            if (queryDate === string) {
+              include = true;
             }
           });
+        }
+        // there is no data piece that lets you know if you have to go to the website to get the dates.
+        // these are the 2 main providers that make you go to the website
+        if (datesData.provider === "rite_aid" || datesData.provider === "cvs") {
+          include = true;
         }
       }
 
