@@ -115,7 +115,9 @@ export const getters = {
       const appt = datesData.appointments;
       if (queryDate) {
         if (appt === null || appt.length === 0) {
-          include = false;
+          if (datesData.appointments_available === false) {
+            include = false;
+          }
         } else {
           appt.forEach((slot) => {
             let string = JSON.stringify(slot.time);
