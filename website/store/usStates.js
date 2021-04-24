@@ -113,6 +113,7 @@ export const getters = {
         datesData[item] = location.properties[item];
       });
       const appt = datesData.appointments;
+      let found = false;
       if (queryDate) {
         if (appt === null || appt.length === 0) {
           include = false;
@@ -121,12 +122,13 @@ export const getters = {
             let string = JSON.stringify(slot.time);
             string = string.slice(1, 11);
             if (queryDate === string) {
-              include = true;
+              found = true;
             }
           });
+          if (!found) {
+            include = false;
+          }
         }
-        // there is no data piece that lets you know if you have to go to the website to get the dates.
-        // these are the 2 main providers that make you go to the website
         if (datesData.provider === "rite_aid" || datesData.provider === "cvs") {
           include = true;
         }
