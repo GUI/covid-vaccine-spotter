@@ -14,12 +14,15 @@
       <div v-if="store.properties.appointments_available === true">
         <p class="text-success">
           <font-awesome-icon icon="check-circle" />
-          {{ appointments.available }}
-          <display-local-time :time="appointmentsLastModifiedDate" :iso="iso" />
+          {{ $t("Appointments available as of") }}
+          <display-local-time
+            :time="appointmentsLastModifiedDate"
+            :iso="$i18n.localeProperties.iso"
+          />
         </p>
         <p>
           <a :href="`#location-${store.properties.id}`">{{
-            appointments.viewDetails
+            $t("View Appointment Details")
           }}</a>
         </p>
       </div>
@@ -27,35 +30,54 @@
         <div v-if="store.properties.appointments_available === false">
           <p class="text-danger">
             <font-awesome-icon icon="times-circle" />
-            {{ appointments.noneAvailable }}
+            {{ $t("No appointments available as of last check") }}
           </p>
         </div>
         <div v-else>
           <div v-if="store.properties.appointments_available === false">
             <p class="text-danger">
               <font-awesome-icon icon="times-circle" />
-              {{ appointments.noneAvailable }}
+              {{ $t("No appointments available as of last check") }}
             </p>
           </div>
           <div v-else>
             <p>
               <font-awesome-icon icon="times-circle" />
-              {{ appointments.unknown }}
+              {{ $t("Unknown status") }}
             </p>
             <p v-if="store.properties.carries_vaccine === false">
-              {{ appointments.doesNotCarry }}
+              {{
+                $t(
+                  "At last check, this location does not carry the vaccine at all, so we have not fetched any appointments."
+                )
+              }}
             </p>
             <p v-else-if="store.properties.appointments_last_fetched === null">
-              {{ appointments.notCollected }}
+              {{ $t("We haven't collected any data for this pharmacy yet.") }}
             </p>
-            <!-- eslint-disable-next-line vue/no-v-html -->
-            <p v-else v-html="appointments.oldData" />
+            <!-- eslint-disable vue/no-v-html -->
+            <p
+              v-else
+              v-html="
+                $t(
+                  '<strong>Uh oh!</strong> The data for this pharmacy is old. Please visit the <a href=\u0022{link}\u0022 target=\u0022_blank\u0022 rel=\u0022noopener\u0022>pharmacy\'s website</a> directly for appointment availability. this likely means that the pharmacy is blocking our tool from accessing their website.',
+                  { link: store.properties.url }
+                )
+              "
+            />
+            <!-- eslint-enable vue/no-v-html -->
           </div>
 
           <p>
-            <a :href="store.properties.url" target="_blank" rel="noopener"
-                                                            :rel="providerBrandUrlRel">
-              {{ appointments.visitWebsite }}
+            <a
+              :href="store.properties.url"
+              target="_blank"
+              :rel="providerBrandUrlRel"
+              >{{
+                $t("Visit {name} Website", {
+                  name: store.properties.provider_brand_name,
+                })
+              }}
               <font-awesome-icon icon="external-link-alt"
             /></a>
           </p>
@@ -64,14 +86,14 @@
 
       <p class="mb-0">
         <small
-          >{{ appointments.lastChecked }}
+          >{{ $t("Last checked") }}
           <display-local-time
             v-if="store.properties.appointments_last_fetched"
             :time="appointmentsLastFetchedDate"
-            :iso="iso"
+            :iso="$i18n.localeProperties.iso"
           />
           <span v-if="!store.properties.appointments_last_fetched">{{
-            appointments.never
+            $t("never")
           }}</span></small
         >
       </p>
@@ -82,15 +104,7 @@
 <script>
 export default {
   props: {
-    iso: {
-      type: String,
-      required: true,
-    },
     store: {
-      type: Object,
-      required: true,
-    },
-    appointments: {
       type: Object,
       required: true,
     },

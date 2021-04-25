@@ -84,18 +84,18 @@
     "@nuxtjs/eslint-module": "^3.0.2",
     "babel-eslint": "^10.1.0",
     "download": "^8.0.0",
-    "ejs-lint": "^1.1.0",
-    "eslint": "^7.20.0",
+    "eslint": "^7.25.0",
     "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-config-prettier": "^8.0.0",
+    "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-nuxt": "^2.0.0",
-    "eslint-plugin-prettier": "^3.3.1",
-    "eslint-plugin-vue": "^7.5.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-vue": "^7.9.0",
     "geo-tz": "^6.0.1",
     "playwright": "^1.10.0",
     "prettier": "^2.2.1",
-    "serverless-offline": "^6.8.0"
+    "serverless-offline": "^6.8.0",
+    "vue-i18n-scanner": "^1.0.5"
   },
   "resolutions": {
     "playwright-extra/**/playwright-core": "^1.10.0"

@@ -7,7 +7,7 @@
           {{ title }}
         </h5>
         <div v-if="store.distance" class="col-sm-auto">
-          {{ store.distance }} {{ $t("store.miles") }}
+          {{ $t("{distance} miles", { distance: store.distance }) }}
         </div>
       </div>
     </div>
@@ -16,7 +16,7 @@
         <div class="location-status text-success fs-2">
           <font-awesome-icon icon="check-circle" class="align-middle" />
           <span class="fs-5">
-            {{ $t("store.appointmentsAvailable") }}
+            {{ $t("Appointments available as of") }}
             <display-local-time
               :time="appointmentsLastModifiedDate"
               :iso="$i18n.localeProperties.iso"
@@ -29,24 +29,31 @@
         >
           <small
             ><font-awesome-icon icon="exclamation-triangle" />
-            <strong>Warning:</strong>
-            {{ store.properties.provider_brand_name }} appears to only be
-            updating their data every 30-60 minutes, so this status may become
-            outdated more quickly than other providers. But if they increase
-            their frequency of updates, Vaccine Spotter will start showing
-            updates sooner too.</small
-          >
+            <!-- eslint-disable vue/no-v-html -->
+            <span
+              v-html="
+                $t(
+                  '<strong>Warning:</strong> {name} appears to only be updating their data every 30-60 minutes, so this status may become outdated more quickly than other providers. But if they increase their frequency of updates, Vaccine Spotter will start showing updates sooner too.',
+                  { name: store.properties.provider_brand_name }
+                )
+              "
+            />
+            <!-- eslint-enable vue/no-v-html -->
+          </small>
         </p>
 
         <p v-if="store.properties.provider === 'kroger'" class="text-warning">
           <small
             ><font-awesome-icon icon="exclamation-triangle" />
-            {{
-              $t("store.krogerWarning", {
-                name: store.properties.provider_brand_name,
-              })
-            }}</small
-          >
+            <!-- eslint-disable vue/no-v-html -->
+            <span
+              v-html="
+                $t(
+                  '<strong>Warning:</strong> Many users are reporting issues booking appointments with {name} (due to 2nd appointment requirements). However, some users have still reported success, so I still want to share the data I have from the pharmacies. I\'m trying to figure out a better way to detect these issues, but in the meantime, sorry for any frustration!',
+                  { name: store.properties.provider_brand_name }
+                )
+              "
+          /></small>
         </p>
 
         <a
@@ -55,7 +62,7 @@
           target="_blank"
           :rel="providerBrandUrlRel"
           >{{
-            $t("buttons.visitWebsite", {
+            $t("Visit {name} Website", {
               name: store.properties.provider_brand_name,
             })
           }}
@@ -66,32 +73,43 @@
         <div v-if="store.properties.appointments_available === false">
           <p class="text-danger">
             <font-awesome-icon icon="times-circle" />
-            {{ $t("appointments.noneAvailable") }}
+            {{ $t("No appointments available as of last check") }}
           </p>
         </div>
         <div v-else>
           <p>
             <font-awesome-icon icon="times-circle" />
-            {{ $t("appointments.noneAvailable") }}
+            {{ $t("Unknown status") }}
           </p>
           <p v-if="store.properties.carries_vaccine === false">
-            {{ $t("appointments.doesNotCarry") }}
+            {{
+              $t(
+                "At last check, this location does not carry the vaccine at all, so we have not fetched any appointments."
+              )
+            }}
           </p>
           <p v-else-if="store.properties.appointments_last_fetched === null">
-            {{ $t("appointments.notCollected") }}
+            {{ $t("We haven't collected any data for this pharmacy yet.") }}
           </p>
           <!-- eslint-disable vue/no-v-html -->
           <p
             v-else
-            v-html="$t('appointments.oldData', { link: store.properties.url })"
+            v-html="
+              $t(
+                '<strong>Uh oh!</strong> The data for this pharmacy is old. Please visit the <a href=\u0022{link}\u0022 target=\u0022_blank\u0022 rel=\u0022noopener\u0022>pharmacy\'s website</a> directly for appointment availability. this likely means that the pharmacy is blocking our tool from accessing their website.',
+                { link: store.properties.url }
+              )
+            "
           />
           <!-- eslint-enable vue/no-v-html -->
         </div>
         <p>
-          <a :href="store.properties.url" target="_blank" rel="noopener"
+          <a
+            :href="store.properties.url"
+            target="_blank"
             :rel="providerBrandUrlRel"
             >{{
-              $t("appointments.visitWebsite", {
+              $t("Visit {name} Website", {
                 name: store.properties.provider_brand_name,
               })
             }}
@@ -102,14 +120,14 @@
 
       <p class="card-text text-secondary mt-2">
         <small
-          >{{ $t("appointments.lastChecked") }}
+          >{{ $t("Last checked") }}
           <display-local-time
             v-if="store.properties.appointments_last_fetched"
             :time="appointmentsLastFetchedDate"
             :iso="$i18n.localeProperties.iso"
           />
           <span v-if="!store.properties.appointments_last_fetched">{{
-            $t("appointments.never")
+            $t("never")
           }}</span></small
         >
       </p>

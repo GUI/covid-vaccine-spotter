@@ -1,42 +1,45 @@
 <template comment>
   <div>
+    <!-- eslint-disable vue/no-v-html -->
     <div
       class="alert alert-danger rounded-0 unsupported-browser-warning"
       style="display: none"
-    >
-      Unfortunately, this website is not compatible with your web browser.
-      Sorry!<br />Please
-      <a href="https://browser-update.org/update-browser.html"
-        >upgrade your browser</a
-      >
-      to use this website.
-    </div>
+      v-html="
+        $t(
+          'Unfortunately, this website is not compatible with your web browser. Sorry!<br />Please <a href=\u0022https://browser-update.org/update-browser.html\u0022>upgrade your browser</a> to use this website.'
+        )
+      "
+    ></div>
+    <!-- eslint-enable vue/no-v-html -->
     <Nuxt />
     <footer class="mt-3">
       <div class="container-lg">
-        <h3 id="about">{{ $t("defaultVue.about.header") }}</h3>
-        <p>
-          {{ $t("defaultVue.about.text.0") }}
-          <a
-            href="m&#97;ilto&#58;v%&#54;1&#99;&#99;&#105;ne&#64;nic&#107;%6D&#46;org"
-            >vacc&#105;ne&#64;ni&#99;k&#109;&#46;o&#114;&#103;</a
-          >,
-          <a href="https://twitter.com/nickblah">{{
-            $t("contact.twitterHandle")
-          }}</a
-          >, or
-          <a href="https://github.com/GUI/covid-vaccine-finder/issues">{{
-            $t("contact.github")
-          }}</a
-          >.
-        </p>
-        <!-- eslint-disable-next-line vue/no-v-html -->
-        <p v-html="$t('defaultVue.about.text.1')" />
+        <h3 id="about">{{ $t("About") }}</h3>
+        <!-- eslint-disable vue/no-v-html -->
+        <p
+          v-html="
+            $t(
+              'Finding vaccines seems tough! Hopefully things will become easier soon, but in the meantime, maybe this can help. If you find this useful, feel free to share it around. Get in touch with any questions: <a href=\u0022m&#97;ilto&#58;v%&#54;1&#99;&#99;&#105;ne&#64;nic&#107;%6D&#46;org\u0022>vacc&#105;ne&#64;ni&#99;k&#109;&#46;o&#114;&#103;</a>, <a href=\u0022https://twitter.com/nickblah\u0022>@nickblah</a>, or <a href=\u0022https://github.com/GUI/covid-vaccine-finder/issues\u0022>GitHub</a>.'
+            )
+          "
+        />
+        <p
+          v-html="
+            $t(
+              'I\'d like to add additional functionality (scanning additional pharmacies and sending e-mail or text notifications when appointments open up) if this proves useful and as time permits. If you\'re a computer programmer and would like to contribute, the project is <a href=\u0022https://github.com/GUI/covid-vaccine-finder\u0022>open source on GitHub</a> (it\'s currently very messy and undocumented, though).'
+            )
+          "
+        />
+        <!-- eslint-enable vue/no-v-html -->
 
-        <h3 id="donate">{{ $t("defaultVue.donate.title") }}</h3>
+        <h3 id="donate">{{ $t("Donate") }}</h3>
 
         <p>
-          {{ $t("defaultVue.donate.text") }}
+          {{
+            $t(
+              "I've received a lot of requests to donate to this project, which I really appreciate. Hearing of people's success stories of finding vaccines is reward enough, but if you would like to donate, please consider the following options:"
+            )
+          }}
         </p>
 
         <ul>
@@ -46,10 +49,14 @@
                 href="https://www.unicefusa.org/mission/covid-19/vaccine"
                 target="_blank"
                 rel="noopener"
-                >{{ $t("defaultVue.donate.options.0.title") }}</a
+                >{{ $t("UNICEF") }}</a
               >:</strong
             >
-            {{ $t("defaultVue.donate.options.0.description") }}
+            {{
+              $t(
+                "Donate to UNICEF's efforts to help the global vaccination rollout."
+              )
+            }}
           </li>
           <li>
             <strong
@@ -57,10 +64,12 @@
                 href="https://www.directrelief.org/emergency/coronavirus-outbreak/"
                 target="_blank"
                 rel="noopener"
-                >{{ $t("defaultVue.donate.options.1.title") }}</a
+                >{{ $t("DirectRelief") }}</a
               >:</strong
             >
-            {{ $t("defaultVue.donate.options.1.description") }}
+            {{
+              $t("Donate to DirectRelief's efforts to help with the pandemic.")
+            }}
           </li>
           <li>
             <span>
@@ -68,11 +77,18 @@
                 href="https://givebutter.com/vaccinespotter"
                 target="_blank"
                 rel="noopener"
-                >{{ $t("defaultVue.donate.options.2.title") }}</a
+                >{{ $t("Vaccine Spotter") }}</a
               >:</span
             >
-            <!-- eslint-disable-next-line vue/no-v-html -->
-            <span v-html="$t('defaultVue.donate.options.2.description')" />
+            <!-- eslint-disable vue/no-v-html -->
+            <span
+              v-html="
+                $t(
+                  'While I encourage donating to other charities directly, if you\'d like to support Vaccine Spotter, thank you! I will <a href=\u0022https://givebutter.com/vaccinespotter\u0022 target=\u0022_blank\u0022 rel=\u0022noopener\u0022>accept contributions</a> (<em>not</em> tax deductible) to cover website hosting costs. Any surplus contributions I will donate to these other charities.'
+                )
+              "
+            />
+            <!-- eslint-enable vue/no-v-html -->
           </li>
         </ul>
 
@@ -84,9 +100,7 @@
               href="https://facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.vaccinespotter.org"
               target="_blank"
               rel="noopener"
-              :aria-label="
-                $t('share.button.on', { name: $t('share.sites.facebook') })
-              "
+              :aria-label="$t('Share on Facebook')"
             >
               <div
                 class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--large"
@@ -101,9 +115,7 @@
                     />
                   </svg>
                 </div>
-                {{
-                  $t("share.button.on", { name: $t("share.sites.facebook") })
-                }}
+                {{ $t("Share on Facebook") }}
               </div>
             </a>
 
@@ -113,9 +125,7 @@
               href="https://twitter.com/intent/tweet/?text=COVID-19%20Vaccine%20Spotter.%20A%20tool%20to%20help%20you%20track%20down%20COVID-19%20vaccine%20appointment%20openings%20at%USA%20pharmacies.%20Updated%20every%20minute.&amp;url=https%3A%2F%2Fwww.vaccinespotter.org"
               target="_blank"
               rel="noopener"
-              :aria-label="
-                $t('share.button.on', { name: $t('share.sites.twitter') })
-              "
+              :aria-label="$t('Share on Twitter')"
             >
               <div
                 class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--large"
@@ -130,7 +140,7 @@
                     />
                   </svg>
                 </div>
-                {{ $t("share.button.on", { name: $t("share.sites.twitter") }) }}
+                {{ $t("Share on Twitter") }}
               </div>
             </a>
 
@@ -140,9 +150,7 @@
               href="https://www.tumblr.com/widgets/share/tool?posttype=link&amp;title=COVID-19%20Vaccine%20Spotter.%20A%20tool%20to%20help%20you%20track%20down%20COVID-19%20vaccine%20appointment%20openings%20at%20USA%20pharmacies.%20Updated%20every%20minute.&amp;caption=COVID-19%20Vaccine%20Spotter.%20A%20tool%20to%20help%20you%20track%20down%20COVID-19%20vaccine%20appointment%20openings%20at%20USA%20pharmacies.%20Updated%20every%20minute.&amp;content=https%3A%2F%2Fwww.vaccinespotter.org&amp;canonicalUrl=https%3A%2F%2Fwww.vaccinespotter.org&amp;shareSource=tumblr_share_button"
               target="_blank"
               rel="noopener"
-              :aria-label="
-                $t('share.button.on', { name: $t('share.sites.tumblr') })
-              "
+              :aria-label="$t('Share on Tumblr')"
             >
               <div
                 class="resp-sharing-button resp-sharing-button--tumblr resp-sharing-button--large"
@@ -157,7 +165,7 @@
                     />
                   </svg>
                 </div>
-                {{ $t("share.button.on", { name: $t("share.sites.tumblr") }) }}
+                {{ $t("Share on Tumblr") }}
               </div>
             </a>
 
@@ -167,9 +175,7 @@
               href="mailto:?subject=COVID-19%20Vaccine%20Spotter.%20A%20tool%20to%20help%20you%20track%20down%20COVID-19%20vaccine%20appointment%20openings%20at%20USA%20pharmacies.%20Updated%20every%20minute.&amp;body=https%3A%2F%2Fwww.vaccinespotter.org"
               target="_self"
               rel="noopener"
-              :aria-label="
-                $t('share.button.by', { name: $t('share.sites.email') })
-              "
+              :aria-label="$t('Share by E-mail')"
             >
               <div
                 class="resp-sharing-button resp-sharing-button--email resp-sharing-button--large"
@@ -184,7 +190,7 @@
                     />
                   </svg>
                 </div>
-                {{ $t("share.button.by", { name: $t("share.sites.email") }) }}
+                {{ $t("Share by E-mail") }}
               </div>
             </a>
 
@@ -194,9 +200,7 @@
               href="https://pinterest.com/pin/create/button/?url=https%3A%2F%2Fwww.vaccinespotter.org&amp;media=https%3A%2F%2Fwww.vaccinespotter.org&amp;description=COVID-19%20Vaccine%20Spotter.%20A%20tool%20to%20help%20you%20track%20down%20COVID-19%20vaccine%20appointment%20openings%20at%20USA%20pharmacies.%20Updated%20every%20minute."
               target="_blank"
               rel="noopener"
-              :aria-label="
-                $t('share.button.on', { name: $t('share.sites.pinterest') })
-              "
+              :aria-label="$t('Share on Pinterest')"
             >
               <div
                 class="resp-sharing-button resp-sharing-button--pinterest resp-sharing-button--large"
@@ -211,9 +215,7 @@
                     />
                   </svg>
                 </div>
-                {{
-                  $t("share.button.on", { name: $t("share.sites.pinterest") })
-                }}
+                {{ $t("Share on Pinterest") }}
               </div>
             </a>
 
@@ -223,9 +225,7 @@
               href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3A%2F%2Fwww.vaccinespotter.org&amp;title=COVID-19%20Vaccine%20Spotter.%20A%20tool%20to%20help%20you%20track%20down%20COVID-19%20vaccine%20appointment%20openings%20at%20USA%20pharmacies.%20Updated%20every%20minute.&amp;summary=COVID-19%20Vaccine%20Spotter.%20A%20tool%20to%20help%20you%20track%20down%20COVID-19%20vaccine%20appointment%20openings%20at%20USA%20pharmacies.%20Updated%20every%20minute.&amp;source=https%3A%2F%2Fwww.vaccinespotter.org"
               target="_blank"
               rel="noopener"
-              :aria-label="
-                $t('share.button.on', { name: $t('share.sites.linkedIn') })
-              "
+              :aria-label="$t('Share on LinkedIn')"
             >
               <div
                 class="resp-sharing-button resp-sharing-button--linkedin resp-sharing-button--large"
@@ -240,9 +240,7 @@
                     />
                   </svg>
                 </div>
-                {{
-                  $t("share.button.on", { name: $t("share.sites.linkedIn") })
-                }}
+                {{ $t("Share on LinkedIn") }}
               </div>
             </a>
 
@@ -252,9 +250,7 @@
               href="https://reddit.com/submit/?url=https%3A%2F%2Fwww.vaccinespotter.org&amp;resubmit=true&amp;title=COVID-19%20Vaccine%20Spotter.%20A%20tool%20to%20help%20you%20track%20down%20COVID-19%20vaccine%20appointment%20openings%20at%20USA%20pharmacies.%20Updated%20every%20minute."
               target="_blank"
               rel="noopener"
-              :aria-label="
-                $t('share.button.on', { name: $t('share.sites.reddit') })
-              "
+              :aria-label="$t('Share on Reddit')"
             >
               <div
                 class="resp-sharing-button resp-sharing-button--reddit resp-sharing-button--large"
@@ -269,7 +265,7 @@
                     />
                   </svg>
                 </div>
-                {{ $t("share.button.on", { name: $t("share.sites.reddit") }) }}
+                {{ $t("Share on Reddit") }}
               </div>
             </a>
 
@@ -279,9 +275,7 @@
               href="whatsapp://send?text=COVID-19%20Vaccine%20Spotter.%20A%20tool%20to%20help%20you%20track%20down%20COVID-19%20vaccine%20appointment%20openings%20at%20USA%20pharmacies.%20Updated%20every%20minute.%20https%3A%2F%2Fwww.vaccinespotter.org"
               target="_blank"
               rel="noopener"
-              :aria-label="
-                $t('share.button.on', { name: $t('share.sites.whatsApp') })
-              "
+              :aria-label="$t('Share on WhatsApp')"
             >
               <div
                 class="resp-sharing-button resp-sharing-button--whatsapp resp-sharing-button--large"
@@ -296,9 +290,7 @@
                     />
                   </svg>
                 </div>
-                {{
-                  $t("share.button.on", { name: $t("share.sites.whatsApp") })
-                }}
+                {{ $t("Share on WhatsApp") }}
               </div>
             </a>
 
@@ -308,9 +300,7 @@
               href="https://news.ycombinator.com/submitlink?u=https%3A%2F%2Fwww.vaccinespotter.org&amp;t=COVID-19%20Vaccine%20Spotter.%20A%20tool%20to%20help%20you%20track%20down%20COVID-19%20vaccine%20appointment%20openings%20at%20USA%20pharmacies.%20Updated%20every%20minute."
               target="_blank"
               rel="noopener"
-              :aria-label="
-                $t('share.button.on', { name: $t('share.sites.hackerNews') })
-              "
+              :aria-label="$t('Share on Hacker News')"
             >
               <div
                 class="resp-sharing-button resp-sharing-button--hackernews resp-sharing-button--large"
@@ -326,19 +316,17 @@
                     ></path>
                   </svg>
                 </div>
-                {{
-                  $t("share.button.on", { name: $t("share.sites.hackerNews") })
-                }}
+                {{ $t("Share on Hacker News") }}
               </div>
             </a>
           </span>
         </div>
 
         <p class="text-center mx-3">
-          {{ $t("defaultVue.forDevs") }}
-          <a :href="localePath('/api')">{{ $t("defaultVue.api") }}</a> |
+          {{ $t("For Developers:") }}
+          <a :href="localePath('/api')">{{ $t("Very Beta API") }}</a> |
           <a href="https://github.com/GUI/covid-vaccine-finder">{{
-            $t("defaultVue.github")
+            $t("GitHub")
           }}</a>
         </p>
       </div>

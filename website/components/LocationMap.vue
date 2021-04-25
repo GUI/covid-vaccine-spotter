@@ -4,15 +4,15 @@
     <div id="legend" class="map-overlay">
       <div>
         <img src="~/assets/map-icon-circle.svg?data" alt="" />
-        {{ $t("map.legend.available") }}
+        {{ $t("Appointments recently available") }}
       </div>
       <div>
         <img src="~/assets/map-icon-diamond.svg?data" alt="" />
-        {{ $t("map.legend.notAvailable") }}
+        {{ $t("Appointments not available") }}
       </div>
       <div>
         <img src="~/assets/map-icon-square.svg?data" alt="" />
-        {{ $t("map.legend.unknown") }}
+        {{ $t("Appointment status unknown") }}
       </div>
     </div>
   </div>
@@ -182,18 +182,9 @@ export default {
         const store = e.features[0];
         const app = new Vue({
           ...LocationMapPopup,
+          i18n: this.$i18n,
           propsData: {
             store,
-            iso: this.$i18n.localeProperties.iso,
-            appointments: {
-              ...this.$t("appointments"),
-              oldData: this.$t("appointments.oldData", {
-                link: store.properties.url,
-              }),
-              visitWebsite: this.$t("appointments.visitWebsite", {
-                name: store.properties.provider_brand_name,
-              }),
-            },
           },
         }).$mount();
         const description = app.$el.outerHTML;

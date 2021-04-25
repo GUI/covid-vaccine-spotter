@@ -1,5 +1,5 @@
-import en from "./en";
-import es from "./es";
+import en from "./en.json";
+import es from "./es.json";
 
 export default {
   seo: false,
@@ -10,6 +10,9 @@ export default {
   defaultLocale: "en",
   vueI18n: {
     fallbackLocale: "en",
+    formatFallbackMessages: true,
+    silentTranslationWarn: true,
+    // silentFallbackWarn: true,
     messages: {
       en,
       es,

@@ -1,24 +1,13 @@
 <template>
   <div>
-    <social-head
-      :title="$t('_state.title', { state: usStateName })"
-      :description="
-        $t('_state.description', {
-          state: usStateName,
-        })
-      "
-    />
+    <social-head :title="title" :description="description" />
 
-    <navbar :title="$t('_state.title', { state: usStateName })" with-reload />
+    <navbar :title="title" with-reload />
 
     <main>
       <div class="container-lg">
         <p class="lead text-center text-muted py-2 py-lg-4">
-          {{
-            $t("_state.description", {
-              state: usStateName,
-            })
-          }}
+          {{ description }}
         </p>
 
         <div class="row mb-2">
@@ -26,31 +15,51 @@
             <div class="card card-body h-100 bg-primary text-white shadow-sm">
               <h2 class="display-6 text-center mb-4">
                 {{
-                  $t("steps.0.header", {
-                    state: usStateCode,
-                    state_name: usStateName,
-                  })
+                  $t(
+                    "Step 1: Review your county's availability and {state}'s eligibility",
+                    { state: usStateCode }
+                  )
                 }}
               </h2>
               <template v-if="usStateCode === 'CO'">
-                <!-- eslint-disable-next-line vue/no-v-html -->
-                <p class="lead" v-html="$t('steps.0.colorado')" />
+                <!-- eslint-disable vue/no-v-html -->
+                <p
+                  class="lead"
+                  v-html="
+                    $t(
+                      'Visit <a href=\u0022https://covid19.colorado.gov/for-coloradans/vaccine/where-can-i-get-vaccinated\u0022 class=\u0022text-white\u0022><strong class=\u0022fw-bold\u0022>Colorado.gov</strong></a> for detailed information about your county\'s vaccine options and review whether or not you are eligible yet.'
+                    )
+                  "
+                />
+                <!-- eslint-enable vue/no-v-html -->
                 <p class="lead">
-                  {{ $t("steps.0.localProvider") }}
+                  {{
+                    $t(
+                      "You may be able to signup for vaccines with a health care provider or there may be other options in your area, in which case you may not need this tool."
+                    )
+                  }}
                 </p>
                 <a
                   href="https://covid19.colorado.gov/for-coloradans/vaccine/where-can-i-get-vaccinated"
                   class="btn btn-light fw-bold fs-5 text-primary"
-                  >{{ $t("steps.0.visitColorado") }}
+                  >{{ $t("Visit Colorado.gov") }}
                   <font-awesome-icon icon="arrow-alt-circle-right"
                 /></a>
               </template>
               <template v-else>
                 <p class="lead">
-                  {{ $t("steps.0.eligibility") }}
+                  {{
+                    $t(
+                      "Be sure to visit your own state's official vaccination website for detailed information about your county's vaccine options and review whether or not you are eligible yet."
+                    )
+                  }}
                 </p>
                 <p class="lead">
-                  {{ $t("steps.0.localProvider") }}
+                  {{
+                    $t(
+                      "You may be able to signup for vaccines with a health care provider or there may be other options in your area, in which case you may not need this tool."
+                    )
+                  }}
                 </p>
               </template>
             </div>
@@ -58,10 +67,33 @@
           <div class="col-md-6 pb-3">
             <div class="card card-body h-100 bg-primary text-white shadow-sm">
               <h2 class="display-6 text-center mb-4">
-                {{ $t("steps.1.header") }}
+                {{
+                  $t(
+                    "Step 2: Use this tool to try and find a pharmacy appointment"
+                  )
+                }}
               </h2>
-              <p v-for="text in $t('steps.1.text')" :key="text" class="lead">
-                {{ text.replace("{state_name}", usStateName) }}
+              <p class="lead">
+                {{
+                  $t(
+                    "If you decide you want to find an appointment at a local pharmacy (and are currently eligible for the vaccine), this tool might be able to help."
+                  )
+                }}
+              </p>
+              <p class="lead">
+                {{
+                  $t(
+                    "Rather than searching around on each pharmacy's website, we'll automatically scan the pharmacy websites and show you any available appointments we can find on one page."
+                  )
+                }}
+              </p>
+              <p class="lead">
+                {{
+                  $t(
+                    "All supported locations in {state} are scanned on a regular basis and this page is updated with any available appointments in the state. If you don't see locations near you right now, appointments can come and go quickly so try visiting the page at different times throughout the day.",
+                    { state: usStateName }
+                  )
+                }}
               </p>
             </div>
           </div>
@@ -104,7 +136,11 @@
                 class="alert alert-warning"
                 role="alert"
               >
-                {{ $t("searchBar.noResults") }}
+                {{
+                  $t(
+                    "No open appointments for your search can currently be found. Try expanding your search or check again later (appointments can come and go quickly)."
+                  )
+                }}
               </div>
 
               <store
@@ -185,13 +221,16 @@ export default {
     },
 
     title() {
-      return `${this.usStateName || ""} COVID-19 Vaccine Spotter`;
+      return this.$t("{state} COVID-19 Vaccine Spotter", {
+        state: this.usStateName || "",
+      });
     },
 
     description() {
-      return `A tool to help you track down COVID-19 vaccine appointment openings at ${
-        this.usStateName || ""
-      } pharmacies. Updated every minute.`;
+      return this.$t(
+        "A tool to help you track down COVID-19 vaccine appointment openings at {state} pharmacies. Updated every minute.",
+        { state: this.usStateName || "" }
+      );
     },
 
     filteredLocationsPage() {

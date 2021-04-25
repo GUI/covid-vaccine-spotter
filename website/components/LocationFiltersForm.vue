@@ -4,7 +4,7 @@
       <div class="row g-2">
         <div class="col-sm">
           <label for="zip" class="form-label">{{
-            $t("searchBar.zipTextField.header")
+            $t("Search for appointments near")
           }}</label>
           <input
             id="zip"
@@ -14,14 +14,12 @@
             pattern="[0-9]*"
             name="zip"
             class="form-control form-control-lg"
-            :placeholder="$t('searchBar.zipTextField.placeholder')"
+            :placeholder="$t('Enter a 5 digit ZIP code')"
             @change="submitForm"
           />
         </div>
         <div class="col-sm-auto">
-          <label for="radius" class="form-label">{{
-            $t("searchBar.radius.header")
-          }}</label>
+          <label for="radius" class="form-label">{{ $t("Within") }}</label>
           <select
             id="radius"
             v-model="queryRadius"
@@ -29,21 +27,21 @@
             class="form-select form-select-lg mb-3"
             @change="submitForm"
           >
-            <option value="">{{ $t("searchBar.radius.anyDistance") }}</option>
+            <option value="">{{ $t("Any distance") }}</option>
             <option value="5">
-              {{ $t("searchBar.radius.xDistance", { distance: 5 }) }}
+              {{ $t("{distance} miles", { distance: 5 }) }}
             </option>
             <option value="10">
-              {{ $t("searchBar.radius.xDistance", { distance: 10 }) }}
+              {{ $t("{distance} miles", { distance: 10 }) }}
             </option>
             <option value="25">
-              {{ $t("searchBar.radius.xDistance", { distance: 25 }) }}
+              {{ $t("{distance} miles", { distance: 25 }) }}
             </option>
             <option value="50">
-              {{ $t("searchBar.radius.xDistance", { distance: 50 }) }}
+              {{ $t("{distance} miles", { distance: 50 }) }}
             </option>
             <option value="100">
-              {{ $t("searchBar.radius.xDistance", { distance: 100 }) }}
+              {{ $t("{distance} miles", { distance: 100 }) }}
             </option>
           </select>
         </div>
@@ -51,7 +49,7 @@
       <div class="row align-items-center">
         <div class="col-sm">
           <label for="appointment_type" class="form-label form-label-sm">{{
-            $t("searchBar.filter.appointmentType.title")
+            $t("Appointment type")
           }}</label>
           <select
             id="appointment_type"
@@ -61,16 +59,16 @@
             @change="submitForm"
           >
             <option value="">
-              {{ $t("searchBar.filter.appointmentType.options.0") }}
+              {{ $t("All doses") }}
             </option>
             <option value="2nd_dose_only">
-              {{ $t("searchBar.filter.appointmentType.options.1") }}
+              {{ $t("Second dose only") }}
             </option>
           </select>
         </div>
         <div class="col-sm">
           <label for="vaccine_type" class="form-label form-label-sm">{{
-            $t("searchBar.filter.vaccineType.title")
+            $t("Vaccine type")
           }}</label>
           <select
             id="vaccine_type"
@@ -80,25 +78,25 @@
             @change="submitForm"
           >
             <option value="">
-              {{ $t("searchBar.filter.vaccineType.options.0") }}
+              {{ $t("All") }}
             </option>
             <option value="jj">
-              {{ $t("searchBar.filter.vaccineType.options.1") }}
+              {{ $t("Johnson and Johnson") }}
             </option>
             <option value="moderna">
-              {{ $t("searchBar.filter.vaccineType.options.2") }}
+              {{ $t("Moderna") }}
             </option>
             <option value="pfizer">
-              {{ $t("searchBar.filter.vaccineType.options.3") }}
+              {{ $t("Pfizer") }}
             </option>
             <option value="unknown">
-              {{ $t("searchBar.filter.vaccineType.options.4") }}
+              {{ $t("Unknown") }}
             </option>
           </select>
         </div>
         <div class="col-sm">
           <label for="provider" class="form-label form-label-sm">{{
-            $t("searchBar.filter.pharmacy.title")
+            $t("Pharmacy")
           }}</label>
           <select
             id="provider"
@@ -107,7 +105,7 @@
             class="form-select form-select-sm mb-3"
             @change="submitForm"
           >
-            <option value="">{{ $t("searchBar.filter.pharmacy.all") }}</option>
+            <option value="">{{ $t("All") }}</option>
             <option
               v-for="providerBrand in $store.state.usStates.usState.metadata
                 .provider_brands"
@@ -130,7 +128,7 @@
               @change="submitForm"
             />
             <label class="form-check-label" for="include_all">
-              {{ $t("searchBar.withoutAppointments") }}
+              {{ $t("Show locations without current appointments") }}
             </label>
           </div>
         </div>
@@ -138,7 +136,7 @@
     </div>
     <div class="col-auto">
       <button type="submit" class="btn btn-primary btn-lg">
-        {{ $t("searchBar.button") }}
+        {{ $t("Search") }}
       </button>
     </div>
   </form>

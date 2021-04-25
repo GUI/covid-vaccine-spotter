@@ -13,7 +13,7 @@
         <div v-if="withReload">
           <button class="btn btn-light" onclick="window.location.reload();">
             <font-awesome-icon icon="redo-alt" />
-            {{ $t("buttons.newAppointments") }}
+            {{ $t("Check for New Appointments") }}
           </button>
         </div>
         <div class="btn btn-light" @click="switchLanguage">

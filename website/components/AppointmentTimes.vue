@@ -10,7 +10,11 @@
       <template v-else>
         <li v-if="storeVaccineTypes">Vaccine Type: {{ storeVaccineTypes }}</li>
         <li>
-          {{ $t("appointments.viewOnWebsite") }}
+          {{
+            $t("View available appointment times on the {name} website.", {
+              name: store.properties.provider_brand_name,
+            })
+          }}
         </li>
       </template>
     </ul>
@@ -21,7 +25,7 @@
           href="#"
           :onclick="`document.getElementById('location-${store.properties.id}-more-appointments').style.display = 'block'; document.getElementById('location-${store.properties.id}-more-appointments-toggle').style.display = 'none'; return false;`"
           >{{
-            $t("appointments.moreAppointments", {
+            $t("View {count} other appointment times", {
               count: moreAppointments.length,
             })
           }}
@@ -127,13 +131,13 @@ export default {
           let { type } = appointment;
           switch (type) {
             case "both_doses":
-              type = this.$t("doses.first");
+              type = this.$t("First Dose");
               break;
             case "second_dose_moderna":
-              type = this.$t("doses.first", { type: "Moderna" });
+              type = this.$t("Second Dose Only - {type}", { type: "Moderna" });
               break;
             case "second_dose_pfizer":
-              type = this.$t("doses.first", { type: "Pfizer" });
+              type = this.$t("Second Dose Only - {type}", { type: "Pfizer" });
               break;
             default:
               type = appointment.type;

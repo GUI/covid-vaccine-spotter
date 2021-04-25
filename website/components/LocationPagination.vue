@@ -15,7 +15,7 @@
             :tabindex="currentPage === previousPage.value ? '-1' : null"
             :aria-disabled="currentPage === previousPage.value"
             @click.prevent="setPage(previousPage.value)"
-            ><font-awesome-icon icon="chevron-left" />Previous</a
+            ><font-awesome-icon icon="chevron-left" />{{ $t("Previous") }}</a
           >
         </li>
         <li
@@ -43,13 +43,13 @@
             :tabindex="currentPage === nextPage.value ? '-1' : null"
             :aria-disabled="currentPage === nextPage.value"
             @click.prevent="setPage(nextPage.value)"
-            >Next<font-awesome-icon icon="chevron-right"
+            >{{ $t("Next") }}<font-awesome-icon icon="chevron-right"
           /></a>
         </li>
       </ul>
 
       <div class="text-center">
-        Showing
+        {{ $t("Showing") }}
         <select
           id="per_page"
           v-model="queryPerPage"
@@ -60,9 +60,9 @@
           <option value="">25</option>
           <option value="50">50</option>
           <option value="100">100</option>
-          <option value="all">All</option>
+          <option value="all">{{ $t("All") }}</option>
         </select>
-        of {{ totalResults.toLocaleString() }} results
+        {{ $t("of {count} results", { count: totalResults.toLocaleString() }) }}
       </div>
     </div>
   </div>

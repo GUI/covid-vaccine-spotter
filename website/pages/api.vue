@@ -14,21 +14,23 @@
 
       <div class="alert alert-danger my-4" role="alert">
         <p>
-          Here's all of the underlying data in JSON format used for this tool.
-          While I'm trying to maintain compatibility with the existing format,
-          things can sometimes move fast, so I'm hesitant to declare this a
-          fully stable API. But hopefully it should be stable-ish if you want to
-          build anything on top of it, just be aware things may change.
+          {{
+            $t(
+              "Here's all of the underlying data in JSON format used for this tool. While I'm trying to maintain compatibility with the existing format, things can sometimes move fast, so I'm hesitant to declare this a fully stable API. But hopefully it should be stable-ish if you want to build anything on top of it, just be aware things may change."
+            )
+          }}
         </p>
 
-        <p class="mb-0">
-          {{ $t("api.changelog.beforeLink") }}
-          <a
-            href="https://github.com/GUI/covid-vaccine-spotter/discussions/27"
-            >{{ $t("api.changelog.linkText") }}</a
-          >
-          {{ $t("api.changelog.afterLink") }}
-        </p>
+        <!-- eslint-disable vue/no-v-html -->
+        <p
+          class="mb-0"
+          v-html="
+            $t(
+              'Subscribe to the <a href=\u0022https://github.com/GUI/covid-vaccine-spotter/discussions/27\u0022>API Changelog</a> discussion on GitHub for announcements on any API changes or additions.'
+            )
+          "
+        ></p>
+        <!-- eslint-enable vue/no-v-html -->
       </div>
 
       <ul>
@@ -250,8 +252,12 @@ export default {
 
   data() {
     return {
-      title: this.$t("api.title"),
-      description: this.$t("api.description"),
+      title: `${this.$t("Very Beta API")} | ${this.$t(
+        "COVID-19 Vaccine Spotter"
+      )}`,
+      description: this.$t(
+        "The machine readable data behind the COIVD-19 Vaccine Spotter tool. Very beta."
+      ),
       states: [],
       historyDays: {
         files: [],

@@ -15,7 +15,7 @@
     </td>
     <td class="text-nowrap">
       {{
-        $t("status.scanningCount", {
+        $t("{count} locations", {
           count: providerBrand.location_count,
         })
       }}
@@ -37,21 +37,24 @@
           v-if="providerBrand.appointments_last_fetched"
           :time="new Date(providerBrand.appointments_last_fetched)"
         />
-        <span v-if="!providerBrand.appointments_last_fetched">$t("appointments.never")</span>
+        <span v-if="!providerBrand.appointments_last_fetched">$t("Never")</span>
       </div>
 
       <div v-if="providerBrand.status === 'inactive'">
         <!-- eslint-disable vue/no-v-html -->
         <span
           v-html="
-            $t('appointments.oldData', { link: providerBrand.url })
+            $t(
+              '<strong>Uh oh!</strong> The data for this pharmacy is old. Please visit the <a href=\u0022{link}\u0022 target=\u0022_blank\u0022 rel=\u0022noopener\u0022>pharmacy\'s website</a> directly for appointment availability. this likely means that the pharmacy is blocking our tool from accessing their website.',
+              { link: providerBrand.url }
+            )
           "
         />
         <!-- eslint-enable vue/no-v-html -->
       </div>
 
       <div v-if="providerBrand.status === 'unknown'">
-        {{ $t("appointments.notCollected") }}
+        {{ $t("We haven't collected any data for this pharmacy yet.") }}
       </div>
     </td>
   </tr>
