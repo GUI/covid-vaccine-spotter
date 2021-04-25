@@ -3,9 +3,9 @@
     <div class="col-sm">
       <div class="row g-2">
         <div class="col-sm">
-          <label for="zip" class="form-label"
-            >Search for appointments near</label
-          >
+          <label for="zip" class="form-label">{{
+            $t("searchBar.zipTextField.header")
+          }}</label>
           <input
             id="zip"
             v-model="queryZip"
@@ -14,12 +14,14 @@
             pattern="[0-9]*"
             name="zip"
             class="form-control form-control-lg"
-            placeholder="Enter a 5 digit ZIP code"
+            :placeholder="$t('searchBar.zipTextField.placeholder')"
             @change="submitForm"
           />
         </div>
         <div class="col-sm-auto">
-          <label for="radius" class="form-label">Within</label>
+          <label for="radius" class="form-label">{{
+            $t("searchBar.radius.header")
+          }}</label>
           <select
             id="radius"
             v-model="queryRadius"
@@ -27,20 +29,30 @@
             class="form-select form-select-lg mb-3"
             @change="submitForm"
           >
-            <option value="">Any distance</option>
-            <option value="5">5 miles</option>
-            <option value="10">10 miles</option>
-            <option value="25">25 miles</option>
-            <option value="50">50 miles</option>
-            <option value="100">100 miles</option>
+            <option value="">{{ $t("searchBar.radius.anyDistance") }}</option>
+            <option value="5">
+              {{ $t("searchBar.radius.xDistance", { distance: 5 }) }}
+            </option>
+            <option value="10">
+              {{ $t("searchBar.radius.xDistance", { distance: 10 }) }}
+            </option>
+            <option value="25">
+              {{ $t("searchBar.radius.xDistance", { distance: 25 }) }}
+            </option>
+            <option value="50">
+              {{ $t("searchBar.radius.xDistance", { distance: 50 }) }}
+            </option>
+            <option value="100">
+              {{ $t("searchBar.radius.xDistance", { distance: 100 }) }}
+            </option>
           </select>
         </div>
       </div>
       <div class="row align-items-center">
         <div class="col-sm">
-          <label for="appointment_type" class="form-label form-label-sm"
-            >Appointment type</label
-          >
+          <label for="appointment_type" class="form-label form-label-sm">{{
+            $t("searchBar.filter.appointmentType.title")
+          }}</label>
           <select
             id="appointment_type"
             v-model="queryAppointmentType"
@@ -48,14 +60,18 @@
             class="form-select form-select-sm mb-3"
             @change="submitForm"
           >
-            <option value="">All doses</option>
-            <option value="2nd_dose_only">Second dose only</option>
+            <option value="">
+              {{ $t("searchBar.filter.appointmentType.options.0") }}
+            </option>
+            <option value="2nd_dose_only">
+              {{ $t("searchBar.filter.appointmentType.options.1") }}
+            </option>
           </select>
         </div>
         <div class="col-sm">
-          <label for="vaccine_type" class="form-label form-label-sm"
-            >Vaccine type</label
-          >
+          <label for="vaccine_type" class="form-label form-label-sm">{{
+            $t("searchBar.filter.vaccineType.title")
+          }}</label>
           <select
             id="vaccine_type"
             v-model="queryVaccineType"
@@ -63,17 +79,27 @@
             class="form-select form-select-sm mb-3"
             @change="submitForm"
           >
-            <option value="">All</option>
-            <option value="jj">Johnson &amp; Johnson</option>
-            <option value="moderna">Moderna</option>
-            <option value="pfizer">Pfizer</option>
-            <option value="unknown">Unknown</option>
+            <option value="">
+              {{ $t("searchBar.filter.vaccineType.options.0") }}
+            </option>
+            <option value="jj">
+              {{ $t("searchBar.filter.vaccineType.options.1") }}
+            </option>
+            <option value="moderna">
+              {{ $t("searchBar.filter.vaccineType.options.2") }}
+            </option>
+            <option value="pfizer">
+              {{ $t("searchBar.filter.vaccineType.options.3") }}
+            </option>
+            <option value="unknown">
+              {{ $t("searchBar.filter.vaccineType.options.4") }}
+            </option>
           </select>
         </div>
         <div class="col-sm">
-          <label for="provider" class="form-label form-label-sm"
-            >Pharmacy</label
-          >
+          <label for="provider" class="form-label form-label-sm">{{
+            $t("searchBar.filter.pharmacy.title")
+          }}</label>
           <select
             id="provider"
             v-model="queryProvider"
@@ -81,7 +107,7 @@
             class="form-select form-select-sm mb-3"
             @change="submitForm"
           >
-            <option value="">All</option>
+            <option value="">{{ $t("searchBar.filter.pharmacy.all") }}</option>
             <option
               v-for="providerBrand in $store.state.usStates.usState.metadata
                 .provider_brands"
@@ -104,14 +130,16 @@
               @change="submitForm"
             />
             <label class="form-check-label" for="include_all">
-              Show locations without current appointments
+              {{ $t("searchBar.withoutAppointments") }}
             </label>
           </div>
         </div>
       </div>
     </div>
     <div class="col-auto">
-      <button type="submit" class="btn btn-primary btn-lg">Search</button>
+      <button type="submit" class="btn btn-primary btn-lg">
+        {{ $t("searchBar.button") }}
+      </button>
     </div>
   </form>
 </template>

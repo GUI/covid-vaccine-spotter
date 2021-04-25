@@ -1,56 +1,56 @@
 <template>
   <div>
-    <social-head :title="title" :description="description" />
+    <social-head
+      :title="$t('_state.title', { state: usStateName })"
+      :description="
+        $t('_state.description', {
+          state: usStateName,
+        })
+      "
+    />
 
-    <navbar :title="title" with-reload />
+    <navbar :title="$t('_state.title', { state: usStateName })" with-reload />
 
     <main>
       <div class="container-lg">
         <p class="lead text-center text-muted py-2 py-lg-4">
-          {{ description }}
+          {{
+            $t("_state.description", {
+              state: usStateName,
+            })
+          }}
         </p>
 
         <div class="row mb-2">
           <div class="col-md-6 pb-3">
             <div class="card card-body h-100 bg-primary text-white shadow-sm">
               <h2 class="display-6 text-center mb-4">
-                Step 1: Review your county's availability and
-                {{ usStateCode }}'s eligibility
+                {{
+                  $t("steps.0.header", {
+                    state: usStateCode,
+                    state_name: usStateName,
+                  })
+                }}
               </h2>
               <template v-if="usStateCode === 'CO'">
+                <!-- eslint-disable-next-line vue/no-v-html -->
+                <p class="lead" v-html="$t('steps.0.colorado')" />
                 <p class="lead">
-                  Visit
-                  <a
-                    href="https://covid19.colorado.gov/for-coloradans/vaccine/where-can-i-get-vaccinated"
-                    class="text-white"
-                    ><strong class="fw-bold">Colorado.gov</strong></a
-                  >
-                  for detailed information about your county's vaccine options
-                  and review whether or not you are eligible yet.
-                </p>
-                <p class="lead">
-                  You may be able to signup for vaccines with a health care
-                  provider in your area (Kaiser, SCL Health, your county, etc.),
-                  in which case you will be contacted when it's your turn and
-                  you may not need this tool.
+                  {{ $t("steps.0.localProvider") }}
                 </p>
                 <a
                   href="https://covid19.colorado.gov/for-coloradans/vaccine/where-can-i-get-vaccinated"
                   class="btn btn-light fw-bold fs-5 text-primary"
-                  >Visit Colorado.gov
+                  >{{ $t("steps.0.visitColorado") }}
                   <font-awesome-icon icon="arrow-alt-circle-right"
                 /></a>
               </template>
               <template v-else>
                 <p class="lead">
-                  Be sure to visit your own state's official vaccination website
-                  for detailed information about your county's vaccine options
-                  and review whether or not you are eligible yet.
+                  {{ $t("steps.0.eligibility") }}
                 </p>
                 <p class="lead">
-                  You may be able to signup for vaccines with a health care
-                  provider or there may be other options in your area, in which
-                  case you may not need this tool.
+                  {{ $t("steps.0.localProvider") }}
                 </p>
               </template>
             </div>
@@ -58,24 +58,10 @@
           <div class="col-md-6 pb-3">
             <div class="card card-body h-100 bg-primary text-white shadow-sm">
               <h2 class="display-6 text-center mb-4">
-                Step 2: Use this tool to try and find a pharmacy appointment
+                {{ $t("steps.1.header") }}
               </h2>
-              <p class="lead">
-                If you decide you want to find an appointment at a local
-                pharmacy (and are currently eligible for the vaccine), this tool
-                might be able to help.
-              </p>
-              <p class="lead">
-                Rather than searching around on each pharmacy's website, we'll
-                automatically scan the pharmacy websites and show you any
-                available appointments we can find on one page.
-              </p>
-              <p class="lead">
-                All supported locations in {{ usStateName }} are scanned on a
-                regular basis and this page is updated with any available
-                appointments in the state. If you don't see locations near you
-                right now, appointments can come and go quickly so try visiting
-                the page at different times throughout the day.
+              <p v-for="text in $t('steps.1.text')" :key="text" class="lead">
+                {{ text.replace("{state_name}", usStateName) }}
               </p>
             </div>
           </div>
@@ -118,9 +104,7 @@
                 class="alert alert-warning"
                 role="alert"
               >
-                No open appointments for your search can currently be found. Try
-                expanding your search or check again later (appointments can
-                come and go quickly).
+                {{ $t("searchBar.noResults") }}
               </div>
 
               <store

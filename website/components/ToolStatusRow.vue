@@ -13,7 +13,13 @@
         providerBrand.name
       }}</a>
     </td>
-    <td class="text-nowrap">{{ providerBrand.location_count }} locations</td>
+    <td class="text-nowrap">
+      {{
+        $t("status.scanningCount", {
+          count: providerBrand.location_count,
+        })
+      }}
+    </td>
     <td>
       <div class="fw-bold">
         <font-awesome-icon
@@ -31,25 +37,21 @@
           v-if="providerBrand.appointments_last_fetched"
           :time="new Date(providerBrand.appointments_last_fetched)"
         />
-        <span v-if="!providerBrand.appointments_last_fetched">Never</span>
+        <span v-if="!providerBrand.appointments_last_fetched">$t("appointments.never")</span>
       </div>
 
       <div v-if="providerBrand.status === 'inactive'">
-        <strong>Uh oh!</strong> The data for this pharmacy is old. Please visit
-        the
-        <a :href="providerBrand.url" target="_blank" :rel="providerBrandUrlRel"
-          >pharmacy's website</a
-        >
-        directly for appointment availability.<br /><br />This likely means that
-        the pharmacy is blocking our tool from accessing their site. We'll try
-        to restore access if it's something we can fix, but that may not always
-        be possible. Sorry!
+        <!-- eslint-disable vue/no-v-html -->
+        <span
+          v-html="
+            $t('appointments.oldData', { link: providerBrand.url })
+          "
+        />
+        <!-- eslint-enable vue/no-v-html -->
       </div>
 
       <div v-if="providerBrand.status === 'unknown'">
-        <strong>Hmm.</strong> We haven't collected any data for this pharmacy
-        yet.<br /><br />This might mean we're working on it, or this is some
-        weird data you can probably ignore.
+        {{ $t("appointments.notCollected") }}
       </div>
     </td>
   </tr>

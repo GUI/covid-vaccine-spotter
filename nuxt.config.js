@@ -1,3 +1,5 @@
+import lang from "./website/lang";
+
 const buildModules = ["@nuxtjs/google-analytics", "@nuxtjs/svg"];
 if (process.env.NODE_ENV !== "production") {
   // https://go.nuxtjs.dev/eslint
@@ -52,6 +54,7 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
+    "nuxt-i18n",
     "@nuxt/http",
     [
       "nuxt-rollbar-module",
@@ -102,6 +105,10 @@ export default {
 
   googleAnalytics: {
     id: "UA-49484378-1",
+  },
+
+  i18n: {
+    ...lang,
   },
 
   http: {

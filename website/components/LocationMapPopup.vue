@@ -14,61 +14,48 @@
       <div v-if="store.properties.appointments_available === true">
         <p class="text-success">
           <font-awesome-icon icon="check-circle" />
-          Appointments available as of
-          <display-local-time :time="appointmentsLastModifiedDate" />
+          {{ appointments.available }}
+          <display-local-time :time="appointmentsLastModifiedDate" :iso="iso" />
         </p>
         <p>
-          <a :href="`#location-${store.properties.id}`"
-            >View Appointment Details</a
-          >
+          <a :href="`#location-${store.properties.id}`">{{
+            appointments.viewDetails
+          }}</a>
         </p>
       </div>
       <div v-else>
         <div v-if="store.properties.appointments_available === false">
           <p class="text-danger">
             <font-awesome-icon icon="times-circle" />
-            No appointments available as of last check
+            {{ appointments.noneAvailable }}
           </p>
         </div>
         <div v-else>
           <div v-if="store.properties.appointments_available === false">
             <p class="text-danger">
               <font-awesome-icon icon="times-circle" />
-              No appointments available as of last check
+              {{ appointments.noneAvailable }}
             </p>
           </div>
           <div v-else>
             <p>
               <font-awesome-icon icon="times-circle" />
-              Unknown status
+              {{ appointments.unknown }}
             </p>
             <p v-if="store.properties.carries_vaccine === false">
-              At last check, this location does not carry the vaccine at all, so
-              we have not fetched any appointments.
+              {{ appointments.doesNotCarry }}
             </p>
             <p v-else-if="store.properties.appointments_last_fetched === null">
-              We haven't collected any data for this pharmacy yet.
+              {{ appointments.notCollected }}
             </p>
-            <p v-else>
-              <strong>Uh oh!</strong> The data for this pharmacy is old. Please
-              visit the
-              <a
-                :href="store.properties.url"
-                target="_blank"
-                :rel="providerBrandUrlRel"
-                >pharmacy's website</a
-              >
-              directly for appointment availability. This likely means that the
-              pharmacy is blocking our tool from accessing their site.
-            </p>
+            <!-- eslint-disable-next-line vue/no-v-html -->
+            <p v-else v-html="appointments.oldData" />
           </div>
 
           <p>
-            <a
-              :href="store.properties.url"
-              target="_blank"
-              :rel="providerBrandUrlRel"
-              >Visit {{ store.properties.provider_brand_name }} Website
+            <a :href="store.properties.url" target="_blank" rel="noopener"
+                                                            :rel="providerBrandUrlRel">
+              {{ appointments.visitWebsite }}
               <font-awesome-icon icon="external-link-alt"
             /></a>
           </p>
@@ -77,14 +64,15 @@
 
       <p class="mb-0">
         <small
-          >Last checked
+          >{{ appointments.lastChecked }}
           <display-local-time
             v-if="store.properties.appointments_last_fetched"
             :time="appointmentsLastFetchedDate"
+            :iso="iso"
           />
-          <span v-if="!store.properties.appointments_last_fetched"
-            >never</span
-          ></small
+          <span v-if="!store.properties.appointments_last_fetched">{{
+            appointments.never
+          }}</span></small
         >
       </p>
     </div>
@@ -94,12 +82,19 @@
 <script>
 export default {
   props: {
+    iso: {
+      type: String,
+      required: true,
+    },
     store: {
       type: Object,
       required: true,
     },
+    appointments: {
+      type: Object,
+      required: true,
+    },
   },
-
   computed: {
     title() {
       let title = this.store.properties.provider_brand_name;

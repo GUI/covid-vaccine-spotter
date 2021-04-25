@@ -22,12 +22,12 @@
         </p>
 
         <p class="mb-0">
-          Subscribe to the
-          <a href="https://github.com/GUI/covid-vaccine-spotter/discussions/27"
-            >API Changelog</a
+          {{ $t("api.changelog.beforeLink") }}
+          <a
+            href="https://github.com/GUI/covid-vaccine-spotter/discussions/27"
+            >{{ $t("api.changelog.linkText") }}</a
           >
-          discussion on GitHub for announcements on any API changes or
-          additions.
+          {{ $t("api.changelog.afterLink") }}
         </p>
       </div>
 
@@ -250,9 +250,8 @@ export default {
 
   data() {
     return {
-      title: "Very Beta API | COVID-19 Vaccine Spotter",
-      description:
-        "The machine readable data behind the COIVD-19 Vaccine Spotter tool. Very beta.",
+      title: this.$t("api.title"),
+      description: this.$t("api.description"),
       states: [],
       historyDays: {
         files: [],

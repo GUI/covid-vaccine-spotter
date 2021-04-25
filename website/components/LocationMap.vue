@@ -3,16 +3,16 @@
     <div id="map" style="width: 100%"></div>
     <div id="legend" class="map-overlay">
       <div>
-        <img src="~/assets/map-icon-circle.svg?data" alt="" /> Appointments
-        recently available
+        <img src="~/assets/map-icon-circle.svg?data" alt="" />
+        {{ $t("map.legend.available") }}
       </div>
       <div>
-        <img src="~/assets/map-icon-diamond.svg?data" alt="" /> Appointments not
-        available
+        <img src="~/assets/map-icon-diamond.svg?data" alt="" />
+        {{ $t("map.legend.notAvailable") }}
       </div>
       <div>
-        <img src="~/assets/map-icon-square.svg?data" alt="" /> Appointment
-        status unknown
+        <img src="~/assets/map-icon-square.svg?data" alt="" />
+        {{ $t("map.legend.unknown") }}
       </div>
     </div>
   </div>
@@ -184,6 +184,16 @@ export default {
           ...LocationMapPopup,
           propsData: {
             store,
+            iso: this.$i18n.localeProperties.iso,
+            appointments: {
+              ...this.$t("appointments"),
+              oldData: this.$t("appointments.oldData", {
+                link: store.properties.url,
+              }),
+              visitWebsite: this.$t("appointments.visitWebsite", {
+                name: store.properties.provider_brand_name,
+              }),
+            },
           },
         }).$mount();
         const description = app.$el.outerHTML;
@@ -267,7 +277,7 @@ export default {
   padding: 8px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   line-height: 16px;
-  height: 67px;
+  display: table;
   width: 210px;
   font-size: 0.75rem;
   top: 0px;

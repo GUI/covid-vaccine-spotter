@@ -3,14 +3,21 @@
     <div class="navbar fixed-top navbar-dark bg-primary shadow">
       <div class="container-lg flex-column flex-md-row">
         <h1 class="navbar-brand mb-0 fw-bold">
-          <a href="/" class="text-white" style="text-decoration: none">{{
-            title
-          }}</a>
+          <a
+            :href="localePath('/')"
+            class="text-white"
+            style="text-decoration: none"
+            >{{ title }}</a
+          >
         </h1>
         <div v-if="withReload">
           <button class="btn btn-light" onclick="window.location.reload();">
-            <font-awesome-icon icon="redo-alt" /> Check for New Appointments
+            <font-awesome-icon icon="redo-alt" />
+            {{ $t("buttons.newAppointments") }}
           </button>
+        </div>
+        <div class="btn btn-light" @click="switchLanguage">
+          {{ $i18n.locale == "en" ? "Español" : "English" }}
         </div>
       </div>
     </div>
@@ -48,6 +55,14 @@ export default {
         document.body.classList.remove("has-navbar-with-reload");
       }
     });
+  },
+
+  methods: {
+    switchLanguage() {
+      const newLocale = this.$i18n.locale === "en" ? "es" : "en";
+      this.$i18n.setLocale(newLocale);
+      this.$forceUpdate();
+    },
   },
 };
 </script>

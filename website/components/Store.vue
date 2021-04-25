@@ -7,7 +7,7 @@
           {{ title }}
         </h5>
         <div v-if="store.distance" class="col-sm-auto">
-          {{ store.distance }} miles
+          {{ store.distance }} {{ $t("store.miles") }}
         </div>
       </div>
     </div>
@@ -15,9 +15,11 @@
       <div v-if="store.properties.appointments_available === true">
         <div class="location-status text-success fs-2">
           <font-awesome-icon icon="check-circle" class="align-middle" />
-          <span class="fs-5"
-            >Appointments available as of
-            <display-local-time :time="appointmentsLastModifiedDate"
+          <span class="fs-5">
+            {{ $t("store.appointmentsAvailable") }}
+            <display-local-time
+              :time="appointmentsLastModifiedDate"
+              :iso="$i18n.localeProperties.iso"
           /></span>
         </div>
         <appointment-times :store="store" />
@@ -39,12 +41,11 @@
         <p v-if="store.properties.provider === 'kroger'" class="text-warning">
           <small
             ><font-awesome-icon icon="exclamation-triangle" />
-            <strong>Warning:</strong> Many users are reporting issues booking
-            appointments with {{ store.properties.provider_brand_name }} (due to
-            2nd appointment requirements). However, some users have still
-            reported success, so I still want to share the data I have from the
-            pharmacies. I'm trying to figure out a better way to detect these
-            issues, but in the meantime, sorry for any frustration!</small
+            {{
+              $t("store.krogerWarning", {
+                name: store.properties.provider_brand_name,
+              })
+            }}</small
           >
         </p>
 
@@ -53,7 +54,11 @@
           class="btn btn-primary"
           target="_blank"
           :rel="providerBrandUrlRel"
-          >Visit {{ store.properties.provider_brand_name }} Website
+          >{{
+            $t("buttons.visitWebsite", {
+              name: store.properties.provider_brand_name,
+            })
+          }}
           <font-awesome-icon icon="arrow-alt-circle-right"
         /></a>
       </div>
@@ -61,40 +66,35 @@
         <div v-if="store.properties.appointments_available === false">
           <p class="text-danger">
             <font-awesome-icon icon="times-circle" />
-            No appointments available as of last check
+            {{ $t("appointments.noneAvailable") }}
           </p>
         </div>
         <div v-else>
           <p>
             <font-awesome-icon icon="times-circle" />
-            Unknown status
+            {{ $t("appointments.noneAvailable") }}
           </p>
           <p v-if="store.properties.carries_vaccine === false">
-            At last check, this location does not carry the vaccine at all, so
-            we have not fetched any appointments.
+            {{ $t("appointments.doesNotCarry") }}
           </p>
           <p v-else-if="store.properties.appointments_last_fetched === null">
-            We haven't collected any data for this pharmacy yet.
+            {{ $t("appointments.notCollected") }}
           </p>
-          <p v-else>
-            <strong>Uh oh!</strong> The data for this pharmacy is old. Please
-            visit the
-            <a
-              :href="store.properties.url"
-              target="_blank"
-              :rel="providerBrandUrlRel"
-              >pharmacy's website</a
-            >
-            directly for appointment availability. This likely means that the
-            pharmacy is blocking our tool from accessing their site.
-          </p>
+          <!-- eslint-disable vue/no-v-html -->
+          <p
+            v-else
+            v-html="$t('appointments.oldData', { link: store.properties.url })"
+          />
+          <!-- eslint-enable vue/no-v-html -->
         </div>
         <p>
-          <a
-            :href="store.properties.url"
-            target="_blank"
+          <a :href="store.properties.url" target="_blank" rel="noopener"
             :rel="providerBrandUrlRel"
-            >Visit {{ store.properties.provider_brand_name }} Website
+            >{{
+              $t("appointments.visitWebsite", {
+                name: store.properties.provider_brand_name,
+              })
+            }}
             <font-awesome-icon icon="external-link-alt"
           /></a>
         </p>
@@ -102,14 +102,15 @@
 
       <p class="card-text text-secondary mt-2">
         <small
-          >Last checked
+          >{{ $t("appointments.lastChecked") }}
           <display-local-time
             v-if="store.properties.appointments_last_fetched"
             :time="appointmentsLastFetchedDate"
+            :iso="$i18n.localeProperties.iso"
           />
-          <span v-if="!store.properties.appointments_last_fetched"
-            >never</span
-          ></small
+          <span v-if="!store.properties.appointments_last_fetched">{{
+            $t("appointments.never")
+          }}</span></small
         >
       </p>
     </div>

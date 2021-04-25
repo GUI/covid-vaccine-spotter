@@ -1,13 +1,13 @@
 <template>
   <div>
-    <h3>Tool Status</h3>
+    <h3>{{ $t("status.title") }}</h3>
     <div class="table-responsive">
       <table class="table table-bordered">
         <thead>
           <tr class="table-primary-dark">
-            <th>Pharmacy</th>
-            <th>Scanning</th>
-            <th>Last Checked</th>
+            <th v-for="column in $t('status.columnHeaders')" :key="column">
+              {{ column }}
+            </th>
           </tr>
         </thead>
         <tbody>

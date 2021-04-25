@@ -10,8 +10,7 @@
       <template v-else>
         <li v-if="storeVaccineTypes">Vaccine Type: {{ storeVaccineTypes }}</li>
         <li>
-          View available appointment times on the
-          {{ store.properties.provider_brand_name }} website.
+          {{ $t("appointments.viewOnWebsite") }}
         </li>
       </template>
     </ul>
@@ -21,8 +20,12 @@
         <a
           href="#"
           :onclick="`document.getElementById('location-${store.properties.id}-more-appointments').style.display = 'block'; document.getElementById('location-${store.properties.id}-more-appointments-toggle').style.display = 'none'; return false;`"
-          >View {{ moreAppointments.length }} other appointment times</a
-        >
+          >{{
+            $t("appointments.moreAppointments", {
+              count: moreAppointments.length,
+            })
+          }}
+        </a>
       </div>
 
       <ul
@@ -105,24 +108,15 @@ export default {
 
   methods: {
     formatTime(time) {
-      return DateTime.fromISO(time).toLocaleString({
-        month: "numeric",
-        day: "numeric",
-        year: "numeric",
-        hour: "numeric",
-        minute: "numeric",
-        timeZoneName: "short",
-        timeZone: this.store.properties.time_zone,
-      });
+      return DateTime.fromISO(time, { setZone: true })
+        .setLocale(this.$i18n.localeProperties.iso)
+        .toLocaleString(DateTime.DATETIME_SHORT);
     },
 
     formatDate(date) {
-      return DateTime.fromISO(date).toLocaleString({
-        month: "numeric",
-        day: "numeric",
-        year: "numeric",
-        timeZone: this.store.properties.time_zone,
-      });
+      return DateTime.fromISO(date, { setZone: true })
+        .setLocale(this.$i18n.localeProperties.iso)
+        .toLocaleString(DateTime.DATE_SHORT);
     },
 
     normalizeAppointments(appointments) {
@@ -133,13 +127,13 @@ export default {
           let { type } = appointment;
           switch (type) {
             case "both_doses":
-              type = "First Dose";
+              type = this.$t("doses.first");
               break;
             case "second_dose_moderna":
-              type = "Second Dose Only - Moderna";
+              type = this.$t("doses.first", { type: "Moderna" });
               break;
             case "second_dose_pfizer":
-              type = "Second Dose Only - Pfizer";
+              type = this.$t("doses.first", { type: "Pfizer" });
               break;
             default:
               type = appointment.type;
