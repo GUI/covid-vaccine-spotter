@@ -5,12 +5,7 @@
     <navbar :title="title" />
 
     <main class="container-lg">
-      <p
-        class="lead text-center text-muted py-2 py-lg-4"
-        style="padding-bottom: 0px !important"
-      >
-        {{ description }}
-      </p>
+      <top-content :description="description" />
 
       <div class="alert alert-danger my-4" role="alert">
         <p>

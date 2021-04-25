@@ -16,9 +16,6 @@
             {{ $t("Check for New Appointments") }}
           </button>
         </div>
-        <div class="btn btn-light" @click="switchLanguage">
-          {{ $i18n.locale == "en" ? "Español" : "English" }}
-        </div>
       </div>
     </div>
   </header>
@@ -55,14 +52,6 @@ export default {
         document.body.classList.remove("has-navbar-with-reload");
       }
     });
-  },
-
-  methods: {
-    switchLanguage() {
-      const newLocale = this.$i18n.locale === "en" ? "es" : "en";
-      this.$i18n.setLocale(newLocale);
-      this.$forceUpdate();
-    },
   },
 };
 </script>

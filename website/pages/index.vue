@@ -5,14 +5,9 @@
     <navbar :title="title" />
 
     <main class="container-lg">
-      <p
-        class="lead text-center text-muted py-2 py-lg-4"
-        style="padding-bottom: 0px !important"
-      >
-        {{ description }}
-      </p>
+      <top-content :description="description" />
 
-      <p class="lead text-center text-muted py-2 sub-lead">
+      <p class="lead text-center text-muted my-2 mb-3 sub-lead">
         {{
           $t(
             "Rather than searching around on each pharmacy's website, we'll automatically scan the pharmacy websites and show you any available appointments we can find on one page."

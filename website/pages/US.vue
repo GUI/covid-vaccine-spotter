@@ -6,9 +6,7 @@
 
     <main>
       <div class="container-lg">
-        <p class="lead text-center text-muted py-2 py-lg-4">
-          {{ description }}
-        </p>
+        <top-content :description="description" />
 
         <div class="alert alert-danger">
           This US-wide map view is for testing purposes only. Performance is
