@@ -8,7 +8,16 @@
       <div class="container-lg">
         <top-content :description="description" />
 
-        <div class="row mb-2">
+        <button
+          id="instructionsVisibilityButton"
+          class="btn btn-primary"
+          type="button"
+          @click="hideShowInstructions"
+        >
+          Hide Instructions
+        </button>
+
+        <div id="instructions" class="row mb-2">
           <div class="col-md-6 pb-3">
             <div class="card card-body h-100 bg-primary text-white shadow-sm">
               <h2 class="display-6 text-center mb-4">
@@ -269,6 +278,20 @@ export default {
       }
     },
   },
+  methods: {
+    hideShowInstructions() {
+      const x = document.getElementById("instructions");
+      if (x.style.display === "none") {
+        x.style.display = "flex";
+        document.getElementById("instructionsVisibilityButton").innerHTML =
+          "Hide Instructions";
+      } else {
+        x.style.display = "none";
+        document.getElementById("instructionsVisibilityButton").innerHTML =
+          "Show Instructions";
+      }
+    },
+  },
 };
 </script>
 
@@ -295,5 +318,9 @@ export default {
 
 .results-container .location-result:last-child {
   margin-bottom: 0px !important;
+}
+
+#instructionsVisibilityButton {
+  margin-bottom: 1rem;
 }
 </style>
