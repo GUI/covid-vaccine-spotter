@@ -11,7 +11,7 @@
         <span
           v-html="
             $t(
-              'More locations! 💖 <strong>Publix</strong> pharmacies are now being scanned in FL, GA, SC, and VA. Publix locations in AL, NC, and TN should also start being scanned tomorrow when scheduling opens up in those states. Hope that helps!'
+              'Thanks to the developer community, Vaccine Spotter is now available in Spanish! 💫 There may still be a few gaps, but most of it should be translated. I\'ve also made some other tweaks to hopefully make the site easier to navigate and use.'
             )
           "
         />
@@ -40,7 +40,7 @@ import { DateTime } from "luxon";
 export default {
   data() {
     return {
-      date: DateTime.utc(2021, 4, 18),
+      date: DateTime.utc(2021, 4, 26),
     };
   },
 
