@@ -1,3 +1,5 @@
+import lang from "./website/lang";
+
 const buildModules = ["@nuxtjs/google-analytics", "@nuxtjs/svg"];
 if (process.env.NODE_ENV !== "production") {
   // https://go.nuxtjs.dev/eslint
@@ -40,8 +42,10 @@ export default {
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     "~/plugins/vuex-router-sync",
-    "~/plugins/fontawesome.js",
+    "~/plugins/fontawesome",
     "~/plugins/http",
+    { src: "~/plugins/bootstrap", mode: "client" },
+    { src: "~/plugins/persistedState.client.js", mode: "client" },
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -52,6 +56,7 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
+    "nuxt-i18n",
     "@nuxt/http",
     [
       "nuxt-rollbar-module",
@@ -102,6 +107,10 @@ export default {
 
   googleAnalytics: {
     id: "UA-49484378-1",
+  },
+
+  i18n: {
+    ...lang,
   },
 
   http: {

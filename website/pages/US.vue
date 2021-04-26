@@ -2,13 +2,11 @@
   <div>
     <social-head :title="title" :description="description" />
 
-    <navbar :title="title" with-reload />
+    <navbar :title="title" :us-state-param="$route.params.state" with-reload />
 
     <main>
       <div class="container-lg">
-        <p class="lead text-center text-muted py-2 py-lg-4">
-          {{ description }}
-        </p>
+        <top-content :description="description" />
 
         <div class="alert alert-danger">
           This US-wide map view is for testing purposes only. Performance is
@@ -74,7 +72,9 @@ export default {
     },
 
     title() {
-      return `${this.usStateName || ""} COVID-19 Vaccine Spotter`;
+      return this.$t("{state} Vaccine Spotter", {
+        state: this.usStateName || "",
+      });
     },
 
     description() {

@@ -3,9 +3,9 @@
     <div class="col-sm">
       <div class="row g-2">
         <div class="col-sm">
-          <label for="zip" class="form-label"
-            >Search for appointments near</label
-          >
+          <label for="zip" class="form-label">{{
+            $t("Search for appointments near")
+          }}</label>
           <input
             id="zip"
             v-model="queryZip"
@@ -14,12 +14,12 @@
             pattern="[0-9]*"
             name="zip"
             class="form-control form-control-lg"
-            placeholder="Enter a 5 digit ZIP code"
+            :placeholder="$t('Enter a 5 digit ZIP code')"
             @change="submitForm"
           />
         </div>
         <div class="col-sm-auto">
-          <label for="radius" class="form-label">Within</label>
+          <label for="radius" class="form-label">{{ $t("Within") }}</label>
           <select
             id="radius"
             v-model="queryRadius"
@@ -27,20 +27,30 @@
             class="form-select form-select-lg mb-3"
             @change="submitForm"
           >
-            <option value="">Any distance</option>
-            <option value="5">5 miles</option>
-            <option value="10">10 miles</option>
-            <option value="25">25 miles</option>
-            <option value="50">50 miles</option>
-            <option value="100">100 miles</option>
+            <option value="">{{ $t("Any distance") }}</option>
+            <option value="5">
+              {{ $t("{distance} miles", { distance: 5 }) }}
+            </option>
+            <option value="10">
+              {{ $t("{distance} miles", { distance: 10 }) }}
+            </option>
+            <option value="25">
+              {{ $t("{distance} miles", { distance: 25 }) }}
+            </option>
+            <option value="50">
+              {{ $t("{distance} miles", { distance: 50 }) }}
+            </option>
+            <option value="100">
+              {{ $t("{distance} miles", { distance: 100 }) }}
+            </option>
           </select>
         </div>
       </div>
       <div class="row align-items-center">
         <div class="col-sm">
-          <label for="appointment_type" class="form-label form-label-sm"
-            >Appointment type</label
-          >
+          <label for="appointment_type" class="form-label form-label-sm">{{
+            $t("Appointment type")
+          }}</label>
           <select
             id="appointment_type"
             v-model="queryAppointmentType"
@@ -48,14 +58,18 @@
             class="form-select form-select-sm mb-3"
             @change="submitForm"
           >
-            <option value="">All doses</option>
-            <option value="2nd_dose_only">Second dose only</option>
+            <option value="">
+              {{ $t("All doses") }}
+            </option>
+            <option value="2nd_dose_only">
+              {{ $t("Second dose only") }}
+            </option>
           </select>
         </div>
         <div class="col-sm">
-          <label for="vaccine_type" class="form-label form-label-sm"
-            >Vaccine type</label
-          >
+          <label for="vaccine_type" class="form-label form-label-sm">{{
+            $t("Vaccine type")
+          }}</label>
           <select
             id="vaccine_type"
             v-model="queryVaccineType"
@@ -63,17 +77,27 @@
             class="form-select form-select-sm mb-3"
             @change="submitForm"
           >
-            <option value="">All</option>
-            <option value="jj">Johnson &amp; Johnson</option>
-            <option value="moderna">Moderna</option>
-            <option value="pfizer">Pfizer</option>
-            <option value="unknown">Unknown</option>
+            <option value="">
+              {{ $t("All") }}
+            </option>
+            <option value="jj">
+              {{ $t("Johnson and Johnson") }}
+            </option>
+            <option value="moderna">
+              {{ $t("Moderna") }}
+            </option>
+            <option value="pfizer">
+              {{ $t("Pfizer") }}
+            </option>
+            <option value="unknown">
+              {{ $t("Unknown") }}
+            </option>
           </select>
         </div>
         <div class="col-sm">
-          <label for="provider" class="form-label form-label-sm"
-            >Pharmacy (multi-select)</label
-          >
+          <label for="provider" class="form-label form-label-sm">{{
+            $t("Pharmacy (multi-selct)")
+          }}</label>
           <select
             id="provider"
             v-model="queryProvider"
@@ -82,7 +106,7 @@
             class="form-select form-select-sm mb-3"
             @change="submitForm"
           >
-            <option value="">All</option>
+            <option value="">{{ $t("All") }}</option>
             <option
               v-for="providerBrand in $store.state.usStates.usState.metadata
                 .provider_brands"
@@ -105,14 +129,16 @@
               @change="submitForm"
             />
             <label class="form-check-label" for="include_all">
-              Show locations without current appointments
+              {{ $t("Show locations without current appointments") }}
             </label>
           </div>
         </div>
       </div>
     </div>
     <div class="col-auto">
-      <button type="submit" class="btn btn-primary btn-lg">Search</button>
+      <button type="submit" class="btn btn-primary btn-lg">
+        {{ $t("Search") }}
+      </button>
     </div>
   </form>
 </template>

@@ -481,12 +481,16 @@ class Stores {
 
       if (links.length === 0) {
         links = $listingPage(
-          "#search-results p:contains('For all states') a[href*='appointment-plus.com']"
+          "#search-results p:contains('All US Locations') a[href*='appointment-plus.com']"
         );
       }
 
       if (links.length === 0) {
-        logger.error(`Could not find link for state ${stateName}`);
+        logger.warn(
+          `Could not find link for state ${stateName}, falling back to default link`
+        );
+        Stores.stateLinks[store.state] =
+          "https://book-costcopharmacy.appointment-plus.com/d133yng2/";
       } else if (links.length > 1) {
         logger.error(`Found too many links for state ${stateName}`);
       } else {

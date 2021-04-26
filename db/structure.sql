@@ -398,6 +398,39 @@ CREATE TABLE public.cache (
 
 
 --
+-- Name: counties; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.counties (
+    id integer NOT NULL,
+    state_code character varying(2) NOT NULL,
+    fips_code character varying(3) NOT NULL,
+    name character varying(255) NOT NULL,
+    boundaries_500k public.geography(MultiPolygon,4326)
+);
+
+
+--
+-- Name: counties_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.counties_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: counties_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.counties_id_seq OWNED BY public.counties.id;
+
+
+--
 -- Name: country_grid_110km; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -762,7 +795,8 @@ CREATE TABLE public.states (
     updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     boundaries public.geography(MultiPolygon,4326),
     boundaries_500k public.geography(MultiPolygon,4326),
-    boundaries_5m public.geography(MultiPolygon,4326)
+    boundaries_5m public.geography(MultiPolygon,4326),
+    fips_code character varying(2)
 );
 
 
@@ -819,7 +853,8 @@ CREATE TABLE public.stores (
     appointment_types jsonb,
     appointment_vaccine_types jsonb,
     appointments_last_modified timestamp with time zone,
-    location_metadata_last_fetched timestamp with time zone
+    location_metadata_last_fetched timestamp with time zone,
+    county_id integer
 );
 
 
@@ -892,6 +927,13 @@ ALTER TABLE ONLY audit.log ALTER COLUMN id SET DEFAULT nextval('audit.log_id_seq
 
 
 --
+-- Name: counties id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.counties ALTER COLUMN id SET DEFAULT nextval('public.counties_id_seq'::regclass);
+
+
+--
 -- Name: knex_migrations id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -954,6 +996,22 @@ ALTER TABLE ONLY audit.log
 
 ALTER TABLE ONLY public.cache
     ADD CONSTRAINT cache_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: counties counties_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.counties
+    ADD CONSTRAINT counties_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: counties counties_state_code_fips_code_unique; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.counties
+    ADD CONSTRAINT counties_state_code_fips_code_unique UNIQUE (state_code, fips_code);
 
 
 --
@@ -1117,6 +1175,14 @@ ALTER TABLE ONLY public.states
 
 
 --
+-- Name: states states_fips_code_unique; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.states
+    ADD CONSTRAINT states_fips_code_unique UNIQUE (fips_code);
+
+
+--
 -- Name: states states_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1190,6 +1256,20 @@ CREATE INDEX log_action_tstamp_tx_stm_idx ON audit.log USING btree (action_tstam
 --
 
 CREATE INDEX log_relid_idx ON audit.log USING btree (relid);
+
+
+--
+-- Name: counties_boundaries_500k_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX counties_boundaries_500k_index ON public.counties USING gist (boundaries_500k);
+
+
+--
+-- Name: counties_state_code_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX counties_state_code_index ON public.counties USING btree (state_code);
 
 
 --
@@ -1501,6 +1581,14 @@ CREATE TRIGGER stores_updated_at BEFORE UPDATE ON public.stores FOR EACH ROW EXE
 
 
 --
+-- Name: counties counties_state_code_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.counties
+    ADD CONSTRAINT counties_state_code_foreign FOREIGN KEY (state_code) REFERENCES public.states(code);
+
+
+--
 -- Name: postal_codes postal_codes_state_code_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1514,6 +1602,14 @@ ALTER TABLE ONLY public.postal_codes
 
 ALTER TABLE ONLY public.provider_brands
     ADD CONSTRAINT provider_brands_provider_id_foreign FOREIGN KEY (provider_id) REFERENCES public.providers(id);
+
+
+--
+-- Name: stores stores_county_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.stores
+    ADD CONSTRAINT stores_county_id_foreign FOREIGN KEY (county_id) REFERENCES public.counties(id);
 
 
 --
@@ -1602,6 +1698,7 @@ COPY public.knex_migrations (id, name, batch, migration_time) FROM stdin;
 73	20210408224048_convert_materialized_views.js	21	2021-04-09 05:07:41.373+00
 74	20210409102212_audit_index.js	22	2021-04-09 16:24:10.231+00
 77	20210417230632_location_metadata_last_fetched.js	23	2021-04-18 05:37:12.793+00
+81	20210418203734_counties.js	24	2021-04-19 03:23:23.823+00
 \.
 
 
@@ -1609,7 +1706,7 @@ COPY public.knex_migrations (id, name, batch, migration_time) FROM stdin;
 -- Name: knex_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.knex_migrations_id_seq', 77, true);
+SELECT pg_catalog.setval('public.knex_migrations_id_seq', 81, true);
 
 
 --

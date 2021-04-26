@@ -1,5 +1,5 @@
 <template>
-  <div class="mb-3">
+  <div class="appointment-times mb-3">
     <ul class="mb-0">
       <template v-if="initialAppointments.length > 0">
         <li v-for="appointment in initialAppointments" :key="appointment.id">
@@ -10,8 +10,11 @@
       <template v-else>
         <li v-if="storeVaccineTypes">Vaccine Type: {{ storeVaccineTypes }}</li>
         <li>
-          View available appointment times on the
-          {{ store.properties.provider_brand_name }} website.
+          {{
+            $t("View available appointment times on the {name} website.", {
+              name: store.properties.provider_brand_name,
+            })
+          }}
         </li>
       </template>
     </ul>
@@ -21,8 +24,12 @@
         <a
           href="#"
           :onclick="`document.getElementById('location-${store.properties.id}-more-appointments').style.display = 'block'; document.getElementById('location-${store.properties.id}-more-appointments-toggle').style.display = 'none'; return false;`"
-          >View {{ moreAppointments.length }} other appointment times</a
-        >
+          >{{
+            $t("View {count} other appointment times", {
+              count: moreAppointments.length,
+            })
+          }}
+        </a>
       </div>
 
       <ul
@@ -105,24 +112,15 @@ export default {
 
   methods: {
     formatTime(time) {
-      return DateTime.fromISO(time).toLocaleString({
-        month: "numeric",
-        day: "numeric",
-        year: "numeric",
-        hour: "numeric",
-        minute: "numeric",
-        timeZoneName: "short",
-        timeZone: this.store.properties.time_zone,
-      });
+      return DateTime.fromISO(time, { setZone: true })
+        .setLocale(this.$i18n.localeProperties.iso)
+        .toLocaleString(DateTime.DATETIME_SHORT);
     },
 
     formatDate(date) {
-      return DateTime.fromISO(date).toLocaleString({
-        month: "numeric",
-        day: "numeric",
-        year: "numeric",
-        timeZone: this.store.properties.time_zone,
-      });
+      return DateTime.fromISO(date, { setZone: true })
+        .setLocale(this.$i18n.localeProperties.iso)
+        .toLocaleString(DateTime.DATE_SHORT);
     },
 
     normalizeAppointments(appointments) {
@@ -133,13 +131,13 @@ export default {
           let { type } = appointment;
           switch (type) {
             case "both_doses":
-              type = "First Dose";
+              type = this.$t("First Dose");
               break;
             case "second_dose_moderna":
-              type = "Second Dose Only - Moderna";
+              type = this.$t("Second Dose Only - {type}", { type: "Moderna" });
               break;
             case "second_dose_pfizer":
-              type = "Second Dose Only - Pfizer";
+              type = this.$t("Second Dose Only - {type}", { type: "Pfizer" });
               break;
             default:
               type = appointment.type;
