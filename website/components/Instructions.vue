@@ -132,6 +132,10 @@ export default {
   margin-bottom: 1rem;
 }
 
+#instructions .col-md-6:last-child {
+  margin-bottom: 0px;
+}
+
 .instructions-toggle {
   margin-top: 0.1rem;
   margin-bottom: 0.7rem;
