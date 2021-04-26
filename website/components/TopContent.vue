@@ -1,8 +1,27 @@
 <template>
   <div>
-    <div class="row my-2 my-lg-4">
+    <div
+      :class="{
+        row: true,
+        'my-2': true,
+        'my-lg-4': !toggleInstructions || instructionsVisible,
+      }"
+    >
       <div class="col">
+        <div
+          v-show="toggleInstructions && !instructionsVisible"
+          class="text-center instructions-toggle"
+        >
+          <button
+            class="btn btn-link btn-sm"
+            type="button"
+            @click="showInstructions"
+          >
+            {{ $t("Show instructions") }}
+          </button>
+        </div>
         <p
+          v-show="!toggleInstructions || instructionsVisible"
           class="lead text-center text-muted my-0"
           style="padding-bottom: 0px !important"
         >
@@ -25,6 +44,17 @@ export default {
       type: String,
       required: true,
     },
+
+    toggleInstructions: {
+      type: Boolean,
+      default: false,
+    },
+  },
+
+  computed: {
+    instructionsVisible() {
+      return this.$store.state.instructions.visible;
+    },
   },
 
   methods: {
@@ -32,6 +62,11 @@ export default {
       const newLocale = this.$i18n.locale === "en" ? "es" : "en";
       this.$i18n.setLocale(newLocale);
       this.$forceUpdate();
+    },
+
+    showInstructions() {
+      this.$store.commit("instructions/setVisible", true);
+      this.$store.commit("news/setHiddenTime", null);
     },
   },
 };

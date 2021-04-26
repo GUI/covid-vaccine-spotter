@@ -45,6 +45,7 @@ export default {
     "~/plugins/fontawesome",
     "~/plugins/http",
     { src: "~/plugins/bootstrap", mode: "client" },
+    { src: "~/plugins/persistedState.client.js", mode: "client" },
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
