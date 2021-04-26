@@ -147,7 +147,7 @@ export default {
           currentPage: page,
           totalPages: this.totalPages,
           boundaryPagesRange: 0,
-          siblingPagesRange: 4,
+          siblingPagesRange: 2,
           hideEllipsis: true,
           hidePreviousAndNextPageLinks: false,
           hideFirstAndLastPageLinks: true,
@@ -188,5 +188,15 @@ export default {
 
 .page-link .fa-chevron-right {
   margin-left: 10px;
+}
+
+.pagination .page-item {
+  font-size: 0.8rem;
+}
+
+@media (min-width: 576px) {
+  .pagination .page-item {
+    font-size: unset;
+  }
 }
 </style>
