@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}-publix-refresh-appointments-deployment
+  labels:
+    app: {{ .Chart.Name }}-publix-refresh-appointments
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}-publix-refresh-appointments
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}-publix-refresh-appointments
+      annotations:
+        checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+    spec:
+      imagePullSecrets:
+        - name: {{ .Chart.Name }}-container-registry-secret
+      containers:
+        - name: {{ .Chart.Name }}-publix-refresh-appointments
+          image: {{ index .Values.werf.image "vaccinespotter-playwright" }}
+          args: ["bin/run", "--loop-every", "15000", "providers:publix:refresh-appointments"]
+          env:
+            - name: LOG_LEVEL
+              value: notice
+          envFrom:
+            - secretRef:
+                name: {{ .Chart.Name }}-secrets

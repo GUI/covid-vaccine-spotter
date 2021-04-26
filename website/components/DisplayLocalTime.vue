@@ -1,9 +1,17 @@
 <template>
   <span>
     <template v-if="time">
-      {{ timeLocale }}
+      <local-time
+        time-zone-name="short"
+        month="long"
+        day="numeric"
+        year="numeric"
+        hour="numeric"
+        minute="numeric"
+        >{{ timeLocale }}</local-time
+      >
     </template>
-    <template v-else> Unknown Time </template>
+    <template v-else> {{ $t("Unknown Time") }} </template>
   </span>
 </template>
 
@@ -18,6 +26,10 @@ export default {
       type: String,
       default: null,
     },
+    iso: {
+      type: String,
+      default: "en-US",
+    },
   },
 
   computed: {
@@ -26,7 +38,8 @@ export default {
     },
 
     timeLocale() {
-      return this.time.toLocaleString("en-US", {
+      // console.log(this.$i18n);
+      return this.time.toLocaleString(this.iso, {
         month: "long",
         day: "numeric",
         year: "numeric",

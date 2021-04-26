@@ -7,6 +7,7 @@ const { Mutex } = require("async-mutex");
 const logger = require("../../logger");
 const normalizedVaccineTypes = require("../../normalizedVaccineTypes");
 const setComputedStoreValues = require("../../setComputedStoreValues");
+const defaultCurlOpts = require("../../utils/defaultCurlOpts");
 const { Store } = require("../../models/Store");
 const { PostalCode } = require("../../models/PostalCode");
 const { ProviderBrand } = require("../../models/ProviderBrand");
@@ -183,6 +184,7 @@ class Appointments {
         store.postal_code
       }/${startDate.toISODate()}/${endDate.toISODate()}/${radiusMiles}?appointmentReason=131&appointmentReason=134&appointmentReason=137&appointmentReason=122&appointmentReason=125&appointmentReason=129&benefitCode=null`,
       {
+        ...defaultCurlOpts,
         httpHeader: [
           "User-Agent: VaccineSpotter.org",
           "Accept: application/json, text/plain, */*",
@@ -196,12 +198,10 @@ class Appointments {
           "Cache-Control: no-cache",
           "TE: Trailers",
         ],
-        timeoutMs: 15000,
         proxy: process.env.KROGER_PROXY_SERVER,
         proxyUsername: process.env.KROGER_PROXY_USERNAME,
         proxyPassword: process.env.KROGER_PROXY_PASSWORD,
         sslVerifyPeer: false,
-        acceptEncoding: "gzip",
       }
     );
 

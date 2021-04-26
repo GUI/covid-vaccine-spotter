@@ -13,12 +13,14 @@ spec:
     metadata:
       labels:
         app: {{ .Chart.Name }}-wegmans-refresh-appointments
+      annotations:
+        checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
     spec:
       imagePullSecrets:
         - name: {{ .Chart.Name }}-container-registry-secret
       containers:
         - name: {{ .Chart.Name }}-wegmans-refresh-appointments
-          image: {{ index .Values.werf.image "covid-vaccine-spotter" }}
+          image: {{ index .Values.werf.image "vaccinespotter" }}
           args: ["bin/wegmans-refresh-appointments"]
           env:
             - name: LOG_LEVEL

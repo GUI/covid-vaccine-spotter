@@ -11,76 +11,7 @@
       </template>
     </p>
     <div>
-      <div v-if="store.properties.appointments_available === true">
-        <p class="text-success">
-          <font-awesome-icon icon="check-circle" />
-          Appointments available as of
-          <display-local-time :time="appointmentsLastModifiedDate" />
-        </p>
-        <p>
-          <a :href="`#location-${store.properties.id}`"
-            >View Appointment Details</a
-          >
-        </p>
-      </div>
-      <div v-else>
-        <div v-if="store.properties.appointments_available === false">
-          <p class="text-danger">
-            <font-awesome-icon icon="times-circle" />
-            No appointments available as of last check
-          </p>
-        </div>
-        <div v-else>
-          <div v-if="store.properties.appointments_available === false">
-            <p class="text-danger">
-              <font-awesome-icon icon="times-circle" />
-              No appointments available as of last check
-            </p>
-          </div>
-          <div v-else>
-            <p>
-              <font-awesome-icon icon="times-circle" />
-              Unknown status
-            </p>
-            <p v-if="store.properties.carries_vaccine === false">
-              At last check, this location does not carry the vaccine at all, so
-              we have not fetched any appointments.
-            </p>
-            <p v-else-if="store.properties.appointments_last_fetched === null">
-              We haven't collected any data for this pharmacy yet.
-            </p>
-            <p v-else>
-              <strong>Uh oh!</strong> The data for this pharmacy is old. Please
-              visit the
-              <a :href="store.properties.url" target="_blank" rel="noopener"
-                >pharmacy's website</a
-              >
-              directly for appointment availability. This likely means that the
-              pharmacy is blocking our tool from accessing their site.
-            </p>
-          </div>
-
-          <p>
-            <a :href="store.properties.url" target="_blank" rel="noopener"
-              >Visit {{ store.properties.provider_brand_name }} Website
-              <font-awesome-icon icon="external-link-alt"
-            /></a>
-          </p>
-        </div>
-      </div>
-
-      <p class="mb-0">
-        <small
-          >Last checked
-          <display-local-time
-            v-if="store.properties.appointments_last_fetched"
-            :time="appointmentsLastFetchedDate"
-          />
-          <span v-if="!store.properties.appointments_last_fetched"
-            >never</span
-          ></small
-        >
-      </p>
+      <location-details :store="store" />
     </div>
   </div>
 </template>
@@ -99,21 +30,43 @@ export default {
       let title = this.store.properties.provider_brand_name;
       if (
         this.store.properties.provider_brand === "centura_driveup_event" ||
-        this.store.properties.provider_brand === "comassvax"
+        this.store.properties.provider_brand === "comassvax" ||
+        this.store.properties.provider_brand === "costco" ||
+        this.store.properties.provider_brand === "health_mart"
       ) {
         title += ` - ${this.store.properties.name}`;
       }
 
       return title;
     },
-
-    appointmentsLastFetchedDate() {
-      return new Date(this.store.properties.appointments_last_fetched);
-    },
-
-    appointmentsLastModifiedDate() {
-      return new Date(this.store.properties.appointments_last_modified);
-    },
   },
 };
 </script>
+
+<style>
+.mapboxgl-popup-content {
+  font-size: 0.9rem;
+}
+
+.mapboxgl-popup-content p {
+  line-height: 120%;
+}
+
+.mapboxgl-popup-content .location-status.text-success {
+  font-size: 1rem;
+}
+
+.mapboxgl-popup-content .location-status.text-success svg {
+  font-size: 1.5rem;
+}
+
+.mapboxgl-popup-close-button {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.mapboxgl-popup-content .appointment-times {
+  max-height: 140px;
+  overflow-y: scroll;
+}
+</style>

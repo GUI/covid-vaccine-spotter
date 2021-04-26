@@ -108,7 +108,7 @@ class Auth {
         await Auth.page.goto(
           "https://www.walmart.com/account/login?returnUrl=/pharmacy/clinical-services/immunization/scheduled?imzType=covid",
           {
-            waitUntil: "networkidle",
+            waitUntil: "load",
           }
         );
 

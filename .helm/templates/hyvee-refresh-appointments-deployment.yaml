@@ -13,12 +13,14 @@ spec:
     metadata:
       labels:
         app: {{ .Chart.Name }}-hyvee-refresh-appointments
+      annotations:
+        checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
     spec:
       imagePullSecrets:
         - name: {{ .Chart.Name }}-container-registry-secret
       containers:
         - name: {{ .Chart.Name }}-hyvee-refresh-appointments
-          image: {{ index .Values.werf.image "covid-vaccine-spotter" }}
+          image: {{ index .Values.werf.image "vaccinespotter" }}
           args: ["bin/hyvee-refresh-appointments"]
           env:
             - name: LOG_LEVEL
