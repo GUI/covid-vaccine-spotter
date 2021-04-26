@@ -2,7 +2,7 @@
   <div>
     <social-head :title="title" :description="description" />
 
-    <navbar :title="title" with-reload />
+    <navbar :title="title" :us-state-param="$route.params.state" with-reload />
 
     <main>
       <div class="container-lg">
@@ -72,7 +72,9 @@ export default {
     },
 
     title() {
-      return `${this.usStateName || ""} COVID-19 Vaccine Spotter`;
+      return this.$t("{state} Vaccine Spotter", {
+        state: this.usStateName || "",
+      });
     },
 
     description() {

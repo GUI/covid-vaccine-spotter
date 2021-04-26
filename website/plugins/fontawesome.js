@@ -3,6 +3,7 @@ import { library, config } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import {
   faArrowAltCircleRight,
+  faBars,
   faCheckCircle,
   faChevronLeft,
   faChevronRight,
@@ -19,6 +20,7 @@ config.autoAddCss = false;
 // can add other styles or just individual icons.
 library.add(
   faArrowAltCircleRight,
+  faBars,
   faCheckCircle,
   faChevronLeft,
   faChevronRight,

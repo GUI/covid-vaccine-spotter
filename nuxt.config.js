@@ -44,6 +44,7 @@ export default {
     "~/plugins/vuex-router-sync",
     "~/plugins/fontawesome",
     "~/plugins/http",
+    { src: "~/plugins/bootstrap", mode: "client" },
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

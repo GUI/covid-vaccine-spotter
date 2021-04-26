@@ -53,7 +53,7 @@ export default {
 
   data() {
     return {
-      title: this.$t("COVID-19 Vaccine Spotter"),
+      title: this.$t("Vaccine Spotter"),
       description: this.$t(
         "A tool to help you track down COVID-19 vaccine appointment openings at your state's pharmacies. Updated every minute."
       ),

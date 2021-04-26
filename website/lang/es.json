@@ -16,7 +16,6 @@
   "Appointments recently available": "Citas disponibles recientemente",
   "At last check, this location does not carry the vaccine at all, so we have not fetched any appointments.": "En la última verificación, esta ubicación no lleva la vacuna en absoluto, y debido a esto no hemos obtenido ninguna cita.",
   "Be sure to visit your own state's official vaccination website for detailed information about your county's vaccine options and review whether or not you are eligible yet.": "Asegúrate de visitar el sitio web oficial de vacunación de tu propio estado para obtener información detallada sobre las opciones de vacunas de tu condado y revisar si eres o no elegible todavía.",
-  "COVID-19 Vaccine Spotter": "Observador de vacunas para COVID-19",
   "Check for New Appointments": "Consultar nuevas citas",
   "DirectRelief": "DirectRelief",
   "Donate": "Donar",
@@ -84,5 +83,5 @@
   "of {count} results": "de {count} resultados",
   "{count} locations": "{count} ubicaciones",
   "{distance} miles": "{distance} millas",
-  "{state} COVID-19 Vaccine Spotter": "Observador de vacunas para COVID-19 para {state}"
+  "{state} Vaccine Spotter": "{state} Vaccine Spotter"
 }

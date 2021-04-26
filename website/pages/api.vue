@@ -247,9 +247,7 @@ export default {
 
   data() {
     return {
-      title: `${this.$t("Very Beta API")} | ${this.$t(
-        "COVID-19 Vaccine Spotter"
-      )}`,
+      title: `${this.$t("Very Beta API")} | ${this.$t("Vaccine Spotter")}`,
       description: this.$t(
         "The machine readable data behind the COIVD-19 Vaccine Spotter tool. Very beta."
       ),
