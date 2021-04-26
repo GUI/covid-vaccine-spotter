@@ -1,5 +1,5 @@
 <template>
-  <div class="mb-3">
+  <div class="appointment-times mb-3">
     <ul class="mb-0">
       <template v-if="initialAppointments.length > 0">
         <li v-for="appointment in initialAppointments" :key="appointment.id">

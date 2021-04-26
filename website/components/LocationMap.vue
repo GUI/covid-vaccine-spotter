@@ -180,6 +180,27 @@ export default {
       this.map.on("click", "locations", (e) => {
         const coordinates = e.features[0].geometry.coordinates.slice();
         const store = e.features[0];
+
+        // Nested JSON data in the properties is represented as JSON strings
+        // (rather than actual objects) when fetching the object from the click
+        // event: https://github.com/mapbox/mapbox-gl-js/issues/2434 So
+        // manually parse these nested fields into the proper objects.
+        if (store?.properties) {
+          store.properties = {
+            ...store.properties,
+          };
+          const keys = Object.keys(store.properties);
+          for (let i = 0, len = keys.length; i < len; i += 1) {
+            const key = keys[i];
+            const value = store.properties[key];
+            if (typeof value === "string") {
+              try {
+                store.properties[key] = JSON.parse(value);
+              } catch (err) {}
+            }
+          }
+        }
+
         const app = new Vue({
           ...LocationMapPopup,
           i18n: this.$i18n,
@@ -245,11 +266,16 @@ export default {
   top: 54px;
 }
 
+.mapboxgl-map {
+  font: unset;
+  color: unset;
+}
+
 #map {
   border-width: 1px;
   border-style: solid;
   border-color: rgba(0, 0, 0, 0.125);
-  height: 300px;
+  height: 370px;
   border-radius: 4px;
 }
 
