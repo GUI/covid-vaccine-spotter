@@ -7,7 +7,7 @@ class Appointments {
         provider_id: "cvs",
         key: "cvs",
         name: "CVS",
-        url: "https://www.cvs.com/immunizations/covid-19-vaccine",
+        url: "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
       },
       "https://www.cvs.com/immunizations/inventory/data/$bulk-publish"
     );

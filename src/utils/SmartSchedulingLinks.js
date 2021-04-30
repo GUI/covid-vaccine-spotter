@@ -219,7 +219,6 @@ class SmartSchedulingLinks {
         schedules: locationSchedules,
         slots: locationSlots,
       },
-      active: false,
     };
 
     if (location.position?.latitude && location.position?.longitude) {
@@ -316,7 +315,7 @@ class SmartSchedulingLinks {
       }
     }
 
-    patch.appointments = _.orderBy(patch.appointments, ["time", "type"]);
+    patch.appointments = _.orderBy(patch.appointments, ["time", "date", "type"]);
 
     setComputedStoreValues(patch);
 
