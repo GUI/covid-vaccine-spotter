@@ -3,17 +3,21 @@
 require("dotenv").config();
 
 const got = require("got");
+const slug = require("slug");
 const { Store } = require("./models/Store");
 const { PostalCode } = require("./models/PostalCode");
 const logger = require("./logger");
 
 class Geocode {
-  static async fillInMissingForStore(patch) {
+  static async fillInMissingForStore(patch, store) {
     if (!patch.location || !patch.time_zone) {
-      const store = await Store.query().findOne({
-        provider_id: patch.provider_id,
-        provider_location_id: patch.provider_location_id,
-      });
+      if (store === undefined) {
+        // eslint-disable-next-line no-param-reassign
+        store = await Store.query().findOne({
+          provider_id: patch.provider_id,
+          provider_location_id: patch.provider_location_id,
+        });
+      }
 
       const address = patch.address || store?.address;
       const state = patch.state || store?.state;
@@ -110,6 +114,7 @@ class Geocode {
               city,
               state,
               postal_code: postalCode,
+              fields: "timezone",
               limit: 1,
             },
             responseType: "json",
@@ -136,7 +141,10 @@ class Geocode {
                 geocodeResp.body
               )}`
             );
-          } else if (state !== result.address_components.state) {
+          } else if (
+            state &&
+            slug(state) !== slug(result.address_components.state)
+          ) {
             logger.info(
               `States did not match for geocoding result, ignoring (${address}, ${city}, ${state} ${postalCode}): ${JSON.stringify(
                 geocodeResp.body
@@ -149,7 +157,7 @@ class Geocode {
               )}`
             );
 
-            if (city !== result.address_components.city) {
+            if (city && slug(city) !== slug(result.address_components.city)) {
               logger.warn(
                 `Cities did not match for geocoding result, but still using (${address}, ${city}, ${state} ${postalCode}): ${JSON.stringify(
                   geocodeResp.body
@@ -160,10 +168,13 @@ class Geocode {
             if (!store?.location) {
               patch.location = `point(${result.location.lng} ${result.location.lat})`;
               patch.location_source = "geocodio";
+              patch.location_raw = geocodeResp.body;
             }
 
             if (!store?.time_zone) {
-              if (result.address_components.zip) {
+              if (result?.fields?.timezone?.name) {
+                patch.time_zone = result.fields.timezone.name;
+              } else if (result.address_components.zip) {
                 const postalCodeRecord = await PostalCode.query().findOne({
                   postal_code: result.address_components.zip,
                 });
@@ -218,6 +229,7 @@ class Geocode {
             );
             patch.location = `point(${result.lng} ${result.lat})`;
             patch.location_source = "geonames";
+            patch.location_raw = geonamesResp.body;
 
             const postalCodeResult = await PostalCode.knex().raw(
               `
