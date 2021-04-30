@@ -315,7 +315,11 @@ class SmartSchedulingLinks {
       }
     }
 
-    patch.appointments = _.orderBy(patch.appointments, ["time", "date", "type"]);
+    patch.appointments = _.orderBy(patch.appointments, [
+      "time",
+      "date",
+      "type",
+    ]);
 
     setComputedStoreValues(patch);
 
