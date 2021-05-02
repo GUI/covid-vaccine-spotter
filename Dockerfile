@@ -10,7 +10,7 @@ RUN echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg ma
   apt-get -y install postgresql-client-13 && \
   rm -rf /var/lib/apt/lists/*
 
-RUN curl -fsSL -o /tmp/rclone.deb https://downloads.rclone.org/v1.54.1/rclone-v1.54.1-linux-amd64.deb && \
+RUN curl -fsSL -o /tmp/rclone.deb https://downloads.rclone.org/v1.55.1/rclone-v1.55.1-linux-amd64.deb && \
   dpkg -i /tmp/rclone.deb && \
   rm -rf /var/lib/apt/lists/*
 

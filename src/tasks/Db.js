@@ -336,6 +336,8 @@ class Db {
         "--s3-no-head",
         "--header-upload",
         "Cache-Control: public, max-age=3600",
+        "--header-upload",
+        "Content-Encoding: gzip",
         path,
         bucketPath,
       ]);
@@ -374,6 +376,8 @@ class Db {
         "--s3-no-head",
         "--header-upload",
         "Cache-Control: public, max-age=3600",
+        "--header-upload",
+        "Content-Encoding: gzip",
         path,
         bucketPath,
       ]);
@@ -445,6 +449,8 @@ class Db {
         "--s3-no-head",
         "--header-upload",
         "Cache-Control: public, max-age=3600",
+        "--header-upload",
+        "Content-Encoding: gzip",
         path,
         bucketPath,
       ]);
