@@ -323,6 +323,10 @@
         </div>
 
         <p class="text-center mx-3">
+          <a href="https://localazy.com/p/vaccinespotter" rel="noopener">{{
+            $t("Help translate this website")
+          }}</a>
+          |
           {{ $t("For Developers:") }}
           <a :href="localePath('/api')">{{ $t("Very Beta API") }}</a> |
           <a href="https://github.com/GUI/covid-vaccine-finder">{{

@@ -1,0 +1,22 @@
+{
+  "projectUrl": "https://localazy.com/p/vaccinespotter",
+  "baseLocale": "en",
+  "languages": [
+    {
+      "language": "en",
+      "region": "",
+      "script": "",
+      "isRtl": false,
+      "name": "English",
+      "localizedName": "English"
+    },
+    {
+      "language": "es",
+      "region": "US",
+      "script": "",
+      "isRtl": false,
+      "name": "Spanish (United States)",
+      "localizedName": "Español (Estados Unidos)"
+    }
+  ]
+}

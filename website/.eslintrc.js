@@ -31,5 +31,13 @@ module.exports = {
         ],
       },
     },
+    {
+      files: ["lang/generated/*.js"],
+      rules: {
+        eqeqeq: "off",
+        "func-names": "off",
+        "object-shorthand": "off",
+      },
+    },
   ],
 };

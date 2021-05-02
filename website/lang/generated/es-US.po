@@ -1,0 +1,261 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Localazy (https://localazy.com)\n"
+"Project-Id-Version: Vaccine Spotter\n"
+"Language: es_US\n"
+"Plural-Forms: nplurals=2; plural=(n==1) ? 0 : 1;\n"
+
+msgid "<strong>Uh oh!</strong> The data for this pharmacy is old. Please visit the <a href=\"{link}\" target=\"_blank\" rel=\"noopener\">pharmacy's website</a> directly for appointment availability. this likely means that the pharmacy is blocking our tool from accessing their website."
+msgstr "<strong>¡Ay, no!</strong> Los datos de esta farmacia son antiguos. Por favor, visita el <a href=\"{link} target=\"_blank\" rel=\"noopener\">sitio de web</a> de la farmacia directamente para la disponibilidad de citas. Esto probablemente significa que la farmacia está bloqueando el acceso de nuestra herramienta a su sitio web."
+
+msgid "<strong>Warning:</strong> Many users are reporting issues booking appointments with {name} (due to 2nd appointment requirements). However, some users have still reported success, so I still want to share the data I have from the pharmacies. I'm trying to figure out a better way to detect these issues, but in the meantime, sorry for any frustration!"
+msgstr "<strong>Advertencia</strong>: Muchos usuarios informan problemas para reservar citas con {name} (debido a los requisitos de la segunda cita). Sin embargo, algunos usuarios aún han informado de éxito, y por eso todavía quiero compartir los datos que tengo de las farmacias. Estoy tratando de encontrar una mejor manera de detectar estos problemas, pero mientras tanto, ¡lamento la frustración!"
+
+msgid "A tool to help you track down COVID-19 vaccine appointment openings at your state's pharmacies. Updated every minute."
+msgstr "Una herramienta para ayudarte a rastrear citas para la vacuna COVID-19 en las farmacias de su estado. Actualizado cada minuto."
+
+msgid "A tool to help you track down COVID-19 vaccine appointment openings at {state} pharmacies. Updated every minute."
+msgstr "Una herramienta para ayudarte a rastrear las vacantes de citas para la vacuna COVID-19 en farmacias en su estado. Actualizado cada minuto."
+
+msgid "About"
+msgstr "Acerca de"
+
+msgid "All"
+msgstr "Todas"
+
+msgid "All doses"
+msgstr "Todas las dosis"
+
+msgid "All supported locations in {state} are scanned on a regular basis and this page is updated with any available appointments in the state. If you don't see locations near you right now, appointments can come and go quickly so try visiting the page at different times throughout the day."
+msgstr "Todas las ubicaciones admitidas en {state} se escanean de forma regular y esta página se actualiza con las citas disponibles en el estado. Si no ves ubicaciones cercanas a ti en este momento, las citas pueden aparecer y desaparecer rápidamente, así que intenta visitar la página en diferentes momentos durante el día."
+
+msgid "Any distance"
+msgstr "Cualquier distancia"
+
+msgid "Any feedback is welcome: <a href=\"m&#97;ilto&#58;v%&#54;1&#99;&#99;&#105;ne&#64;nic&#107;%6D&#46;org\">vacc&#105;ne&#64;ni&#99;k&#109;&#46;o&#114;&#103;</a> or <a href=\"https://twitter.com/nickblah\">@nickblah</a>. And if you're a coder and have interest in helping out on <a href=\"https://github.com/GUI/covid-vaccine-finder/issues\">GitHub</a>, that would be dandy (although the code's still messy)!"
+msgstr "Cualquier comentario es bienvenido: <a href=\"m&#97;ilto&#58;v%&#54;1&#99;&#99;&#105;ne&#64;nic&#107;%6D&#46;org\">vacc&#105;ne&#64;ni&#99;k&#109;&#46;o&#114;&#103;</a> o <a href=\"https://twitter.com/nickblah\">@nickblah</a>. ¡Y si eres un programador(a) y tienes interés en ayudar en <a href=\"https://github.com/GUI/covid-vaccine-finder/issues\">GitHub</a>, eso sería estupendo (aunque el código sigue siendo complicado)!"
+
+msgid "Appointment status unknown"
+msgstr "Se desconoce el estado de las citas"
+
+msgid "Appointment type"
+msgstr "Tipo de cita"
+
+msgid "Appointments available as of"
+msgstr "Citas disponibles a partir del"
+
+msgid "Appointments not available"
+msgstr "Citas no disponibles"
+
+msgid "Appointments recently available"
+msgstr "Citas disponibles recientemente"
+
+msgid "At last check, this location does not carry the vaccine at all, so we have not fetched any appointments."
+msgstr "En la última verificación, esta ubicación no lleva la vacuna en absoluto, y debido a esto no hemos obtenido ninguna cita."
+
+msgid "Be sure to visit your own state's official vaccination website for detailed information about your county's vaccine options and review whether or not you are eligible yet."
+msgstr "Asegúrate de visitar el sitio web oficial de vacunación de tu propio estado para obtener información detallada sobre las opciones de vacunas de tu condado y revisar si eres o no elegible todavía."
+
+msgid "Check for New Appointments"
+msgstr "Consultar nuevas citas"
+
+msgid "DirectRelief"
+msgstr "DirectRelief"
+
+msgid "Donate"
+msgstr "Donar"
+
+msgid "Donate to DirectRelief's efforts to help with the pandemic."
+msgstr "Dona a los esfuerzos de DirectRelief para ayudar con la pandemia."
+
+msgid "Donate to UNICEF's efforts to help the global vaccination rollout."
+msgstr "Haz una donación a los esfuerzos de UNICEF para ayudar al lanzamiento mundial de la vacunación."
+
+msgid "Enter a 5 digit ZIP code"
+msgstr "Ingresa un código postal de 5 dígitos"
+
+msgid "Finding vaccines seems tough! Hopefully things will become easier soon, but in the meantime, maybe this can help. If you find this useful, feel free to share it around. Get in touch with any questions: <a href=\"m&#97;ilto&#58;v%&#54;1&#99;&#99;&#105;ne&#64;nic&#107;%6D&#46;org\">vacc&#105;ne&#64;ni&#99;k&#109;&#46;o&#114;&#103;</a>, <a href=\"https://twitter.com/nickblah\">@nickblah</a>, or <a href=\"https://github.com/GUI/covid-vaccine-finder/issues\">GitHub</a>."
+msgstr "¡Encontrar vacunas parece difícil! Con suerte, las cosas se volverán más fáciles pronto, pero mientras tanto, tal vez esto pueda ayudar. Si encuentras esto útil, no dudes en compartirlo. Ponte en contacto con cualquier preguntas: <a href=\"m&#97;ilto&#58;v%&#54;1&#99;&#99;&#105;ne&#64;nic&#107;%6D&#46;org\">vacc&#105;ne&#64;ni&#99;k&#109;&#46;o&#114;&#103;</a>, <a href=\"https://twitter.com/nickblah\">@nickblah</a>, or <a href=\"https://github.com/GUI/covid-vaccine-finder/issues\">GitHub</a>"
+
+msgid "First Dose"
+msgstr "Primera dosis"
+
+msgid "For Developers:"
+msgstr "Para desarrollador@s:"
+
+msgid "GitHub"
+msgstr "GitHub"
+
+msgid "I'd like to add additional functionality (scanning additional pharmacies and sending e-mail or text notifications when appointments open up) if this proves useful and as time permits. If you're a computer programmer and would like to contribute, the project is <a href=\"https://github.com/GUI/covid-vaccine-finder\">open source on GitHub</a> (it's currently very messy and undocumented, though)."
+msgstr "Me gustaría agregar funcionalidad adicional, (escanear farmacias adicionales y enviar notificaciones por correo electrónico o mensajes de texto cuando se abren citas) si esto resulta útil y si el tiempo lo permite. Si eres programador@ de computadoras y te gustaría contribuir, el proyecto es <a href=\"https://github.com/GUI/covid-vaccine-finder\"> código abierto (open source) en GitHub</a > (aunque actualmente es muy desordenado e indocumentado)."
+
+msgid "I've received a lot of requests to donate to this project, which I really appreciate. Hearing of people's success stories of finding vaccines is reward enough, but if you would like to donate, please consider the following options:"
+msgstr "He recibido muchas solicitudes para donar a este proyecto, lo cual agradezco mucho. Escuchar las historias de éxito de las personas al encontrar vacunas es una recompensa suficiente, pero si deseas donar, considera las siguientes opciones:"
+
+msgid "If you decide you want to find an appointment at a local pharmacy (and are currently eligible for the vaccine), this tool might be able to help."
+msgstr "Si deseas obtener una cita en una farmacia local (y actualmente eres elegible para la vacuna), esta herramienta podría ayudarte."
+
+msgid "Johnson and Johnson"
+msgstr "Johnson and Johnson"
+
+msgid "Last Checked"
+msgstr "Última comprobación"
+
+msgid "Last checked"
+msgstr "Última comprobación"
+
+msgid "Moderna"
+msgstr "Moderna"
+
+msgid "Next"
+msgstr "Siguiente"
+
+msgid "No appointments available as of last check"
+msgstr "No hay citas disponibles desde la última verificación"
+
+msgid "No open appointments for your search can currently be found. Try expanding your search or check again later (appointments can come and go quickly)."
+msgstr "Ahora no podemos encontrar citas disponibles para tu búsqueda. Intenta expandir tu búsqueda o verifica nuevamente más tarde (las citas pueden aparecer y desaparecer rápidamente)."
+
+msgid "Pfizer"
+msgstr "Pfizer"
+
+msgid "Pharmacy"
+msgstr "Farmacia"
+
+msgid "Previous"
+msgstr "Anterior"
+
+msgid "Rather than searching around on each pharmacy's website, we'll automatically scan the pharmacy websites and show you any available appointments we can find on one page."
+msgstr "En lugar de buscar en el sitio web de cada farmacia, escanearemos automáticamente los sitios web de las farmacias y te mostraremos las citas disponibles que podamos encontrar en una página."
+
+msgid "Scanning"
+msgstr "Escaneando"
+
+msgid "Scanning {chain_count} pharmacy chains ({store_count} stores) in {state}"
+msgstr "Escaneando {chain_count} farmacias ({store_count} tiendas diferentes) en {state_name}"
+
+msgid "Search"
+msgstr "Buscar"
+
+msgid "Search for appointments near"
+msgstr "Buscar citas cerca de"
+
+msgid "Second Dose Only - {type}"
+msgstr "Segunda dosis solamente - {type}"
+
+msgid "Second dose only"
+msgstr "Segunda dosis solamente"
+
+msgid "Share by E-mail"
+msgstr "Compartir por Correo electrónico"
+
+msgid "Share on Facebook"
+msgstr "Compartir en Facebook"
+
+msgid "Share on Hacker News"
+msgstr "Compartir en Hacker News"
+
+msgid "Share on LinkedIn"
+msgstr "Compartir en LinkedIn"
+
+msgid "Share on Pinterest"
+msgstr "Compartir en Pinterest"
+
+msgid "Share on Reddit"
+msgstr "Compartir en Reddit"
+
+msgid "Share on Tumblr"
+msgstr "Compartir en Tumblr"
+
+msgid "Share on Twitter"
+msgstr "Compartir en Twitter"
+
+msgid "Share on WhatsApp"
+msgstr "Compartir en WhatsApp"
+
+msgid "Show locations without current appointments"
+msgstr "Mostrar ubicaciones sin citas actuales"
+
+msgid "Showing"
+msgstr "Mostrando de"
+
+msgid "Step 1: Review your county's availability and {state}'s eligibility"
+msgstr "Paso 1: Revise la disponibilidad de su condado y la eligibilidad de {state}"
+
+msgid "Step 2: Use this tool to try and find a pharmacy appointment"
+msgstr "Paso 2: Utiliza esta herramienta para intentar encontrar una cita en la farmacia"
+
+msgid "Subscribe to the <a href=\"https://github.com/GUI/covid-vaccine-spotter/discussions/27\">API Changelog</a> discussion on GitHub for announcements on any API changes or additions."
+msgstr "Suscríbete a la <a href=\"https://github.com/GUI/covid-vaccine-spotter/discussions/27\">API Changelog</a> conversación en GitHub para recibir anuncios sobre cambios o adiciones a la API."
+
+msgid "The machine readable data behind the COIVD-19 Vaccine Spotter tool. Very beta."
+msgstr "Los datos legibles por máquina detrás del Observador de vacunas para COVID-19. Bien preliminario."
+
+msgid "Tool Status"
+msgstr "Estado de la herramienta"
+
+msgid "UNICEF"
+msgstr "UNICEF"
+
+msgid "Unknown"
+msgstr "Desconocida"
+
+msgid "Unknown Time"
+msgstr "Hora desconocida"
+
+msgid "Unknown status"
+msgstr "Estado desconocido"
+
+msgid "Vaccine Spotter"
+msgstr "Vaccine Spotter"
+
+msgid "Vaccine type"
+msgstr "Tipo de vacuna"
+
+msgid "Very Beta API"
+msgstr "API muy preliminario"
+
+msgid "View available appointment times on the {name} website."
+msgstr "Ver horarios de citas disponibles en el sito de web de {name}."
+
+msgid "View {count} other appointment times"
+msgstr "Ver {count} otros horarios de citas"
+
+msgid "Visit <a href=\"https://covid19.colorado.gov/for-coloradans/vaccine/where-can-i-get-vaccinated\" class=\"text-white\"><strong class=\"fw-bold\">Colorado.gov</strong></a> for detailed information about your county's vaccine options and review whether or not you are eligible yet."
+msgstr "Visitar <a href=\"https://covid19.colorado.gov/for-coloradans/vaccine/where-can-i-get-vaccinated\" class=\"text-white\"><strong class=\"fw-bold\">Colorado.gov</strong></a> para obtener información detallada sobre las opciones de vacunas de su condado y revisar si es elegible todavía."
+
+msgid "Visit Colorado.gov"
+msgstr "Visite Colorado.gov"
+
+msgid "Visit {name} Website"
+msgstr "Visitar el sitio web de {name}"
+
+msgid "We haven't collected any data for this pharmacy yet."
+msgstr "Todavía no hemos recopilado ningún dato para esta farmacia."
+
+msgid "While I encourage donating to other charities directly, if you'd like to support Vaccine Spotter, thank you! I will <a href=\"https://givebutter.com/vaccinespotter\" target=\"_blank\" rel=\"noopener\">accept contributions</a> (<em>not</em> tax deductible) to cover website hosting costs. Any surplus contributions I will donate to these other charities."
+msgstr "Si bien recomiendo donar directamente a otras organizaciones benéficas, si desea apoyar a Vaccine Spotter, ¡gracias! <a href=\"https://givebutter.com/vaccinespotter\" target=\"_blank\" rel=\"noopener\">Aceptaré contribuciones</a> (<em> no </em> deducibles de impuestos) para cubrir los costos de alojamiento del sitio web. Las contribuciones excedentes las donaré a estas otras organizaciones benéficas."
+
+msgid "Within"
+msgstr "Dentro de"
+
+msgid "You may be able to signup for vaccines with a health care provider or there may be other options in your area, in which case you may not need this tool."
+msgstr "Es posible que puedas inscribirte para recibir vacunas con un proveedor de atención médica o puede haber otras opciones en tu área, en cuyo caso es posible que no necesites esta herramienta."
+
+msgid "never"
+msgstr "nunca"
+
+msgid "of {count} results"
+msgstr "de {count} resultados"
+
+msgid "{count} locations"
+msgstr "{count} ubicaciones"
+
+msgid "{distance} miles"
+msgstr "{distance} millas"
+
+msgid "{state} Vaccine Spotter"
+msgstr "{state} Vaccine Spotter"

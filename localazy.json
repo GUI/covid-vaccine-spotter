@@ -1,0 +1,17 @@
+{
+  "upload": {
+    "type": "pot",
+    "files": [
+      {
+        "pattern": "website/lang/messages.pot",
+        "type": "pot",
+        "features": ["filter_untranslated"]
+      }
+    ]
+  },
+  "download": {
+    "metadataFileJson": "website/lang/generated/meta.json",
+    "includeSourceLang": true,
+    "files": "website/lang/generated/${lang}.po"
+  }
+}

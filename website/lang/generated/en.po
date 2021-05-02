@@ -1,0 +1,282 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Localazy (https://localazy.com)\n"
+"Project-Id-Version: Vaccine Spotter\n"
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n==1) ? 0 : 1;\n"
+
+msgid "<strong>Uh oh!</strong> The data for this pharmacy is old. Please visit the <a href=\"{link}\" target=\"_blank\" rel=\"noopener\">pharmacy's website</a> directly for appointment availability. this likely means that the pharmacy is blocking our tool from accessing their website."
+msgstr "<strong>Uh oh!</strong> The data for this pharmacy is old. Please visit the <a href=\"{link}\" target=\"_blank\" rel=\"noopener\">pharmacy's website</a> directly for appointment availability. this likely means that the pharmacy is blocking our tool from accessing their website."
+
+msgid "<strong>Warning:</strong> Many users are reporting issues booking appointments with {name} (due to 2nd appointment requirements). However, some users have still reported success, so I still want to share the data I have from the pharmacies. I'm trying to figure out a better way to detect these issues, but in the meantime, sorry for any frustration!"
+msgstr "<strong>Warning:</strong> Many users are reporting issues booking appointments with {name} (due to 2nd appointment requirements). However, some users have still reported success, so I still want to share the data I have from the pharmacies. I'm trying to figure out a better way to detect these issues, but in the meantime, sorry for any frustration!"
+
+msgid "<strong>Warning:</strong> {name} appears to only be updating their data every 30-60 minutes, so this status may become outdated more quickly than other providers. But if they increase their frequency of updates, Vaccine Spotter will start showing updates sooner too."
+msgstr "<strong>Warning:</strong> {name} appears to only be updating their data every 30-60 minutes, so this status may become outdated more quickly than other providers. But if they increase their frequency of updates, Vaccine Spotter will start showing updates sooner too."
+
+msgid "A tool to help you track down COVID-19 vaccine appointment openings at your state's pharmacies. Updated every minute."
+msgstr "A tool to help you track down COVID-19 vaccine appointment openings at your state's pharmacies. Updated every minute."
+
+msgid "A tool to help you track down COVID-19 vaccine appointment openings at {state} pharmacies. Updated every minute."
+msgstr "A tool to help you track down COVID-19 vaccine appointment openings at {state} pharmacies. Updated every minute."
+
+msgid "About"
+msgstr "About"
+
+msgid "All"
+msgstr "All"
+
+msgid "All doses"
+msgstr "All doses"
+
+msgid "All supported locations in {state} are scanned on a regular basis and this page is updated with any available appointments in the state. If you don't see locations near you right now, appointments can come and go quickly so try visiting the page at different times throughout the day."
+msgstr "All supported locations in {state} are scanned on a regular basis and this page is updated with any available appointments in the state. If you don't see locations near you right now, appointments can come and go quickly so try visiting the page at different times throughout the day."
+
+msgid "Any distance"
+msgstr "Any distance"
+
+msgid "Any feedback is welcome: <a href=\"m&#97;ilto&#58;v%&#54;1&#99;&#99;&#105;ne&#64;nic&#107;%6D&#46;org\">vacc&#105;ne&#64;ni&#99;k&#109;&#46;o&#114;&#103;</a> or <a href=\"https://twitter.com/nickblah\">@nickblah</a>. And if you're a coder and have interest in helping out on <a href=\"https://github.com/GUI/covid-vaccine-finder/issues\">GitHub</a>, that would be dandy (although the code's still messy)!"
+msgstr "Any feedback is welcome: <a href=\"m&#97;ilto&#58;v%&#54;1&#99;&#99;&#105;ne&#64;nic&#107;%6D&#46;org\">vacc&#105;ne&#64;ni&#99;k&#109;&#46;o&#114;&#103;</a> or <a href=\"https://twitter.com/nickblah\">@nickblah</a>. And if you're a coder and have interest in helping out on <a href=\"https://github.com/GUI/covid-vaccine-finder/issues\">GitHub</a>, that would be dandy (although the code's still messy)!"
+
+msgid "Appointment status unknown"
+msgstr "Appointment status unknown"
+
+msgid "Appointment type"
+msgstr "Appointment type"
+
+msgid "Appointments available as of"
+msgstr "Appointments available as of"
+
+msgid "Appointments not available"
+msgstr "Appointments not available"
+
+msgid "Appointments recently available"
+msgstr "Appointments recently available"
+
+msgid "At last check, this location does not carry the vaccine at all, so we have not fetched any appointments."
+msgstr "At last check, this location does not carry the vaccine at all, so we have not fetched any appointments."
+
+msgid "Be sure to visit your own state's official vaccination website for detailed information about your county's vaccine options and review whether or not you are eligible yet."
+msgstr "Be sure to visit your own state's official vaccination website for detailed information about your county's vaccine options and review whether or not you are eligible yet."
+
+msgid "Check for New Appointments"
+msgstr "Check for New Appointments"
+
+msgid "DirectRelief"
+msgstr "DirectRelief"
+
+msgid "Donate"
+msgstr "Donate"
+
+msgid "Donate to DirectRelief's efforts to help with the pandemic."
+msgstr "Donate to DirectRelief's efforts to help with the pandemic."
+
+msgid "Donate to UNICEF's efforts to help the global vaccination rollout."
+msgstr "Donate to UNICEF's efforts to help the global vaccination rollout."
+
+msgid "Enter a 5 digit ZIP code"
+msgstr "Enter a 5 digit ZIP code"
+
+msgid "Finding vaccines seems tough! Hopefully things will become easier soon, but in the meantime, maybe this can help. If you find this useful, feel free to share it around. Get in touch with any questions: <a href=\"m&#97;ilto&#58;v%&#54;1&#99;&#99;&#105;ne&#64;nic&#107;%6D&#46;org\">vacc&#105;ne&#64;ni&#99;k&#109;&#46;o&#114;&#103;</a>, <a href=\"https://twitter.com/nickblah\">@nickblah</a>, or <a href=\"https://github.com/GUI/covid-vaccine-finder/issues\">GitHub</a>."
+msgstr "Finding vaccines seems tough! Hopefully things will become easier soon, but in the meantime, maybe this can help. If you find this useful, feel free to share it around. Get in touch with any questions: <a href=\"m&#97;ilto&#58;v%&#54;1&#99;&#99;&#105;ne&#64;nic&#107;%6D&#46;org\">vacc&#105;ne&#64;ni&#99;k&#109;&#46;o&#114;&#103;</a>, <a href=\"https://twitter.com/nickblah\">@nickblah</a>, or <a href=\"https://github.com/GUI/covid-vaccine-finder/issues\">GitHub</a>."
+
+msgid "First Dose"
+msgstr "First Dose"
+
+msgid "For Developers:"
+msgstr "For Developers:"
+
+msgid "GitHub"
+msgstr "GitHub"
+
+msgid "Help translate this website"
+msgstr "Help translate this website"
+
+msgid "Here's all of the underlying data in JSON format used for this tool. While I'm trying to maintain compatibility with the existing format, things can sometimes move fast, so I'm hesitant to declare this a fully stable API. But hopefully it should be stable-ish if you want to build anything on top of it, just be aware things may change."
+msgstr "Here's all of the underlying data in JSON format used for this tool. While I'm trying to maintain compatibility with the existing format, things can sometimes move fast, so I'm hesitant to declare this a fully stable API. But hopefully it should be stable-ish if you want to build anything on top of it, just be aware things may change."
+
+msgid "Hide instructions"
+msgstr "Hide instructions"
+
+msgid "I'd like to add additional functionality (scanning additional pharmacies and sending e-mail or text notifications when appointments open up) if this proves useful and as time permits. If you're a computer programmer and would like to contribute, the project is <a href=\"https://github.com/GUI/covid-vaccine-finder\">open source on GitHub</a> (it's currently very messy and undocumented, though)."
+msgstr "I'd like to add additional functionality (scanning additional pharmacies and sending e-mail or text notifications when appointments open up) if this proves useful and as time permits. If you're a computer programmer and would like to contribute, the project is <a href=\"https://github.com/GUI/covid-vaccine-finder\">open source on GitHub</a> (it's currently very messy and undocumented, though)."
+
+msgid "I've received a lot of requests to donate to this project, which I really appreciate. Hearing of people's success stories of finding vaccines is reward enough, but if you would like to donate, please consider the following options:"
+msgstr "I've received a lot of requests to donate to this project, which I really appreciate. Hearing of people's success stories of finding vaccines is reward enough, but if you would like to donate, please consider the following options:"
+
+msgid "If you decide you want to find an appointment at a local pharmacy (and are currently eligible for the vaccine), this tool might be able to help."
+msgstr "If you decide you want to find an appointment at a local pharmacy (and are currently eligible for the vaccine), this tool might be able to help."
+
+msgid "Johnson and Johnson"
+msgstr "Johnson and Johnson"
+
+msgid "Last Checked"
+msgstr "Last Checked"
+
+msgid "Last checked"
+msgstr "Last checked"
+
+msgid "Moderna"
+msgstr "Moderna"
+
+msgid "Next"
+msgstr "Next"
+
+msgid "No appointments available as of last check"
+msgstr "No appointments available as of last check"
+
+msgid "No open appointments for your search can currently be found. Try expanding your search or check again later (appointments can come and go quickly)."
+msgstr "No open appointments for your search can currently be found. Try expanding your search or check again later (appointments can come and go quickly)."
+
+msgid "Pfizer"
+msgstr "Pfizer"
+
+msgid "Pharmacy"
+msgstr "Pharmacy"
+
+msgid "Previous"
+msgstr "Previous"
+
+msgid "Rather than searching around on each pharmacy's website, we'll automatically scan the pharmacy websites and show you any available appointments we can find on one page."
+msgstr "Rather than searching around on each pharmacy's website, we'll automatically scan the pharmacy websites and show you any available appointments we can find on one page."
+
+msgid "Scanning"
+msgstr "Scanning"
+
+msgid "Scanning {chain_count} pharmacy chains ({store_count} stores) in {state}"
+msgstr "Scanning {chain_count} pharmacy chains ({store_count} stores) in {state}"
+
+msgid "Search"
+msgstr "Search"
+
+msgid "Search for appointments near"
+msgstr "Search for appointments near"
+
+msgid "Second Dose Only - {type}"
+msgstr "Second Dose Only - {type}"
+
+msgid "Second dose only"
+msgstr "Second dose only"
+
+msgid "Share by E-mail"
+msgstr "Share by E-mail"
+
+msgid "Share on Facebook"
+msgstr "Share on Facebook"
+
+msgid "Share on Hacker News"
+msgstr "Share on Hacker News"
+
+msgid "Share on LinkedIn"
+msgstr "Share on LinkedIn"
+
+msgid "Share on Pinterest"
+msgstr "Share on Pinterest"
+
+msgid "Share on Reddit"
+msgstr "Share on Reddit"
+
+msgid "Share on Tumblr"
+msgstr "Share on Tumblr"
+
+msgid "Share on Twitter"
+msgstr "Share on Twitter"
+
+msgid "Share on WhatsApp"
+msgstr "Share on WhatsApp"
+
+msgid "Show instructions"
+msgstr "Show instructions"
+
+msgid "Show locations without current appointments"
+msgstr "Show locations without current appointments"
+
+msgid "Showing"
+msgstr "Showing"
+
+msgid "Step 1: Review your county's availability and {state}'s eligibility"
+msgstr "Step 1: Review your county's availability and {state}'s eligibility"
+
+msgid "Step 2: Use this tool to try and find a pharmacy appointment"
+msgstr "Step 2: Use this tool to try and find a pharmacy appointment"
+
+msgid "Subscribe to the <a href=\"https://github.com/GUI/covid-vaccine-spotter/discussions/27\">API Changelog</a> discussion on GitHub for announcements on any API changes or additions."
+msgstr "Subscribe to the <a href=\"https://github.com/GUI/covid-vaccine-spotter/discussions/27\">API Changelog</a> discussion on GitHub for announcements on any API changes or additions."
+
+msgid "Thanks to the developer community, Vaccine Spotter is now available in Spanish! 💫 There may still be a few gaps, but most of it should be translated. I've also made some other tweaks to hopefully make the site easier to navigate and use."
+msgstr "Thanks to the developer community, Vaccine Spotter is now available in Spanish! 💫 There may still be a few gaps, but most of it should be translated. I've also made some other tweaks to hopefully make the site easier to navigate and use."
+
+msgid "The machine readable data behind the COIVD-19 Vaccine Spotter tool. Very beta."
+msgstr "The machine readable data behind the COIVD-19 Vaccine Spotter tool. Very beta."
+
+msgid "Tool Status"
+msgstr "Tool Status"
+
+msgid "UNICEF"
+msgstr "UNICEF"
+
+msgid "Unfortunately, this website is not compatible with your web browser. Sorry!<br />Please <a href=\"https://browser-update.org/update-browser.html\">upgrade your browser</a> to use this website."
+msgstr "Unfortunately, this website is not compatible with your web browser. Sorry!<br />Please <a href=\"https://browser-update.org/update-browser.html\">upgrade your browser</a> to use this website."
+
+msgid "Unknown"
+msgstr "Unknown"
+
+msgid "Unknown Time"
+msgstr "Unknown Time"
+
+msgid "Unknown status"
+msgstr "Unknown status"
+
+msgid "Vaccine Spotter"
+msgstr "Vaccine Spotter"
+
+msgid "Vaccine type"
+msgstr "Vaccine type"
+
+msgid "Very Beta API"
+msgstr "Very Beta API"
+
+msgid "View available appointment times on the {name} website."
+msgstr "View available appointment times on the {name} website."
+
+msgid "View {count} other appointment times"
+msgstr "View {count} other appointment times"
+
+msgid "Visit <a href=\"https://covid19.colorado.gov/for-coloradans/vaccine/where-can-i-get-vaccinated\" class=\"text-white\"><strong class=\"fw-bold\">Colorado.gov</strong></a> for detailed information about your county's vaccine options and review whether or not you are eligible yet."
+msgstr "Visit <a href=\"https://covid19.colorado.gov/for-coloradans/vaccine/where-can-i-get-vaccinated\" class=\"text-white\"><strong class=\"fw-bold\">Colorado.gov</strong></a> for detailed information about your county's vaccine options and review whether or not you are eligible yet."
+
+msgid "Visit Colorado.gov"
+msgstr "Visit Colorado.gov"
+
+msgid "Visit {name} Website"
+msgstr "Visit {name} Website"
+
+msgid "We haven't collected any data for this pharmacy yet."
+msgstr "We haven't collected any data for this pharmacy yet."
+
+msgid "While I encourage donating to other charities directly, if you'd like to support Vaccine Spotter, thank you! I will <a href=\"https://givebutter.com/vaccinespotter\" target=\"_blank\" rel=\"noopener\">accept contributions</a> (<em>not</em> tax deductible) to cover website hosting costs. Any surplus contributions I will donate to these other charities."
+msgstr "While I encourage donating to other charities directly, if you'd like to support Vaccine Spotter, thank you! I will <a href=\"https://givebutter.com/vaccinespotter\" target=\"_blank\" rel=\"noopener\">accept contributions</a> (<em>not</em> tax deductible) to cover website hosting costs. Any surplus contributions I will donate to these other charities."
+
+msgid "Within"
+msgstr "Within"
+
+msgid "You may be able to signup for vaccines with a health care provider or there may be other options in your area, in which case you may not need this tool."
+msgstr "You may be able to signup for vaccines with a health care provider or there may be other options in your area, in which case you may not need this tool."
+
+msgid "never"
+msgstr "never"
+
+msgid "of {count} results"
+msgstr "of {count} results"
+
+msgid "{count} locations"
+msgstr "{count} locations"
+
+msgid "{distance} miles"
+msgstr "{distance} miles"
+
+msgid "{state} Vaccine Spotter"
+msgstr "{state} Vaccine Spotter"

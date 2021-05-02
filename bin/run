@@ -40,6 +40,21 @@ async function optionalLoopEvery(task) {
     return optionalLoopEvery(Db.auditDump);
   });
 
+  program.command("locale:extract").action(async () => {
+    const Locale = require("../src/tasks/Locale");
+    return optionalLoopEvery(Locale.extract);
+  });
+
+  program.command("locale:upload").action(async () => {
+    const Locale = require("../src/tasks/Locale");
+    return optionalLoopEvery(Locale.upload);
+  });
+
+  program.command("locale:download").action(async () => {
+    const Locale = require("../src/tasks/Locale");
+    return optionalLoopEvery(Locale.download);
+  });
+
   program.command("website:api-data:build").action(async () => {
     const Website = require("../src/tasks/Website");
     return optionalLoopEvery(Website.apiDataBuild);

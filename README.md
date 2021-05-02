@@ -37,6 +37,20 @@ All of the data being collected is published as JSON files here: https://www.vac
 
 Subscribe to this discussion for any announcement of API changes: https://github.com/GUI/covid-vaccine-spotter/discussions/27
 
+## Website Language Translations
+
+### Contributing Translations
+
+If you would like to help translate the website content into other languages, thank you! You can perform translations and add additional languages at [Localazy](https://localazy.com/p/vaccinespotter).
+
+### Developer Translation Workflow
+
+1. If you're adding new text to the website, just wrap the English text with the `$t` helper, like `$t('my text here...')`.
+2. In order to translate these strings into other languages, and you have permissions to Localazy, then the steps are:
+   a. Run `./bin/run locale:extract` to extract any new strings into the `website/lang/messages.pot` file.
+   b. Run `./bin/run locale:upload` to upload the updated `website/lang/messages.pot` file to Localazy.
+   c. After translations are performed, run `./bin/run locale:download` to download the resulting language files.
+
 ## License
 
 This project is licensed under the terms of the [MIT license](./LICENSE.txt).

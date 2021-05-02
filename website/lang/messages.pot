@@ -1,0 +1,381 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+#: website/components/ToolStatusRow.vue:8
+msgid "{count} locations"
+msgstr ""
+
+#: website/components/LocationFiltersForm.vue:2
+#: website/components/Store.vue:2
+msgid "{distance} miles"
+msgstr ""
+
+#: website/pages/_state.vue:135
+#: website/pages/US.vue:75
+msgid "{state} Vaccine Spotter"
+msgstr ""
+
+#: website/components/LocationDetails.vue:17
+#: website/components/ToolStatusRow.vue:11
+msgid "<strong>Uh oh!</strong> The data for this pharmacy is old. Please visit the <a href=\"{link}\" target=\"_blank\" rel=\"noopener\">pharmacy's website</a> directly for appointment availability. this likely means that the pharmacy is blocking our tool from accessing their website."
+msgstr ""
+
+#: website/components/LocationDetails.vue:3
+msgid "<strong>Warning:</strong> {name} appears to only be updating their data every 30-60 minutes, so this status may become outdated more quickly than other providers. But if they increase their frequency of updates, Vaccine Spotter will start showing updates sooner too."
+msgstr ""
+
+#: website/components/LocationDetails.vue:8
+msgid "<strong>Warning:</strong> Many users are reporting issues booking appointments with {name} (due to 2nd appointment requirements). However, some users have still reported success, so I still want to share the data I have from the pharmacies. I'm trying to figure out a better way to detect these issues, but in the meantime, sorry for any frustration!"
+msgstr ""
+
+#: website/pages/_state.vue:141
+msgid "A tool to help you track down COVID-19 vaccine appointment openings at {state} pharmacies. Updated every minute."
+msgstr ""
+
+#: website/pages/index.vue:57
+msgid "A tool to help you track down COVID-19 vaccine appointment openings at your state's pharmacies. Updated every minute."
+msgstr ""
+
+#: website/layouts/default.vue:6
+msgid "About"
+msgstr ""
+
+#: website/components/LocationFiltersForm.vue:2
+#: website/components/LocationPagination.vue:11
+msgid "All"
+msgstr ""
+
+#: website/components/LocationFiltersForm.vue:2
+msgid "All doses"
+msgstr ""
+
+#: website/components/Instructions.vue:19
+msgid "All supported locations in {state} are scanned on a regular basis and this page is updated with any available appointments in the state. If you don't see locations near you right now, appointments can come and go quickly so try visiting the page at different times throughout the day."
+msgstr ""
+
+#: website/components/LocationFiltersForm.vue:2
+msgid "Any distance"
+msgstr ""
+
+#: website/components/News.vue:7
+msgid "Any feedback is welcome: <a href=\"m&#97;ilto&#58;v%&#54;1&#99;&#99;&#105;ne&#64;nic&#107;%6D&#46;org\">vacc&#105;ne&#64;ni&#99;k&#109;&#46;o&#114;&#103;</a> or <a href=\"https://twitter.com/nickblah\">@nickblah</a>. And if you're a coder and have interest in helping out on <a href=\"https://github.com/GUI/covid-vaccine-finder/issues\">GitHub</a>, that would be dandy (although the code's still messy)!"
+msgstr ""
+
+#: website/components/LocationMap.vue:2
+msgid "Appointment status unknown"
+msgstr ""
+
+#: website/components/LocationFiltersForm.vue:2
+msgid "Appointment type"
+msgstr ""
+
+#: website/components/LocationDetails.vue:2
+msgid "Appointments available as of"
+msgstr ""
+
+#: website/components/LocationMap.vue:2
+msgid "Appointments not available"
+msgstr ""
+
+#: website/components/LocationMap.vue:2
+msgid "Appointments recently available"
+msgstr ""
+
+#: website/components/LocationDetails.vue:14
+msgid "At last check, this location does not carry the vaccine at all, so we have not fetched any appointments."
+msgstr ""
+
+#: website/components/Instructions.vue:11
+msgid "Be sure to visit your own state's official vaccination website for detailed information about your county's vaccine options and review whether or not you are eligible yet."
+msgstr ""
+
+#: website/components/Navbar.vue:2
+msgid "Check for New Appointments"
+msgstr ""
+
+#: website/layouts/default.vue:18
+msgid "DirectRelief"
+msgstr ""
+
+#: website/layouts/default.vue:14
+msgid "Donate"
+msgstr ""
+
+#: website/layouts/default.vue:18
+msgid "Donate to DirectRelief's efforts to help with the pandemic."
+msgstr ""
+
+#: website/layouts/default.vue:16
+msgid "Donate to UNICEF's efforts to help the global vaccination rollout."
+msgstr ""
+
+#: website/components/LocationFiltersForm.vue:2
+msgid "Enter a 5 digit ZIP code"
+msgstr ""
+
+#: website/layouts/default.vue:7
+msgid "Finding vaccines seems tough! Hopefully things will become easier soon, but in the meantime, maybe this can help. If you find this useful, feel free to share it around. Get in touch with any questions: <a href=\"m&#97;ilto&#58;v%&#54;1&#99;&#99;&#105;ne&#64;nic&#107;%6D&#46;org\">vacc&#105;ne&#64;ni&#99;k&#109;&#46;o&#114;&#103;</a>, <a href=\"https://twitter.com/nickblah\">@nickblah</a>, or <a href=\"https://github.com/GUI/covid-vaccine-finder/issues\">GitHub</a>."
+msgstr ""
+
+#: website/components/AppointmentTimes.vue:134
+msgid "First Dose"
+msgstr ""
+
+#: website/layouts/default.vue:22
+msgid "For Developers:"
+msgstr ""
+
+#: website/layouts/default.vue:22
+msgid "GitHub"
+msgstr ""
+
+#: website/layouts/default.vue:22
+msgid "Help translate this website"
+msgstr ""
+
+#: website/pages/api.vue:2
+msgid "Here's all of the underlying data in JSON format used for this tool. While I'm trying to maintain compatibility with the existing format, things can sometimes move fast, so I'm hesitant to declare this a fully stable API. But hopefully it should be stable-ish if you want to build anything on top of it, just be aware things may change."
+msgstr ""
+
+#: website/components/Instructions.vue:22
+msgid "Hide instructions"
+msgstr ""
+
+#: website/layouts/default.vue:11
+msgid "I'd like to add additional functionality (scanning additional pharmacies and sending e-mail or text notifications when appointments open up) if this proves useful and as time permits. If you're a computer programmer and would like to contribute, the project is <a href=\"https://github.com/GUI/covid-vaccine-finder\">open source on GitHub</a> (it's currently very messy and undocumented, though)."
+msgstr ""
+
+#: website/layouts/default.vue:14
+msgid "I've received a lot of requests to donate to this project, which I really appreciate. Hearing of people's success stories of finding vaccines is reward enough, but if you would like to donate, please consider the following options:"
+msgstr ""
+
+#: website/components/Instructions.vue:15
+msgid "If you decide you want to find an appointment at a local pharmacy (and are currently eligible for the vaccine), this tool might be able to help."
+msgstr ""
+
+#: website/components/LocationFiltersForm.vue:2
+msgid "Johnson and Johnson"
+msgstr ""
+
+#: website/components/LocationDetails.vue:23
+msgid "Last checked"
+msgstr ""
+
+#: website/components/ToolStatus.vue:2
+msgid "Last Checked"
+msgstr ""
+
+#: website/components/LocationFiltersForm.vue:2
+msgid "Moderna"
+msgstr ""
+
+#: website/components/LocationDetails.vue:23
+msgid "never"
+msgstr ""
+
+#: website/components/LocationPagination.vue:11
+msgid "Next"
+msgstr ""
+
+#: website/components/LocationDetails.vue:14
+msgid "No appointments available as of last check"
+msgstr ""
+
+#: website/pages/_state.vue:2
+msgid "No open appointments for your search can currently be found. Try expanding your search or check again later (appointments can come and go quickly)."
+msgstr ""
+
+#: website/components/LocationPagination.vue:11
+msgid "of {count} results"
+msgstr ""
+
+#: website/components/LocationFiltersForm.vue:2
+msgid "Pfizer"
+msgstr ""
+
+#: website/components/LocationFiltersForm.vue:2
+#: website/components/ToolStatus.vue:2
+msgid "Pharmacy"
+msgstr ""
+
+#: website/components/LocationPagination.vue:5
+msgid "Previous"
+msgstr ""
+
+#: website/components/Instructions.vue:17
+#: website/pages/index.vue:2
+msgid "Rather than searching around on each pharmacy's website, we'll automatically scan the pharmacy websites and show you any available appointments we can find on one page."
+msgstr ""
+
+#: website/components/ToolStatus.vue:2
+msgid "Scanning"
+msgstr ""
+
+#: website/pages/index.vue:4
+msgid "Scanning {chain_count} pharmacy chains ({store_count} stores) in {state}"
+msgstr ""
+
+#: website/components/LocationFiltersForm.vue:3
+msgid "Search"
+msgstr ""
+
+#: website/components/LocationFiltersForm.vue:2
+msgid "Search for appointments near"
+msgstr ""
+
+#: website/components/LocationFiltersForm.vue:2
+msgid "Second dose only"
+msgstr ""
+
+#: website/components/AppointmentTimes.vue:137
+#: website/components/AppointmentTimes.vue:140
+msgid "Second Dose Only - {type}"
+msgstr ""
+
+#: website/layouts/default.vue:22
+msgid "Share by E-mail"
+msgstr ""
+
+#: website/layouts/default.vue:22
+msgid "Share on Facebook"
+msgstr ""
+
+#: website/layouts/default.vue:22
+msgid "Share on Hacker News"
+msgstr ""
+
+#: website/layouts/default.vue:22
+msgid "Share on LinkedIn"
+msgstr ""
+
+#: website/layouts/default.vue:22
+msgid "Share on Pinterest"
+msgstr ""
+
+#: website/layouts/default.vue:22
+msgid "Share on Reddit"
+msgstr ""
+
+#: website/layouts/default.vue:22
+msgid "Share on Tumblr"
+msgstr ""
+
+#: website/layouts/default.vue:22
+msgid "Share on Twitter"
+msgstr ""
+
+#: website/layouts/default.vue:22
+msgid "Share on WhatsApp"
+msgstr ""
+
+#: website/components/TopContent.vue:6
+msgid "Show instructions"
+msgstr ""
+
+#: website/components/LocationFiltersForm.vue:3
+msgid "Show locations without current appointments"
+msgstr ""
+
+#: website/components/LocationPagination.vue:11
+msgid "Showing"
+msgstr ""
+
+#: website/components/Instructions.vue:2
+msgid "Step 1: Review your county's availability and {state}'s eligibility"
+msgstr ""
+
+#: website/components/Instructions.vue:15
+msgid "Step 2: Use this tool to try and find a pharmacy appointment"
+msgstr ""
+
+#: website/pages/api.vue:5
+msgid "Subscribe to the <a href=\"https://github.com/GUI/covid-vaccine-spotter/discussions/27\">API Changelog</a> discussion on GitHub for announcements on any API changes or additions."
+msgstr ""
+
+#: website/components/News.vue:3
+msgid "Thanks to the developer community, Vaccine Spotter is now available in Spanish! 💫 There may still be a few gaps, but most of it should be translated. I've also made some other tweaks to hopefully make the site easier to navigate and use."
+msgstr ""
+
+#: website/pages/api.vue:251
+msgid "The machine readable data behind the COIVD-19 Vaccine Spotter tool. Very beta."
+msgstr ""
+
+#: website/components/ToolStatus.vue:2
+msgid "Tool Status"
+msgstr ""
+
+#: website/layouts/default.vue:3
+msgid "Unfortunately, this website is not compatible with your web browser. Sorry!<br />Please <a href=\"https://browser-update.org/update-browser.html\">upgrade your browser</a> to use this website."
+msgstr ""
+
+#: website/layouts/default.vue:16
+msgid "UNICEF"
+msgstr ""
+
+#: website/components/LocationFiltersForm.vue:2
+msgid "Unknown"
+msgstr ""
+
+#: website/components/LocationDetails.vue:14
+msgid "Unknown status"
+msgstr ""
+
+#: website/components/DisplayLocalTime.vue:2
+msgid "Unknown Time"
+msgstr ""
+
+#: website/components/Navbar.vue:2
+#: website/layouts/default.vue:18
+#: website/pages/api.vue:250
+#: website/pages/index.vue:56
+msgid "Vaccine Spotter"
+msgstr ""
+
+#: website/components/LocationFiltersForm.vue:2
+msgid "Vaccine type"
+msgstr ""
+
+#: website/layouts/default.vue:22
+#: website/pages/api.vue:250
+msgid "Very Beta API"
+msgstr ""
+
+#: website/components/AppointmentTimes.vue:4
+msgid "View {count} other appointment times"
+msgstr ""
+
+#: website/components/AppointmentTimes.vue:2
+msgid "View available appointment times on the {name} website."
+msgstr ""
+
+#: website/components/LocationDetails.vue:12
+#: website/components/LocationDetails.vue:21
+msgid "Visit {name} Website"
+msgstr ""
+
+#: website/components/Instructions.vue:6
+msgid "Visit <a href=\"https://covid19.colorado.gov/for-coloradans/vaccine/where-can-i-get-vaccinated\" class=\"text-white\"><strong class=\"fw-bold\">Colorado.gov</strong></a> for detailed information about your county's vaccine options and review whether or not you are eligible yet."
+msgstr ""
+
+#: website/components/Instructions.vue:11
+msgid "Visit Colorado.gov"
+msgstr ""
+
+#: website/components/LocationDetails.vue:16
+#: website/components/ToolStatusRow.vue:15
+msgid "We haven't collected any data for this pharmacy yet."
+msgstr ""
+
+#: website/layouts/default.vue:19
+msgid "While I encourage donating to other charities directly, if you'd like to support Vaccine Spotter, thank you! I will <a href=\"https://givebutter.com/vaccinespotter\" target=\"_blank\" rel=\"noopener\">accept contributions</a> (<em>not</em> tax deductible) to cover website hosting costs. Any surplus contributions I will donate to these other charities."
+msgstr ""
+
+#: website/components/LocationFiltersForm.vue:2
+msgid "Within"
+msgstr ""
+
+#: website/components/Instructions.vue:13
+#: website/components/Instructions.vue:9
+msgid "You may be able to signup for vaccines with a health care provider or there may be other options in your area, in which case you may not need this tool."
+msgstr ""

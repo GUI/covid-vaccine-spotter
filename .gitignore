@@ -14,3 +14,4 @@
 /terraform/*.tfstate*
 /terraform/terraform.tfvars
 /.werf_secret_key
+/localazy.keys.json
