@@ -104,7 +104,7 @@ class Db {
       await runShell("rclone", [
         "copyto",
         "-v",
-        "--checksum",
+        "--ignore-checksum",
         "--no-update-modtime",
         "--s3-no-head",
         path,
@@ -154,7 +154,7 @@ class Db {
       await runShell("rclone", [
         "copyto",
         "-v",
-        "--checksum",
+        "--ignore-checksum",
         "--no-update-modtime",
         "--s3-no-head",
         "--header-upload",
@@ -337,13 +337,11 @@ class Db {
       await runShell("rclone", [
         "copyto",
         "-v",
-        "--checksum",
+        "--ignore-checksum",
         "--no-update-modtime",
         "--s3-no-head",
         "--header-upload",
         "Cache-Control: public, max-age=3600",
-        "--header-upload",
-        "Content-Encoding: gzip",
         path,
         bucketPath,
       ]);
@@ -377,13 +375,11 @@ class Db {
       await runShell("rclone", [
         "copyto",
         "-v",
-        "--checksum",
+        "--ignore-checksum",
         "--no-update-modtime",
         "--s3-no-head",
         "--header-upload",
         "Cache-Control: public, max-age=3600",
-        "--header-upload",
-        "Content-Encoding: gzip",
         path,
         bucketPath,
       ]);
@@ -450,13 +446,11 @@ class Db {
       await runShell("rclone", [
         "copyto",
         "-v",
-        "--checksum",
+        "--ignore-checksum",
         "--no-update-modtime",
         "--s3-no-head",
         "--header-upload",
         "Cache-Control: public, max-age=3600",
-        "--header-upload",
-        "Content-Encoding: gzip",
         path,
         bucketPath,
       ]);
