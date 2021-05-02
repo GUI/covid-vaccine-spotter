@@ -27,10 +27,6 @@ function logError(message, err) {
   rollbar.error(err);
 }
 
-process.on("uncaughtException", (err) => {
-  logError("Uncaught exception: ", err);
-});
-
 module.exports = async (task, sleepTime) => {
   const runOnce = process.env.RUN_ONCE === "true";
   // eslint-disable-next-line no-constant-condition
