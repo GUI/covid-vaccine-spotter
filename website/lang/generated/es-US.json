@@ -11,7 +11,7 @@
   "Any feedback is welcome: <a href=\"m&#97;ilto&#58;v%&#54;1&#99;&#99;&#105;ne&#64;nic&#107;%6D&#46;org\">vacc&#105;ne&#64;ni&#99;k&#109;&#46;o&#114;&#103;</a> or <a href=\"https://twitter.com/nickblah\">@nickblah</a>. And if you're a coder and have interest in helping out on <a href=\"https://github.com/GUI/covid-vaccine-finder/issues\">GitHub</a>, that would be dandy (although the code's still messy)!": "Cualquier comentario es bienvenido: <a href=\"m&#97;ilto&#58;v%&#54;1&#99;&#99;&#105;ne&#64;nic&#107;%6D&#46;org\">vacc&#105;ne&#64;ni&#99;k&#109;&#46;o&#114;&#103;</a> o <a href=\"https://twitter.com/nickblah\">@nickblah</a>. ¡Y si eres un programador(a) y tienes interés en ayudar en <a href=\"https://github.com/GUI/covid-vaccine-finder/issues\">GitHub</a>, eso sería estupendo (aunque el código sigue siendo complicado)!",
   "Appointment status unknown": "Se desconoce el estado de las citas",
   "Appointment type": "Tipo de cita",
-  "Appointments available as of": "Citas disponibles a partir del",
+  "Appointments available as of": "Citas disponibles actualizadas el",
   "Appointments not available": "Citas no disponibles",
   "Appointments recently available": "Citas disponibles recientemente",
   "At last check, this location does not carry the vaccine at all, so we have not fetched any appointments.": "En la última verificación, esta ubicación no lleva la vacuna en absoluto, y debido a esto no hemos obtenido ninguna cita.",

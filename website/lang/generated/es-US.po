@@ -45,7 +45,7 @@ msgid "Appointment type"
 msgstr "Tipo de cita"
 
 msgid "Appointments available as of"
-msgstr "Citas disponibles a partir del"
+msgstr "Citas disponibles actualizadas el"
 
 msgid "Appointments not available"
 msgstr "Citas no disponibles"
