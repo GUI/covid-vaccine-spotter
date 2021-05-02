@@ -66,6 +66,9 @@ class Db {
   }
 
   static async backupPrivate() {
+    process.env.RCLONE_S3_ACCESS_KEY_ID = process.env.BACKUPS_RCLONE_S3_ACCESS_KEY_ID;
+    process.env.RCLONE_S3_SECRET_ACCESS_KEY = process.env.BACKUPS_RCLONE_S3_SECRET_ACCESS_KEY;
+
     const now = DateTime.utc();
     const filename = `${
       knexConfig.development.connection.database
@@ -106,11 +109,14 @@ class Db {
         `:s3:${process.env.BACKUPS_BUCKET}/database/${knexConfig.development.connection.host}/${filename}`,
       ]);
     } finally {
-      // await del(path);
+      await del(path);
     }
   }
 
   static async backupPublic() {
+    process.env.RCLONE_S3_ACCESS_KEY_ID = process.env.BACKUPS_RCLONE_S3_ACCESS_KEY_ID;
+    process.env.RCLONE_S3_SECRET_ACCESS_KEY = process.env.BACKUPS_RCLONE_S3_SECRET_ACCESS_KEY;
+
     const path = `tmp/vaccinespotter_public.pgdump`;
     try {
       await runShell(
@@ -158,6 +164,9 @@ class Db {
   }
 
   static async auditDump() {
+    process.env.RCLONE_S3_ACCESS_KEY_ID = process.env.BACKUPS_RCLONE_S3_ACCESS_KEY_ID;
+    process.env.RCLONE_S3_SECRET_ACCESS_KEY = process.env.BACKUPS_RCLONE_S3_SECRET_ACCESS_KEY;
+
     const knex = Store.knex();
 
     const result = await knex.raw(

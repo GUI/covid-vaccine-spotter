@@ -1,0 +1,33 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ .Chart.Name }}-db-backup-private-cronjob
+  labels:
+    app: {{ .Chart.Name }}-db-backup-private
+spec:
+  schedule: "43 1 * * *"
+  concurrencyPolicy: Forbid
+  suspend: false
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        metadata:
+          labels:
+            app: {{ .Chart.Name }}-db-backup-private
+          annotations:
+            checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+        spec:
+          restartPolicy: Never
+          imagePullSecrets:
+            - name: {{ .Chart.Name }}-container-registry-secret
+          containers:
+            - name: {{ .Chart.Name }}-db-backup-private
+              image: {{ index .Values.werf.image "vaccinespotter" }}
+              args: ["bin/run", "db:backup:private"]
+              env:
+                - name: LOG_LEVEL
+                  value: notice
+              envFrom:
+                - secretRef:
+                    name: {{ .Chart.Name }}-secrets
