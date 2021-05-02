@@ -66,8 +66,10 @@ class Db {
   }
 
   static async backupPrivate() {
-    process.env.RCLONE_S3_ACCESS_KEY_ID = process.env.BACKUPS_RCLONE_S3_ACCESS_KEY_ID;
-    process.env.RCLONE_S3_SECRET_ACCESS_KEY = process.env.BACKUPS_RCLONE_S3_SECRET_ACCESS_KEY;
+    process.env.RCLONE_S3_ACCESS_KEY_ID =
+      process.env.BACKUPS_RCLONE_S3_ACCESS_KEY_ID;
+    process.env.RCLONE_S3_SECRET_ACCESS_KEY =
+      process.env.BACKUPS_RCLONE_S3_SECRET_ACCESS_KEY;
 
     const now = DateTime.utc();
     const filename = `${
@@ -114,8 +116,10 @@ class Db {
   }
 
   static async backupPublic() {
-    process.env.RCLONE_S3_ACCESS_KEY_ID = process.env.BACKUPS_RCLONE_S3_ACCESS_KEY_ID;
-    process.env.RCLONE_S3_SECRET_ACCESS_KEY = process.env.BACKUPS_RCLONE_S3_SECRET_ACCESS_KEY;
+    process.env.RCLONE_S3_ACCESS_KEY_ID =
+      process.env.BACKUPS_RCLONE_S3_ACCESS_KEY_ID;
+    process.env.RCLONE_S3_SECRET_ACCESS_KEY =
+      process.env.BACKUPS_RCLONE_S3_SECRET_ACCESS_KEY;
 
     const path = `tmp/vaccinespotter_public.pgdump`;
     try {
@@ -164,8 +168,10 @@ class Db {
   }
 
   static async auditDump() {
-    process.env.RCLONE_S3_ACCESS_KEY_ID = process.env.BACKUPS_RCLONE_S3_ACCESS_KEY_ID;
-    process.env.RCLONE_S3_SECRET_ACCESS_KEY = process.env.BACKUPS_RCLONE_S3_SECRET_ACCESS_KEY;
+    process.env.RCLONE_S3_ACCESS_KEY_ID =
+      process.env.BACKUPS_RCLONE_S3_ACCESS_KEY_ID;
+    process.env.RCLONE_S3_SECRET_ACCESS_KEY =
+      process.env.BACKUPS_RCLONE_S3_SECRET_ACCESS_KEY;
 
     const knex = Store.knex();
 
