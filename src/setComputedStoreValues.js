@@ -13,6 +13,7 @@ module.exports = (patch) => {
     patch.appointments_available = true;
   }
 
+
   const appointmentTypes = {};
   const appointmentVaccineTypes = {};
 

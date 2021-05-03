@@ -25,7 +25,6 @@
             v-model="queryRadius"
             name="radius"
             class="form-select form-select-lg mb-3"
-            @change="submitForm"
           >
             <option value="">{{ $t("Any distance") }}</option>
             <option value="5">
@@ -56,7 +55,6 @@
             v-model="queryAppointmentType"
             name="appointment_type"
             class="form-select form-select-sm mb-3"
-            @change="submitForm"
           >
             <option value="">
               {{ $t("All doses") }}
@@ -75,7 +73,6 @@
             v-model="queryVaccineType"
             name="vaccine_type"
             class="form-select form-select-sm mb-3"
-            @change="submitForm"
           >
             <option value="">
               {{ $t("All") }}
@@ -103,7 +100,6 @@
             v-model="queryProvider"
             name="provider"
             class="form-select form-select-sm mb-3"
-            @change="submitForm"
           >
             <option value="">{{ $t("All") }}</option>
             <option
@@ -116,6 +112,20 @@
             </option>
           </select>
         </div>
+        <div class="col-sm">
+          <label for="datepicker" class="form-label form-label-sm"
+            >Choose Date</label
+          >
+          <input
+            id="datepicker"
+            v-model="queryDate"
+            type="date"
+            name="datepicker"
+            value=""
+            min="`${currentDate}`"
+            max="2022-12-31"
+          />
+        </div>
         <div class="col-xl-auto">
           <div class="form-check">
             <input
@@ -125,7 +135,6 @@
               value="true"
               class="form-check-input"
               type="checkbox"
-              @change="submitForm"
             />
             <label class="form-check-label" for="include_all">
               {{ $t("Show locations without current appointments") }}
@@ -149,7 +158,6 @@ export default {
       pendingQueryParams: {},
     };
   },
-
   computed: {
     queryZip: {
       get() {
@@ -159,7 +167,6 @@ export default {
         this.pendingQueryParams.zip = value;
       },
     },
-
     queryRadius: {
       get() {
         return this.$route.query.radius || "";
@@ -168,7 +175,6 @@ export default {
         this.pendingQueryParams.radius = value;
       },
     },
-
     queryAppointmentType: {
       get() {
         return this.$route.query.appointment_type || "";
@@ -177,7 +183,6 @@ export default {
         this.pendingQueryParams.appointment_type = value;
       },
     },
-
     queryVaccineType: {
       get() {
         return this.$route.query.vaccine_type || "";
@@ -186,7 +191,6 @@ export default {
         this.pendingQueryParams.vaccine_type = value;
       },
     },
-
     queryProvider: {
       get() {
         return this.$route.query.provider || "";
@@ -195,7 +199,14 @@ export default {
         this.pendingQueryParams.provider = value;
       },
     },
-
+    queryDate: {
+      get() {
+        return this.$route.query.date || "";
+      },
+      set(value) {
+        this.pendingQueryParams.date = value;
+      },
+    },
     queryIncludeAll: {
       get() {
         return this.$route.query.include_all || false;
@@ -204,36 +215,39 @@ export default {
         this.pendingQueryParams.include_all = value;
       },
     },
+    currentDate() {
+      let today = new Date();
+      const dd = today.getDate();
+      const mm = today.getMonth() + 1;
+      const yyyy = today.getFullYear();
+      today = `${mm}-${dd}-${yyyy}`;
+      return today;
+    },
   },
-
   methods: {
     submitForm() {
       const newQuery = { ...this.$route.query, ...this.pendingQueryParams };
-
       if (newQuery.zip === "") {
         delete newQuery.zip;
       }
-
       if (newQuery.radius === "") {
         delete newQuery.radius;
       }
-
       if (newQuery.appointment_type === "") {
         delete newQuery.appointment_type;
       }
-
       if (newQuery.vaccine_type === "") {
         delete newQuery.vaccine_type;
       }
-
       if (newQuery.provider === "") {
         delete newQuery.provider;
       }
-
+      if (newQuery.date === "") {
+        delete newQuery.date;
+      }
       if (newQuery.include_all === false) {
         delete newQuery.include_all;
       }
-
       this.$router.push({
         path: this.$route.path,
         query: newQuery,
@@ -248,16 +262,13 @@ export default {
 .location-filters {
   margin-bottom: 1rem;
 }
-
 .location-filters .form-label {
   font-weight: bold;
   margin-bottom: 0.2rem;
 }
-
 .location-filters .form-label-sm {
   font-size: 0.875rem;
 }
-
 @media (min-width: 576px) {
   .location-filters .btn-primary {
     margin-top: 1.6rem;

@@ -74,6 +74,7 @@ export const getters = {
     const queryVaccineType = rootState.route.query.vaccine_type;
     const queryProvider = rootState.route.query.provider;
     const queryIncludeAll = rootState.route.query.include_all;
+    const queryDate = rootState.route.query.date;
     locations = locations.filter((location) => {
       let include = true;
 
@@ -105,6 +106,32 @@ export const getters = {
         location.properties.provider_brand_id !== parseInt(queryProvider, 10)
       ) {
         include = false;
+      }
+
+      const datesData = {};
+      Object.keys(location.properties).forEach((item) => {
+        datesData[item] = location.properties[item];
+      });
+      const appt = datesData.appointments;
+      let found = false;
+      if (queryDate) {
+        if (appt === null || appt.length === 0) {
+          include = false;
+        } else {
+          appt.forEach((slot) => {
+            let string = JSON.stringify(slot.time);
+            string = string.slice(1, 11);
+            if (queryDate === string) {
+              found = true;
+            }
+          });
+          if (!found) {
+            include = false;
+          }
+        }
+        if (datesData.provider === "rite_aid" || datesData.provider === "cvs") {
+          include = true;
+        }
       }
 
       if (
@@ -166,7 +193,6 @@ export const getters = {
         locations.sort((a, b) => a.distance - b.distance);
       }
     }
-
     return locations;
   },
 };
