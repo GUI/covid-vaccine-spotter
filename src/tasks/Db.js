@@ -178,15 +178,14 @@ class Db {
     const result = await knex.raw(
       "SELECT MIN(action_tstamp_tx) AS min_action_tstamp_tx, MAX(action_tstamp_tx) AS max_action_tstamp_tx FROM audit.log"
     );
-    console.info(result.rows[0]);
     let time = DateTime.fromJSDate(result.rows[0].min_action_tstamp_tx)
       .toUTC()
       .startOf("day");
-    console.info(time.toISO());
     const maxTime = DateTime.fromJSDate(result.rows[0].max_action_tstamp_tx)
       .toUTC()
       .startOf("day");
-    console.info(maxTime.toISO());
+
+    logger.info(`Audit data range: ${time.toISO()} - ${maxTime.toISO()}`);
 
     const existingPublicFilesCmd = await runShell("rclone", [
       "lsjson",
@@ -214,7 +213,7 @@ class Db {
 
       await Db.auditDumpPublicDay(startTime, endTime, existingPublicFiles);
       await Db.auditDumpPrivateDay(startTime, endTime, existingPrivateFiles);
-      // await Db.auditPruneDay(startTime, endTime);
+      await Db.auditPruneDay(startTime, endTime);
 
       time = endTime;
     }
@@ -258,9 +257,11 @@ class Db {
     const filename = `${startTime.toISODate()}.jsonl.gz`;
     const bucketPath = `:s3:${process.env.WEBSITE_BUCKET}/database/history/${filename}`;
     if (existingPublicFiles.includes(filename)) {
-      console.info(`${bucketPath} already exists, skipping`);
+      logger.info(`${bucketPath} already exists, skipping`);
       return;
     }
+
+    logger.info(`Creating public audit dump: ${filename}`);
 
     const sql = `
       COPY (
@@ -354,9 +355,11 @@ class Db {
     const filename = `${startTime.toISODate()}.csv.gz`;
     const bucketPath = `:s3:${process.env.BACKUPS_BUCKET}/database/history/${filename}`;
     if (existingPrivateFiles.includes(filename)) {
-      console.info(`${bucketPath} already exists, skipping`);
+      logger.info(`${bucketPath} already exists, skipping`);
       return;
     }
+
+    logger.info(`Creating private audit dump: ${filename}`);
 
     const sql = `
       COPY (
@@ -389,13 +392,16 @@ class Db {
   }
 
   static async auditPruneDay(startTime, endTime) {
+    logger.info(`Pruning audit data: ${startTime.toISO()} - ${endTime.toISO()}`);
+
+    const knex = Store.knex();
+
     const sql = `
       DELETE
       FROM audit.log
       WHERE action_tstamp_tx >= '${startTime.toISO()}'
         AND action_tstamp_tx < '${endTime.toISO()}'`;
-
-    logger.info(sql);
+    await knex.raw(sql);
   }
 
   static async dumpPublicStores() {
@@ -440,6 +446,9 @@ class Db {
     const filename = `stores.jsonl.gz`;
     const path = `tmp/${filename}`;
     const bucketPath = `:s3:${process.env.WEBSITE_BUCKET}/database/${filename}`;
+
+    logger.info(`Creating public stores dump: ${filename}`);
+
     try {
       await Db.copyToFile(sql, path);
 
