@@ -2,8 +2,8 @@ const { default: PQueue } = require("p-queue");
 const _ = require("lodash");
 const { DateTime } = require("luxon");
 const { curly } = require("node-libcurl");
-const sleep = require("sleep-promise");
 const { Mutex } = require("async-mutex");
+const pThrottle = require("p-throttle");
 const logger = require("../../logger");
 const normalizedVaccineTypes = require("../../normalizedVaccineTypes");
 const setComputedStoreValues = require("../../setComputedStoreValues");
@@ -22,6 +22,11 @@ class Appointments {
     Appointments.processedPostalCodes = {};
     Appointments.processedProviderLocationIds = {};
     Appointments.requestsMade = 0;
+    // Keep at 6 requests per second.
+    Appointments.fetchThrottle = pThrottle({
+      limit: 1,
+      interval: 167,
+    });
 
     const stores = await Store.query()
       .select(Store.raw("stores.*, g.id AS grid_id"))
@@ -77,7 +82,9 @@ class Appointments {
 
     const lastFetched = DateTime.utc().toISO();
 
-    const slotsResp = await Appointments.fetchSlots(store);
+    const slotsResp = await Appointments.fetchThrottle(async () =>
+      Appointments.fetchSlots(store)
+    )();
 
     for (const location of slotsResp.data) {
       const providerLocationId = location.loc_no.replace(/^625/, "620");
@@ -167,13 +174,10 @@ class Appointments {
     }
 
     Appointments.processedPostalCodes[store.postal_code] = true;
-
-    await sleep(_.random(250, 750));
   }
 
   static async fetchSlots(store) {
-    await sleep(_.random(250, 750));
-
+    logger.info(`${DateTime.now().toISO()} fetchSlots`);
     const startDate = DateTime.now().setZone(store.time_zone);
     const endDate = startDate.plus({ days: 10 });
     const radiusMiles = 50;
@@ -187,20 +191,12 @@ class Appointments {
         ...defaultCurlOpts,
         httpHeader: [
           "User-Agent: VaccineSpotter.org",
-          "Accept: application/json, text/plain, */*",
-          "Accept-Language: en-US,en;q=0.5",
-          "Referer: https://www.kroger.com/rx/covid-vaccine",
-          "X-Sec-Clge-Req-Type: ajax",
-          "Pragma: no-cache",
-          "rx-channel: WEB",
-          "DNT: 1",
-          "Connection: keep-alive",
-          "Cache-Control: no-cache",
-          "TE: Trailers",
+          "Accept: application/json",
+          `X-KT-VaccineSpotterId: ${process.env.KROGER_VACCINESPOTTER_ID}`,
         ],
-        proxy: process.env.KROGER_PROXY_SERVER,
-        proxyUsername: process.env.KROGER_PROXY_USERNAME,
-        proxyPassword: process.env.KROGER_PROXY_PASSWORD,
+        // proxy: process.env.KROGER_PROXY_SERVER,
+        // proxyUsername: process.env.KROGER_PROXY_USERNAME,
+        // proxyPassword: process.env.KROGER_PROXY_PASSWORD,
         sslVerifyPeer: false,
       }
     );

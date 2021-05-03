@@ -392,7 +392,9 @@ class Db {
   }
 
   static async auditPruneDay(startTime, endTime) {
-    logger.info(`Pruning audit data: ${startTime.toISO()} - ${endTime.toISO()}`);
+    logger.info(
+      `Pruning audit data: ${startTime.toISO()} - ${endTime.toISO()}`
+    );
 
     const knex = Store.knex();
 

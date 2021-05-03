@@ -125,6 +125,16 @@ async function optionalLoopEvery(task) {
     return optionalLoopEvery(Appointments.refreshStores);
   });
 
+  program.command("providers:kroger:find-stores").action(async () => {
+    const Stores = require("../src/providers/Kroger/Stores");
+    return optionalLoopEvery(Stores.findStores);
+  });
+
+  program.command("providers:kroger:refresh-appointments").action(async () => {
+    const Appointments = require("../src/providers/Kroger/Appointments");
+    return optionalLoopEvery(Appointments.refreshStores);
+  });
+
   program.command("providers:publix:find-stores").action(async () => {
     const Stores = require("../src/providers/Publix/Stores");
     return optionalLoopEvery(Stores.findStores);
