@@ -26,7 +26,7 @@ class Appointments {
     // Keep at 6 requests per second.
     Appointments.fetchThrottle = pThrottle({
       limit: 1,
-      interval: 500,
+      interval: 1000,
     });
 
     const stores = await Store.query()
@@ -187,7 +187,7 @@ class Appointments {
   }
 
   static async fetchSlots(store) {
-    logger.info(`${DateTime.now().toISO()} fetchSlots`);
+    logger.notice(`${DateTime.now().toISO()} fetchSlots`);
     const startDate = DateTime.now().setZone(store.time_zone);
     const endDate = startDate.plus({ days: 10 });
     const radiusMiles = 50;
