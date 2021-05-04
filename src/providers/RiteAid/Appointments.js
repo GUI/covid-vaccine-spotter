@@ -41,23 +41,49 @@ class Appointments {
       appointments_last_fetched: DateTime.utc().toISO(),
       appointments_available: false,
       appointments_raw: {},
+      appointment_types: {},
+      appointment_vaccine_types: {},
     };
 
     const slotsResp = await Appointments.fetchSlots(store);
     patch.appointments_raw = slotsResp.body;
 
-    if (
-      patch.appointments_raw?.Data?.slots?.["1"] ||
-      patch.appointments_raw?.Data?.slots?.["2"]
-    ) {
-      patch.appointments_available = true;
+    if (patch.appointments_raw?.Data?.slots) {
+      // The slot numbers indicate vaccine types. Buried in
+      // https://www.riteaid.com/etc.clientlibs/riteaid-web/clientlibs/clientlib-base.min.8d3379aafd4018fd7263848d02b792c5.js
+      //
+      // 9 - Moderna Dose 1
+      // 10 - Moderna Dose 2
+      // 11 - Pfizer Dose 1
+      // 12 - Pfizer Dose 2
+      // 13 - Johnson & Johnson
+      //
+      // For Moderna & Pfizer, the dose 1 slot value seems to need to be true
+      // in order to book, but the dose 2 slot does not actually have to be
+      // true. So that's why we are only checking the dose 1 slots.
+      if (patch.appointments_raw.Data.slots["9"]) {
+        patch.appointments_available = true;
+        patch.appointment_vaccine_types.moderna = true;
+      }
+
+      if (patch.appointments_raw.Data.slots["11"]) {
+        patch.appointments_available = true;
+        patch.appointment_vaccine_types.pfizer = true;
+      }
+
+      if (patch.appointments_raw.Data.slots["13"]) {
+        patch.appointments_available = true;
+        patch.appointment_vaccine_types.jj = true;
+      }
+    }
+
+    // Rite Aid only appears to book all needed doses, so there is no
+    // possibility of booking just the first or just the second dose by itself.
+    if (patch.appointments_available) {
+      patch.appointment_types.all_doses = true;
     }
 
     setComputedStoreValues(patch);
-
-    // Since vaccine types are only set at the store level, don't use the
-    // normally computed value by setComputedStoreValues.
-    delete patch.appointment_vaccine_types;
 
     await Store.query().findById(store.id).patch(patch);
 
