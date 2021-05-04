@@ -13,67 +13,75 @@ const { Provider } = require("../../models/Provider");
 const { ProviderBrand } = require("../../models/ProviderBrand");
 
 class Appointments {
-  static async refreshStores() {
-    logger.notice("Begin refreshing appointments for all stores...");
+  static refreshStores(provider_id, url) {
+    return async function () {
+      logger.notice(`Begin refreshing appointments for all stores in ${provider_id}...`);
 
-    await Provider.query()
-      .insert({
-        id: "comassvax",
-      })
-      .onConflict(["id"])
-      .merge();
+      const search_url = `${url}/clinic/search`;
 
-    await ProviderBrand.query()
-      .insert({
-        provider_id: "comassvax",
-        key: "comassvax",
-        name: "PrepMod",
-        url: "https://www.comassvax.org/clinic/search",
-      })
-      .onConflict(["provider_id", "key"])
-      .merge();
-    Appointments.providerBrand = await ProviderBrand.query().findOne({
-      provider_id: "comassvax",
-      key: "comassvax",
-    });
-
-    Appointments.patches = {};
-
-    let pageNum = 1;
-    let hasNextPage = true;
-    while (hasNextPage) {
-      const lastFetched = DateTime.utc().toISO();
-      const pageResp = await Appointments.fetchSearchPage(pageNum);
-      hasNextPage = await Appointments.processSearchPage(
-        pageNum,
-        pageResp,
-        lastFetched
-      );
-
-      pageNum += 1;
-    }
-
-    for (const patch of Object.values(Appointments.patches)) {
-      patch.appointments = _.orderBy(patch.appointments, ["time", "type"]);
-      setComputedStoreValues(patch);
-
-      await Store.query()
-        .insert(patch)
-        .onConflict(["provider_id", "provider_location_id"])
+      await Provider.query()
+        .insert({
+          id: provider_id,
+        })
+        .onConflict(["id"])
         .merge();
-    }
 
-    logger.notice("Finished refreshing appointments for all stores.");
+      await ProviderBrand.query()
+        .insert({
+          provider_id: provider_id,
+          key: provider_id,
+          name: "PrepMod",
+          url: search_url,
+        })
+        .onConflict(["provider_id", "key"])
+        .merge();
+      Appointments.providerBrand = await ProviderBrand.query().findOne({
+        provider_id: provider_id,
+        key: provider_id,
+      });
+
+      Appointments.patches = {};
+
+      let pageNum = 1;
+      let hasNextPage = true;
+      while (hasNextPage) {
+        const lastFetched = DateTime.utc().toISO();
+        const pageResp = await Appointments.fetchSearchPage(search_url, pageNum);
+        hasNextPage = await Appointments.processSearchPage(
+          provider_id,
+          url,
+          pageNum,
+          pageResp,
+          lastFetched
+        );
+
+        pageNum += 1;
+      }
+
+      for (const patch of Object.values(Appointments.patches)) {
+        patch.appointments = _.orderBy(patch.appointments, ["time", "type"]);
+        setComputedStoreValues(patch);
+
+        await Store.query()
+          .insert(patch)
+          .onConflict(["provider_id", "provider_location_id"])
+          .merge();
+      }
+
+      logger.notice("Finished refreshing appointments for all stores.");
+    }
   }
 
-  static async fetchSearchPage(pageNum) {
+  static async fetchSearchPage(url, pageNum) {
     logger.info(`Fetching page ${pageNum} of search results`);
     await sleep(_.random(250, 750));
-    return got("https://www.comassvax.org/clinic/search", {
-      searchParams: {
-        "q[services_name_in][]": "covid",
-        page: pageNum,
-      },
+    const searchParams = new URLSearchParams([
+      ["q[services_name_in][]", "covid"],
+      ["q[services_name_in][]", "Vaccination"],
+      ["page", pageNum]
+    ]);
+    return got(url, {
+      searchParams,
       headers: {
         "User-Agent": "VaccineSpotter.org",
       },
@@ -82,7 +90,7 @@ class Appointments {
     });
   }
 
-  static async processSearchPage(pageNum, resp, lastFetched) {
+  static async processSearchPage(provider_id, url, pageNum, resp, lastFetched) {
     const $page = cheerio.load(resp.body);
     const searchResults = $page(".md\\:flex-shrink:has(.text-xl)");
     for (const searchResult of searchResults) {
@@ -107,7 +115,7 @@ class Appointments {
       let patch = Appointments.patches[providerLocationId];
       if (!patch) {
         patch = {
-          provider_id: "comassvax",
+          provider_id: provider_id,
           provider_location_id: providerLocationId,
           provider_brand_id: Appointments.providerBrand.id,
           active: true,
@@ -167,7 +175,7 @@ class Appointments {
         .find("[href*='/client/registration']")
         .attr("href");
       if (signUpLink) {
-        const signUpResp = await Appointments.fetchSignUpPage(signUpLink);
+        const signUpResp = await Appointments.fetchSignUpPage(url, signUpLink);
         const $signUpPage = cheerio.load(signUpResp.body);
 
         const timeRadios = $signUpPage(
@@ -207,10 +215,10 @@ class Appointments {
     return false;
   }
 
-  static async fetchSignUpPage(link) {
+  static async fetchSignUpPage(url, link) {
     logger.info(`Fetching sign up page ${link} for appointment slots`);
     await sleep(_.random(250, 750));
-    return got(`https://www.comassvax.org${link}`, {
+    return got(`${url}${link}`, {
       headers: {
         "User-Agent": "VaccineSpotter.org",
       },
