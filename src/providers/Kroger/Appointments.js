@@ -7,6 +7,7 @@ const pThrottle = require("p-throttle");
 const logger = require("../../logger");
 const normalizedVaccineTypes = require("../../normalizedVaccineTypes");
 const setComputedStoreValues = require("../../setComputedStoreValues");
+const throwCurlResponseError = require("../../utils/throwCurlResponseError");
 const defaultCurlOpts = require("../../utils/defaultCurlOpts");
 const { Store } = require("../../models/Store");
 const { PostalCode } = require("../../models/PostalCode");
@@ -121,7 +122,9 @@ class Appointments {
             key: "the_little_clinic",
           });
         } else {
-          logger.error("Unknown brand, skipping");
+          logger.error(
+            `Unknown brand, skipping: ${location.facilityDetails.brand} ${JSON.stringify(location)}`
+          );
           continue;
         }
 
@@ -183,31 +186,25 @@ class Appointments {
     const radiusMiles = 50;
 
     Appointments.requestsMade += 1;
-    const resp = await curly.get(
-      `https://www.kroger.com/rx/api/anonymous/scheduler/slots/locationsearch/${
-        store.postal_code
-      }/${startDate.toISODate()}/${endDate.toISODate()}/${radiusMiles}?appointmentReason=131&appointmentReason=134&appointmentReason=137&appointmentReason=122&appointmentReason=125&appointmentReason=129&benefitCode=null`,
-      {
-        ...defaultCurlOpts,
-        httpHeader: [
-          "User-Agent: VaccineSpotter.org",
-          "Accept: application/json",
-          `X-KT-VaccineSpotterId: ${process.env.KROGER_VACCINESPOTTER_ID}`,
-        ],
-        // proxy: process.env.KROGER_PROXY_SERVER,
-        // proxyUsername: process.env.KROGER_PROXY_USERNAME,
-        // proxyPassword: process.env.KROGER_PROXY_PASSWORD,
-        sslVerifyPeer: false,
-      }
+    const resp = throwCurlResponseError(
+      await curly.get(
+        `https://www.kroger.com/rx/api/anonymous/scheduler/slots/locationsearch/${
+          store.postal_code
+        }/${startDate.toISODate()}/${endDate.toISODate()}/${radiusMiles}?appointmentReason=131&appointmentReason=134&appointmentReason=137&appointmentReason=122&appointmentReason=125&appointmentReason=129&benefitCode=null`,
+        {
+          ...defaultCurlOpts,
+          httpHeader: [
+            "User-Agent: VaccineSpotter.org",
+            "Accept: application/json",
+            `X-KT-VaccineSpotterId: ${process.env.KROGER_VACCINESPOTTER_ID}`,
+          ],
+          // proxy: process.env.KROGER_PROXY_SERVER,
+          // proxyUsername: process.env.KROGER_PROXY_USERNAME,
+          // proxyPassword: process.env.KROGER_PROXY_PASSWORD,
+          sslVerifyPeer: false,
+        }
+      )
     );
-
-    if (!resp.statusCode || resp.statusCode < 200 || resp.statusCode >= 300) {
-      const err = new Error(
-        `Request failed with status code ${resp.statusCode}`
-      );
-      err.response = resp;
-      throw err;
-    }
 
     return resp;
   }
