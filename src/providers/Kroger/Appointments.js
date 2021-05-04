@@ -121,9 +121,16 @@ class Appointments {
             provider_id: "kroger",
             key: "the_little_clinic",
           });
+        } else if (location.facilityDetails.brand === "COVID") {
+          providerBrand = await ProviderBrand.query().findOne({
+            provider_id: "kroger",
+            key: "covid",
+          });
         } else {
           logger.error(
-            `Unknown brand, skipping: ${location.facilityDetails.brand} ${JSON.stringify(location)}`
+            `Unknown brand, skipping: ${
+              location.facilityDetails.brand
+            } ${JSON.stringify(location)}`
           );
           continue;
         }
