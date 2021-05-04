@@ -26,7 +26,7 @@ class Appointments {
     // Keep at 6 requests per second.
     Appointments.fetchThrottle = pThrottle({
       limit: 1,
-      interval: 167,
+      interval: 500,
     });
 
     const stores = await Store.query()

@@ -24,7 +24,7 @@ spec:
           args: ["bin/run", "--loop-every", "5000", "providers:kroger:refresh-appointments"]
           env:
             - name: LOG_LEVEL
-              value: notice
+              value: info
           envFrom:
             - secretRef:
                 name: {{ .Chart.Name }}-secrets
