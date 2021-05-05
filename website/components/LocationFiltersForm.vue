@@ -1,4 +1,3 @@
-const lib = require("./MinHeap");
 <template>
   <form class="row g-2 location-filters" @submit.prevent="submitForm">
     <div class="col-sm">

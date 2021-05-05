@@ -56,7 +56,7 @@
                 <p class="lead">
                   You may be able to signup for vaccines with a health care
                   provider or there may be other options in your area, 
-                  such as through a public University (not supported). 
+                  such as through a Public University (not supported). 
                   We recommend viewing other options in the case that you are not able
                   to schedule a vaccine through this tool.
                 </p>
