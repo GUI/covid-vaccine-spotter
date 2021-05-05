@@ -26,7 +26,7 @@ class Appointments {
     // Keep at 6 requests per second.
     Appointments.fetchThrottle = pThrottle({
       limit: 1,
-      interval: 1000,
+      interval: 167,
     });
 
     const stores = await Store.query()
@@ -205,9 +205,9 @@ class Appointments {
             "Accept: application/json",
             `X-KT-VaccineSpotterId: ${process.env.KROGER_VACCINESPOTTER_ID}`,
           ],
-          // proxy: process.env.KROGER_PROXY_SERVER,
-          // proxyUsername: process.env.KROGER_PROXY_USERNAME,
-          // proxyPassword: process.env.KROGER_PROXY_PASSWORD,
+          proxy: process.env.KROGER_PROXY_SERVER,
+          proxyUsername: process.env.KROGER_PROXY_USERNAME,
+          proxyPassword: process.env.KROGER_PROXY_PASSWORD,
           sslVerifyPeer: false,
         }
       )
