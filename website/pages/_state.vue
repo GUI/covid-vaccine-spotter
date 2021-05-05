@@ -32,12 +32,38 @@
                   You may be able to signup for vaccines with a health care
                   provider in your area (Kaiser, SCL Health, your county, etc.),
                   in which case you will be contacted when it's your turn and
-                  you may not need this tool.
+                  you may not need this tool. We recommend viewing other options 
+                  in the case that you are not able to schedule a vaccine through this tool.
                 </p>
                 <a
                   href="https://covid19.colorado.gov/for-coloradans/vaccine/where-can-i-get-vaccinated"
                   class="btn btn-light fw-bold fs-5 text-primary"
                   >Visit Colorado.gov
+                  <font-awesome-icon icon="arrow-alt-circle-right"
+                /></a>
+              </template>
+              <template v-else-if="usStateCode == 'FL'">
+                <p class="lead">
+                  Visit
+                  <a
+                    href="https://floridahealthcovid19.gov/vaccines/vaccine-locator/"
+                    class="text-white"
+                    ><strong class="fw-bold">FloridaHealth.gov</strong></a
+                  >
+                  for detailed information about your county's vaccine options
+                  and review whether or not you are eligible yet.
+                </p>
+                <p class="lead">
+                  You may be able to signup for vaccines with a health care
+                  provider or there may be other options in your area, 
+                  such as through a public University (not supported). 
+                  We recommend viewing other options in the case that you are not able
+                  to schedule a vaccine through this tool.
+                </p>
+                <a
+                  href="https://floridahealthcovid19.gov/vaccines/vaccine-locator/"
+                  class="btn btn-light fw-bold fs-5 text-primary"
+                  >Visit FloridaHealth.gov
                   <font-awesome-icon icon="arrow-alt-circle-right"
                 /></a>
               </template>
@@ -50,7 +76,8 @@
                 <p class="lead">
                   You may be able to signup for vaccines with a health care
                   provider or there may be other options in your area, in which
-                  case you may not need this tool.
+                  case you may not need this tool. We recommend viewing other options 
+                  in the case that you are not able to schedule a vaccine through this tool.
                 </p>
               </template>
             </div>

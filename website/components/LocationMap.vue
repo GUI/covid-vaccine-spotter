@@ -42,6 +42,10 @@ export default {
       return this.$store.state.usStates.usState;
     },
 
+    locCoords(){
+      return this.$store.getters["usStates/getMapLocCoords"];
+    },
+
     zipCoords() {
       return this.$store.getters["usStates/getMapZipCoords"];
     },
@@ -63,10 +67,31 @@ export default {
       this.setMapBounds();
     },
 
+    locCoords() {
+      if (this.locMarker) {
+        if (this.locCoords) {
+      
+          if(this.zipMarker){
+            this.zipMarker.remove();
+          }
+            this.locMarker.setLngLat(this.locCoords).addTo(this.map);
+
+        } else {
+          this.locMarker.remove();
+        }
+      }
+    },
+
     zipCoords() {
       if (this.zipMarker) {
         if (this.zipCoords) {
+
+          if(this.locMarker){
+            this.locMarker.remove();
+          }
+
           this.zipMarker.setLngLat(this.zipCoords).addTo(this.map);
+          
         } else {
           this.zipMarker.remove();
         }
@@ -108,6 +133,8 @@ export default {
         },
       });
       this.mapSource = this.map.getSource("locations");
+
+      this.locMarker = new Marker();
 
       this.zipMarker = new Marker();
 

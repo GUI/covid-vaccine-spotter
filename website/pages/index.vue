@@ -53,7 +53,7 @@ export default {
     return {
       title: "COVID-19 Vaccine Spotter",
       description:
-        "A tool to help you track down COVID-19 vaccine appointment openings at your state's pharmacies. Updated every minute.",
+        "A tool to help you track down COVID-19 vaccine appointment openings at your state's pharmacies. Updated every minute!",
       states: [],
     };
   },

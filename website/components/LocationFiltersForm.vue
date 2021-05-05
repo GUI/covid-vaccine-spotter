@@ -1,3 +1,4 @@
+const lib = require("./MinHeap");
 <template>
   <form class="row g-2 location-filters" @submit.prevent="submitForm">
     <div class="col-sm">
@@ -113,9 +114,14 @@
     <div class="col-auto">
       <button type="submit" class="btn btn-primary btn-lg">Search</button>
     </div>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-primary btn-lg" @click="Location">Find Locations near me</button>
+    </div>
+        <div class="col-auto">
+      <button type="submit" class="btn btn-primary btn-lg" @click="clearLoc">Clear Location</button>
+    </div>
   </form>
 </template>
-
 <script>
 export default {
   data() {
@@ -123,8 +129,15 @@ export default {
       pendingQueryParams: {},
     };
   },
-
   computed: {
+    queryLoc:{
+      get(){
+        return this.$route.query.loc || "";
+      },
+      set(_lat, _lon){
+        this.pendingQueryParams.loc = [_lon,_lat];
+      }
+    },
     queryZip: {
       get() {
         return this.$route.query.zip || "";
@@ -184,6 +197,10 @@ export default {
     submitForm() {
       const newQuery = { ...this.$route.query, ...this.pendingQueryParams };
 
+      if (newQuery.loc === ""){
+        delete newQuery.loc;
+      }
+
       if (newQuery.zip === "") {
         delete newQuery.zip;
       }
@@ -214,6 +231,23 @@ export default {
       });
       this.pendingQueryParams = {};
     },
+  Location(){
+    navigator.geolocation.getCurrentPosition(position => {
+      this.pendingQueryParams.loc = [position.coords.longitude,position.coords.latitude];
+      this.pendingQueryParams.zip = "";
+      this.submitForm();
+    },
+    error => {
+      console.log(error);
+      alert("Location is not enabled. Please enable location services.");
+    },
+    );
+  },
+  clearLoc(){
+    this.pendingQueryParams.loc = "";
+    this.pendingQueryParams.zip = ""
+    this.submitForm();
+  }
   },
 };
 </script>

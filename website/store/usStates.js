@@ -19,6 +19,17 @@ export const state = () => ({
 });
 
 export const getters = {
+  getMapLocCoords(state,getters,rootState){
+    let locCoords;
+    
+    const queryLoc = rootState.route.query.loc;
+
+    if (queryLoc) {
+      locCoords = queryLoc;
+    }
+    return locCoords;
+  },
+
   getMapZipCoords(state, getters, rootState) {
     let zipCoords;
 
@@ -26,13 +37,27 @@ export const getters = {
     if (queryZip) {
       zipCoords = rootState.postalCodes.postalCodes[queryZip];
     }
-
     return zipCoords;
   },
 
   getMapBounds(state, getters, rootState) {
     let bounds;
 
+    const queryLoc = rootState.route.query.loc;
+    if (queryLoc) {
+      const queryLocCoords = queryLoc;
+      if (queryLocCoords) {
+        const queryRadius = rootState.route.query.radius;
+        if (queryRadius) {
+          bounds = bbox(
+            circle(queryLocCoords, parseInt(queryRadius, 10), {
+              units: "miles",
+            })
+          );
+        }
+      }
+    }
+    
     const queryZip = rootState.route.query.zip;
     if (queryZip) {
       const queryZipCoords = rootState.postalCodes.postalCodes[queryZip];
@@ -47,6 +72,7 @@ export const getters = {
         }
       }
     }
+
 
     if (!bounds && state.usState.metadata.bounding_box) {
       bounds = bbox(state.usState.metadata.bounding_box);
@@ -116,6 +142,56 @@ export const getters = {
 
       return include;
     });
+
+    const queryLoc = rootState.route.query.loc;
+    if (queryLoc) {
+      const queryLocCoords = queryLoc;
+      if (!queryLocCoords) {
+        locations = [];
+      } else {
+        let radius;
+        const queryRadius = rootState.route.query.radius;
+        if (queryRadius) {
+          radius = parseInt(queryRadius, 10) * MILE_TO_KM;
+        }
+
+        const locationsIndex = new KDBush(
+          locations,
+          (l) => l.geometry.coordinates[0],
+          (l) => l.geometry.coordinates[1]
+        );
+        locations = geokdbush.around(
+          locationsIndex,
+          queryLocCoords[0],
+          queryLocCoords[1],
+          undefined,
+          radius
+        );
+
+        locations = locations.map((feature) => {
+          let distance =
+            geokdbush.distance(
+              queryLocCoords[0],
+              queryLocCoords[1],
+              feature.geometry.coordinates[0],
+              feature.geometry.coordinates[1]
+            ) * KM_TO_MILE;
+
+          if (distance < 10) {
+            distance = distance.toFixed(1);
+          } else {
+            distance = distance.toFixed(0);
+          }
+
+          return {
+            ...feature,
+            distance,
+          };
+        });
+
+        locations.sort((a, b) => a.distance - b.distance);
+      }
+    }
 
     const queryZip = rootState.route.query.zip;
     if (queryZip) {
