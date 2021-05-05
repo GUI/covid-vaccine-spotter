@@ -15,35 +15,6 @@
         </span>
       </div>
       <appointment-times :store="store" />
-      <p v-if="store.properties.provider === 'albertsons'" class="text-warning">
-        <small
-          ><font-awesome-icon icon="exclamation-triangle" />
-          <!-- eslint-disable vue/no-v-html -->
-          <span
-            v-html="
-              $t(
-                '<strong>Warning:</strong> {name} appears to only be updating their data every 30-60 minutes, so this status may become outdated more quickly than other providers. But if they increase their frequency of updates, Vaccine Spotter will start showing updates sooner too.',
-                { name: store.properties.provider_brand_name }
-              )
-            "
-          />
-          <!-- eslint-enable vue/no-v-html -->
-        </small>
-      </p>
-
-      <p v-if="store.properties.provider === 'kroger'" class="text-warning">
-        <small
-          ><font-awesome-icon icon="exclamation-triangle" />
-          <!-- eslint-disable vue/no-v-html -->
-          <span
-            v-html="
-              $t(
-                '<strong>Warning:</strong> Many users are reporting issues booking appointments with {name} (due to 2nd appointment requirements). However, some users have still reported success, so I still want to share the data I have from the pharmacies. I\'m trying to figure out a better way to detect these issues, but in the meantime, sorry for any frustration!',
-                { name: store.properties.provider_brand_name }
-              )
-            "
-        /></small>
-      </p>
 
       <a
         :href="store.properties.url"
