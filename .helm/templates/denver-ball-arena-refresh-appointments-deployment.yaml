@@ -22,6 +22,9 @@ spec:
         - name: {{ .Chart.Name }}-denver-ball-arena-refresh-appointments
           image: {{ index .Values.werf.image "vaccinespotter" }}
           args: ["bin/run", "--loop-every", "40000", "providers:denver-ball-arena:refresh-appointments"]
+          resources:
+            requests:
+              memory: "128Mi"
           env:
             - name: LOG_LEVEL
               value: notice

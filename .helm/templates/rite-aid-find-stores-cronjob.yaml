@@ -25,6 +25,9 @@ spec:
             - name: {{ .Chart.Name }}-rite-aid-find-stores
               image: {{ index .Values.werf.image "vaccinespotter" }}
               args: ["bin/rite-aid-find-stores"]
+              resources:
+                requests:
+                  memory: "128Mi"
               env:
                 - name: LOG_LEVEL
                   value: notice

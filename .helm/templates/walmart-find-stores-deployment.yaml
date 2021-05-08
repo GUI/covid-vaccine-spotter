@@ -22,6 +22,9 @@ spec:
         - name: {{ .Chart.Name }}-walmart-find-stores
           image: {{ index .Values.werf.image "vaccinespotter" }}
           args: ["bin/walmart-find-stores"]
+          resources:
+            requests:
+              memory: "128Mi"
           env:
             - name: LOG_LEVEL
               value: notice

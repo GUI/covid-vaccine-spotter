@@ -22,6 +22,9 @@ spec:
         - name: {{ .Chart.Name }}-publix-refresh-appointments
           image: {{ index .Values.werf.image "vaccinespotter-playwright" }}
           args: ["bin/run", "--loop-every", "15000", "providers:publix:refresh-appointments"]
+          resources:
+            requests:
+              memory: "256Mi"
           env:
             - name: LOG_LEVEL
               value: notice

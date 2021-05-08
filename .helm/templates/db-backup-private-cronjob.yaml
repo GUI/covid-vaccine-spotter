@@ -25,6 +25,9 @@ spec:
             - name: {{ .Chart.Name }}-db-backup-private
               image: {{ index .Values.werf.image "vaccinespotter" }}
               args: ["bin/run", "db:backup:private"]
+              resources:
+                requests:
+                  memory: "128Mi"
               env:
                 - name: LOG_LEVEL
                   value: info

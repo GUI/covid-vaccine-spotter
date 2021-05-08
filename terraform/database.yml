@@ -1,0 +1,97 @@
+- become: yes
+  hosts: all
+  name: database
+  handlers:
+    - name: Restart PostgreSQL
+      ansible.builtin.service:
+        name: postgresql.service
+        state: restarted
+  tasks:
+    - name: Install gpg
+      ansible.builtin.apt:
+        pkg: gpg
+        state: present
+    - name: Add PostgreSQL repo key
+      ansible.builtin.apt_key:
+        url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+        state: present
+    - name: Add PostgreSQL repo
+      ansible.builtin.apt_repository:
+        repo: "deb http://apt.postgresql.org/pub/repos/apt/ buster-pgdg main"
+        state: present
+    - name: Install PostgeSQL
+      ansible.builtin.apt:
+        pkg: postgresql-13
+        state: present
+    - name: Install PostGIS
+      ansible.builtin.apt:
+        pkg: postgresql-13-postgis-3
+        state: present
+    - name: Enable and start PostgreSQL service
+      ansible.builtin.systemd:
+        name: postgresql.service
+        enabled: true
+        state: started
+    - name: Install psycopg
+      ansible.builtin.apt:
+        pkg: python3-psycopg2
+        state: present
+    - name: Set PostgreSQL access
+      become_user: postgres
+      community.postgresql.postgresql_pg_hba:
+        dest: /etc/postgresql/13/main/pg_hba.conf
+        contype: host
+        databases: all
+        users: all
+        address: all
+        method: md5
+      notify: Restart PostgreSQL
+    - name: Set PostgreSQL config
+      become_user: postgres
+      community.postgresql.postgresql_set:
+        name: "{{item.name}}"
+        value: "{{item.value}}"
+      with_items:
+        - name: listen_addresses
+          value: "*"
+        - name: max_connections
+          value: 200
+        - name: shared_buffers
+          value: 1875MB
+        - name: effective_cache_size
+          value: 5625MB
+        - name: maintenance_work_mem
+          value: 480000kB
+        - name: checkpoint_completion_target
+          value: 0.9
+        - name: wal_buffers
+          value: 16MB
+        - name: default_statistics_target
+          value: 100
+        - name: random_page_cost
+          value: 1.1
+        - name: effective_io_concurrency
+          value: 200
+        - name: work_mem
+          value: 4800kB
+        - name: min_wal_size
+          value: 1GB
+        - name: max_wal_size
+          value: 4GB
+        - name: max_worker_processes
+          value: 4
+        - name: max_parallel_workers_per_gather
+          value: 2
+        - name: max_parallel_workers
+          value: 4
+        - name: max_parallel_maintenance_workers
+          value: 2
+      register: pg_set
+    - name: Restart PostgreSQL due to config changes
+      ansible.builtin.service:
+        name: postgresql.service
+        state: restarted
+      when:
+        - (item.restart_required|bool)
+        - (item.value_pretty != item.prev_val_pretty)
+      loop: "{{ pg_set.results }}"

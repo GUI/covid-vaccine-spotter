@@ -1,8 +1,18 @@
 terraform {
   required_providers {
+    alicloud = {
+      source = "aliyun/alicloud"
+      version = "~> 1.122"
+    }
+
     cloudflare = {
       source = "cloudflare/cloudflare"
       version = "~> 2.0"
+    }
+
+    linode = {
+      source = "linode/linode"
+      version = "~> 1.16"
     }
 
     sops = {
@@ -32,4 +42,9 @@ provider "alicloud" {
 provider "cloudflare" {
   api_token = data.sops_file.secrets.data.cloudflare_api_token
   account_id = data.sops_file.secrets.data.cloudflare_account_id
+}
+
+provider "linode" {
+  token = data.sops_file.secrets.data.linode_token
+  api_version = "v4beta"
 }

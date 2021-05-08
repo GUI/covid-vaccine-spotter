@@ -22,6 +22,9 @@ spec:
         - name: {{ .Chart.Name }}-wegmans-refresh-appointments
           image: {{ index .Values.werf.image "vaccinespotter" }}
           args: ["bin/wegmans-refresh-appointments"]
+          resources:
+            requests:
+              memory: "128Mi"
           env:
             - name: LOG_LEVEL
               value: notice

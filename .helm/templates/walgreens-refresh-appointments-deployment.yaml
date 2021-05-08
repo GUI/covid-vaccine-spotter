@@ -22,6 +22,9 @@ spec:
         - name: {{ .Chart.Name }}-walgreens-refresh-appointments
           image: {{ index .Values.werf.image "vaccinespotter-playwright" }}
           args: ["bin/walgreens-refresh-appointments"]
+          resources:
+            requests:
+              memory: "256Mi"
           env:
             - name: LOG_LEVEL
               value: notice
