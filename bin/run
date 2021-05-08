@@ -100,6 +100,11 @@ async function optionalLoopEvery(task) {
     return optionalLoopEvery(Website.staticSiteBuildAndPublish);
   });
 
+  program.command("providers:albertsons:refresh-appointments").action(async () => {
+    const Appointments = require("../src/providers/Albertsons/Appointments");
+    return optionalLoopEvery(Appointments.refreshStores);
+  });
+
   program.command("providers:costco:find-stores").action(async () => {
     const Stores = require("../src/providers/Costco/Stores");
     return optionalLoopEvery(Stores.findStores);

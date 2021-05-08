@@ -172,12 +172,14 @@ class Appointments {
     ).toISO();
     for (const store of resp.body) {
       queue.add(async () => {
-        const addressParts = store.address.split(/\s+-\s+/);
-        const name = addressParts[0];
-        const addressMatches = addressParts
-          .slice(1)
-          .join(" - ")
-          .match(/\s*(.+?),\s+(.+?),\s+([A-Z]{2}),\s+([0-9-]+)\s*$/i);
+        const addressParts = store.address.match(
+          /^(.+?)(?:\s+-\s+(.+?))?\s*\|\|(.+)$/
+        );
+        const name = addressParts[1];
+        const vaccineType = addressParts[2];
+        const addressMatches = addressParts[3].match(
+          /\s*(.+?),\s+(.+?),\s+([A-Z]{2}),\s+([0-9-]+)\s*$/i
+        );
 
         let providerBrand;
         if (name.match(/Acme/i)) {
@@ -248,7 +250,24 @@ class Appointments {
             availability: store,
             headers: resp.headers,
           },
+          appointment_types: {},
+          appointment_vaccine_types: {},
         };
+
+        if (vaccineType) {
+          if (vaccineType.match(/Moderna/i)) {
+            patch.appointment_vaccine_types.moderna = true;
+          }
+
+          if (vaccineType.match(/Pfizer/i)) {
+            patch.appointment_vaccine_types.pfizer = true;
+          }
+
+          if (vaccineType.match(/(Janssen|Johnson)/i)) {
+            patch.appointment_vaccine_types.jj = true;
+          }
+        }
+
         setComputedStoreValues(patch);
 
         await Store.query()
