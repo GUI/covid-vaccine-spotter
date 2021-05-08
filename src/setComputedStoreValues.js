@@ -54,14 +54,12 @@ module.exports = (patch) => {
     }
   }
 
-  if (patch.appointments_available) {
-    if (Object.keys(patch.appointment_types).length === 0) {
-      patch.appointment_types.unknown = true;
-    }
+  if (Object.keys(patch.appointment_types).length === 0) {
+    patch.appointment_types.unknown = true;
+  }
 
-    if (Object.keys(patch.appointment_vaccine_types).length === 0) {
-      patch.appointment_vaccine_types.unknown = true;
-    }
+  if (Object.keys(patch.appointment_vaccine_types).length === 0) {
+    patch.appointment_vaccine_types.unknown = true;
   }
 
   return patch;
