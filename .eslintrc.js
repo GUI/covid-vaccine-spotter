@@ -18,6 +18,12 @@ module.exports = {
   },
   overrides: [
     {
+      files: ["src/cli.js"],
+      rules: {
+        "global-require": "off",
+      },
+    },
+    {
       files: ["migrations/**/*.js"],
       rules: {
         "func-names": "off",
