@@ -53,7 +53,7 @@ class Appointments {
           name: rawStore.name,
           address: rawStore.address1,
           city: rawStore.city,
-          state: rawStore.state,
+          state: rawStore.state.toUpperCase(),
           postal_code: rawStore.zipCode.padStart(5, "0"),
         };
         data.normalized_address_key = normalizedAddressKey({
