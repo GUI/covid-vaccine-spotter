@@ -1,4 +1,0 @@
-#!/usr/bin/env node
-
-const { generateGrid } = require("../src/providers/Walgreens/Grid");
-generateGrid();

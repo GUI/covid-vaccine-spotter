@@ -24,7 +24,7 @@ spec:
           containers:
             - name: {{ .Chart.Name }}-rite-aid-find-stores
               image: {{ index .Values.werf.image "vaccinespotter" }}
-              args: ["bin/rite-aid-find-stores"]
+              args: ["bin/run", "providers:rite-aid:find-stores"]
               resources:
                 requests:
                   memory: "128Mi"

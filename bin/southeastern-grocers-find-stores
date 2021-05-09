@@ -1,4 +1,0 @@
-#!/usr/bin/env node
-
-const { findStores } = require("../src/providers/SoutheasternGrocers/Stores");
-findStores();

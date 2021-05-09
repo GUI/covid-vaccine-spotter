@@ -21,7 +21,7 @@ spec:
       containers:
         - name: {{ .Chart.Name }}-weis-refresh-appointments
           image: {{ index .Values.werf.image "vaccinespotter" }}
-          args: ["bin/weis-refresh-appointments"]
+          args: ["bin/run", "--loop-every", "40000", "providers:weis:refresh-appointments"]
           resources:
             requests:
               memory: "128Mi"

@@ -11,5 +11,3 @@ COPY . /app
 ENV NODE_OPTIONS="--unhandled-rejections=strict --trace-warnings"
 ENV NODE_ENV=production
 # ENV DEBUG=pw:api
-
-ENTRYPOINT ["node"]

@@ -21,7 +21,7 @@ spec:
       containers:
         - name: {{ .Chart.Name }}-thrifty-white-refresh-appointments
           image: {{ index .Values.werf.image "vaccinespotter" }}
-          args: ["bin/thrifty-white-refresh-appointments"]
+          args: ["bin/run", "--loop-every", "15000", "providers:thrifty-white:refresh-appointments"]
           resources:
             requests:
               memory: "128Mi"

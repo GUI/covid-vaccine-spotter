@@ -21,7 +21,7 @@ spec:
       containers:
         - name: {{ .Chart.Name }}-health-mart-refresh-appointments
           image: {{ index .Values.werf.image "vaccinespotter" }}
-          args: ["bin/health-mart-refresh-appointments"]
+          args: ["bin/run", "--loop-every", "40000", "providers:health-mart:refresh-appointments"]
           resources:
             requests:
               memory: "128Mi"

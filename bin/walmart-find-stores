@@ -1,6 +1,0 @@
-#!/usr/bin/env node
-
-const { findStores } = require("../src/providers/Walmart/Stores");
-const runTask = require("../src/runTask");
-
-runTask(findStores, 3600000);

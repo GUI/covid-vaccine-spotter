@@ -21,7 +21,7 @@ spec:
       containers:
         - name: {{ .Chart.Name }}-rite-aid-refresh-appointments
           image: {{ index .Values.werf.image "vaccinespotter" }}
-          args: ["bin/rite-aid-refresh-appointments"]
+          args: ["bin/run", "--loop-every", "5000", "providers:rite-aid:refresh-appointments"]
           resources:
             requests:
               memory: "128Mi"

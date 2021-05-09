@@ -1,4 +1,0 @@
-#!/usr/bin/env node
-
-const { refreshStores } = require("../src/providers/RiteAid/Stores");
-refreshStores();

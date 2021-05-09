@@ -21,7 +21,7 @@ spec:
       containers:
         - name: {{ .Chart.Name }}-hyvee-refresh-appointments
           image: {{ index .Values.werf.image "vaccinespotter" }}
-          args: ["bin/hyvee-refresh-appointments"]
+          args: ["bin/run", "--loop-every", "40000", "providers:hyvee:refresh-appointments"]
           resources:
             requests:
               memory: "128Mi"

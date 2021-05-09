@@ -21,7 +21,7 @@ spec:
       containers:
         - name: {{ .Chart.Name }}-heb-refresh-appointments
           image: {{ index .Values.werf.image "vaccinespotter" }}
-          args: ["bin/heb-refresh-appointments"]
+          args: ["bin/run", "--loop-every", "40000", "providers:heb:refresh-appointments"]
           resources:
             requests:
               memory: "128Mi"

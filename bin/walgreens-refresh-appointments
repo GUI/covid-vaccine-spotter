@@ -1,6 +1,0 @@
-#!/usr/bin/env node
-
-const { refreshGridCells } = require("../src/providers/Walgreens/Appointments");
-const runTask = require("../src/runTask");
-
-runTask(refreshGridCells, 5000);

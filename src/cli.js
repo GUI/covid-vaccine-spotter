@@ -111,6 +111,18 @@ async function optionalLoopEvery(task) {
       return optionalLoopEvery(Appointments.refreshStores);
     });
 
+  program.command("providers:centura:refresh-appointments").action(async () => {
+    const Appointments = require("./providers/Centura/Appointments");
+    return optionalLoopEvery(Appointments.refreshStores);
+  });
+
+  program
+    .command("providers:comassvax:refresh-appointments")
+    .action(async () => {
+      const Appointments = require("./providers/CoMassVax/Appointments");
+      return optionalLoopEvery(Appointments.refreshStores);
+    });
+
   program.command("providers:costco:find-stores").action(async () => {
     const Stores = require("./providers/Costco/Stores");
     return optionalLoopEvery(Stores.findStores);
@@ -138,6 +150,28 @@ async function optionalLoopEvery(task) {
       return optionalLoopEvery(Appointments.refreshStores);
     });
 
+  program.command("providers:health-mart:find-stores").action(async () => {
+    const Appointments = require("./providers/HealthMart/Stores");
+    return optionalLoopEvery(Appointments.findStores);
+  });
+
+  program
+    .command("providers:health-mart:refresh-appointments")
+    .action(async () => {
+      const Appointments = require("./providers/HealthMart/Appointments");
+      return optionalLoopEvery(Appointments.refreshStores);
+    });
+
+  program.command("providers:heb:refresh-appointments").action(async () => {
+    const Appointments = require("./providers/Heb/Appointments");
+    return optionalLoopEvery(Appointments.refreshStores);
+  });
+
+  program.command("providers:hyvee:refresh-appointments").action(async () => {
+    const Appointments = require("./providers/HyVee/Appointments");
+    return optionalLoopEvery(Appointments.refreshStores);
+  });
+
   program.command("providers:kroger:find-stores").action(async () => {
     const Stores = require("./providers/Kroger/Stores");
     return optionalLoopEvery(Stores.findStores);
@@ -148,14 +182,123 @@ async function optionalLoopEvery(task) {
     return optionalLoopEvery(Appointments.refreshStores);
   });
 
+  program.command("providers:pharmaca:find-stores").action(async () => {
+    const Stores = require("./providers/Pharmaca/Stores");
+    return optionalLoopEvery(Stores.findStores);
+  });
+
+  program
+    .command("providers:pharmaca:refresh-appointments")
+    .action(async () => {
+      const Appointments = require("./providers/Pharmaca/Appointments");
+      return optionalLoopEvery(Appointments.refreshStores);
+    });
+
+  program.command("providers:price-chopper:find-stores").action(async () => {
+    const Stores = require("./providers/PriceChopper/Stores");
+    return optionalLoopEvery(Stores.findStores);
+  });
+
+  program
+    .command("providers:price-chopper:refresh-appointments")
+    .action(async () => {
+      const Appointments = require("./providers/PriceChopper/Appointments");
+      return optionalLoopEvery(Appointments.refreshStores);
+    });
+
   program.command("providers:publix:find-stores").action(async () => {
     const Stores = require("./providers/Publix/Stores");
     return optionalLoopEvery(Stores.findStores);
   });
 
   program.command("providers:publix:refresh-appointments").action(async () => {
-    const Stores = require("./providers/Publix/Appointments");
+    const Appointments = require("./providers/Publix/Appointments");
+    return optionalLoopEvery(Appointments.refreshStores);
+  });
+
+  program.command("providers:rite-aid:find-stores").action(async () => {
+    const Stores = require("./providers/RiteAid/Stores");
+    return optionalLoopEvery(Stores.findStores);
+  });
+
+  program
+    .command("providers:rite-aid:refresh-appointments")
+    .action(async () => {
+      const Appointments = require("./providers/RiteAid/Appointments");
+      return optionalLoopEvery(Appointments.refreshStores);
+    });
+
+  program.command("providers:rite-aid:find-stores").action(async () => {
+    const Stores = require("./providers/RiteAid/Stores");
     return optionalLoopEvery(Stores.refreshStores);
+  });
+
+  program
+    .command("providers:southeastern-grocers:find-stores")
+    .action(async () => {
+      const Stores = require("./providers/SoutheasternGrocers/Stores");
+      return optionalLoopEvery(Stores.findStores);
+    });
+
+  program
+    .command("providers:southeastern-grocers:refresh-appointments")
+    .action(async () => {
+      const Appointments = require("./providers/SoutheasternGrocers/Appointments");
+      return optionalLoopEvery(Appointments.refreshStores);
+    });
+
+  program.command("providers:thrifty-white:find-stores").action(async () => {
+    const Stores = require("./providers/ThriftyWhite/Stores");
+    return optionalLoopEvery(Stores.findStores);
+  });
+
+  program
+    .command("providers:thrifty-white:refresh-appointments")
+    .action(async () => {
+      const Appointments = require("./providers/ThriftyWhite/Appointments");
+      return optionalLoopEvery(Appointments.refreshStores);
+    });
+
+  program.command("providers:walgreens:generate-grid").action(async () => {
+    const Grid = require("./providers/Walgreens/Grid");
+    return optionalLoopEvery(Grid.generateGrid);
+  });
+
+  program
+    .command("providers:walgreens:refresh-appointments")
+    .action(async () => {
+      const Appointments = require("./providers/Walgreens/Appointments");
+      return optionalLoopEvery(Appointments.refreshGridCells);
+    });
+
+  program.command("providers:walmart:find-stores").action(async () => {
+    const Stores = require("./providers/Walmart/Stores");
+    return optionalLoopEvery(Stores.findStores);
+  });
+
+  program.command("providers:walmart:refresh-appointments").action(async () => {
+    const Appointments = require("./providers/Walmart/Appointments");
+    return optionalLoopEvery(Appointments.refreshStores);
+  });
+
+  program.command("providers:wegmans:find-stores").action(async () => {
+    const Stores = require("./providers/Wegmans/Stores");
+    return optionalLoopEvery(Stores.findStores);
+  });
+
+  program.command("providers:wegmans:refresh-appointments").action(async () => {
+    const Appointments = require("./providers/Wegmans/Appointments");
+    return optionalLoopEvery(Appointments.refreshStores);
+  });
+
+  program.command("providers:weis:find-stores").action(async () => {
+    const Stores = require("./providers/Weis/Stores");
+    return optionalLoopEvery(Stores.findStores);
+  });
+
+  program.command("providers:weis:refresh-appointments").action(async () => {
+    const Appointments = require("./providers/Weis/Appointments");
+    return optionalLoopEvery(Appointments.refreshStores);
   });
 
   await program.parseAsync(process.argv);

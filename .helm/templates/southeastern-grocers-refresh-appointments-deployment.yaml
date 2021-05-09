@@ -21,7 +21,7 @@ spec:
       containers:
         - name: {{ .Chart.Name }}-southeastern-grocers-refresh-appointments
           image: {{ index .Values.werf.image "vaccinespotter" }}
-          args: ["bin/southeastern-grocers-refresh-appointments"]
+          args: ["bin/run", "--loop-every", "15000", "providers:southeastern-grocers:refresh-appointments"]
           resources:
             requests:
               memory: "128Mi"

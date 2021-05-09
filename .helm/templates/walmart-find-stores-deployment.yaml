@@ -21,7 +21,7 @@ spec:
       containers:
         - name: {{ .Chart.Name }}-walmart-find-stores
           image: {{ index .Values.werf.image "vaccinespotter" }}
-          args: ["bin/walmart-find-stores"]
+          args: ["bin/run", "--loop-every", "3600000", "providers:walmart:find-stores"]
           resources:
             requests:
               memory: "128Mi"

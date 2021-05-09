@@ -21,7 +21,7 @@ spec:
       containers:
         - name: {{ .Chart.Name }}-price-chopper-refresh-appointments
           image: {{ index .Values.werf.image "vaccinespotter" }}
-          args: ["bin/price-chopper-refresh-appointments"]
+          args: ["bin/run", "--loop-every", "40000", "providers:price-chopper:refresh-appointments"]
           resources:
             requests:
               memory: "128Mi"

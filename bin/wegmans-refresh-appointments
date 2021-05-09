@@ -1,6 +1,0 @@
-#!/usr/bin/env node
-
-const { refreshStores } = require("../src/providers/Wegmans/Appointments");
-const runTask = require("../src/runTask");
-
-runTask(refreshStores, 40000);

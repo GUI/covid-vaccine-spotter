@@ -21,7 +21,7 @@ spec:
       containers:
         - name: {{ .Chart.Name }}-centura-refresh-appointments
           image: {{ index .Values.werf.image "vaccinespotter" }}
-          args: ["bin/centura-refresh-appointments"]
+          args: ["bin/run", "--loop-every", "40000", "providers:centura:refresh-appointments"]
           resources:
             requests:
               memory: "128Mi"

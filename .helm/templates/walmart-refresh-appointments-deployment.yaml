@@ -21,7 +21,7 @@ spec:
       containers:
         - name: {{ .Chart.Name }}-walmart-refresh-appointments
           image: {{ index .Values.werf.image "vaccinespotter-playwright" }}
-          args: ["bin/walmart-refresh-appointments"]
+          args: ["bin/run", "--loop-every", "15000", "providers:walmart:refresh-appointments"]
           resources:
             requests:
               memory: "256Mi"
