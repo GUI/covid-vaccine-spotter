@@ -1,14 +1,9 @@
 /* eslint no-underscore-dangle: ["error", { "allow": ["_plugin"] }] */
 
-const _ = require("lodash");
 const { default: PQueue } = require("p-queue");
-const { DateTime } = require("luxon");
-const got = require("got");
 const logger = require("../../logger");
-const setComputedStoreValues = require("../../setComputedStoreValues");
-const normalizedAddressKey = require("../../normalizedAddressKey");
 const { Store } = require("../../models/Store");
-const Socket = require("../EnlivenHealth/Socket");
+const EnlivenHealthAppointments = require("../EnlivenHealth/Appointments");
 
 const normalizedAddressMapping = {
   "6660-fourth-section-rd-brockport-ny-14420":
@@ -30,6 +25,25 @@ const normalizedAddressMapping = {
   "2155-penfield-rd-penfield-ny-14526": "2157-penfield-rd-penfield-ny-14526",
   "wegmans-conference-center-200-market-st-rochester-ny-14624":
     "200-wegmans-market-st-rochester-ny-14624",
+  "122-shawan-rd-baltimore-md-21030": "122-shawan-rd-hunt-valley-md-21030",
+  "100-farmview-montvale-nj-07645": "100-farm-vw-montvale-nj-07645",
+  "32-sylvan-way-parsippany-nj-07054": "34-sylvan-way-hanover-nj-07054",
+  "1104-highway-35-ocean-nj-07712": "1104-highway-35-s-ocean-nj-07712",
+  "201-williams-st-williamsport-pa-17701":
+    "201-william-st-williamsport-pa-17701",
+  "345-lowes-blvd-state-college-pa-16803":
+    "345-colonnade-blvd-state-college-pa-16803",
+  "1315-scranton-carbondale-hwy-scranton-city-pa-18508":
+    "1315-cold-spring-rd-scranton-pa-18508",
+  "w-dekalb-pike-warner-rd-king-of-prussia-pa-19406":
+    "1-village-dr-king-of-prussia-pa-19406",
+  "100-applied-bank-blvd-concordville-pa-19342":
+    "100-applied-bank-blvd-glen-mills-pa-19342",
+  "2833-ridge-rd-w": "2833-ridge-rd-w-rochester-ny-14626",
+  "3701-mt-read-blvd": "3701-mt-read-blvd-rochester-ny-14616",
+  "s-3740-mckinley-pkwy-blasdell-ny-14219":
+    "3740-mckinley-pkwy-buffalo-ny-14219",
+  "101-crosstrail-blvd": "101-crosstrail-blvd-se-leesburg-va-20175",
 };
 
 class Appointments {
@@ -38,18 +52,20 @@ class Appointments {
 
     const queue = new PQueue({ concurrency: 1 });
 
-    Appointments.addressStoreIds = {};
-    Appointments.processedStates = {};
-    Appointments.processedStoreIds = {};
+    EnlivenHealthAppointments.setup(Appointments);
 
     const stores = await Store.query()
       .where("stores.provider_id", "wegmans")
-      .whereRaw(
-        "(appointments_last_fetched IS NULL OR appointments_last_fetched <= (now() - interval '2 minutes'))"
-      )
       .orderByRaw("appointments_last_fetched NULLS FIRST");
     for (const [index, store] of stores.entries()) {
-      queue.add(() => Appointments.refreshStore(store, index, stores.length));
+      queue.add(() =>
+        EnlivenHealthAppointments.refreshStore(
+          Appointments,
+          store,
+          index,
+          stores.length
+        )
+      );
     }
     await queue.onIdle();
 
@@ -59,6 +75,15 @@ class Appointments {
   static getSocketUrlId(store) {
     let urlId;
     switch (store.state) {
+      case "MA":
+        urlId = "48edc95a9b564cffbc91529fa5767232";
+        break;
+      case "MD":
+        urlId = "ab695d256ce244ad93c7cc2ade6680e2";
+        break;
+      case "NJ":
+        urlId = "2f0f142785b8413a85b4bfcf01ca6d35";
+        break;
       case "NY":
         urlId = "c7f2e9cb1982412bb53430a84dfd72ad";
         break;
@@ -75,185 +100,9 @@ class Appointments {
     return urlId;
   }
 
-  static async refreshStore(store, index, count) {
-    logger.info(
-      `Processing ${store.name}, ${store.state} #${
-        store.provider_location_id
-      } (${index + 1} of ${count})...`
-    );
-
-    if (Appointments.processedStoreIds[store.id]) {
-      logger.info(
-        `  Skipping already processed store #${store.id} as part of earlier request.`
-      );
-      return;
-    }
-    if (Appointments.processedStates[store.state]) {
-      logger.info(
-        `  Skipping already processed state ${store.state} as part of earlier request.`
-      );
-      return;
-    }
-
-    const urlId = Appointments.getSocketUrlId(store);
-    if (!urlId) {
-      logger.info(`  Skipping store #${store.id} that doesn't have a URL id`);
-      return;
-    }
-
-    const patch = {
-      appointments: [],
-      appointments_last_fetched: DateTime.utc().toISO(),
-      appointments_available: false,
-      appointments_raw: {
-        messages: [],
-      },
-      url: null,
-      active: true,
-    };
-
-    const updatedStoreIds = [];
-
-    const url = `https://c.ateb.com/${urlId}/`;
-    const resp = await got(url, { followRedirect: false });
-    if (resp.statusCode > 300) {
-      if (
-        resp.statusCode === 302 &&
-        resp.headers.location.includes("appointments-full")
-      ) {
-        logger.info(`  Store #${store.id} reports appointments are full.`);
-      } else {
-        logger.warn(
-          `  Unexpected redirect encountered: ${JSON.stringify(resp.headers)}`
-        );
-      }
-    } else {
-      const socket = new Socket(urlId);
-      try {
-        const now = DateTime.now().setZone(store.time_zone);
-        const messages = await socket.checkState(store.state, now.toISODate());
-        for (const message of messages) {
-          if (message.type === "output") {
-            patch.appointments_raw.messages.push(message);
-          }
-        }
-
-        Appointments.processedStates[store.state] = true;
-
-        const storePatches = await Appointments.buildStoreSpecificPatches(
-          patch,
-          store
-        );
-        for (const [storeId, storePatch] of Object.entries(storePatches)) {
-          Appointments.processedStoreIds[storeId] = true;
-          await Store.query().findById(storeId).patch(storePatch);
-          updatedStoreIds.push(storeId);
-        }
-      } finally {
-        socket.socket.close();
-      }
-    }
-
-    await Store.query()
-      .where("provider_id", "wegmans")
-      .where("state", store.state)
-      .whereNotIn("id", updatedStoreIds)
-      .patch(patch);
-  }
-
-  static async buildStoreSpecificPatches(basePatch, searchStore) {
-    const storeAppointments = {};
-    let noAppointmentsMessage = false;
-    for (const message of basePatch.appointments_raw.messages) {
-      if (
-        message.type === "output" &&
-        message.data?.text &&
-        message.data.text.includes("No appointments available")
-      ) {
-        noAppointmentsMessage = true;
-        break;
-      } else if (
-        message.type === "output" &&
-        message.data?.data?._plugin?.type === "adaptivecards"
-      ) {
-        const { body } = message.data.data._plugin.payload;
-        for (const data of body) {
-          if (
-            data.type === "Container" &&
-            data?.items?.[0].columns?.[0].items?.[1]?.id ===
-              "scheduleLocation" &&
-            data?.items?.[0].columns?.[1].items?.[0].actions?.[0]?.id ===
-              "scheduleLocation"
-          ) {
-            const storeAddress = data.items[0].columns[0].items[0].text;
-            const scheduleData =
-              data.items[0].columns[1].items[0].actions[0].data;
-
-            if (!Appointments.addressStoreIds[storeAddress]) {
-              let normalizedAddress = normalizedAddressKey(storeAddress);
-              if (normalizedAddressMapping[normalizedAddress]) {
-                normalizedAddress = normalizedAddressMapping[normalizedAddress];
-              }
-
-              let store = await Store.query().findOne({
-                provider_id: searchStore.provider_id,
-                provider_brand_id: searchStore.provider_brand_id,
-                normalized_address_key: normalizedAddress,
-              });
-              if (!store) {
-                store = await Store.query()
-                  .findOne({
-                    provider_id: searchStore.provider_id,
-                    provider_brand_id: searchStore.provider_brand_id,
-                    state: searchStore.state,
-                  })
-                  .orderBy(
-                    Store.raw("normalized_address_key <-> ?", normalizedAddress)
-                  );
-                if (store) {
-                  logger.warn(
-                    `Store not found for ${normalizedAddress}, falling back to similarity match: ${store.normalized_address_key}`
-                  );
-                }
-              }
-              if (!store) {
-                throw new Error(`Store not found for ${storeAddress}`);
-              }
-
-              Appointments.addressStoreIds[storeAddress] = store.id;
-            }
-            const storeId = Appointments.addressStoreIds[storeAddress];
-
-            if (!storeAppointments[storeId]) {
-              storeAppointments[storeId] = [];
-            }
-            storeAppointments[storeId].push({
-              date: scheduleData.scheduleDate,
-            });
-          }
-        }
-      }
-    }
-
-    if (!noAppointmentsMessage && Object.keys(storeAppointments).length === 0) {
-      throw new Error(
-        `Appointments should have been found, but no data detected: ${JSON.stringify(
-          basePatch.appointments_raw.messages
-        )}`
-      );
-    }
-
-    const storePatches = {};
-    for (const [storeId, appointments] of Object.entries(storeAppointments)) {
-      const storePatch = _.cloneDeep(basePatch);
-      storePatch.appointments = _.orderBy(appointments, ["date", "type"]);
-
-      setComputedStoreValues(storePatch);
-
-      storePatches[storeId] = storePatch;
-    }
-
-    return storePatches;
+  static getNormalizedAddress(normalizedAddress) {
+    const mapped = normalizedAddressMapping[normalizedAddress];
+    return mapped || normalizedAddress;
   }
 }
 

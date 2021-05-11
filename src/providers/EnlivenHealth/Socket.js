@@ -58,6 +58,7 @@ class Socket {
           offerings: "covid",
           start: startDate,
           zipCode: postalCode,
+          radius: "100",
         },
       },
     });
