@@ -280,7 +280,7 @@ class Website {
         fileStreamAppend(fileStreams.US, json, fileStreamsPrependComma.US);
         fileStreamsPrependComma.US = true;
 
-        const {state} = store.data.properties;
+        const { state } = store.data.properties;
         if (jsonData[state]) {
           fileStreamAppend(
             fileStreams[state],
