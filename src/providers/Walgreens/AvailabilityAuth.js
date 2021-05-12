@@ -84,7 +84,6 @@ class AvailabilityAuth {
 
       logger.info("Getting CSRF token");
       auth.csrfToken = await page.getAttribute("meta[name=_csrf]", "content");
-      console.info(auth);
 
       logger.info("Getting cookies");
       auth.cookieJar = new CookieJar();

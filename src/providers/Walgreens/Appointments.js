@@ -33,7 +33,7 @@ class Appointments {
     Appointments.availabilityRequestsMade = 0;
     Appointments.timeslotsRequestsMade = 0;
 
-    const queue = new PQueue({ concurrency: 20 });
+    const queue = new PQueue({ concurrency: 15 });
 
     // Check each 55km wide grid cell (suitable for a 25 mile radius search)
     // for appointment availability.
@@ -123,7 +123,7 @@ class Appointments {
       `Begin refreshing appointment timeslots for grid cell ${gridCell.id} (${gridCell.state_code} ${gridCell.centroid_postal_code})...`
     );
 
-    const queue = new PQueue({ concurrency: 5 });
+    const queue = new PQueue({ concurrency: 3 });
 
     // The Walgreens timeslots API will only return 10 stores, and not in a
     // specific order. So in order to find timeslots for each store, we've
@@ -185,10 +185,6 @@ class Appointments {
     );
 
     const patch = _.cloneDeep(basePatch);
-    if (!patch.appointments_raw.second_doses) {
-      patch.appointments_raw.second_doses = {};
-    }
-
     if (!patch.appointments_raw.second_dose_only) {
       patch.appointments_raw.second_dose_only = {};
     }
@@ -246,33 +242,6 @@ class Appointments {
     }
     firstDoseDates = _.uniq(firstDoseDates, gridCell);
     logger.debug(`First dose dates: ${JSON.stringify(firstDoseDates)}`);
-
-    const secondDoseFetchDates = Appointments.getSecondDoseFetchDates(
-      firstDoseDates,
-      gridCell
-    );
-    logger.debug(
-      `Potential second dose dates to query: ${JSON.stringify(
-        secondDoseFetchDates
-      )}`
-    );
-    for (const secondDoseFetchDate of secondDoseFetchDates) {
-      const secondDoseResp = await retry(
-        async () =>
-          Appointments.fetchTimeslots(
-            gridCell,
-            radiusMiles,
-            "",
-            secondDoseFetchDate
-          ),
-        {
-          retries: 4,
-          onFailedAttempt: Appointments.onFailedTimeslotsAttempt,
-        }
-      );
-      patch.appointments_raw.second_doses[secondDoseFetchDate] =
-        secondDoseResp.data;
-    }
 
     const storePatches = await Appointments.buildStoreSpecificPatches(patch);
     for (const [storeId, storePatch] of Object.entries(storePatches)) {
@@ -380,6 +349,9 @@ class Appointments {
                   "yyyy-LL-dd hh:mm a",
                   { zone: store.time_zone }
                 ).toISO(),
+                type: location.manufacturer
+                  .map((manufacturer) => manufacturer.name)
+                  .join(", "),
               }))
             ),
           []
@@ -391,82 +363,12 @@ class Appointments {
   }
 
   static async buildStoreSpecificPatches(basePatch) {
-    const secondDoseAvailableDates = {};
-    for (const secondDoseResp of Object.values(
-      basePatch.appointments_raw.second_doses
-    )) {
-      const secondDoseAppointments = await Appointments.getRespAppointments(
-        secondDoseResp
-      );
-      for (const [storeId, appointments] of Object.entries(
-        secondDoseAppointments
-      )) {
-        if (!secondDoseAvailableDates[storeId]) {
-          secondDoseAvailableDates[storeId] = {};
-        }
-
-        for (const appointment of appointments) {
-          const appointmentDate = DateTime.fromISO(
-            appointment.time
-          ).toISODate();
-          secondDoseAvailableDates[storeId][appointmentDate] = true;
-        }
-      }
-    }
-    logger.debug(
-      `secondDoseAvailableDates: ${JSON.stringify(secondDoseAvailableDates)}`
-    );
-
     const firstDoseAppointments = await Appointments.getRespAppointments(
       basePatch.appointments_raw.first_dose
     );
     logger.debug(
       `firstDoseAppointments: ${JSON.stringify(firstDoseAppointments)}`
     );
-    const firstDoseWithSecondDoseAppointments = {};
-    for (const [storeId, appointments] of Object.entries(
-      firstDoseAppointments
-    )) {
-      for (const appointment of appointments) {
-        let appointmentHasSecondDose = false;
-
-        const firstDoseTime = DateTime.fromISO(appointment.time, {
-          setZone: true,
-        });
-        const secondDoseStartTime = firstDoseTime.plus(
-          secondDoseFutureDuration
-        );
-        const secondDoseEndTime = secondDoseStartTime.plus(
-          timeslotsFetchDuration
-        );
-        let secondDoseTime = secondDoseStartTime;
-        while (secondDoseTime <= secondDoseEndTime) {
-          if (
-            secondDoseAvailableDates?.[storeId]?.[secondDoseTime.toISODate()]
-          ) {
-            appointmentHasSecondDose = true;
-            break;
-          }
-
-          secondDoseTime = secondDoseTime.plus({ days: 1 });
-        }
-
-        if (appointmentHasSecondDose) {
-          logger.debug(
-            `First dose with bookable second dose: ${appointment.time}`
-          );
-          if (!firstDoseWithSecondDoseAppointments[storeId]) {
-            firstDoseWithSecondDoseAppointments[storeId] = [];
-          }
-
-          firstDoseWithSecondDoseAppointments[storeId].push(appointment);
-        } else {
-          logger.debug(
-            `Discarding first dose without bookable second dose: ${appointment.time}`
-          );
-        }
-      }
-    }
 
     const secondDoseOnlyModernaAppointments = await Appointments.getRespAppointments(
       basePatch.appointments_raw.second_dose_only.moderna
@@ -488,36 +390,18 @@ class Appointments {
 
     const allAppointments = {};
     for (const [storeId, appointments] of Object.entries(
-      firstDoseWithSecondDoseAppointments
+      firstDoseAppointments
     )) {
       if (!allAppointments[storeId]) {
         allAppointments[storeId] = [];
       }
 
       for (const appointment of appointments) {
-        const types = [];
-        if (
-          secondDoseOnlyModernaAppointments[storeId] &&
-          secondDoseOnlyModernaAppointments[storeId].some(
-            (a) => a.time === appointment.time
-          )
-        ) {
-          types.push("Moderna");
-        }
-        if (
-          secondDoseOnlyPfizerAppointments[storeId] &&
-          secondDoseOnlyPfizerAppointments[storeId].some(
-            (a) => a.time === appointment.time
-          )
-        ) {
-          types.push("Pfizer");
-        }
-
         allAppointments[storeId].push({
           appointment_types: ["all_doses"],
-          vaccine_types: normalizedVaccineTypes(types.join(", ")),
+          vaccine_types: normalizedVaccineTypes(appointment.type),
           time: appointment.time,
-          type: types.length > 0 ? types.join(", ") : null,
+          type: appointment.type,
         });
       }
     }
@@ -530,12 +414,11 @@ class Appointments {
       }
 
       for (const appointment of appointments) {
-        const type = "Moderna - 2nd Dose Only";
         allAppointments[storeId].push({
           appointment_types: ["2nd_dose_only"],
-          vaccine_types: normalizedVaccineTypes(type),
+          vaccine_types: normalizedVaccineTypes(appointment.type),
           time: appointment.time,
-          type,
+          type: `2nd Dose Only: ${appointment.type}`,
         });
       }
     }
@@ -548,12 +431,11 @@ class Appointments {
       }
 
       for (const appointment of appointments) {
-        const type = "Pfizer - 2nd Dose Only";
         allAppointments[storeId].push({
           appointment_types: ["2nd_dose_only"],
-          vaccine_types: normalizedVaccineTypes(type),
+          vaccine_types: normalizedVaccineTypes(appointment.type),
           time: appointment.time,
-          type,
+          type: `2nd Dose Only: ${appointment.type}`,
         });
       }
     }
@@ -568,14 +450,6 @@ class Appointments {
           storePatch.appointments_raw.first_dose,
           storeId
         );
-      }
-
-      if (storePatch.appointments_raw.second_doses) {
-        for (const data of Object.values(
-          storePatch.appointments_raw.second_doses
-        )) {
-          Appointments.filterRawForStoreId(data, storeId);
-        }
       }
 
       if (storePatch.appointments_raw.second_dose_only) {
@@ -609,10 +483,8 @@ class Appointments {
 
     const auth = await authMutex.runExclusive(AvailabilityAuth.get);
 
-    const tomorrow = DateTime.now()
-      .setZone(gridCell.time_zone)
-      .plus({ days: 1 });
-    const startDateTime = tomorrow.toISODate();
+    const today = DateTime.now().setZone(gridCell.time_zone);
+    const startDateTime = today.toISODate();
 
     logger.debug(
       `Fetching availability for grid cell: ${gridCell.centroid_postal_code}, startDateTime: ${startDateTime}`
@@ -674,10 +546,8 @@ class Appointments {
 
     let startDateTime = date;
     if (!startDateTime) {
-      const tomorrow = DateTime.now()
-        .setZone(gridCell.time_zone)
-        .plus({ days: 1 });
-      startDateTime = tomorrow.toISODate();
+      const today = DateTime.now().setZone(gridCell.time_zone);
+      startDateTime = today.toISODate();
     }
 
     logger.debug(
@@ -699,6 +569,7 @@ class Appointments {
         "Referer: https://www.walgreens.com/findcare/vaccination/covid-19/appointment/next-available",
         "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:85.0) Gecko/20100101 Firefox/85.0",
         `Cookie: ${await auth.cookieJar.getCookieString(url)}`,
+        `X-XSRF-TOKEN: ${auth.csrfToken}`,
       ],
       postFields: JSON.stringify({
         serviceId: "99",
@@ -716,9 +587,9 @@ class Appointments {
         radius: radiusMiles,
         size: radiusMiles,
       }),
-      proxy: process.env.WALGREENS_TIMESLOTS_PROXY_SERVER,
-      proxyUsername: process.env.WALGREENS_TIMESLOTS_PROXY_USERNAME,
-      proxyPassword: process.env.WALGREENS_TIMESLOTS_PROXY_PASSWORD,
+      proxy: process.env.WALGREENS_AVAILABILITY_PROXY_SERVER,
+      proxyUsername: process.env.WALGREENS_AVAILABILITY_PROXY_USERNAME,
+      proxyPassword: process.env.WALGREENS_AVAILABILITY_PROXY_PASSWORD,
       sslVerifyPeer: false,
     });
 

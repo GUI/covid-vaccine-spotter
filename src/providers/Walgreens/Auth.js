@@ -1,7 +1,6 @@
 require("dotenv").config();
 
 const util = require("util");
-const fs = require("fs").promises;
 const _ = require("lodash");
 const { Cookie, CookieJar } = require("tough-cookie");
 const sleep = require("sleep-promise");
@@ -10,6 +9,7 @@ const HumanizePlugin = require("@extra/humanize");
 const { PlaywrightBlocker } = require("@cliqz/adblocker-playwright");
 const fetch = require("cross-fetch");
 const logger = require("../../logger");
+const { Cache } = require("../../models/Cache");
 
 firefox.use(
   HumanizePlugin({
@@ -24,26 +24,27 @@ class Auth {
     if (Auth.auth) {
       return Auth.auth;
     }
-    try {
-      const cookieJarJson = await fs.readFile("tmp/WalgreensCookieJar.json");
-      const cookieJar = CookieJar.fromJSON(JSON.parse(cookieJarJson));
 
+    const cache = await Cache.query().findById("walgreens_auth");
+    if (cache) {
+      const cookieJar = CookieJar.fromJSON(cache.value.cookieJar);
       const auth = {
+        ...cache.value,
         cookieJar,
       };
       Auth.set(auth);
-
       return auth;
-    } catch (err) {
-      logger.info("Auth not found in existing cached cookies, refreshing");
-      return Auth.refresh();
     }
+
+    return Auth.refresh();
   }
 
   static async refresh() {
     logger.info("Refreshing Walgreens auth");
 
-    const cookieJar = new CookieJar();
+    const auth = {
+      cookieJar: new CookieJar(),
+    };
 
     const browser = await firefox.launch({
       headless: true,
@@ -91,11 +92,9 @@ class Auth {
       logger.info("Filling in credentials...");
       await sleep(_.random(300, 500));
       await page.click("input[name=username]");
-      // await (await page.$('input[name=username]')).press('Backspace')
       await page.fill("input[name=username]", process.env.WALGREENS_EMAIL);
       await sleep(_.random(300, 500));
       await page.click("input[name=password]");
-      // await (await page.$('input[name=password]')).press('Backspace')
       await page.fill("input[name=password]", process.env.WALGREENS_PASSWORD);
       await sleep(_.random(500, 750));
 
@@ -104,7 +103,6 @@ class Auth {
       );
       let waitForLoginIdlePromise = page.waitForLoadState("networkidle");
       await (await page.$("input[name=password]")).press("Enter");
-      // await page.click("#submit_btn");
       logger.info("Waiting on login response.");
       await waitForLoginResponsePromise;
       logger.info("Waiting on login idle state.");
@@ -162,20 +160,17 @@ class Auth {
         await page.click("#optionContinue");
         await page.fill("#secQues", process.env.WALGREENS_SECURITY);
         await page.click("#validate_security_answer");
-
-        // await sleep(15000);
       }
 
       logger.info("Waiting for successful login page.");
       await page.waitForSelector(".ApptScreens");
 
-      // await sleep(100000);
+      auth.csrfToken = await page.getAttribute("meta[name=_csrf]", "content");
 
-      // await page.screenshot({ path: "screenshot.png" });
       logger.info("Getting cookies");
       for (const cookie of await context.cookies()) {
         const putCookie = util.promisify(
-          cookieJar.store.putCookie.bind(cookieJar.store)
+          auth.cookieJar.store.putCookie.bind(auth.cookieJar.store)
         );
         await putCookie(
           new Cookie({
@@ -193,6 +188,8 @@ class Auth {
           })
         );
       }
+
+      logger.info("page.content(): ", await page.content());
     } catch (err) {
       logger.error(err);
       throw err;
@@ -202,16 +199,20 @@ class Auth {
       }
     }
 
-    await fs.writeFile(
-      "tmp/WalgreensCookieJar.json",
-      JSON.stringify(cookieJar.toJSON())
-    );
+    await Cache.query()
+      .insert({
+        id: "walgreens_auth",
+        value: {
+          ...auth,
+          cookieJar: auth.cookieJar.toJSON(),
+        },
+      })
+      .onConflict("id")
+      .merge();
 
-    const auth = {
-      cookieJar,
-    };
-    // console.info('AUTH: ', auth);
+    logger.info("Setting auth...");
     Auth.set(auth);
+    logger.info("Finished auth refresh.");
 
     return auth;
   }
