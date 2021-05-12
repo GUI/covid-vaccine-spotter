@@ -185,9 +185,6 @@ class Appointments {
     );
 
     const patch = _.cloneDeep(basePatch);
-    if (!patch.appointments_raw.second_dose_only) {
-      patch.appointments_raw.second_dose_only = {};
-    }
 
     const firstDoseRespPromise = retry(
       async () => Appointments.fetchTimeslots(gridCell, radiusMiles, ""),
@@ -197,40 +194,8 @@ class Appointments {
       }
     );
 
-    const secondDoseOnlyModernaRespPromise = retry(
-      async () =>
-        Appointments.fetchTimeslots(
-          gridCell,
-          radiusMiles,
-          "5fd42921195d89e656c0b028"
-        ),
-      {
-        retries: 4,
-        onFailedAttempt: Appointments.onFailedTimeslotsAttempt,
-      }
-    );
-
-    const secondDoseOnlyPfizerRespPromise = retry(
-      async () =>
-        Appointments.fetchTimeslots(
-          gridCell,
-          radiusMiles,
-          "5fd1ab9f5fa47e056c076ff2"
-        ),
-      {
-        retries: 4,
-        onFailedAttempt: Appointments.onFailedTimeslotsAttempt,
-      }
-    );
-
     const firstDoseResp = await firstDoseRespPromise;
-    const secondDoseOnlyModernaResp = await secondDoseOnlyModernaRespPromise;
-    const secondDoseOnlyPfizerResp = await secondDoseOnlyPfizerRespPromise;
     patch.appointments_raw.first_dose = firstDoseResp.data;
-    patch.appointments_raw.second_dose_only.moderna =
-      secondDoseOnlyModernaResp.data;
-    patch.appointments_raw.second_dose_only.pfizer =
-      secondDoseOnlyPfizerResp.data;
 
     let firstDoseDates = [];
     if (firstDoseResp.data?.locations) {
@@ -370,24 +335,6 @@ class Appointments {
       `firstDoseAppointments: ${JSON.stringify(firstDoseAppointments)}`
     );
 
-    const secondDoseOnlyModernaAppointments = await Appointments.getRespAppointments(
-      basePatch.appointments_raw.second_dose_only.moderna
-    );
-    logger.debug(
-      `secondDoseOnlyModernaAppointments: ${JSON.stringify(
-        secondDoseOnlyModernaAppointments
-      )}`
-    );
-
-    const secondDoseOnlyPfizerAppointments = await Appointments.getRespAppointments(
-      basePatch.appointments_raw.second_dose_only.pfizer
-    );
-    logger.debug(
-      `secondDoseOnlyPfizerAppointments: ${JSON.stringify(
-        secondDoseOnlyPfizerAppointments
-      )}`
-    );
-
     const allAppointments = {};
     for (const [storeId, appointments] of Object.entries(
       firstDoseAppointments
@@ -406,40 +353,6 @@ class Appointments {
       }
     }
 
-    for (const [storeId, appointments] of Object.entries(
-      secondDoseOnlyModernaAppointments
-    )) {
-      if (!allAppointments[storeId]) {
-        allAppointments[storeId] = [];
-      }
-
-      for (const appointment of appointments) {
-        allAppointments[storeId].push({
-          appointment_types: ["2nd_dose_only"],
-          vaccine_types: normalizedVaccineTypes(appointment.type),
-          time: appointment.time,
-          type: `2nd Dose Only: ${appointment.type}`,
-        });
-      }
-    }
-
-    for (const [storeId, appointments] of Object.entries(
-      secondDoseOnlyPfizerAppointments
-    )) {
-      if (!allAppointments[storeId]) {
-        allAppointments[storeId] = [];
-      }
-
-      for (const appointment of appointments) {
-        allAppointments[storeId].push({
-          appointment_types: ["2nd_dose_only"],
-          vaccine_types: normalizedVaccineTypes(appointment.type),
-          time: appointment.time,
-          type: `2nd Dose Only: ${appointment.type}`,
-        });
-      }
-    }
-
     const storePatches = {};
     for (const [storeId, appointments] of Object.entries(allAppointments)) {
       const storePatch = _.cloneDeep(basePatch);
@@ -450,14 +363,6 @@ class Appointments {
           storePatch.appointments_raw.first_dose,
           storeId
         );
-      }
-
-      if (storePatch.appointments_raw.second_dose_only) {
-        for (const data of Object.values(
-          storePatch.appointments_raw.second_dose_only
-        )) {
-          Appointments.filterRawForStoreId(data, storeId);
-        }
       }
 
       setComputedStoreValues(storePatch);
