@@ -1,11 +1,28 @@
-const fs = require("fs").promises;
+const fsPromises = require("fs").promises;
+const fs = require("fs");
 const mkdirp = require("mkdirp");
 const del = require("del");
 const path = require("path");
-const logger = require("../logger");
-const runShell = require("../utils/runShell");
+const QueryStream = require("pg-query-stream");
+const util = require("util");
+const stream = require("stream");
 const { Store } = require("../models/Store");
-const { State } = require("../models/State");
+const runShell = require("../utils/runShell");
+const logger = require("../logger");
+
+const finished = util.promisify(stream.finished);
+
+// Helper function to append JSON data to a file being written in a streaming
+// fashion.
+function fileStreamAppend(fileStream, json, prependComma) {
+  // Since we're manually generating the JSON array, prepend the array
+  // comma as appropriate.
+  if (prependComma) {
+    fileStream.write(",");
+  }
+
+  fileStream.write(json);
+}
 
 class Website {
   static async apiDataBuild() {
@@ -14,276 +31,300 @@ class Website {
     const dataPath = path.resolve("website/static/api/v0");
     await mkdirp(dataPath);
 
-    await Store.knex().raw(`
-      UPDATE stores
-      SET appointments_available = NULL, appointments = NULL
-      WHERE
-        appointments_last_fetched <= (now() - interval '1 hour')
-        AND (
-          appointments_available IS NOT NULL
-          OR appointments IS NOT NULL
-        )
-    `);
+    const knex = Store.knex();
+    const trx = await knex.transaction();
+    const client = await knex.client.acquireConnection();
+    try {
+      await trx.raw(`
+        UPDATE stores
+        SET appointments_available = NULL, appointments = NULL
+        WHERE
+          appointments_last_fetched <= (now() - interval '1 hour')
+          AND (
+            appointments_available IS NOT NULL
+            OR appointments IS NOT NULL
+          )
+      `);
 
-    /*
-    const usData = await State.knex().raw(`
-      SELECT
-        jsonb_build_object(
-          'type', 'FeatureCollection',
-          'metadata', jsonb_build_object(
-            'code', 'US',
-            'name', 'United States',
-            'bounding_box', '{"type":"Polygon","coordinates":[[[-124.848974,24.396308],[-124.848974,49.384358],[-66.885444,49.384358],[-66.885444,24.396308]]]}'::jsonb,
-            'store_count', COUNT(*),
-            'provider_brand_count', COUNT(DISTINCT stores.provider_brand_id),
-            'appointments_last_fetched', MAX(stores.appointments_last_fetched),
-            'appointments_last_modified', MAX(COALESCE(stores.appointments_last_modified, stores.appointments_last_fetched)),
-            'provider_brands', (
-              SELECT
-              jsonb_agg(
-                jsonb_build_object(
-                  'id', p.id,
-                  'key', p.key,
-                  'name', p.name,
-                  'provider_id', p.provider_id,
-                  'url', p.url,
-                  'location_count', p.location_count,
-                  'appointments_last_fetched', p.appointments_last_fetched,
-                  'appointments_last_modified', p.appointments_last_modified,
-                  'status', p.status
-                )
-              )
-              FROM (
+      const jsonData = {};
+      const usData = await trx.raw(`
+        SELECT
+          jsonb_build_object(
+            'type', 'FeatureCollection',
+            'metadata', jsonb_build_object(
+              'code', 'US',
+              'name', 'United States',
+              'bounding_box', '{"type":"Polygon","coordinates":[[[-124.848974,24.396308],[-124.848974,49.384358],[-66.885444,49.384358],[-66.885444,24.396308]]]}'::jsonb,
+              'store_count', COUNT(*),
+              'provider_brand_count', COUNT(DISTINCT stores.provider_brand_id),
+              'appointments_last_fetched', MAX(stores.appointments_last_fetched),
+              'appointments_last_modified', MAX(COALESCE(stores.appointments_last_modified, stores.appointments_last_fetched)),
+              'provider_brands', (
                 SELECT
-                  provider_brands.*,
-                  COUNT(stores.id) AS location_count,
-                  MAX(appointments_last_fetched) AS appointments_last_fetched,
-                  MAX(COALESCE(appointments_last_modified, appointments_last_fetched)) AS appointments_last_modified,
-                  CASE WHEN MAX(appointments_last_fetched) > (now() - interval '1 hour') THEN 'active' WHEN MAX(appointments_last_fetched) IS NULL THEN 'unknown' ELSE 'inactive' END AS status
-                FROM stores
-                LEFT JOIN provider_brands ON stores.provider_brand_id = provider_brands.id
-                WHERE stores.active = true
-                GROUP BY provider_brands.id
-                ORDER BY provider_brands.name
-              ) AS p
+                jsonb_agg(
+                  jsonb_build_object(
+                    'id', p.id,
+                    'key', p.key,
+                    'name', p.name,
+                    'provider_id', p.provider_id,
+                    'url', p.url,
+                    'location_count', p.location_count,
+                    'appointments_last_fetched', p.appointments_last_fetched,
+                    'appointments_last_modified', p.appointments_last_modified,
+                    'status', p.status
+                  )
+                )
+                FROM (
+                  SELECT
+                    provider_brands.*,
+                    COUNT(stores.id) AS location_count,
+                    MAX(appointments_last_fetched) AS appointments_last_fetched,
+                    MAX(COALESCE(appointments_last_modified, appointments_last_fetched)) AS appointments_last_modified,
+                    CASE WHEN MAX(appointments_last_fetched) > (now() - interval '1 hour') THEN 'active' WHEN MAX(appointments_last_fetched) IS NULL THEN 'unknown' ELSE 'inactive' END AS status
+                  FROM stores
+                  LEFT JOIN provider_brands ON stores.provider_brand_id = provider_brands.id
+                  WHERE stores.active = true
+                  GROUP BY provider_brands.id
+                  ORDER BY provider_brands.name
+                ) AS p
+              )
             )
-          ),
-          'features', (
+          ) AS data
+        FROM stores
+        WHERE stores.active = true
+      `);
+      jsonData.US = usData.rows[0].data;
+
+      const states = await trx.raw(`
+        SELECT
+          states.code,
+          states.name,
+          COUNT(stores.id) AS store_count,
+          COUNT(DISTINCT stores.provider_brand_id) AS provider_brand_count,
+          MAX(stores.appointments_last_fetched) AS appointments_last_fetched,
+          MAX(COALESCE(stores.appointments_last_modified, stores.appointments_last_fetched)) AS appointments_last_modified,
+          (
             SELECT
             jsonb_agg(
               jsonb_build_object(
-                'type', 'Feature',
-                'geometry', jsonb_build_object(
-                  'type', 'Point',
-                  'coordinates', jsonb_build_array(st_x(location::geometry), st_y(location::geometry))
-                ),
-                'properties', jsonb_build_object(
-                  'id', stores.id,
-                  'provider', stores.provider_id,
-                  'provider_location_id', provider_location_id,
-                  'provider_brand', provider_brands.key,
-                  'provider_brand_id', provider_brands.id,
-                  'provider_brand_name', provider_brands.name,
-                  'url', coalesce(stores.url, provider_brands.url),
-                  'name', stores.name,
-                  'address', address,
-                  'city', city,
-                  'state', state,
-                  'postal_code', postal_code,
-                  'time_zone', time_zone,
-                  'carries_vaccine', carries_vaccine,
-                  'appointments', appointments,
-                  'appointments_available', appointments_available,
-                  'appointments_available_all_doses', CASE WHEN appointments_available IS NULL THEN NULL WHEN appointments_available AND (appointment_types->>'all_doses' = 'true' OR appointment_types->>'unknown' = 'true') THEN true ELSE false END,
-                  'appointments_available_2nd_dose_only', CASE WHEN appointments_available IS NULL THEN NULL WHEN appointments_available AND appointment_types->>'2nd_dose_only' = 'true' THEN true ELSE false END,
-                  'appointments_last_fetched', appointments_last_fetched,
-                  'appointments_last_modified', COALESCE(appointments_last_modified, appointments_last_fetched),
-                  'appointment_types', appointment_types,
-                  'appointment_vaccine_types', appointment_vaccine_types
-                )
+                'id', p.id,
+                'key', p.key,
+                'name', p.name,
+                'provider_id', p.provider_id,
+                'url', p.url,
+                'location_count', p.location_count,
+                'appointments_last_fetched', p.appointments_last_fetched,
+                'appointments_last_modified', p.appointments_last_modified,
+                'status', p.status
               )
-              ORDER BY CASE WHEN appointments_available = false THEN 1 WHEN appointments_available IS NULL THEN 2 WHEN appointments_available = true THEN 3 END, COALESCE(appointments_last_modified, appointments_last_fetched) DESC, city
             )
-            FROM stores
-            LEFT JOIN provider_brands ON provider_brands.id = stores.provider_brand_id
-            WHERE stores.active = true
-          )
-        ) AS data
-      FROM stores
-      WHERE stores.active = true
-    `);
-    await fs.writeFile(
-      `${dataPath}/US.json`,
-      JSON.stringify(usData.rows[0].data)
-    );
-    */
-
-    const states = await State.knex().raw(`
-      SELECT
-        states.code,
-        states.name,
-        COUNT(stores.id) AS store_count,
-        COUNT(DISTINCT stores.provider_brand_id) AS provider_brand_count,
-        MAX(stores.appointments_last_fetched) AS appointments_last_fetched,
-        MAX(COALESCE(stores.appointments_last_modified, stores.appointments_last_fetched)) AS appointments_last_modified,
-        (
-          SELECT
-          jsonb_agg(
-            jsonb_build_object(
-              'id', p.id,
-              'key', p.key,
-              'name', p.name,
-              'provider_id', p.provider_id,
-              'url', p.url,
-              'location_count', p.location_count,
-              'appointments_last_fetched', p.appointments_last_fetched,
-              'appointments_last_modified', p.appointments_last_modified,
-              'status', p.status
-            )
-          )
-          FROM (
-            SELECT
-              provider_brands.*,
-              COUNT(stores.id) AS location_count,
-              MAX(appointments_last_fetched) AS appointments_last_fetched,
-              MAX(COALESCE(appointments_last_modified, appointments_last_fetched)) AS appointments_last_modified,
-              CASE WHEN MAX(appointments_last_fetched) > (now() - interval '1 hour') THEN 'active' WHEN MAX(appointments_last_fetched) IS NULL THEN 'unknown' ELSE 'inactive' END AS status
-            FROM stores
-            LEFT JOIN provider_brands ON stores.provider_brand_id = provider_brands.id
-            WHERE
-              stores.state = states.code
-              AND stores.active = true
-            GROUP BY provider_brands.id
-            ORDER BY provider_brands.name
-          ) AS p
-        ) AS provider_brands
-      FROM states
-      LEFT JOIN stores ON stores.state = states.code AND stores.active = true
-      GROUP BY states.id
-      ORDER BY states.name
-    `);
-    await fs.writeFile(`${dataPath}/states.json`, JSON.stringify(states.rows));
-    for (const state of states.rows) {
-      await mkdirp(`${dataPath}/stores/${state.code}`);
-    }
-
-    const statesData = await State.knex().raw(`
-      SELECT
-        states.code,
-        jsonb_build_object(
-          'type', 'FeatureCollection',
-          'metadata', jsonb_build_object(
-            'code', states.code,
-            'name', states.name,
-            'bounding_box', st_asgeojson(st_envelope(boundaries::geometry))::jsonb,
-            'store_count', COUNT(stores.id),
-            'provider_brand_count', COUNT(DISTINCT stores.provider_brand_id),
-            'appointments_last_fetched', MAX(stores.appointments_last_fetched),
-            'appointments_last_modified', MAX(COALESCE(stores.appointments_last_modified, stores.appointments_last_fetched)),
-            'provider_brands', (
+            FROM (
               SELECT
-              jsonb_agg(
-                jsonb_build_object(
-                  'id', p.id,
-                  'key', p.key,
-                  'name', p.name,
-                  'provider_id', p.provider_id,
-                  'url', p.url,
-                  'location_count', p.location_count,
-                  'appointments_last_fetched', p.appointments_last_fetched,
-                  'appointments_last_modified', p.appointments_last_modified,
-                  'status', p.status
-                )
-              )
-              FROM (
+                provider_brands.*,
+                COUNT(stores.id) AS location_count,
+                MAX(appointments_last_fetched) AS appointments_last_fetched,
+                MAX(COALESCE(appointments_last_modified, appointments_last_fetched)) AS appointments_last_modified,
+                CASE WHEN MAX(appointments_last_fetched) > (now() - interval '1 hour') THEN 'active' WHEN MAX(appointments_last_fetched) IS NULL THEN 'unknown' ELSE 'inactive' END AS status
+              FROM stores
+              LEFT JOIN provider_brands ON stores.provider_brand_id = provider_brands.id
+              WHERE
+                stores.state = states.code
+                AND stores.active = true
+              GROUP BY provider_brands.id
+              ORDER BY provider_brands.name
+            ) AS p
+          ) AS provider_brands
+        FROM states
+        LEFT JOIN stores ON stores.state = states.code AND stores.active = true
+        GROUP BY states.id
+        ORDER BY states.name
+      `);
+      await fsPromises.writeFile(
+        `${dataPath}/states.json`,
+        JSON.stringify(states.rows)
+      );
+      for (const state of states.rows) {
+        await mkdirp(`${dataPath}/stores/${state.code}`);
+      }
+
+      const statesData = await trx.raw(`
+        SELECT
+          states.code,
+          jsonb_build_object(
+            'type', 'FeatureCollection',
+            'metadata', jsonb_build_object(
+              'code', states.code,
+              'name', states.name,
+              'bounding_box', st_asgeojson(st_envelope(boundaries::geometry))::jsonb,
+              'store_count', COUNT(stores.id),
+              'provider_brand_count', COUNT(DISTINCT stores.provider_brand_id),
+              'appointments_last_fetched', MAX(stores.appointments_last_fetched),
+              'appointments_last_modified', MAX(COALESCE(stores.appointments_last_modified, stores.appointments_last_fetched)),
+              'provider_brands', (
                 SELECT
-                  provider_brands.*,
-                  COUNT(stores.id) AS location_count,
-                  MAX(appointments_last_fetched) AS appointments_last_fetched,
-                  MAX(COALESCE(appointments_last_modified, appointments_last_fetched)) AS appointments_last_modified,
-                  CASE WHEN MAX(appointments_last_fetched) > (now() - interval '1 hour') THEN 'active' WHEN MAX(appointments_last_fetched) IS NULL THEN 'unknown' ELSE 'inactive' END AS status
-                FROM stores
-                LEFT JOIN provider_brands ON stores.provider_brand_id = provider_brands.id
-                WHERE
-                  stores.state = states.code
-                  AND stores.active = true
-                GROUP BY provider_brands.id
-                ORDER BY provider_brands.name
-              ) AS p
-            )
-          ),
-          'features', (
-            SELECT
-            jsonb_agg(
-              jsonb_build_object(
-                'type', 'Feature',
-                'geometry', jsonb_build_object(
-                  'type', 'Point',
-                  'coordinates', jsonb_build_array(st_x(location::geometry), st_y(location::geometry))
-                ),
-                'properties', jsonb_build_object(
-                  'id', stores.id,
-                  'provider', stores.provider_id,
-                  'provider_location_id', provider_location_id,
-                  'provider_brand', provider_brands.key,
-                  'provider_brand_id', provider_brands.id,
-                  'provider_brand_name', provider_brands.name,
-                  'url', coalesce(stores.url, provider_brands.url),
-                  'name', stores.name,
-                  'address', address,
-                  'city', city,
-                  'state', state,
-                  'postal_code', postal_code,
-                  'time_zone', time_zone,
-                  'carries_vaccine', carries_vaccine,
-                  'appointments', appointments,
-                  'appointments_available', appointments_available,
-                  'appointments_available_all_doses', CASE WHEN appointments_available IS NULL THEN NULL WHEN appointments_available AND (appointment_types->>'all_doses' = 'true' OR appointment_types->>'unknown' = 'true') THEN true ELSE false END,
-                  'appointments_available_2nd_dose_only', CASE WHEN appointments_available IS NULL THEN NULL WHEN appointments_available AND appointment_types->>'2nd_dose_only' = 'true' THEN true ELSE false END,
-                  'appointments_last_fetched', appointments_last_fetched,
-                  'appointments_last_modified', COALESCE(appointments_last_modified, appointments_last_fetched),
-                  'appointment_types', appointment_types,
-                  'appointment_vaccine_types', appointment_vaccine_types
+                jsonb_agg(
+                  jsonb_build_object(
+                    'id', p.id,
+                    'key', p.key,
+                    'name', p.name,
+                    'provider_id', p.provider_id,
+                    'url', p.url,
+                    'location_count', p.location_count,
+                    'appointments_last_fetched', p.appointments_last_fetched,
+                    'appointments_last_modified', p.appointments_last_modified,
+                    'status', p.status
+                  )
                 )
+                FROM (
+                  SELECT
+                    provider_brands.*,
+                    COUNT(stores.id) AS location_count,
+                    MAX(appointments_last_fetched) AS appointments_last_fetched,
+                    MAX(COALESCE(appointments_last_modified, appointments_last_fetched)) AS appointments_last_modified,
+                    CASE WHEN MAX(appointments_last_fetched) > (now() - interval '1 hour') THEN 'active' WHEN MAX(appointments_last_fetched) IS NULL THEN 'unknown' ELSE 'inactive' END AS status
+                  FROM stores
+                  LEFT JOIN provider_brands ON stores.provider_brand_id = provider_brands.id
+                  WHERE
+                    stores.state = states.code
+                    AND stores.active = true
+                  GROUP BY provider_brands.id
+                  ORDER BY provider_brands.name
+                ) AS p
               )
-              ORDER BY CASE WHEN appointments_available = false THEN 1 WHEN appointments_available IS NULL THEN 2 WHEN appointments_available = true THEN 3 END, COALESCE(appointments_last_modified, appointments_last_fetched) DESC, city
             )
-            FROM stores
-            LEFT JOIN provider_brands ON provider_brands.id = stores.provider_brand_id
-            WHERE stores.state = states.code
-            AND stores.active = true
+          ) AS data
+        FROM states
+        LEFT JOIN stores ON stores.state = states.code AND stores.active = true
+        GROUP BY states.id
+        ORDER BY states.name
+      `);
+      await mkdirp(`${dataPath}/states`);
+      for (const state of statesData.rows) {
+        jsonData[state.code] = state.data;
+      }
+
+      // Stream the individual store results so we don't have to build up all
+      // of the stores in memory (since this may exceed PostgreSQL's JSONB
+      // memory limits if we try generating it as a complete array in Postgres,
+      // or this would just eat more memory if we returned it to NodeJS).
+      const storesStream = client.query(
+        new QueryStream(`
+        SELECT
+        jsonb_build_object(
+          'type', 'Feature',
+          'geometry', jsonb_build_object(
+            'type', 'Point',
+            'coordinates', jsonb_build_array(st_x(location::geometry), st_y(location::geometry))
+          ),
+          'properties', jsonb_build_object(
+            'id', stores.id,
+            'provider', stores.provider_id,
+            'provider_location_id', provider_location_id,
+            'provider_brand', provider_brands.key,
+            'provider_brand_id', provider_brands.id,
+            'provider_brand_name', provider_brands.name,
+            'url', coalesce(stores.url, provider_brands.url),
+            'name', stores.name,
+            'address', address,
+            'city', city,
+            'state', state,
+            'postal_code', postal_code,
+            'time_zone', time_zone,
+            'carries_vaccine', carries_vaccine,
+            'appointments', appointments,
+            'appointments_available', appointments_available,
+            'appointments_available_all_doses', CASE WHEN appointments_available IS NULL THEN NULL WHEN appointments_available AND (appointment_types->>'all_doses' = 'true' OR appointment_types->>'unknown' = 'true') THEN true ELSE false END,
+            'appointments_available_2nd_dose_only', CASE WHEN appointments_available IS NULL THEN NULL WHEN appointments_available AND appointment_types->>'2nd_dose_only' = 'true' THEN true ELSE false END,
+            'appointments_last_fetched', appointments_last_fetched,
+            'appointments_last_modified', COALESCE(appointments_last_modified, appointments_last_fetched),
+            'appointment_types', appointment_types,
+            'appointment_vaccine_types', appointment_vaccine_types
           )
         ) AS data
-      FROM states
-      LEFT JOIN stores ON stores.state = states.code AND stores.active = true
-      GROUP BY states.id
-      ORDER BY states.name
-    `);
-    await mkdirp(`${dataPath}/states`);
-    for (const state of statesData.rows) {
-      await fs.writeFile(
-        `${dataPath}/states/${state.code}.json`,
-        JSON.stringify(state.data)
+        FROM stores
+        LEFT JOIN provider_brands ON provider_brands.id = stores.provider_brand_id
+        WHERE stores.active = true
+        ORDER BY CASE WHEN appointments_available = false THEN 1 WHEN appointments_available IS NULL THEN 2 WHEN appointments_available = true THEN 3 END, COALESCE(appointments_last_modified, appointments_last_fetched) DESC, city
+      `)
       );
-    }
 
-    const postalCodeData = await State.knex().raw(`
-      SELECT
-        state_code,
-        jsonb_object_agg(
-          postal_code, jsonb_build_array(st_x(location::geometry), st_y(location::geometry))
-          ORDER BY postal_code
-        ) AS data
-      FROM postal_codes
-      GROUP BY state_code
-      ORDER BY state_code
-    `);
-    for (const state of postalCodeData.rows) {
-      await mkdirp(`${dataPath}/states/${state.state_code}`);
-      await fs.writeFile(
-        `${dataPath}/states/${state.state_code}/postal_codes.json`,
-        JSON.stringify(state.data)
-      );
+      // Build files for each state and US-wide to write the streaming results
+      // into.
+      const fileStreams = {};
+      const fileStreamsPrependComma = {};
+      for (const [state, data] of Object.entries(jsonData)) {
+        const filePath =
+          state === "US"
+            ? `${dataPath}/US.json`
+            : `${dataPath}/states/${state}.json`;
+
+        // Write the initial JSON file out with an opening "features" array so
+        // we can write each feature in a streaming fashion.
+        const json = JSON.stringify(data);
+        await fsPromises.writeFile(
+          filePath,
+          `${json.slice(0, -1)},"features":[`
+        );
+
+        // Open a stream to append the features to each file.
+        const fileStream = fs.createWriteStream(filePath, { flags: "a" });
+        fileStreams[state] = fileStream;
+        fileStreamsPrependComma[state] = false;
+      }
+
+      // Loop over every store being streamed back, appending it to the
+      // appropriate file.
+      for await (const store of storesStream) {
+        const json = JSON.stringify(store.data);
+
+        fileStreamAppend(fileStreams.US, json, fileStreamsPrependComma.US);
+        fileStreamsPrependComma.US = true;
+
+        const {state} = store.data.properties;
+        if (jsonData[state]) {
+          fileStreamAppend(
+            fileStreams[state],
+            json,
+            fileStreamsPrependComma[state]
+          );
+          fileStreamsPrependComma[state] = true;
+        } else {
+          logger.warn(`Missing file for state: ${JSON.stringify(store.data)}`);
+        }
+      }
+
+      for (const fileStream of Object.values(fileStreams)) {
+        // Close the "features" array and the overall object.
+        fileStream.write("]}");
+        fileStream.end();
+        await finished(fileStream);
+      }
+
+      const postalCodeData = await trx.raw(`
+        SELECT
+          state_code,
+          jsonb_object_agg(
+            postal_code, jsonb_build_array(st_x(location::geometry), st_y(location::geometry))
+            ORDER BY postal_code
+          ) AS data
+        FROM postal_codes
+        GROUP BY state_code
+        ORDER BY state_code
+      `);
+      for (const state of postalCodeData.rows) {
+        await mkdirp(`${dataPath}/states/${state.state_code}`);
+        await fsPromises.writeFile(
+          `${dataPath}/states/${state.state_code}/postal_codes.json`,
+          JSON.stringify(state.data)
+        );
+      }
+
+      await trx.commit();
+    } catch (err) {
+      await trx.rollback();
+      throw err;
+    } finally {
+      await knex.client.releaseConnection(client);
     }
 
     logger.notice("Finished building API data.");
@@ -416,7 +457,7 @@ class Website {
       .orderBy("state");
     for (const state of states) {
       await mkdirp(`${dataPath}/stores/${state.state}`);
-      await fs.writeFile(
+      await fsPromises.writeFile(
         `${dataPath}/stores/${state.state}/${brand}.json`,
         JSON.stringify(state.state_data)
       );
