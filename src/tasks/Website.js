@@ -25,6 +25,7 @@ class Website {
         )
     `);
 
+    /*
     const usData = await State.knex().raw(`
       SELECT
         jsonb_build_object(
@@ -115,6 +116,7 @@ class Website {
       `${dataPath}/US.json`,
       JSON.stringify(usData.rows[0].data)
     );
+    */
 
     const states = await State.knex().raw(`
       SELECT
