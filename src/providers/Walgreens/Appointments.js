@@ -33,7 +33,7 @@ class Appointments {
     Appointments.availabilityRequestsMade = 0;
     Appointments.timeslotsRequestsMade = 0;
 
-    const queue = new PQueue({ concurrency: 15 });
+    const queue = new PQueue({ concurrency: 20 });
 
     // Check each 55km wide grid cell (suitable for a 25 mile radius search)
     // for appointment availability.
@@ -123,7 +123,7 @@ class Appointments {
       `Begin refreshing appointment timeslots for grid cell ${gridCell.id} (${gridCell.state_code} ${gridCell.centroid_postal_code})...`
     );
 
-    const queue = new PQueue({ concurrency: 3 });
+    const queue = new PQueue({ concurrency: 5 });
 
     // The Walgreens timeslots API will only return 10 stores, and not in a
     // specific order. So in order to find timeslots for each store, we've
