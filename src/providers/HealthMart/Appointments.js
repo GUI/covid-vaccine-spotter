@@ -63,6 +63,11 @@ class Appointments {
           postal_code: data.postal_code,
         });
 
+        // As of 2021-05-12, `visibileTimeSlots` is no longer being returned in
+        // the API, so we don't actually get specific timeslots. Timeslots are
+        // available via another API call, but that would require API calls for
+        // each individual store, so we will skip that for now and just return
+        // the booelan appointment status for now.
         const appointments = rawStore.visibleTimeSlots.map((slot) => ({
           time: DateTime.fromFormat(slot.time, "yyyy-LL-dd'T'HH:mm:ss", {
             zone: rawStore.timeZone,
@@ -70,6 +75,9 @@ class Appointments {
         }));
 
         const patch = {
+          // If the store is seen, then the assumption is that it has
+          // appointments.
+          appointments_available: true,
           appointments,
           appointments_last_fetched: lastFetched,
           appointments_raw: rawStore,
