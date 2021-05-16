@@ -6,10 +6,17 @@ const logger = require("../../logger");
 const normalizedVaccineTypes = require("../../normalizedVaccineTypes");
 const setComputedStoreValues = require("../../setComputedStoreValues");
 const { Store } = require("../../models/Store");
+const { ProviderBrand } = require("../../models/ProviderBrand");
+const Geocode = require("../../Geocode");
 
 class Appointments {
   static async refreshStores() {
     logger.notice("Begin refreshing appointments for all stores...");
+
+    Appointments.providerBrand = await ProviderBrand.query().findOne({
+      provider_id: "thrifty_white",
+      key: "thrifty_white",
+    });
 
     const stateSlotsResp = await got(
       "https://www.thriftywhite.com/covid19vaccine",
@@ -107,10 +114,47 @@ class Appointments {
     for (const [providerLocationId, data] of Object.entries(storeResponses)) {
       updatedProviderLocationIds.push(providerLocationId);
 
-      const store = await Store.query().findOne({
+      let store = await Store.query().findOne({
         provider_id: "thrifty_white",
         provider_location_id: providerLocationId,
       });
+      if (!store && data?.dateData?.[0]?.zip) {
+        logger.warn(
+          `Store not found for location, creating new store: ${providerLocationId} ${JSON.stringify(
+            data
+          )}`
+        );
+        console.info(providerLocationId);
+        console.info(data);
+        const dateData = data.dateData[0];
+        const patch = {
+          provider_id: "thrifty_white",
+          provider_location_id: providerLocationId,
+          provider_brand_id: Appointments.providerBrand.id,
+          name: dateData.name,
+          address: _.trim([dateData.address1, dateData.address2].join(" ")),
+          city: dateData.city,
+          state: dateData.state,
+          postal_code: dateData.zip,
+          metadata_raw: dateData,
+        };
+        setComputedStoreValues(patch);
+        await Geocode.fillInMissingForStore(patch);
+
+        store = await Store.query()
+          .insert(patch)
+          .onConflict(["provider_id", "provider_location_id"])
+          .merge();
+      }
+
+      if (!store) {
+        logger.warn(
+          `Store not found for location, and could not be created, skipping: ${providerLocationId} ${JSON.stringify(
+            data
+          )}`
+        );
+        continue;
+      }
 
       const patch = {
         appointments: [],
