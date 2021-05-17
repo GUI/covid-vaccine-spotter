@@ -63,14 +63,14 @@ class Appointments {
 
   static async refreshStore(store, index, count) {
     logger.info(
-      `Processing ${store.name} #${store.brand_id} (${
+      `Processing ${store.name} #${store.provider_location_id} (${
         index + 1
       } of ${count})...`
     );
 
-    if (Appointments.processedProviderLocationIds[store.brand_id]) {
+    if (Appointments.processedProviderLocationIds[store.provider_location_id]) {
       logger.info(
-        `  Skipping already processed store #${store.id} as part of earlier request.`
+        `  Skipping already processed store #${store.provider_location_id} as part of earlier request.`
       );
       return;
     }
@@ -81,11 +81,19 @@ class Appointments {
       return;
     }
 
-    const lastFetched = DateTime.utc().toISO();
-
-    const slotsResp = await Appointments.fetchThrottle(async () =>
-      Appointments.fetchSlots(store)
-    )();
+    let lastFetched;
+    let slotsResp;
+    try {
+      slotsResp = await Appointments.fetchThrottle(async () => {
+        lastFetched = DateTime.utc().toISO();
+        return Appointments.fetchSlots(store);
+      })();
+    } catch (err) {
+      logger.error(
+        `Failed to fetch data for store #${store.provider_location_id}, skipping: ${err}`
+      );
+      return;
+    }
 
     for (const location of slotsResp.data) {
       const providerLocationId = location.loc_no.replace(/^625/, "620");
