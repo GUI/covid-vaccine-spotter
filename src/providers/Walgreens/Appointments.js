@@ -10,7 +10,6 @@ const logger = require("../../logger");
 const normalizedVaccineTypes = require("../../normalizedVaccineTypes");
 const setComputedStoreValues = require("../../setComputedStoreValues");
 const defaultCurlOpts = require("../../utils/defaultCurlOpts");
-const Auth = require("./Auth");
 const AvailabilityAuth = require("./AvailabilityAuth");
 const { Store } = require("../../models/Store");
 
@@ -33,6 +32,7 @@ class Appointments {
     Appointments.availabilityRequestsMade = 0;
     Appointments.timeslotsRequestsMade = 0;
 
+    Appointments.requestQueue = new PQueue({ concurrency: 1 });
     const queue = new PQueue({ concurrency: 20 });
 
     // Check each 55km wide grid cell (suitable for a 25 mile radius search)
@@ -92,12 +92,11 @@ class Appointments {
       appointments_raw: {},
     };
 
-    const availabilityResp = await retry(
-      async () => Appointments.fetchAvailability(gridCell, radiusMiles),
-      {
+    const availabilityResp = await Appointments.requestQueue.add(async () =>
+      retry(async () => Appointments.fetchAvailability(gridCell, radiusMiles), {
         retries: 4,
         onFailedAttempt: Appointments.onFailedAvailabilityAttempt,
-      }
+      })
     );
 
     basePatch.appointments_raw.availability = availabilityResp.data;
@@ -186,12 +185,14 @@ class Appointments {
 
     const patch = _.cloneDeep(basePatch);
 
-    const firstDoseRespPromise = retry(
-      async () => Appointments.fetchTimeslots(gridCell, radiusMiles, ""),
-      {
-        retries: 4,
-        onFailedAttempt: Appointments.onFailedTimeslotsAttempt,
-      }
+    const firstDoseRespPromise = await Appointments.requestQueue.add(async () =>
+      retry(
+        async () => Appointments.fetchTimeslots(gridCell, radiusMiles, ""),
+        {
+          retries: 4,
+          onFailedAttempt: Appointments.onFailedTimeslotsAttempt,
+        }
+      )
     );
 
     const firstDoseResp = await firstDoseRespPromise;
@@ -384,8 +385,6 @@ class Appointments {
   }
 
   static async fetchAvailability(gridCell, radiusMiles) {
-    await sleep(_.random(1, 5));
-
     const auth = await authMutex.runExclusive(AvailabilityAuth.get);
 
     const today = DateTime.now().setZone(gridCell.time_zone);
@@ -397,6 +396,8 @@ class Appointments {
     const url =
       "https://www.walgreens.com/hcschedulersvc/svc/v1/immunizationLocations/availability";
     Appointments.availabilityRequestsMade += 1;
+    const cookies = await auth.cookieJar.getCookies(url);
+    const xsrfCookie = cookies.find((c) => c.key === "XSRF-TOKEN");
     const resp = await curly.post(url, {
       ...defaultCurlOpts,
       httpHeader: [
@@ -409,7 +410,7 @@ class Appointments {
         "Pragma: no-cache",
         "Referer: https://www.walgreens.com/findcare/vaccination/covid-19/location-screening",
         "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:85.0) Gecko/20100101 Firefox/85.0",
-        `Cookie: ${await auth.cookieJar.getCookieString(url)}`,
+        `Cookie: ${xsrfCookie.cookieString()}`,
         `X-XSRF-TOKEN: ${auth.csrfToken}`,
       ],
       postFields: JSON.stringify({
@@ -445,9 +446,7 @@ class Appointments {
   }
 
   static async fetchTimeslots(gridCell, radiusMiles, productId, date) {
-    await sleep(_.random(1, 5));
-
-    const auth = await authMutex.runExclusive(Auth.get);
+    const auth = await authMutex.runExclusive(AvailabilityAuth.get);
 
     let startDateTime = date;
     if (!startDateTime) {
@@ -461,6 +460,8 @@ class Appointments {
     const url =
       "https://www.walgreens.com/hcschedulersvc/svc/v2/immunizationLocations/timeslots";
     Appointments.timeslotsRequestsMade += 1;
+    const cookies = await auth.cookieJar.getCookies(url);
+    const xsrfCookie = cookies.find((c) => c.key === "XSRF-TOKEN");
     const resp = await curly.post(url, {
       ...defaultCurlOpts,
       httpHeader: [
@@ -473,7 +474,7 @@ class Appointments {
         "Pragma: no-cache",
         "Referer: https://www.walgreens.com/findcare/vaccination/covid-19/appointment/next-available",
         "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:85.0) Gecko/20100101 Firefox/85.0",
-        `Cookie: ${await auth.cookieJar.getCookieString(url)}`,
+        `Cookie: ${xsrfCookie.cookieString()}`,
         `X-XSRF-TOKEN: ${auth.csrfToken}`,
       ],
       postFields: JSON.stringify({
@@ -534,14 +535,14 @@ class Appointments {
     logger.warn(
       `Retrying timeslots due to error (attempt ${err.attemptNumber}): ${err}`
     );
-    await sleep(_.random(250, 750));
+    await sleep(_.random(250, 2000));
     if (
       err?.response?.statusCode === 401 ||
       (err?.response?.statusCode === 403 && err.retriesLeft <= 1)
     ) {
       if (!authMutex.isLocked()) {
         logger.warn("Invalid timeslots session detected, refreshing auth.");
-        await authMutex.runExclusive(Auth.refresh);
+        await authMutex.runExclusive(AvailabilityAuth.refresh);
       } else {
         await authMutex.runExclusive(() => {
           logger.info("Waiting on other task to refresh auth.");
@@ -557,7 +558,7 @@ class Appointments {
     logger.warn(
       `Retrying availability due to error (attempt ${err.attemptNumber}): ${err}`
     );
-    await sleep(_.random(250, 750));
+    await sleep(_.random(250, 2000));
     if (
       err?.response?.statusCode === 401 ||
       (err?.response?.statusCode === 403 && err.retriesLeft <= 1)
