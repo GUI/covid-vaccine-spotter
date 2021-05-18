@@ -182,6 +182,18 @@ async function optionalLoopEvery(task) {
     return optionalLoopEvery(Appointments.refreshStores);
   });
 
+  program.command("providers:kta-super-stores:find-stores").action(async () => {
+    const Stores = require("./providers/KtaSuperStores/Stores");
+    return optionalLoopEvery(Stores.findStores);
+  });
+
+  program
+    .command("providers:kta-super-stores:refresh-appointments")
+    .action(async () => {
+      const Appointments = require("./providers/KtaSuperStores/Appointments");
+      return optionalLoopEvery(Appointments.refreshStores);
+    });
+
   program.command("providers:pharmaca:find-stores").action(async () => {
     const Stores = require("./providers/Pharmaca/Stores");
     return optionalLoopEvery(Stores.findStores);

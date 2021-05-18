@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}-kta-super-stores-refresh-appointments-deployment
+  labels:
+    app: {{ .Chart.Name }}-kta-super-stores-refresh-appointments
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}-kta-super-stores-refresh-appointments
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}-kta-super-stores-refresh-appointments
+      annotations:
+        checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+    spec:
+      imagePullSecrets:
+        - name: {{ .Chart.Name }}-container-registry-secret
+      containers:
+        - name: {{ .Chart.Name }}-kta-super-stores-refresh-appointments
+          image: {{ index .Values.werf.image "vaccinespotter" }}
+          args: ["bin/run", "--loop-every", "40000", "providers:kta-super-stores:refresh-appointments"]
+          resources:
+            requests:
+              memory: "128Mi"
+          env:
+            - name: LOG_LEVEL
+              value: notice
+          envFrom:
+            - secretRef:
+                name: {{ .Chart.Name }}-secrets
