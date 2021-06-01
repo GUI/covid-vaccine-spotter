@@ -125,6 +125,17 @@ class Appointments {
     return throwCurlResponseError(resp);
   }
 
+  static async fetchStateVaccineTypes(store) {
+    await sleep(_.random(250, 750));
+
+    const stateUrlKey = slug(store.state_name);
+    const resp = await curly.get(
+      `https://www.publix.com/covid-vaccine/${stateUrlKey}/${stateUrlKey}-include.txt?t=${Date.now()}`,
+      defaultCurlOpts
+    );
+    return throwCurlResponseError(resp);
+  }
+
   static async getStateMetadata(store) {
     if (Appointments.stateMetadata[store.state]) {
       return Appointments.stateMetadata[store.state];
@@ -132,7 +143,6 @@ class Appointments {
 
     const resp = await Appointments.fetchState(store);
     const $body = cheerio.load(resp.data);
-    const bodyText = $body.text();
 
     let eid;
     const bookingLink = $body("a[href*='eid=']").attr("href");
@@ -151,16 +161,47 @@ class Appointments {
       }
     }
 
+    // Parse the supported vaccine types based on
+    // https://www.publix.com/covid-vaccine/assets/scripts/disableButton.js?v=21.1.26
     const vaccineTypes = [];
-    const vaccineButtons = $body(".vaccineButtons").text();
-    if (/Johnson|Janssen/i.test(bodyText)) {
-      vaccineTypes.push("Johnson & Johnson");
-    }
-    if (/Moderna/i.test(bodyText)) {
-      vaccineTypes.push("Moderna");
-    }
-    if (/Pfizer/i.test(bodyText)) {
-      vaccineTypes.push("Pfizer");
+    const vaccineTypesResp = await Appointments.fetchStateVaccineTypes(store);
+    const vaccineTypesData = vaccineTypesResp.data.substring(
+      0,
+      vaccineTypesResp.data.indexOf("Instructions:")
+    );
+    if (vaccineTypesData) {
+      const rows = vaccineTypesData.trim().split(/[\r\n]+/);
+      for (const rowString of rows) {
+        const row = rowString.trim().split(/\s*\|\s*/);
+
+        let vaccineType;
+        if (/Johnson|Janssen/i.test(row[0])) {
+          vaccineType = "Johnson & Johnson";
+        }
+        if (/Moderna/i.test(row[0])) {
+          vaccineType = "Moderna";
+        }
+        if (/Pfizer/i.test(row[0])) {
+          vaccineType = "Pfizer";
+        }
+
+        if (!vaccineType) {
+          continue;
+        }
+
+        let enabled = false;
+        if (row[1].trim().toLowerCase() === "true") {
+          enabled = true;
+        }
+
+        if (row[2] && !Appointments.keepVaccineTypeBoolean(row[2].trim())) {
+          enabled = !enabled;
+        }
+
+        if (enabled) {
+          vaccineTypes.push(vaccineType);
+        }
+      }
     }
 
     Appointments.stateMetadata[store.state] = {
@@ -190,6 +231,42 @@ class Appointments {
       ],
     });
     return throwCurlResponseError(resp);
+  }
+
+  // This date parsing could perhaps be simpler with Luxon, but basing this on
+  // the exact code used on the Publix site:
+  // https://www.publix.com/covid-vaccine/assets/scripts/disableButton.js?v=21.1.26
+  static keepVaccineTypeBoolean(dateStr) {
+    const row = dateStr.split("-");
+    let d = new Date();
+    d = new Date(d.toLocaleString("en-US", { timeZone: "America/New_York" }));
+    d.setSeconds(0);
+    const disableDate = new Date(
+      d.toLocaleString("en-US", { timeZone: "America/New_York" })
+    );
+    const time = row[1].trim();
+
+    if (time === "00:00" || dateStr.length === 0) {
+      return true;
+    }
+    let hour;
+    hour = time.split(":")[0].trim();
+    const minutes = time.split(":")[1].trim();
+    disableDate.setFullYear(
+      row[0].trim().substring(4, row[0].trim().length),
+      parseInt(row[0].trim().substring(0, 2), 10) - 1,
+      row[0].trim().substring(2, 4)
+    );
+
+    if (row[2].trim() === "pm" || row[2].trim() === "PM") {
+      hour = parseInt(hour, 10) + 12;
+    }
+    disableDate.setHours(hour, minutes, 0);
+
+    if (d >= disableDate) {
+      return true;
+    }
+    return false;
   }
 }
 
