@@ -81,7 +81,7 @@ class Appointments {
             type: stateMetadata.vaccineType,
             time: DateTime.fromFormat(
               `${appointment.DisplayDate} ${appointment.DisplayTime}`,
-              "L/dd/yyyy h:mm a",
+              "L/d/yyyy h:mm a",
               {
                 zone: store.time_zone,
               }
@@ -152,13 +152,14 @@ class Appointments {
     }
 
     const vaccineTypes = [];
-    if (/appointments for .*(Johnson|Janssen)/i.test(bodyText)) {
+    const vaccineButtons = $body(".vaccineButtons").text();
+    if (/Johnson|Janssen/i.test(bodyText)) {
       vaccineTypes.push("Johnson & Johnson");
     }
-    if (/appointments for .*Moderna/i.test(bodyText)) {
+    if (/Moderna/i.test(bodyText)) {
       vaccineTypes.push("Moderna");
     }
-    if (/appointments for .*Pfizer/i.test(bodyText)) {
+    if (/Pfizer/i.test(bodyText)) {
       vaccineTypes.push("Pfizer");
     }
 
