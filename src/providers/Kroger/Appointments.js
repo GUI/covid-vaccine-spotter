@@ -109,6 +109,11 @@ class Appointments {
         appointments_last_fetched: lastFetched,
         appointments_available: false,
         appointments_raw: { slots: [location] },
+        name: location.facilityDetails.vanityName,
+        address: location.facilityDetails.address.address1,
+        city: location.facilityDetails.address.city,
+        state: location.facilityDetails.address.state,
+        postal_code: location.facilityDetails.address.zipCode,
       };
 
       const locationStore = await Store.query().findOne({
@@ -144,12 +149,9 @@ class Appointments {
         }
 
         patch.provider_brand_id = providerBrand.id;
-        patch.name = location.facilityDetails.vanityName;
-        patch.address = location.facilityDetails.address.address1;
-        patch.city = location.facilityDetails.address.city;
-        patch.state = location.facilityDetails.address.state;
-        patch.postal_code = location.facilityDetails.address.zipCode;
+      }
 
+      if (!locationStore || locationStore.postal_code !== patch.postal_code) {
         const postalCode = await PostalCode.query().findOne({
           postal_code: patch.postal_code,
         });
@@ -195,7 +197,7 @@ class Appointments {
   }
 
   static async fetchSlots(store) {
-    logger.notice(`${DateTime.now().toISO()} fetchSlots`);
+    logger.info(`${DateTime.now().toISO()} fetchSlots`);
     const startDate = DateTime.now().setZone(store.time_zone);
     const endDate = startDate.plus({ days: 10 });
     const radiusMiles = 50;
