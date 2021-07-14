@@ -99,6 +99,7 @@ class SmartSchedulingLinks {
           providerBrand,
           lastFetched,
           geocodeThrottle,
+          options,
         });
       });
     }
@@ -196,7 +197,20 @@ class SmartSchedulingLinks {
     providerBrand,
     lastFetched,
     geocodeThrottle,
+    options,
   }) {
+    if (
+      !location.address ||
+      (!location.address.city &&
+        !location.address.state &&
+        !location.address.postalCode)
+    ) {
+      logger.warn(
+        `Location with no address given, skipping: ${JSON.stringify(location)}`
+      );
+      return;
+    }
+
     const locationSlots = slotsByLocation[locationReference] || [];
     const locationSchedules = locationSlots.map(
       (slot) => schedules[slot.schedule.reference]
@@ -226,10 +240,111 @@ class SmartSchedulingLinks {
       patch.location_source = "provider";
     }
 
-    const store = await Store.query().findOne({
+    let store = await Store.query().findOne({
       provider_id: patch.provider_id,
       provider_location_id: patch.provider_location_id,
     });
+
+    if (patch.provider_id === "kroger") {
+      // Matching for previous location IDs from the Locations API for Little
+      // Clinic and City Market stores that follow a different pattern than the
+      // IDs returned by the Smart Scheduling Links data.
+      if (!store) {
+        store = await Store.query()
+          .where({
+            provider_id: patch.provider_id,
+          })
+          .whereRaw("metadata_raw->>'id' = ?", patch.provider_location_id)
+          .first();
+      }
+      if (!store && options?.providerBrandsByKey?.the_little_clinic?.id) {
+        store = await Store.query()
+          .where({
+            provider_id: patch.provider_id,
+            provider_brand_id:
+              options?.providerBrandsByKey?.the_little_clinic?.id,
+            postal_code: patch.postal_code,
+          })
+          .whereRaw(
+            "right(provider_location_id, 3) = right(?, 3)",
+            patch.provider_location_id
+          )
+          .first();
+      }
+      if (!store && options?.providerBrandsByKey?.citymarket?.id) {
+        store = await Store.query()
+          .where({
+            provider_id: patch.provider_id,
+            provider_brand_id: options?.providerBrandsByKey?.citymarket?.id,
+            postal_code: patch.postal_code,
+          })
+          .whereRaw(
+            "right(provider_location_id, 5) = right(?, 5)",
+            patch.provider_location_id
+          )
+          .first();
+      }
+
+      // Handle retaining or assigning Kroger provider brands based on store
+      // names.
+      if (store) {
+        patch.provider_location_id = store.provider_location_id;
+        patch.provider_brand_id = store.provider_brand_id;
+      } else {
+        let krogerProviderBrandId;
+        if (patch.name.match(/^Baker/i)) {
+          krogerProviderBrandId = options?.providerBrandsByKey?.bakers?.id;
+        } else if (patch.name.match(/^City Market/i)) {
+          krogerProviderBrandId = options?.providerBrandsByKey?.citymarket?.id;
+        } else if (patch.name.match(/COVID/i)) {
+          krogerProviderBrandId = options?.providerBrandsByKey?.covid?.id;
+        } else if (patch.name.match(/^Dillon/i)) {
+          krogerProviderBrandId = options?.providerBrandsByKey?.dillon?.id;
+        } else if (patch.name.match(/^Fred Meyer/i)) {
+          krogerProviderBrandId = options?.providerBrandsByKey?.fred?.id;
+        } else if (patch.name.match(/^Fry/i)) {
+          krogerProviderBrandId = options?.providerBrandsByKey?.frys?.id;
+        } else if (patch.name.match(/^Gerbe/i)) {
+          krogerProviderBrandId = options?.providerBrandsByKey?.gerbes?.id;
+        } else if (patch.name.match(/^Harris/i)) {
+          krogerProviderBrandId = options?.providerBrandsByKey?.hart?.id;
+        } else if (patch.name.match(/^Jay/i)) {
+          krogerProviderBrandId = options?.providerBrandsByKey?.jayc?.id;
+        } else if (patch.name.match(/^King Soopers/i)) {
+          krogerProviderBrandId = options?.providerBrandsByKey?.kingsoopers?.id;
+        } else if (patch.name.match(/^Kroger/i)) {
+          krogerProviderBrandId = options?.providerBrandsByKey?.kroger?.id;
+        } else if (patch.name.match(/^Mariano/i)) {
+          krogerProviderBrandId = options?.providerBrandsByKey?.marianos?.id;
+        } else if (patch.name.match(/^Metro Market/i)) {
+          krogerProviderBrandId =
+            options?.providerBrandsByKey?.metro_market?.id;
+        } else if (patch.name.match(/^Pay/i)) {
+          krogerProviderBrandId = options?.providerBrandsByKey?.payless?.id;
+        } else if (patch.name.match(/^Pick/i)) {
+          krogerProviderBrandId = options?.providerBrandsByKey?.pick_n_save?.id;
+        } else if (patch.name.match(/^QFC/i)) {
+          krogerProviderBrandId = options?.providerBrandsByKey?.qfc?.id;
+        } else if (patch.name.match(/^Ralphs/i)) {
+          krogerProviderBrandId = options?.providerBrandsByKey?.ralphs?.id;
+        } else if (patch.name.match(/^Smith/i)) {
+          krogerProviderBrandId = options?.providerBrandsByKey?.smiths?.id;
+        } else if (patch.name.match(/^The Little Clinic/i)) {
+          krogerProviderBrandId =
+            options?.providerBrandsByKey?.the_little_clinic?.id;
+        }
+
+        if (krogerProviderBrandId) {
+          patch.provider_brand_id = krogerProviderBrandId;
+        } else {
+          logger.warn(
+            `Unknown provider brand for Kroger data, using default Kroger brand for store: ${JSON.stringify(
+              location
+            )}`
+          );
+        }
+      }
+    }
 
     if (store) {
       patch.time_zone = store.time_zone;
