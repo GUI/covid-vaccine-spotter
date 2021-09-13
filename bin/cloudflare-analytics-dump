@@ -1,0 +1,108 @@
+#!/usr/bin/env ruby
+
+require "bundler/inline"
+
+gemfile do
+  source "https://rubygems.org"
+  gem "typhoeus", "~> 1.4.0"
+  gem "tty-command", "~> 0.10.1"
+end
+
+require "csv"
+require "json"
+require "time"
+require "tty-command"
+require "typhoeus"
+
+cmd = TTY::Command.new
+cloudflare_vaccinespotter_zone_id = cmd.run("sops", "--decrypt", "--extract", '["cloudflare_vaccinespotter_zone_id"]', "terraform/secrets.enc.yaml").out
+cloudflare_nickm_zone_id = cmd.run("sops", "--decrypt", "--extract", '["cloudflare_nickm_zone_id"]', "terraform/secrets.enc.yaml").out
+cloudflare_global_key = cmd.run("sops", "--decrypt", "--extract", '["cloudflare_global_key"]', "terraform/secrets.enc.yaml").out
+cloudflare_email = cmd.run("sops", "--decrypt", "--extract", '["cloudflare_email"]', "terraform/secrets.enc.yaml").out
+
+start_date = Time.utc(2021, 2, 1)
+end_date = Time.now.utc
+cloudflare_max_days = 100 * 24 * 60 * 60  # 100 days
+
+zones = {
+  :vaccinespotter => cloudflare_vaccinespotter_zone_id,
+  :nickm => cloudflare_nickm_zone_id,
+}
+
+CSV.open("tmp/cloudflare_analytics_#{end_date.iso8601}.csv", "wb") do |csv|
+  csv << [
+    "zone",
+    "date",
+    "bytes",
+    "cachedBytes",
+    "cachedRequests",
+    "pageViews",
+    "requests",
+    "uniques",
+  ]
+
+  batch_start_date = start_date
+  while batch_start_date < end_date
+    batch_end_date = [batch_start_date + cloudflare_max_days, end_date].min
+    puts "#{batch_start_date} - #{batch_end_date}"
+
+    payload = {
+      "query" => "query {
+        viewer {
+          zones(filter: { zoneTag: $zoneTag }) {
+            httpRequests1dGroups(orderBy: [date_ASC], limit: 100, filter: $filter) {
+              dimensions {
+                date
+              }
+              sum {
+                bytes
+                cachedBytes
+                cachedRequests
+                pageViews
+                requests
+              }
+              uniq {
+                uniques
+              }
+            }
+          }
+        }
+      }",
+      "variables" => {
+        "filter" => {
+          "date_gt" => batch_start_date.strftime("%Y-%m-%d"),
+          "date_leq": batch_end_date.strftime("%Y-%m-%d"),
+        },
+      },
+    }
+
+    zones.each do |zone_name, zone_id|
+      payload["variables"]["zoneTag"] = zone_id
+      response = Typhoeus.post("https://api.cloudflare.com/client/v4/graphql/", {
+        :headers => {
+          "Content-Type" => "application/json",
+          "X-Auth-Email" => cloudflare_email,
+          "Authorization" => "Bearer #{cloudflare_global_key}",
+        },
+        :body => JSON.dump(payload),
+      })
+      data = JSON.load(response.body)
+
+      groups = data.fetch("data").fetch("viewer").fetch("zones").first.fetch("httpRequests1dGroups")
+      groups.each do |group|
+        csv << [
+          zone_name,
+          group.fetch("dimensions").fetch("date"),
+          group.fetch("sum").fetch("bytes"),
+          group.fetch("sum").fetch("cachedBytes"),
+          group.fetch("sum").fetch("cachedRequests"),
+          group.fetch("sum").fetch("pageViews"),
+          group.fetch("sum").fetch("requests"),
+          group.fetch("uniq").fetch("uniques"),
+        ]
+      end
+    end
+
+    batch_start_date = batch_end_date
+  end
+end

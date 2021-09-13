@@ -228,6 +228,8 @@
         </li>
       </ul>
     </main>
+
+    <footer-content />
   </div>
 </template>
 

@@ -1,5 +1,16 @@
 <template>
   <div>
+    <div class="alert alert-warning text-center my-2 my-lg-4">
+      <p class="fs-2">
+        <font-awesome-icon icon="exclamation-triangle" />
+        Please visit <a href="https://www.vaccines.gov">Vaccines.gov</a> for
+        more up to date information on vaccine availability.
+      </p>
+      <p>
+        The Vaccine Spotter website will shutdown on September 23, 2021. For
+        more information, see my <a href="/shutdown/">shutdown note</a>.
+      </p>
+    </div>
     <div
       :class="{
         row: true,
