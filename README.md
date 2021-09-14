@@ -1,5 +1,11 @@
 # COVID-19 Vaccine Spotter
 
+<hr>
+
+**SHUTDOWN PLANNED:** VaccineSpotter.org will wind down operations on September 23, 2021. See the [shutdown notice](https://www.vaccinespotter.org/shutdown/) for more details. This code will remain available if it's of interest, but I haven't been actively working on things in a few months now, so I think it's time to consider this chapter closed.
+
+<hr>
+
 A tool to help you track down COVID-19 vaccine appointment openings at your state's pharmacies. The code behind https://www.vaccinespotter.org.
 
 ## UI Development Setup
