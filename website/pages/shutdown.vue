@@ -189,10 +189,10 @@
           help more people.
         </li>
         <li>
-          Thank you to an unnamed company who helped cover the expenses of some
-          more expensive proxy services that allowed for some workarounds in
-          accessing some of the pharmacy websites. Thanks for your
-          collaboration!
+          Thank you to a company (that wanted to remain anonymous) who helped
+          cover the expenses of some more expensive proxy services that allowed
+          for some workarounds in accessing some of the pharmacy websites.
+          Thanks for your collaboration!
         </li>
         <li>
           Thank you to pharmacies for vaccinating everyone and your hard work on
@@ -220,6 +220,14 @@
       </p>
 
       <p>❤️ Nick</p>
+      <p>
+        <a
+          href="m&#97;ilto&#58;v%&#54;1&#99;&#99;&#105;ne&#64;nic&#107;%6D&#46;org"
+          >vacc&#105;ne&#64;ni&#99;k&#109;&#46;o&#114;&#103;</a
+        >
+        | <a href="https://twitter.com/nickblah">@nickblah</a> |
+        <a href="https://github.com/GUI/covid-vaccine-spotter">Code</a>
+      </p>
     </main>
   </div>
 </template>
