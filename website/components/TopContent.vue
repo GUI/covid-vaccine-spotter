@@ -6,9 +6,11 @@
         Please visit <a href="https://www.vaccines.gov">Vaccines.gov</a> for
         more up to date information on vaccine availability.
       </p>
-      <p>
-        The Vaccine Spotter website will shutdown on September 23, 2021. For
-        more information, see my <a href="/shutdown/">shutdown note</a>.
+      <p class="text-start mb-0">
+        <strong>September 23, 2021 Update:</strong> The website is now
+        <a href="/shutdown/">shutdown</a>, but I'm going to try and keep the
+        underling data and APIs updating until October 26, 2021 to give other
+        developers using this data time to figure out alternatives.
       </p>
     </div>
     <div

@@ -5,6 +5,20 @@
     <navbar :title="title" />
 
     <main class="container-lg my-3">
+      <div class="alert alert-warning text-center my-2 my-lg-4">
+        <p class="fs-2">
+          <font-awesome-icon icon="exclamation-triangle" />
+          Please visit <a href="https://www.vaccines.gov">Vaccines.gov</a> for
+          more up to date information on vaccine availability.
+        </p>
+        <p class="text-start mb-0">
+          <strong>September 23, 2021 Update:</strong> The website is now
+          shutdown, but I'm going to try and keep the underling data and
+          <a href="/api/">APIs</a> updating until October 26, 2021 to give other
+          developers using this data time to figure out alternatives.
+        </p>
+      </div>
+
       <h1 class="h3">Vaccine Spotter Shutdown</h1>
 
       <p>
