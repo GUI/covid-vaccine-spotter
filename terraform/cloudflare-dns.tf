@@ -94,3 +94,12 @@ resource "cloudflare_record" "vaccinespotter-org-txt-google-site-verification-2"
   ttl = 1
   value = "google-site-verification=jSWPCZT6E_WrIkrD8Eclji44gNulimjQpMdF_nXAIfs"
 }
+
+resource "cloudflare_record" "shutdown-vaccinespotter-org-cname" {
+  zone_id = cloudflare_zone.vaccinespotter-org.id
+  name = "shutdown"
+  type = "CNAME"
+  ttl = 1
+  proxied = true
+  value = "gui.github.io"
+}

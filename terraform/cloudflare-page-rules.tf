@@ -1,10 +1,13 @@
 resource "cloudflare_page_rule" "www-settings" {
   zone_id = cloudflare_zone.vaccinespotter-org.id
-  target = "*.vaccinespotter.org/*"
+  target = "www.vaccinespotter.org/*"
   priority = 2
   status = "active"
   actions {
-    cache_level = "cache_everything"
+    forwarding_url {
+      status_code = 302
+      url = "https://shutdown.vaccinespotter.org/"
+    }
   }
 }
 
