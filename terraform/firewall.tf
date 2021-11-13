@@ -11,7 +11,7 @@ resource "linode_firewall" "db-firewall" {
     ipv4 = yamldecode(data.sops_file.secrets.raw).firewall_allowed_inbound_ipv4
   }
 
-  linodes = [linode_instance.prod-db.id]
+  # linodes = [linode_instance.prod-db.id]
 }
 
 resource "linode_firewall" "k8s-firewall" {
@@ -67,5 +67,5 @@ resource "linode_firewall" "k8s-firewall" {
     ipv4 = yamldecode(data.sops_file.secrets.raw).firewall_allowed_inbound_ipv4
   }
 
-  linodes = flatten([for pool in linode_lke_cluster.prod-cluster.pool: [ for node in pool.nodes: node.instance_id ]])
+  # linodes = flatten([for pool in linode_lke_cluster.prod-cluster.pool: [ for node in pool.nodes: node.instance_id ]])
 }

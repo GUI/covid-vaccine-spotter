@@ -16,13 +16,13 @@ resource "cloudflare_record" "_domainconnect-vaccinespotter-org-cname" {
   value = "connect.domains.google.com"
 }
 
-resource "cloudflare_record" "stage-vaccinespotter-org-cname" {
+resource "cloudflare_record" "archive-vaccinespotter-org-cname" {
   zone_id = cloudflare_zone.vaccinespotter-org.id
-  name = "stage"
+  name = "archive"
   type = "CNAME"
   ttl = 1
   proxied = true
-  value = data.sops_file.secrets.data.stage_website_cname
+  value = data.sops_file.secrets.data.prod_website_cname
 }
 
 resource "cloudflare_record" "www-vaccinespotter-org-cname" {

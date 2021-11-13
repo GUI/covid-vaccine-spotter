@@ -15,7 +15,8 @@ locals {
     "103.21.244.0/22",
     "103.22.200.0/22",
     "103.31.4.0/22",
-    "104.16.0.0/12",
+    "104.16.0.0/13",
+    "104.24.0.0/14",
     "108.162.192.0/18",
     "131.0.72.0/22",
     "141.101.64.0/18",
@@ -29,62 +30,62 @@ locals {
   ]
 }
 
-resource "alicloud_oss_bucket" "stage-website-bucket" {
-  bucket = data.sops_file.secrets.data.stage_website_bucket_name
-  acl = "private"
-
-  policy = jsonencode({
-    Version = "1"
-    Statement = [
-      {
-        Action = [
-          "oss:*",
-        ]
-        Effect = "Allow"
-        Principal = [
-          alicloud_ram_user.website-deployer.id,
-        ]
-        Resource = [
-          "acs:oss:*:${data.sops_file.secrets.data.alicloud_account_id}:${data.sops_file.secrets.data.stage_website_bucket_name}",
-          "acs:oss:*:${data.sops_file.secrets.data.alicloud_account_id}:${data.sops_file.secrets.data.stage_website_bucket_name}/*",
-        ]
-      },
-      {
-        Action = [
-          "oss:GetObject",
-        ]
-        Condition = {
-          IpAddress = {
-            "acs:SourceIp" = local.cloudflare_ips
-          }
-        }
-        Effect = "Allow"
-        Principal = [
-          "*",
-        ]
-        Resource = [
-          "acs:oss:*:${data.sops_file.secrets.data.alicloud_account_id}:${data.sops_file.secrets.data.stage_website_bucket_name}",
-          "acs:oss:*:${data.sops_file.secrets.data.alicloud_account_id}:${data.sops_file.secrets.data.stage_website_bucket_name}/*",
-        ]
-      },
-    ]
-  })
-
-  server_side_encryption_rule {
-    sse_algorithm = "AES256"
-  }
-
-  website {
-    index_document = "index.html"
-    error_document = "404.html"
-  }
-
-  cors_rule {
-    allowed_origins = ["*"]
-    allowed_methods = ["GET"]
-    max_age_seconds = 60
-  }
-}
+# resource "alicloud_oss_bucket" "stage-website-bucket" {
+#   bucket = data.sops_file.secrets.data.stage_website_bucket_name
+#   acl = "private"
+#
+#   policy = jsonencode({
+#     Version = "1"
+#     Statement = [
+#       {
+#         Action = [
+#           "oss:*",
+#         ]
+#         Effect = "Allow"
+#         Principal = [
+#           alicloud_ram_user.website-deployer.id,
+#         ]
+#         Resource = [
+#           "acs:oss:*:${data.sops_file.secrets.data.alicloud_account_id}:${data.sops_file.secrets.data.stage_website_bucket_name}",
+#           "acs:oss:*:${data.sops_file.secrets.data.alicloud_account_id}:${data.sops_file.secrets.data.stage_website_bucket_name}/*",
+#         ]
+#       },
+#       {
+#         Action = [
+#           "oss:GetObject",
+#         ]
+#         Condition = {
+#           IpAddress = {
+#             "acs:SourceIp" = local.cloudflare_ips
+#           }
+#         }
+#         Effect = "Allow"
+#         Principal = [
+#           "*",
+#         ]
+#         Resource = [
+#           "acs:oss:*:${data.sops_file.secrets.data.alicloud_account_id}:${data.sops_file.secrets.data.stage_website_bucket_name}",
+#           "acs:oss:*:${data.sops_file.secrets.data.alicloud_account_id}:${data.sops_file.secrets.data.stage_website_bucket_name}/*",
+#         ]
+#       },
+#     ]
+#   })
+#
+#   server_side_encryption_rule {
+#     sse_algorithm = "AES256"
+#   }
+#
+#   website {
+#     index_document = "index.html"
+#     error_document = "404.html"
+#   }
+#
+#   cors_rule {
+#     allowed_origins = ["*"]
+#     allowed_methods = ["GET"]
+#     max_age_seconds = 60
+#   }
+# }
 
 resource "alicloud_oss_bucket" "prod-website-bucket" {
   bucket = data.sops_file.secrets.data.prod_website_bucket_name
@@ -120,8 +121,8 @@ resource "alicloud_oss_bucket" "prod-website-bucket" {
           "*",
         ]
         Resource = [
-          "acs:oss:*:${data.sops_file.secrets.data.alicloud_account_id}:${data.sops_file.secrets.data.prod_website_bucket_name}",
-          "acs:oss:*:${data.sops_file.secrets.data.alicloud_account_id}:${data.sops_file.secrets.data.prod_website_bucket_name}/*",
+          "acs:oss:*:${data.sops_file.secrets.data.alicloud_account_id}:${data.sops_file.secrets.data.prod_website_bucket_name}/api/*",
+          "acs:oss:*:${data.sops_file.secrets.data.alicloud_account_id}:${data.sops_file.secrets.data.prod_website_bucket_name}/database/*",
         ]
       },
     ]
