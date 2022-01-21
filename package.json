@@ -49,7 +49,7 @@
     "knex-tiny-logger": "^2.0.0",
     "listify": "^1.0.3",
     "lodash": "^4.17.20",
-    "log4js": "^6.3.0",
+    "log4js": "^6.4.0",
     "luxon": "^1.26.0",
     "maplibre-gl": "^1.14.0",
     "mkdirp": "^1.0.4",
