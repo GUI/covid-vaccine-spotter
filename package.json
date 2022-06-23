@@ -40,7 +40,7 @@
     "dotenv": "^9.0.0",
     "execa": "^5.0.0",
     "geokdbush": "^1.1.0",
-    "got": "^11.8.1",
+    "got": "^11.8.5",
     "hpagent": "^0.1.1",
     "html-entities": "^2.3.2",
     "json-stable-stringify": "^1.0.1",
